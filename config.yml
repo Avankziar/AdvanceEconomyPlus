@@ -1,0 +1,43 @@
+Language: 'German'
+Prefix: '&7[&2AdvanceEconomyPlus&7] &r'
+Bungee: false
+Mysql:
+  Status: false
+  Host: '127.0.0.1'
+  Port: 3306
+  DatabaseName: 'mydatabase'
+  SSLEnabled: false
+  AutoReconnect: true
+  VerifyServerCertificate: false
+  User: 'admin'
+  Password: 'not_0123456789'
+  TableNameI: 'economyPlayerData'
+  TableNameII: 'economyBankData'
+  TableNameIII: 'economyLogger'
+  TableNameIV: 'economyTrend'
+Identifier:
+  Click: 'click'
+  Hover: 'hover'
+  Book: 'book'
+Seperator:
+  BetweenFunction: '~'
+  WhithinFuction: '@'
+  Space: '+'
+  HoverNewLine: '~!~'
+CommandArgumentLanguage: 'both' #english, german, both
+StartMoney: 0.0
+CurrencyNameSingular: 'Euro'
+CurrencyNamePlural: 'Euros'
+MoneyFormat: 2
+UsePlayerAccount: true
+UseBank: false
+ReservedNames:
+- YourServer
+BankAccountFromat: 'FOUR_DIGITS_TIMES_THREE'
+TrendLogger:
+  ValueIsStabil: 1000.0
+JobsRebornHookTaskTimer:
+- 0
+- 15
+- 30
+- 45

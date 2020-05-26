@@ -1,0 +1,98 @@
+main: main.java.me.avankziar.advanceeconomy.spigot.main.Economy
+name: AdvanceEconomyPlus
+version: 1
+load: STARTUP
+api-version: 1.15
+description: a Economy-Plugin
+author: Avankziar
+depend: [Vault]
+commands:
+  econ:
+    description: base admin and info command
+  money:
+    description: base Command
+permissions:
+   eco.cmd.money:
+    description: Enable /money
+    default: true
+   eco.cmd.money.filterlogbetween:
+    description: Enable /money filterlogbetween <min> <max> [page] [player]
+    default: false
+   eco.cmd.money.filterlogcomment:
+    description: Enable /money filterlogcomment <searchword> [page] [player]
+    default: false
+   eco.cmd.money.filterlogcommentascending:
+    description: Enable /money filterlogcommentascending <searchword> [page] [player]
+    default: false
+   eco.cmd.money.filterlogcommentdescending:
+    description: Enable /money filterlogcommentdescending <searchword> [page] [player]
+    default: false
+   eco.cmd.money.filterlogfrom:
+    description: Enable /money filterlogfrom <searchword> [page] [player]
+    default: false
+   eco.cmd.money.filterloggreaterthan:
+    description: Enable /money filterloggreaterthan <value> [page] [player]
+    default: false
+   eco.cmd.money.filterloglessthan:
+    description: Enable /money filterloglessthan <value> [page] [player]
+    default: false
+   eco.cmd.money.filterlogorderer:
+    description: Enable /money filterlogorderer <searchword> [page] [player]
+    default: false
+   eco.cmd.money.filterlogsortascending:
+    description: Enable /money filterlogascending [page] [player]
+    default: false
+   eco.cmd.money.filterlogsortdescending:
+    description: Enable /money filterlogdescending [page] [player]
+    default: false
+   eco.cmd.money.filterlogto:
+    description: Enable /money filterlogto <searchword> [page] [player]
+    default: false
+   eco.cmd.money.filterlogother:
+    description: Enable /money filterlog... [page] [player] | All filter commands
+    default: false
+   eco.cmd.money.gettotal:
+    description: Enable /money gettotal <searchword>
+    default: false
+   eco.cmd.money.gettotalother:
+    description: Enable /money gettotal <searchword> [player]
+    default: false
+   eco.cmd.money.give:
+    description: Enable /money give
+    default: false
+   eco.cmd.money.log:
+    description: Enable /money log
+    default: true
+   eco.cmd.money.logother:
+    description: Enable /money log [page] [player]
+    default: true
+   eco.cmd.money.pay:
+    description: Enable /money pay
+    default: true
+   eco.cmd.money.take:
+    description: Enable /money take
+    default: false
+   eco.cmd.money.toggle:
+    description: Enable /money toggle
+    default: true
+   eco.cmd.money.top:
+    description: Enable /money top
+    default: false
+   eco.cmd.money.trenddiagram:
+    description: Enable /money trenddiagram
+    default: false
+   eco.cmd.money.trenddiagramother:
+    description: Enable /money trenddiagram [page] [player]
+    default: false
+   eco.cmd.money.trendgrafic:
+    description: Enable /money trendgrafic
+    default: true
+   eco.cmd.money.trendgraficother:
+    description: Enable /money trendgrafic [page] [player]
+    default: false
+   eco.cmd.money.trendlog:
+    description: Enable /money trendlog
+    default: true
+   eco.cmd.money.trendlogother:
+    description: Enable /money trendlog [page] [player]
+    default: true
