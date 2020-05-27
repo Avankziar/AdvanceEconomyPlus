@@ -1,4 +1,4 @@
-Language: 'German'
+Language: 'English'
 Prefix: '&7[&2AdvanceEconomyPlus&7] &r'
 Bungee: false
 Mysql:
@@ -27,12 +27,8 @@ CommandArgumentLanguage: 'english' #english, german, both
 StartMoney: 0.0
 CurrencyNameSingular: 'Euro'
 CurrencyNamePlural: 'Euros'
-MoneyFormat: 2
 UsePlayerAccount: true
 UseBank: false
-ReservedNames:
-- YourServer
-BankAccountFromat: 'FOUR_DIGITS_TIMES_THREE'
 TrendLogger:
   ValueIsStabil: 1000.0
 JobsRebornHookTaskTimer:
@@ -40,3 +36,6 @@ JobsRebornHookTaskTimer:
 - 15
 - 30
 - 45
+ReservedNames:
+- YourServer
+BankAccountFromat: 'FOUR_DIGITS_TIMES_THREE'
