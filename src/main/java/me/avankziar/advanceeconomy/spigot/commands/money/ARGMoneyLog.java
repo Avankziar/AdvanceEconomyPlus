@@ -76,7 +76,7 @@ public class ARGMoneyLog extends CommandModule
 			return;
 		}
 		int start = page*10;
-		int end = page*10+9;
+		int end = 9;
 		boolean desc = true;
 		ArrayList<EconomyLogger> list = ConvertHandler.convertListIII(
 				plugin.getMysqlHandler().getList(Type.LOGGER, "`id`", desc, start, end,

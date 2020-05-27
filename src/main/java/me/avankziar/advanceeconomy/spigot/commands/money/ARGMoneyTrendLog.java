@@ -76,7 +76,7 @@ public class ARGMoneyTrendLog extends CommandModule
 			return;
 		}
 		int start = page*10;
-		int end = page*10+9;
+		int end = 9;
 		boolean desc = true;
 		ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
 				plugin.getMysqlHandler().getList(Type.TREND, "`id`", desc, start, end,
