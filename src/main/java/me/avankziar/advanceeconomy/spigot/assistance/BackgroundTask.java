@@ -9,6 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.events.TrendLoggerEvent;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.BankAccountHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.object.BankAccount;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
@@ -42,7 +44,7 @@ public class BackgroundTask
 				{
 					for(Player player : Bukkit.getOnlinePlayers())
 					{
-						EcoPlayer eco = EcoPlayer.getEcoPlayer(player.getUniqueId().toString());
+						EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player.getUniqueId().toString());
 						if(eco == null)
 						{
 							AdvanceEconomy.getVaultApi().createPlayerAccount(player);
@@ -55,7 +57,7 @@ public class BackgroundTask
 					{
 						if(plugin.getMysqlHandler().exist(MysqlHandler.Type.BANKACCOUNT, "`id` = ?", i))
 						{
-							BankAccount ba = BankAccount.getBankAccount(i);
+							BankAccount ba = BankAccountHandler.getBankAccount(i);
 							if(ba != null)
 							{
 								Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(

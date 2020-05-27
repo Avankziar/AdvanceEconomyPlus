@@ -16,6 +16,8 @@ public class YamlHandler
 	private YamlConfiguration cfg = new YamlConfiguration();
 	private File arabic = null;
 	private YamlConfiguration ara = new YamlConfiguration();
+	private File dutch = null;
+	private YamlConfiguration dut = new YamlConfiguration();
 	private File english = null;
 	private YamlConfiguration eng = new YamlConfiguration();
 	private File french = null;
@@ -24,13 +26,18 @@ public class YamlHandler
 	private YamlConfiguration ger = new YamlConfiguration();
 	private File hindi = null;
 	private YamlConfiguration hin = new YamlConfiguration();
+	private File italian = null;
+	private YamlConfiguration ita = new YamlConfiguration();
 	private File japanese = null;
 	private YamlConfiguration jap = new YamlConfiguration();
 	private File mandarin = null;
 	private YamlConfiguration mad = new YamlConfiguration();
+	private File russian = null;
+	private YamlConfiguration rus = new YamlConfiguration();
 	private File spanish = null;
 	private YamlConfiguration spa = new YamlConfiguration();
 	private String languages;
+	private YamlConfiguration lang = null;
 	
 	public YamlHandler(AdvanceEconomy plugin) 
 	{
@@ -57,7 +64,7 @@ public class YamlHandler
 		{
 			return false;
 		}
-		
+		initGetL();
 		return true;
 	}
 	
@@ -68,30 +75,44 @@ public class YamlHandler
 	
 	public YamlConfiguration getL()
 	{
+		return lang;
+	}
+	
+	public void initGetL()
+	{
 		if(languages.equalsIgnoreCase("Arabic"))
 		{
-			return ara;
+			lang = ara;
+		} else if(languages.equalsIgnoreCase("Dutch"))
+		{
+			lang = dut;
 		} else if(languages.equalsIgnoreCase("French"))
 		{
-			return fre;
+			lang = fre;
 		} else if(languages.equalsIgnoreCase("German"))
 		{
-			return ger;
+			lang = ger;
 		} else if(languages.equalsIgnoreCase("Hindi"))
 		{
-			return ger;
+			lang = hin;
+		} else if(languages.equalsIgnoreCase("Italian"))
+		{
+			lang = ita;
 		} else if(languages.equalsIgnoreCase("Japanese"))
 		{
-			return jap;
+			lang = jap;
 		} else if(languages.equalsIgnoreCase("Mandarin"))
 		{
-			return mad;
+			lang = mad;
+		} else if(languages.equalsIgnoreCase("Russian"))
+		{
+			lang = rus;
 		} else if(languages.equalsIgnoreCase("Spanish"))
 		{
-			return spa;
+			lang = spa;
 		} else
 		{
-			return eng;
+			lang = eng;
 		}
 	}
 	
@@ -120,6 +141,18 @@ public class YamlHandler
 			try
 			{
 				FileUtils.copyToFile(plugin.getResource("arabic.yml"), arabic);
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		dutch = new File(directory.getPath(), "dutch.yml");
+		if(!dutch.exists()) 
+		{
+			AdvanceEconomy.log.info("Create dutch.yml...");
+			try
+			{
+				FileUtils.copyToFile(plugin.getResource("dutch.yml"), dutch);
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -173,6 +206,18 @@ public class YamlHandler
 				e.printStackTrace();
 			}
 		}
+		italian = new File(directory.getPath(), "italian.yml");
+		if(!italian.exists()) 
+		{
+			AdvanceEconomy.log.info("Create italian.yml...");
+			try
+			{
+				FileUtils.copyToFile(plugin.getResource("italian.yml"), italian);
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
 		japanese = new File(directory.getPath(), "japanese.yml");
 		if(!japanese.exists()) 
 		{
@@ -192,6 +237,18 @@ public class YamlHandler
 			try
 			{
 				FileUtils.copyToFile(plugin.getResource("mandarin.yml"), mandarin);
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		russian = new File(directory.getPath(), "russian.yml");
+		if(!russian.exists()) 
+		{
+			AdvanceEconomy.log.info("Create russian.yml...");
+			try
+			{
+				FileUtils.copyToFile(plugin.getResource("russian.yml"), russian);
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -218,6 +275,10 @@ public class YamlHandler
 		{
 			return false;
 		}
+		if(!loadYamlTask(dutch, dut, "dutch.yml"))
+		{
+			return false;
+		}
 		if(!loadYamlTask(english, eng, "english.yml"))
 		{
 			return false;
@@ -234,11 +295,19 @@ public class YamlHandler
 		{
 			return false;
 		}
+		if(!loadYamlTask(italian, ita, "italian.yml"))
+		{
+			return false;
+		}
 		if(!loadYamlTask(japanese, jap, "japanese.yml"))
 		{
 			return false;
 		}
 		if(!loadYamlTask(mandarin, mad, "mandarin.yml"))
+		{
+			return false;
+		}
+		if(!loadYamlTask(russian, rus, "russian.yml"))
 		{
 			return false;
 		}

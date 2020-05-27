@@ -1,4 +1,4 @@
-package main.java.me.avankziar.advanceeconomy.spigot.assistance;
+package main.java.me.avankziar.advanceeconomy.spigot.handler;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -8,6 +8,8 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
+import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
+import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomyLogger;
@@ -63,13 +65,13 @@ public class LogHandler
 		for(EconomyLogger el : list)
 		{
 			String orderer = "";
-			EcoPlayer ord = EcoPlayer.getEcoPlayer(el.getOrdereruuid());
+			EcoPlayer ord = EcoPlayerHandler.getEcoPlayer(el.getOrdereruuid());
 			if(ord == null)
 			{
 				orderer = el.getOrdereruuid();
 			} else
 			{
-				orderer = EcoPlayer.getEcoPlayer(el.getOrdereruuid()).getName();
+				orderer = EcoPlayerHandler.getEcoPlayer(el.getOrdereruuid()).getName();
 			}
 			String comment = "";
 			if(el.getComment() != null)

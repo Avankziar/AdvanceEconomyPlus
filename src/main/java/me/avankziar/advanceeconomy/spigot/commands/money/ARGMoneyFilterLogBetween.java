@@ -7,10 +7,12 @@ import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.LogHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.LogHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomyLogger;
@@ -83,7 +85,7 @@ public class ARGMoneyFilterLogBetween extends CommandModule
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayerFromName(playername);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayerFromName(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -94,7 +96,7 @@ public class ARGMoneyFilterLogBetween extends CommandModule
 		int start = page*10;
 		int end = page*10+9;
 		boolean desc = true;
-		ArrayList<EconomyLogger> list = EconomyLogger.convertList(
+		ArrayList<EconomyLogger> list = ConvertHandler.convertListIII(
 				plugin.getMysqlHandler().getList(Type.LOGGER, "`id`", desc, start, end,
 						"`amount` > ? AND `amount` < ? AND (`from_uuidornumber` = ? OR `orderer_uuid` = ? OR `to_uuidornumber` = ?)",
 						min, max, eco.getUUID(), eco.getUUID(), eco.getUUID()));

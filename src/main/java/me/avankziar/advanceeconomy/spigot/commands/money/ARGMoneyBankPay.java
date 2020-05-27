@@ -15,6 +15,8 @@ import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.events.EconomyLoggerEvent;
 import main.java.me.avankziar.advanceeconomy.spigot.events.TrendLoggerEvent;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.BankAccountHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.object.BankAccount;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
@@ -79,7 +81,7 @@ public class ARGMoneyBankPay extends CommandModule
 				
 			}
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayer(player);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
 		if(!AdvanceEconomy.getVaultApi().has(player, amount))
 		{
 			//&f%amount% &cübersteigt dein Guthaben!
@@ -92,8 +94,8 @@ public class ARGMoneyBankPay extends CommandModule
 		BankAccount tobank = null;
 		if(MatchApi.isBankAccountNumber(tobankname))
 		{
-			tobank = BankAccount.getBankAccount(tobankname);
-		} else if(BankAccount.existMoreBankAccountsWithTheSameName(tobankname))
+			tobank = BankAccountHandler.getBankAccount(tobankname);
+		} else if(BankAccountHandler.existMoreBankAccountsWithTheSameName(tobankname))
 		{
 			//Der Bankkontoname &f%name% &cexistiert mehrfach! Bitte spezifiziere die Angabe, durch die Eingabe der Banknummer!
 			player.sendMessage(ChatApi.tl(
@@ -102,7 +104,7 @@ public class ARGMoneyBankPay extends CommandModule
 			return;
 		} else
 		{
-			tobank = BankAccount.getBankAccountFromName(tobankname);
+			tobank = BankAccountHandler.getBankAccountFromName(tobankname);
 		}
 		EconomyResponse withdraw = AdvanceEconomy.getVaultApi().withdrawPlayer(eco.getUUID(), amount);
 		if(!withdraw.transactionSuccess())
@@ -137,7 +139,7 @@ public class ARGMoneyBankPay extends CommandModule
 				.replace("%number2%", tobank.getaccountNumber()).replace("%name2%", tobank.getName()));
 		boolean bungee = EconomySettings.settings.isBungee();
 		player.sendMessage(frommessage);
-		EcoPlayer owner = EcoPlayer.getEcoPlayer(tobank.getOwnerUUID());
+		EcoPlayer owner = EcoPlayerHandler.getEcoPlayer(tobank.getOwnerUUID());
 		if(owner != null)
 		{
 			if(owner.isMoneyBankFlow())
@@ -156,7 +158,7 @@ public class ARGMoneyBankPay extends CommandModule
 		}
 		for(String uuid : tobank.getViceUUID())
 		{
-			EcoPlayer ep = EcoPlayer.getEcoPlayer(uuid);
+			EcoPlayer ep = EcoPlayerHandler.getEcoPlayer(uuid);
 			if(ep != null)
 			{
 				if(ep.isMoneyBankFlow())
@@ -176,7 +178,7 @@ public class ARGMoneyBankPay extends CommandModule
 		}
 		for(String uuid : tobank.getMemberUUID())
 		{
-			EcoPlayer ep = EcoPlayer.getEcoPlayer(uuid);
+			EcoPlayer ep = EcoPlayerHandler.getEcoPlayer(uuid);
 			if(ep != null)
 			{
 				if(ep.isMoneyBankFlow())

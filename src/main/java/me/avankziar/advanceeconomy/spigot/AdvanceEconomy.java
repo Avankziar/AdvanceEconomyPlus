@@ -33,6 +33,7 @@ import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyFilte
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyFilterLogSortAscending;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyFilterLogSortDescending;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyFilterLogTo;
+import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyFreeze;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyGetTotal;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyGive;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyLog;
@@ -171,7 +172,7 @@ public class AdvanceEconomy extends JavaPlugin
 		getCommand("econ").setExecutor(new MultipleCommandExecutor(plugin));
 		getCommand("econ").setTabCompleter(new TABCompletion());
 		
-		//new ARGMoneyBankPay(this);
+		//new ARGMoneyBankPay(this); Not implemented, because the bank system is following
 		new ARGMoneyFilterLogBetween(plugin);
 		new ARGMoneyFilterLogComment(plugin);
 		new ARGMoneyFilterLogCommentAscending(plugin);
@@ -183,6 +184,7 @@ public class AdvanceEconomy extends JavaPlugin
 		new ARGMoneyFilterLogSortAscending(plugin);
 		new ARGMoneyFilterLogSortDescending(plugin);
 		new ARGMoneyFilterLogTo(plugin);
+		new ARGMoneyFreeze(plugin);
 		new ARGMoneyGetTotal(plugin);
 		new ARGMoneyGive(plugin);
 		new ARGMoneyLog(plugin);
@@ -260,8 +262,11 @@ public class AdvanceEconomy extends JavaPlugin
             		vaultApi,
             		this,
                     ServicePriority.Normal);
+            log.info(pluginName + " detected Vault. Hooking!");
             return true;
         }
+		log.severe("Vault is not set in the Plugin " + pluginName + "!");
+		Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
 		return false;
     }
 	

@@ -7,11 +7,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.advanceeconomy.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
-import main.java.me.avankziar.advanceeconomy.spigot.object.TrendLogger;
 
 public class PlayerListener implements Listener
 {
@@ -25,7 +26,7 @@ public class PlayerListener implements Listener
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event)
 	{
-		EcoPlayer eco = EcoPlayer.getEcoPlayer(event.getPlayer().getUniqueId().toString());
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(event.getPlayer().getUniqueId().toString());
 		if(eco == null)
 		{
 			AdvanceEconomy.getVaultApi().createPlayerAccount(event.getPlayer());
@@ -38,8 +39,9 @@ public class PlayerListener implements Listener
 				plugin.getMysqlHandler().updateData(Type.PLAYER, eco, "`id` = ?", eco.getId());
 			}
 		}
+		eco = EcoPlayerHandler.getEcoPlayer(event.getPlayer().getUniqueId().toString());
 		if(!plugin.getMysqlHandler().exist(Type.TREND,
-				"`dates` = ? AND `uuidornumber` = ?", TrendLogger.serialised(LocalDate.now()), event.getPlayer().getUniqueId().toString()))
+				"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(LocalDate.now()), event.getPlayer().getUniqueId().toString()))
 		{
 			Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
 					LocalDate.now(), eco.getUUID(), 0, eco.getBalance()));

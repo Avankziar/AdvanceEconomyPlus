@@ -1,4 +1,4 @@
-main: main.java.me.avankziar.advanceeconomy.spigot.main.Economy
+main: main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy
 name: AdvanceEconomyPlus
 version: 1
 load: STARTUP
@@ -6,11 +6,12 @@ api-version: 1.15
 description: a Economy-Plugin
 author: Avankziar
 depend: [Vault]
+softdepend: [ChestShop,HeadDatabase]
 commands:
   econ:
     description: base admin and info command
   money:
-    description: base Command
+    description: base money Command
 permissions:
    eco.cmd.money:
     description: Enable /money
@@ -50,6 +51,9 @@ permissions:
     default: false
    eco.cmd.money.filterlogother:
     description: Enable /money filterlog... [page] [player] | All filter commands
+    default: false
+   eco.cmd.money.freeze:
+    description: Enable /money freeze <player> | To freeze a playeraccount.
     default: false
    eco.cmd.money.gettotal:
     description: Enable /money gettotal <searchword>

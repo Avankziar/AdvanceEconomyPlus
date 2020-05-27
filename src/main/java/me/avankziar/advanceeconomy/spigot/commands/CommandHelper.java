@@ -7,9 +7,10 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -134,10 +135,10 @@ public class CommandHelper
 	{
 		if(!player.hasPermission(StringValues.PERM_CMD_MONEY))
 		{
-			player.sendMessage(plugin.getYamlHandler().getL().getString("NoPermission"));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("NoPermission")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayer(player);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString(money+"PlayerBalance")
 				.replace("%time%", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
 				.replace("%balance%", AdvanceEconomy.getVaultApi().format(eco.getBalance()))

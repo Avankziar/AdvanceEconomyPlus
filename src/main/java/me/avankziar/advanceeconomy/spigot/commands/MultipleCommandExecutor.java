@@ -3,7 +3,6 @@ package main.java.me.avankziar.advanceeconomy.spigot.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
@@ -56,7 +55,7 @@ public class MultipleCommandExecutor implements CommandExecutor
 						///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 						player.spigot().sendMessage(ChatApi.clickEvent(
 								plugin.getYamlHandler().getL().getString("InputIsWrong"),
-								ClickEvent.Action.RUN_COMMAND, "/eco"));
+								ClickEvent.Action.RUN_COMMAND, "/econ"));
 						return false;
 					}
 				} else 
@@ -71,7 +70,7 @@ public class MultipleCommandExecutor implements CommandExecutor
 				///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 				player.spigot().sendMessage(ChatApi.clickEvent(
 						plugin.getYamlHandler().getL().getString("InputIsWrong"),
-						ClickEvent.Action.RUN_COMMAND, "/eco"));
+						ClickEvent.Action.RUN_COMMAND, "/econ"));
 				return false;
 			}
 		} else if(cmd.getName().equalsIgnoreCase("money"))
@@ -102,7 +101,7 @@ public class MultipleCommandExecutor implements CommandExecutor
 						///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 						player.spigot().sendMessage(ChatApi.clickEvent(
 								plugin.getYamlHandler().getL().getString("InputIsWrong"),
-								ClickEvent.Action.RUN_COMMAND, "/eco"));
+								ClickEvent.Action.RUN_COMMAND, "/econ"));
 						return false;
 					}
 				} else 
@@ -117,7 +116,7 @@ public class MultipleCommandExecutor implements CommandExecutor
 				///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 				player.spigot().sendMessage(ChatApi.clickEvent(
 						plugin.getYamlHandler().getL().getString("InputIsWrong"),
-						ClickEvent.Action.RUN_COMMAND, "/eco"));
+						ClickEvent.Action.RUN_COMMAND, "/econ"));
 				return false;
 			}
 		} else if(cmd.getName().equalsIgnoreCase("bank"))
@@ -148,7 +147,7 @@ public class MultipleCommandExecutor implements CommandExecutor
 						///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 						player.spigot().sendMessage(ChatApi.clickEvent(
 								plugin.getYamlHandler().getL().getString("InputIsWrong"),
-								ClickEvent.Action.RUN_COMMAND, "/eco"));
+								ClickEvent.Action.RUN_COMMAND, "/econ"));
 						return false;
 					}
 				} else 
@@ -163,22 +162,9 @@ public class MultipleCommandExecutor implements CommandExecutor
 				///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 				player.spigot().sendMessage(ChatApi.clickEvent(
 						plugin.getYamlHandler().getL().getString("InputIsWrong"),
-						ClickEvent.Action.RUN_COMMAND, "/eco"));
+						ClickEvent.Action.RUN_COMMAND, "/econ"));
 				return false;
 			}
-		} else if(cmd.getName().equalsIgnoreCase("ecoconvert"))
-		{
-			if (!(sender instanceof ConsoleCommandSender)) 
-			{
-				sender.sendMessage("/ecoconvert is only for Console!");
-				return false;
-			}
-			if(args.length != 0)
-			{
-				sender.sendMessage("Use only /ecoconvert!");
-				return false;
-			}
-			
 		}
 		return false;
 	}

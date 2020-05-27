@@ -17,10 +17,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.events.EconomyLoggerEvent;
 import main.java.me.avankziar.advanceeconomy.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
-import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 
 public class JobsHook implements Listener
 {
@@ -110,7 +110,7 @@ public class JobsHook implements Listener
 							plugin.getYamlHandler().getL().getString("JobsRebornHook.Comment")
 							.replace("%job%", job)));
 					Bukkit.getPluginManager().callEvent(
-							new TrendLoggerEvent(LocalDate.now(), playeruuid, value, EcoPlayer.getEcoPlayer(op).getBalance()));
+							new TrendLoggerEvent(LocalDate.now(), playeruuid, value, EcoPlayerHandler.getEcoPlayer(op).getBalance()));
 					playerlist.replace(playeruuid, 0.0);
 				}
 			}
@@ -143,7 +143,7 @@ public class JobsHook implements Listener
 								plugin.getYamlHandler().getL().getString("JobsRebornHook.Comment")
 								.replace("%job%", job)));
 						Bukkit.getPluginManager().callEvent(
-								new TrendLoggerEvent(LocalDate.now(), playeruuid, value, EcoPlayer.getEcoPlayer(op).getBalance()));
+								new TrendLoggerEvent(LocalDate.now(), playeruuid, value, EcoPlayerHandler.getEcoPlayer(op).getBalance()));
 						playerlist.replace(playeruuid, 0.0);
 					}
 				}

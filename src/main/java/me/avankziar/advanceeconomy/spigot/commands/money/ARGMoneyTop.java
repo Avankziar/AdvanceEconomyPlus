@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomySettings;
 
@@ -48,7 +49,7 @@ public class ARGMoneyTop extends CommandModule
 		}
 		int start = page*10;
 		int end = 10;
-		ArrayList<EcoPlayer> top = EcoPlayer.convertList(
+		ArrayList<EcoPlayer> top = ConvertHandler.convertListI(
 				plugin.getMysqlHandler().getTop(Type.PLAYER, "`balance`", start, end));
 
 		if(top.size()<10)

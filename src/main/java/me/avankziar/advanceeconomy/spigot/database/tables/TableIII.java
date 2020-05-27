@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomyLogger;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomyLogger.Type;
 
@@ -79,7 +80,7 @@ public interface TableIII
 						+ " `orderer_uuid`, `amount`, `eco_type`, `comment`) " 
 						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
-		        preparedStatement.setString(1, EconomyLogger.serialised(el.getDateTime()));
+		        preparedStatement.setString(1, ConvertHandler.serialised(el.getDateTime()));
 		        preparedStatement.setString(2, el.getFromUUIDOrNumber());
 		        preparedStatement.setString(3, el.getFromName());
 		        preparedStatement.setString(4, el.getToUUIDOrNumber());
@@ -135,7 +136,7 @@ public interface TableIII
 						+ " `orderer_uuid` = ?, `amount` = ?, `eco_type` = ? , `comment` = ?" 
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
-				preparedStatement.setString(1, EconomyLogger.serialised(el.getDateTime()));
+				preparedStatement.setString(1, ConvertHandler.serialised(el.getDateTime()));
 		        preparedStatement.setString(2, el.getFromUUIDOrNumber());
 		        preparedStatement.setString(3, el.getFromName());
 		        preparedStatement.setString(4, el.getToUUIDOrNumber());
@@ -194,7 +195,7 @@ public interface TableIII
 		        {
 		        	return new EconomyLogger(
 		        			result.getInt("id"),
-		        			EconomyLogger.deserialised(result.getString("datetime")),
+		        			ConvertHandler.deserialised(result.getString("datetime")),
 		        			result.getString("from_uuidornumber"), result.getString("to_uuidornumber"),
 		        			result.getString("from_name"), result.getString("to_name"),
 		        			result.getString("orderer_uuid"), result.getDouble("amount"),
@@ -383,7 +384,7 @@ public interface TableIII
 		        {
 		        	EconomyLogger el = new EconomyLogger(
 		        			result.getInt("id"),
-		        			EconomyLogger.deserialised(result.getString("datetime")),
+		        			ConvertHandler.deserialised(result.getString("datetime")),
 		        			result.getString("from_uuidornumber"), result.getString("to_uuidornumber"),
 		        			result.getString("from_name"), result.getString("to_name"),
 		        			result.getString("orderer_uuid"), result.getDouble("amount"),
@@ -434,7 +435,7 @@ public interface TableIII
 		        {
 		        	EconomyLogger el = new EconomyLogger(
 		        			result.getInt("id"),
-		        			EconomyLogger.deserialised(result.getString("datetime")),
+		        			ConvertHandler.deserialised(result.getString("datetime")),
 		        			result.getString("from_uuidornumber"), result.getString("to_uuidornumber"),
 		        			result.getString("from_name"), result.getString("to_name"),
 		        			result.getString("orderer_uuid"), result.getDouble("amount"),

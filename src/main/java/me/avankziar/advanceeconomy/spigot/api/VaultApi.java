@@ -10,9 +10,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.Utility;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.BankAccountHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.BankAccount;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomySettings;
@@ -22,7 +24,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 public class VaultApi implements Economy
 {
 	private AdvanceEconomy plugin;
-	//return new EconomyResponse(Utility.getMoneyFormat(amount), 0.0, EconomyResponse.ResponseType.SUCCESS, "");
 
 	public VaultApi(AdvanceEconomy plugin)
 	{
@@ -60,11 +61,11 @@ public class VaultApi implements Economy
 	@Override
 	public boolean hasBankSupport()
 	{
-		if(isMysql() && useBank())
+		if(!isMysql() || !useBank())
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -99,29 +100,31 @@ public class VaultApi implements Economy
 	@Override
 	public String getName()
 	{
-		return "TheNewEconomy";
+		return "AdvanceEconomy";
 	}
 	
 	@Override
 	public EconomyResponse createBank(String name, OfflinePlayer player)
 	{
-		if(isMysql() && useBank())
+		if(!isMysql() || !useBank())
 		{
-			String banknumber = BankAccount.getFreeBankAccountNumber();
-			if(banknumber == null)
-			{
-				return null;
-			}
-			OfflinePlayer offlineplayer = player.getPlayer();
-			BankAccount.createBankAccount(plugin,banknumber, name, offlineplayer.getUniqueId().toString());
-			//Du hast ein Bankkonto mit dem Namen &f%name% &eerstellt!
+			//Bankkontos sind nicht aktiv!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NoBank"));
+		}
+		String banknumber = BankAccountHandler.getFreeBankAccountNumber();
+		if(banknumber == null)
+		{
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,
-					plugin.getYamlHandler().getL().getString("CmdBank.Create.IsSuccided")
+					plugin.getYamlHandler().getL().getString("CmdBank.Create.NoBankAccountFree")
 					.replace("%name%", name));
 		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
+		OfflinePlayer offlineplayer = player.getPlayer();
+		BankAccountHandler.createBankAccount(plugin,banknumber, name, offlineplayer.getUniqueId().toString());
+		//Du hast ein Bankkonto mit dem Namen &f%name% &eerstellt!
+		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,
+				plugin.getYamlHandler().getL().getString("CmdBank.Create.IsSuccided")
+				.replace("%name%", name));
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -134,403 +137,209 @@ public class VaultApi implements Economy
 	@Override
 	public EconomyResponse bankBalance(String name)
 	{
-		if(isMysql() && useBank())
+		if(!isMysql() || !useBank())
 		{
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString(
-								"CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			////%name% &eGuthaben: &f%balance% %currency%
-			return new EconomyResponse(0.0, ba.getBalance(), EconomyResponse.ResponseType.SUCCESS,
-					plugin.getYamlHandler().getL().getString("CmdBank.BankBalance")
-					.replace("%name%", name)
-					.replace("%balance%", format(ba.getBalance()))
-					.replace("%currency%", currencyNamePlural()));
+			//Bankkontos sind nicht aktiv!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NoBank"));
 		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
+		BankAccount ba = null;
+		Object o = getBank(ba, name);
+		if(o instanceof EconomyResponse) return (EconomyResponse) o;
+		ba = (BankAccount) o;
+		////%name% &eGuthaben: &f%balance% %currency%
+		return new EconomyResponse(0.0, ba.getBalance(), EconomyResponse.ResponseType.SUCCESS,
+				plugin.getYamlHandler().getL().getString("CmdBank.BankBalance")
+				.replace("%name%", name)
+				.replace("%balance%", format(ba.getBalance()))
+				.replace("%currency%", currencyNamePlural()));
 	}
 
 	@Override
 	public EconomyResponse bankDeposit(String name, double amount)
 	{
-		if(isMysql() && useBank())
+		if(!isMysql() || !useBank())
 		{
-			if(!MatchApi.isPositivNumber(amount))
-			{
-				return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("NumberIsNegativ")
-						.replace("%args%", format(amount)));
-			}
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			double newbalance = ba.getBalance() + amount;
-			ba.setBalance(newbalance);
-			plugin.getMysqlHandler().updateData(Type.BANKACCOUNT, ba, "`id` = ? AND `accountnumber` = ?",
-					ba.getId(), ba.getaccountNumber());
-			//%amount% &e%currency% wurde auf %name% überwiesen.
-			return new EconomyResponse(amount, ba.getBalance(), EconomyResponse.ResponseType.SUCCESS,
-					plugin.getYamlHandler().getL().getString("CmdBank.BankDeposit")
-					.replace("%name%", name)
-					.replace("%balance%", format(ba.getBalance()))
-					.replace("%currency%", currencyNamePlural())
-					.replace("%amount%", format(amount)));
+			//Bankkontos sind nicht aktiv!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NoBank"));
 		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
+		if(!MatchApi.isPositivNumber(amount))
+		{
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
+					.replace("%args%", format(amount)));
+		}
+		BankAccount ba = null;
+		Object o = getBank(ba, name);
+		if(o instanceof EconomyResponse) return (EconomyResponse) o;
+		ba = (BankAccount) o;
+		double newbalance = ba.getBalance() + amount;
+		ba.setBalance(newbalance);
+		plugin.getMysqlHandler().updateData(Type.BANKACCOUNT, ba, "`id` = ? AND `accountnumber` = ?",
+				ba.getId(), ba.getaccountNumber());
+		//%amount% &e%currency% wurde auf %name% überwiesen.
+		return new EconomyResponse(amount, ba.getBalance(), EconomyResponse.ResponseType.SUCCESS,
+				plugin.getYamlHandler().getL().getString("CmdBank.BankDeposit")
+				.replace("%name%", name)
+				.replace("%balance%", format(ba.getBalance()))
+				.replace("%currency%", currencyNamePlural())
+				.replace("%amount%", format(amount)));
 	}
 
 	@Override
 	public EconomyResponse bankHas(String name, double amount)
 	{
-		if(isMysql() && useBank())
+		if(!isMysql() || !useBank())
 		{
-			if(!MatchApi.isPositivNumber(amount))
-			{
-				return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("NumberIsNegativ")
-						.replace("%args%", format(amount)));
-			}
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			if(ba.getBalance() >= amount)
-			{
-				//%name% &eGuthaben: &f%balance% %currency%
-				return new EconomyResponse(0.0, ba.getBalance(), EconomyResponse.ResponseType.SUCCESS,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankBalance")
-						.replace("%name%", name)
-						.replace("%balance%", format(ba.getBalance()))
-						.replace("%currency%", currencyNamePlural()));
-			} else
-			{
-				//%name% &eGuthaben: &f%balance% %currency%
-				return new EconomyResponse(0.0, ba.getBalance(), EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankBalance")
-						.replace("%name%", name)
-						.replace("%balance%", format(ba.getBalance()))
-						.replace("%currency%", currencyNamePlural()));
-			}
+			//Bankkontos sind nicht aktiv!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NoBank"));
 		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
+		if(!MatchApi.isPositivNumber(amount))
+		{
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
+					.replace("%args%", format(amount)));
+		}
+		BankAccount ba = null;
+		Object o = getBank(ba, name);
+		if(o instanceof EconomyResponse) return (EconomyResponse) o;
+		ba = (BankAccount) o;
+		if(ba.getBalance() < amount)
+		{
+			//%name% &eGuthaben: &f%balance% %currency%
+			return new EconomyResponse(0.0, ba.getBalance(), EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("CmdBank.BankBalance")
+					.replace("%name%", name)
+					.replace("%balance%", format(ba.getBalance()))
+					.replace("%currency%", currencyNamePlural()));
+			
+		}
+		//%name% &eGuthaben: &f%balance% %currency%
+		return new EconomyResponse(0.0, ba.getBalance(), EconomyResponse.ResponseType.SUCCESS,
+				plugin.getYamlHandler().getL().getString("CmdBank.BankBalance")
+				.replace("%name%", name)
+				.replace("%balance%", format(ba.getBalance()))
+				.replace("%currency%", currencyNamePlural()));
 	}
 
 	@Override
 	public EconomyResponse bankWithdraw(String name, double amount)
 	{
-		if(isMysql() && useBank())
+		if(!isMysql() || !useBank())
 		{
-			if(!MatchApi.isPositivNumber(amount))
-			{
-				return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("NumberIsNegativ")
-						.replace("%args%", format(amount)));
-			}
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			if(ba.getBalance() >= amount)
-			{
-				double newbalance = ba.getBalance() - amount;
-				ba.setBalance(newbalance);
-				plugin.getMysqlHandler().updateData(Type.BANKACCOUNT, ba, "`id` = ? AND `accountnumber` = ?",
-						ba.getId(), ba.getaccountNumber());
-				return new EconomyResponse(amount, ba.getBalance(), EconomyResponse.ResponseType.SUCCESS,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankWithDraw")
-						.replace("%name%", name)
-						.replace("%balance%", format(ba.getBalance()))
-						.replace("%currency%", currencyNamePlural())
-						.replace("%amount%", format(amount)));
-			} else
-			{
-				return new EconomyResponse(0.0, ba.getBalance(), EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankBalance")
-						.replace("%name%", name)
-						.replace("%balance%", format(ba.getBalance()))
-						.replace("%currency%", currencyNamePlural()));
-			}
+			//Bankkontos sind nicht aktiv!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NoBank"));
 		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
-	}
-
-	@Override
-	public EconomyResponse isBankMember(String name, String playerName)
-	{
-		if(isMysql() && useBank())
+		if(!MatchApi.isPositivNumber(amount))
 		{
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			
-			if(ba.getMemberUUID().contains(Utility.convertNameToUUID(playerName)))
-			{
-				return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,null);
-			}
-			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,null);
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
+					.replace("%args%", format(amount)));
 		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
+		BankAccount ba = null;
+		Object o = getBank(ba, name);
+		if(o instanceof EconomyResponse) return (EconomyResponse) o;
+		ba = (BankAccount) o;
+		if(ba.getBalance() < amount)
+		{
+			return new EconomyResponse(0.0, ba.getBalance(), EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("CmdBank.BankBalance")
+					.replace("%name%", name)
+					.replace("%balance%", format(ba.getBalance()))
+					.replace("%currency%", currencyNamePlural()));
+		}
+		double newbalance = ba.getBalance() - amount;
+		ba.setBalance(newbalance);
+		plugin.getMysqlHandler().updateData(Type.BANKACCOUNT, ba, "`id` = ? AND `accountnumber` = ?",
+				ba.getId(), ba.getaccountNumber());
+		return new EconomyResponse(amount, ba.getBalance(), EconomyResponse.ResponseType.SUCCESS,
+				plugin.getYamlHandler().getL().getString("CmdBank.BankWithDraw")
+				.replace("%name%", name)
+				.replace("%balance%", format(ba.getBalance()))
+				.replace("%currency%", currencyNamePlural())
+				.replace("%amount%", format(amount)));
 	}
-
+	
 	@Override
 	public EconomyResponse isBankMember(String name, OfflinePlayer player)
 	{
-		if(isMysql() && useBank())
+		if(!isMysql() || !useBank())
 		{
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			if(ba.getMemberUUID().contains(player.getUniqueId().toString()))
-			{
-				return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,null);
-			}
-			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,null);
+			//Bankkontos sind nicht aktiv!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NoBank"));
 		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
+		BankAccount ba = null;
+		Object o = getBank(ba, name);
+		if(o instanceof EconomyResponse) return (EconomyResponse) o;
+		ba = (BankAccount) o;
+		if(ba.getMemberUUID().contains(player.getUniqueId().toString()))
+		{
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,null);
+		}
+		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,null);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public EconomyResponse isBankMember(String name, String playerName)
+	{
+		return isBankMember(name,Bukkit.getOfflinePlayer(playerName));
 	}
 	
-	public EconomyResponse isBankVice(String name, String playerName)
-	{
-		if(isMysql() && useBank())
-		{
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			if(ba.getViceUUID().contains(Utility.convertNameToUUID(playerName)))
-			{
-				return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,null);
-			}
-			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,null);
-		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
-	}
-
 	public EconomyResponse isBankVice(String name, OfflinePlayer player)
 	{
-		if(isMysql() && useBank())
+		if(!isMysql() || !useBank())
 		{
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			if(ba.getViceUUID().contains(player.getUniqueId().toString()))
-			{
-				return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,null);
-			}
-			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,null);
+			//Bankkontos sind nicht aktiv!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NoBank"));
 		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
+		BankAccount ba = null;
+		Object o = getBank(ba, name);
+		if(o instanceof EconomyResponse) return (EconomyResponse) o;
+		ba = (BankAccount) o;
+		if(ba.getViceUUID().contains(player.getUniqueId().toString()))
+		{
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,null);
+		}
+		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,null);
 	}
-
-	@Override
-	public EconomyResponse isBankOwner(String name, String playerName)
+	
+	@SuppressWarnings("deprecation")
+	public EconomyResponse isBankVice(String name, String playerName)
 	{
-		if(isMysql() && useBank())
-		{
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			if(ba.getOwnerUUID().equals(Utility.convertNameToUUID(playerName)))
-			{
-				return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,null);
-			}
-			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,null);
-		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
+		return isBankVice(name,Bukkit.getOfflinePlayer(playerName));
 	}
-
+	
 	@Override
 	public EconomyResponse isBankOwner(String name, OfflinePlayer player)
 	{
-		if(isMysql() && useBank())
+		if(!isMysql() || !useBank())
 		{
-			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
-			if(ba.getOwnerUUID().equals(player.getUniqueId().toString()))
-			{
-				return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,null);
-			}
-			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,null);
+			//Bankkontos sind nicht aktiv!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("NoBank"));
 		}
-		//Bankkontos sind nicht aktiv!
-		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-				plugin.getYamlHandler().getL().getString("NoBank"));
+		BankAccount ba = null;
+		Object o = getBank(ba, name);
+		if(o instanceof EconomyResponse) return (EconomyResponse) o;
+		ba = (BankAccount) o;
+		if(ba.getOwnerUUID().equals(player.getUniqueId().toString()))
+		{
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,null);
+		}
+		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,null);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public EconomyResponse isBankOwner(String name, String playerName)
+	{
+		return isBankOwner(name, Bukkit.getOfflinePlayer(playerName));
 	}
 	
 	@Override
@@ -538,7 +347,7 @@ public class VaultApi implements Economy
 	{
 		List<String> list = new ArrayList<>();
 		int end = plugin.getMysqlHandler().lastID(MysqlHandler.Type.BANKACCOUNT);
-		for(BankAccount ba : BankAccount.convertList(
+		for(BankAccount ba : ConvertHandler.convertListII(
 				plugin.getMysqlHandler().getTop(MysqlHandler.Type.BANKACCOUNT,
 				"`id`", 1, end)))
 		{
@@ -556,26 +365,11 @@ public class VaultApi implements Economy
 		if(isMysql() && useBank())
 		{
 			BankAccount ba = null;
-			if(MatchApi.isBankAccountNumber(name))
-			{
-				ba = BankAccount.getBankAccount(name);
-			} else if(!BankAccount.existMoreBankAccountsWithTheSameName(name))
-			{
-				ba = BankAccount.getBankAccountFromName(name);
-			} else
-			{
-				//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
-			}
-			if(ba == null)
-			{
-				//Die angegebene Bank existiert nicht!
-				new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
-						plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
-			}
+			Object o = getBank(ba, name);
+			if(o instanceof EconomyResponse) return (EconomyResponse) o;
+			ba = (BankAccount) o;
 			plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BANKACCOUNT, "`id` = ?", ba.getId());
-			new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.SUCCESS,
 					plugin.getYamlHandler().getL().getString("CmdBank.BankDeleted")
 					.replace("%name%", name));
 		}
@@ -583,11 +377,34 @@ public class VaultApi implements Economy
 		return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
 				plugin.getYamlHandler().getL().getString("NoBank"));
 	}
+	
+	private Object getBank(BankAccount bank, String name)
+	{
+		if(MatchApi.isBankAccountNumber(name))
+		{
+			bank = BankAccountHandler.getBankAccount(name);
+		} else if(!BankAccountHandler.existMoreBankAccountsWithTheSameName(name))
+		{
+			bank = BankAccountHandler.getBankAccountFromName(name);
+		} else
+		{
+			//Es existieren mehrere Banken mit dem Namen! Oder die angegebene Kontonummer ist nicht gültig!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("CmdBank.NameExistMoreThanTwice"));
+		}
+		if(bank == null)
+		{
+			//Die angegebene Bank existiert nicht!
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("CmdBank.BankNotExist"));
+		}
+		return bank;
+	}
 
 	@Override
 	public boolean hasAccount(OfflinePlayer player)
 	{
-		if(EcoPlayer.getEcoPlayer(player) != null)
+		if(EcoPlayerHandler.getEcoPlayer(player) != null)
 		{
 			return true;
 		}
@@ -619,7 +436,7 @@ public class VaultApi implements Economy
 	{
 		if(isMysql() && usePlayerAccount())
 		{
-			if(EcoPlayer.getEcoPlayer(player) != null)
+			if(EcoPlayerHandler.getEcoPlayer(player) != null)
 			{
 				return false;
 			}
@@ -629,7 +446,7 @@ public class VaultApi implements Economy
 				amount = plugin.getYamlHandler().get().getDouble("StartMoney");
 			}
 			EcoPlayer eco = new EcoPlayer(0, player.getUniqueId().toString(), player.getName(),
-					amount, new ArrayList<String>(), true, true, true, null);
+					amount, new ArrayList<String>(), true, true, true, null, false);
 			plugin.getMysqlHandler().create(Type.PLAYER, eco);
 			return true;
 		}
@@ -670,11 +487,16 @@ public class VaultApi implements Economy
 					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
 					.replace("%args%", format(amount)));
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayer(player.getUniqueId().toString());
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player.getUniqueId().toString());
 		if(eco == null)
 		{
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount"));
+		}
+		if(eco.isFrozen())
+		{
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.TheAccountIsFrozen"));
 		}
 		double newbalance = eco.getBalance() + amount;
 		eco.setBalance(newbalance);
@@ -715,7 +537,7 @@ public class VaultApi implements Economy
 		{
 			return 0;
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayer(player);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
 		if(eco == null)
 		{
 			return 0.0;
@@ -748,7 +570,7 @@ public class VaultApi implements Economy
 	{
 		if(isMysql() && usePlayerAccount())
 		{
-			EcoPlayer eco = EcoPlayer.getEcoPlayer(player);
+			EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
 			if(eco == null)
 			{
 				return false;
@@ -789,11 +611,16 @@ public class VaultApi implements Economy
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount"));
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayer(player);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
 		if(eco == null)
 		{
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount"));
+		}
+		if(eco.isFrozen())
+		{
+			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
+					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.TheAccountIsFrozen"));
 		}
 		double newbalance = eco.getBalance() - amount;
 		eco.setBalance(newbalance);

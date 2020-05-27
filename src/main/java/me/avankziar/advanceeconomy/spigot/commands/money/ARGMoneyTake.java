@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
@@ -17,7 +18,7 @@ import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.events.EconomyLoggerEvent;
 import main.java.me.avankziar.advanceeconomy.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomySettings;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -83,7 +84,7 @@ public class ARGMoneyTake extends CommandModule
 				
 			}
 		}
-		EcoPlayer fromplayer = EcoPlayer.getEcoPlayerFromName(fromplayername);
+		EcoPlayer fromplayer = EcoPlayerHandler.getEcoPlayerFromName(fromplayername);
 		if(fromplayer == null)
 		{
 			//Der Spieler existiert nicht!
@@ -102,10 +103,10 @@ public class ARGMoneyTake extends CommandModule
 		EconomyResponse withdraw = AdvanceEconomy.getVaultApi().withdrawPlayer(fromplayer.getName(), amount);
 		if(!withdraw.transactionSuccess())
 		{
-			player.sendMessage(withdraw.errorMessage);
+			player.sendMessage(ChatApi.tl(withdraw.errorMessage));
 			return;
 		}
-		fromplayer = EcoPlayer.getEcoPlayerFromName(fromplayername);
+		fromplayer = EcoPlayerHandler.getEcoPlayerFromName(fromplayername);
 		Bukkit.getPluginManager().callEvent(new EconomyLoggerEvent(
 				LocalDateTime.now(), fromplayer.getUUID(), "System", fromplayer.getName(), "System", player.getUniqueId().toString(),
 				amount, EconomyLoggerEvent.Type.TAKEN, comment));

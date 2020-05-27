@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import main.java.me.avankziar.advanceeconomy.spigot.object.TrendLogger;
+
 public class TrendLoggerEvent extends Event
 {
 	private static final HandlerList HANDLERS = new HandlerList();
@@ -14,6 +16,16 @@ public class TrendLoggerEvent extends Event
 	private double relativeAmountChange;
 	private double balance;
 	
+	/**
+	 * Call this Event to update the daily- or "trend"Log. Please keep in mind, that when you have a transaction
+	 * from a player to another, than call this event <b>TWICE</b>! For each player one.
+	 * <p><b>Do not call this event for the System or void or whatsoever you call it!
+	 * @param  date | The exact local date.
+	 * @param  UUIDOrNumber | The playeruuid or bankaccountnumber wich is involved.
+	 * @param  relativeAmountChange | The relative money change.
+	 * @author Christoph Steins/Avankziar
+	 * @see TrendLogger
+	 */
 	public TrendLoggerEvent(LocalDate date, String UUIDOrNumber, double relativeAmountChange,
 			double balance)
 	{

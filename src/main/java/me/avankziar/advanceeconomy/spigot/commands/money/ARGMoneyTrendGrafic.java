@@ -6,14 +6,16 @@ import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.LogHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.Utility;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.LogHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomySettings;
 import main.java.me.avankziar.advanceeconomy.spigot.object.TrendLogger;
@@ -61,7 +63,7 @@ public class ARGMoneyTrendGrafic extends CommandModule
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayerFromName(playername);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayerFromName(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -72,7 +74,7 @@ public class ARGMoneyTrendGrafic extends CommandModule
 		int start = page*10;
 		int end = page*10+24;
 		boolean desc = true;
-		ArrayList<TrendLogger> list = TrendLogger.convertList(
+		ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
 				plugin.getMysqlHandler().getList(Type.TREND, "`id`", desc, start, end,
 						"(`uuidornumber` = ?)", eco.getUUID()));
 		int last = plugin.getMysqlHandler().countWhereID(Type.TREND,

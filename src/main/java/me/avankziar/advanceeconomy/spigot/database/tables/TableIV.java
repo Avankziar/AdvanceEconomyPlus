@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.TrendLogger;
 import main.java.me.avankziar.advanceeconomy.spigot.object.TrendLogger.Type;
 
@@ -79,7 +80,7 @@ public interface TableIV
 						+ " `firstvalue`, `lastvalue`) " 
 						+ "VALUES(?, ?, ?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
-		        preparedStatement.setString(1, TrendLogger.serialised(tl.getDate()));
+		        preparedStatement.setString(1, ConvertHandler.serialised(tl.getDate()));
 		        preparedStatement.setString(2, tl.getType().toString());
 		        preparedStatement.setString(3, tl.getUUIDOrNumber());
 		        preparedStatement.setDouble(4, tl.getRelativeAmountChange());
@@ -131,7 +132,7 @@ public interface TableIV
 						+ " `firstvalue` = ?, `lastvalue` = ?" 
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
-				preparedStatement.setString(1, TrendLogger.serialised(tl.getDate()));
+				preparedStatement.setString(1, ConvertHandler.serialised(tl.getDate()));
 		        preparedStatement.setString(2, tl.getType().toString());
 		        preparedStatement.setString(3, tl.getUUIDOrNumber());
 		        preparedStatement.setDouble(4, tl.getRelativeAmountChange());
@@ -186,7 +187,7 @@ public interface TableIV
 		        result = preparedStatement.executeQuery();
 		        while (result.next()) 
 		        {
-		        	return new TrendLogger(TrendLogger.deserialised(result.getString("dates")),
+		        	return new TrendLogger(ConvertHandler.deserialisedDate(result.getString("dates")),
 		        			Type.valueOf(result.getString("trend_type")),
 		        			result.getString("uuidornumber"),
 		        			result.getDouble("relative_amount_change"),
@@ -366,7 +367,7 @@ public interface TableIV
 		        ArrayList<TrendLogger> list = new ArrayList<TrendLogger>();
 		        while (result.next()) 
 		        {
-		        	TrendLogger tl = new TrendLogger(TrendLogger.deserialised(result.getString("dates")),
+		        	TrendLogger tl = new TrendLogger(ConvertHandler.deserialisedDate(result.getString("dates")),
 		        			Type.valueOf(result.getString("trend_type")),
 		        			result.getString("uuidornumber"),
 		        			result.getDouble("relative_amount_change"),
@@ -416,7 +417,7 @@ public interface TableIV
 		        ArrayList<Object> list = new ArrayList<Object>();
 		        while (result.next()) 
 		        {
-		        	TrendLogger tl = new TrendLogger(TrendLogger.deserialised(result.getString("dates")),
+		        	TrendLogger tl = new TrendLogger(ConvertHandler.deserialisedDate(result.getString("dates")),
 		        			Type.valueOf(result.getString("trend_type")),
 		        			result.getString("uuidornumber"),
 		        			result.getDouble("relative_amount_change"),

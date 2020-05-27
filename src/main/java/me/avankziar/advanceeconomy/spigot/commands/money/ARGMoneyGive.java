@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
@@ -17,7 +18,7 @@ import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.events.EconomyLoggerEvent;
 import main.java.me.avankziar.advanceeconomy.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomySettings;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -83,7 +84,7 @@ public class ARGMoneyGive extends CommandModule
 				
 			}
 		}
-		EcoPlayer toplayer = EcoPlayer.getEcoPlayerFromName(toplayername);
+		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
 		if(toplayer == null)
 		{
 			//Der Spieler existiert nicht!
@@ -94,10 +95,10 @@ public class ARGMoneyGive extends CommandModule
 		EconomyResponse deposit = AdvanceEconomy.getVaultApi().depositPlayer(toplayer.getName(), amount);
 		if(!deposit.transactionSuccess())
 		{
-			player.sendMessage(deposit.errorMessage);
+			player.sendMessage(ChatApi.tl(deposit.errorMessage));
 			return;
 		}
-		toplayer = EcoPlayer.getEcoPlayerFromName(toplayername);
+		toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
 		Bukkit.getPluginManager().callEvent(new EconomyLoggerEvent(
 				LocalDateTime.now(), "System", toplayer.getUUID(), "System", toplayer.getName(), player.getUniqueId().toString(),
 				amount, EconomyLoggerEvent.Type.GIVEN, comment));

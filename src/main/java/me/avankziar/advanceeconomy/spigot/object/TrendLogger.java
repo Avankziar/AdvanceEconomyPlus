@@ -1,8 +1,6 @@
 package main.java.me.avankziar.advanceeconomy.spigot.object;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 public class TrendLogger
 {
@@ -27,48 +25,6 @@ public class TrendLogger
 		setRelativeAmountChange(relativeAmountChange);
 		setFirstValue(firstValue);
 		setLastValue(lastValue);
-	}
-	
-	public static LocalDate deserialised(String date)
-	{
-		LocalDate d = LocalDate.parse((CharSequence) date,
-				DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-		return d;
-	}
-	
-	public static String serialised(LocalDate d)
-	{
-		String mm = "";
-		int month = 0;
-		if(d.getMonthValue()<10)
-		{
-			mm+=month;
-		}
-		mm += d.getMonthValue();
-		String dd = "";
-		int day = 0;
-		if(d.getDayOfMonth()<10)
-		{
-			dd+=day;
-		}
-		dd +=d.getDayOfMonth();
-		return dd+"."+mm+"."+d.getYear();
-	}
-	
-	public static ArrayList<TrendLogger> convertList(ArrayList<?> list)
-	{
-		ArrayList<TrendLogger> el = new ArrayList<>();
-		for(Object o : list)
-		{
-			if(o instanceof TrendLogger)
-			{
-				el.add((TrendLogger) o);
-			} else
-			{
-				return null;
-			}
-		}
-		return el;
 	}
 
 	public LocalDate getDate()

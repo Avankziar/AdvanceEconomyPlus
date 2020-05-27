@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomyLogger;
 import main.java.me.avankziar.advanceeconomy.spigot.object.TrendLogger;
@@ -91,7 +92,7 @@ public class LoggerApi
 	public static ArrayList<EconomyLogger> getEconomyLoggerList(String orderByColumn,
 			int start, int end, String whereColumn, Object... whereObjects)
 	{
-		return EconomyLogger.convertList(
+		return ConvertHandler.convertListIII(
 				plugin.getMysqlHandler().getList(Type.LOGGER, orderByColumn, true, start, end, whereColumn, whereObjects));
 	}
 	
@@ -110,10 +111,10 @@ public class LoggerApi
 		TrendLogger.Type newtype = TrendLogger.Type.STABIL;
 		TrendLogger trendLogger = new TrendLogger(date, newtype, UUIDOrNumber, relativeAmountChange, balance, balance);
 		if(plugin.getMysqlHandler().exist(Type.TREND,
-				"`dates` = ? AND `uuidornumber` = ?", TrendLogger.serialised(date), UUIDOrNumber))
+				"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(date), UUIDOrNumber))
 		{
 			TrendLogger oldtrendLogger = (TrendLogger) plugin.getMysqlHandler().getData(Type.TREND,
-					"`dates` = ? AND `uuidornumber` = ?", TrendLogger.serialised(date), UUIDOrNumber);
+					"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(date), UUIDOrNumber);
 			double newrelative = trendLogger.getRelativeAmountChange()+oldtrendLogger.getRelativeAmountChange();
 			if(MatchApi.isPositivNumber(newrelative) 
 					&& newrelative > plugin.getYamlHandler().get().getDouble("TrendLogger.ValueIsStabil"))
@@ -127,7 +128,7 @@ public class LoggerApi
 			TrendLogger newtl = new TrendLogger(date, newtype, UUIDOrNumber, newrelative,
 					oldtrendLogger.getFirstValue(), trendLogger.getLastValue());
 			plugin.getMysqlHandler().updateData(Type.TREND, newtl, 
-					"`dates` = ? AND `uuidornumber` = ?", TrendLogger.serialised(date), UUIDOrNumber);
+					"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(date), UUIDOrNumber);
 		} else
 		{
 			trendLogger = new TrendLogger(date, newtype, UUIDOrNumber, relativeAmountChange, balance-relativeAmountChange, balance);
@@ -146,11 +147,11 @@ public class LoggerApi
 	{
 		TrendLogger.Type newtype = TrendLogger.Type.STABIL;
 		if(plugin.getMysqlHandler().exist(Type.TREND,
-				"`dates` = ? AND `uuidornumber` = ?", TrendLogger.serialised(trendLogger.getDate()),
+				"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(trendLogger.getDate()),
 				trendLogger.getUUIDOrNumber()))
 		{
 			TrendLogger oldtrendLogger = (TrendLogger) plugin.getMysqlHandler().getData(Type.TREND,
-					"`dates` = ? AND `uuidornumber` = ?", TrendLogger.serialised(trendLogger.getDate()),
+					"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(trendLogger.getDate()),
 					trendLogger.getUUIDOrNumber());
 			double newrelative = trendLogger.getRelativeAmountChange()+oldtrendLogger.getRelativeAmountChange();
 			if(MatchApi.isPositivNumber(newrelative) 
@@ -165,7 +166,7 @@ public class LoggerApi
 			TrendLogger newtl = new TrendLogger(trendLogger.getDate(), newtype, trendLogger.getUUIDOrNumber(), newrelative,
 					oldtrendLogger.getFirstValue(), trendLogger.getLastValue());
 			plugin.getMysqlHandler().updateData(Type.TREND, newtl, 
-					"`dates` = ? AND `uuidornumber` = ?", TrendLogger.serialised(trendLogger.getDate()),
+					"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(trendLogger.getDate()),
 					trendLogger.getUUIDOrNumber());
 		} else
 		{
@@ -204,7 +205,7 @@ public class LoggerApi
 	public static ArrayList<TrendLogger> getTrendLoggerList(String orderByColumn,
 			int start, int end, String whereColumn, Object... whereObjects)
 	{
-		return TrendLogger.convertList(
+		return ConvertHandler.convertListIV(
 				plugin.getMysqlHandler().getList(Type.TREND, orderByColumn, true, start, end, whereColumn, whereObjects));
 	}
 }

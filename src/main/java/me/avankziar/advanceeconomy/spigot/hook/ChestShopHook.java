@@ -14,10 +14,10 @@ import com.Acrobot.Breeze.Utils.MaterialUtil;
 import com.Acrobot.ChestShop.Events.TransactionEvent;
 import com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.events.EconomyLoggerEvent;
 import main.java.me.avankziar.advanceeconomy.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
-import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 
 public class ChestShopHook implements Listener
 {
@@ -66,9 +66,9 @@ public class ChestShopHook implements Listener
 					.replace("%item%", itemId)
 					.replace("%player%", clientname)));
 			Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-					LocalDate.now(), owneruuid, amount, EcoPlayer.getEcoPlayer(owneruuid).getBalance()));
+					LocalDate.now(), owneruuid, amount, EcoPlayerHandler.getEcoPlayer(owneruuid).getBalance()));
 			Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-					LocalDate.now(), clientuuid, -amount,EcoPlayer.getEcoPlayer(clientuuid).getBalance()));
+					LocalDate.now(), clientuuid, -amount,EcoPlayerHandler.getEcoPlayer(clientuuid).getBalance()));
 		} else 
 		{
 			Bukkit.getPluginManager().callEvent(new EconomyLoggerEvent(
@@ -81,9 +81,9 @@ public class ChestShopHook implements Listener
 					.replace("%item%", itemId)
 					.replace("%player%", ownername)));
 			Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-					LocalDate.now(), owneruuid, -amount, EcoPlayer.getEcoPlayer(owneruuid).getBalance()));
+					LocalDate.now(), owneruuid, -amount, EcoPlayerHandler.getEcoPlayer(owneruuid).getBalance()));
 			Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-					LocalDate.now(), clientuuid, amount,EcoPlayer.getEcoPlayer(clientuuid).getBalance()));
+					LocalDate.now(), clientuuid, amount,EcoPlayerHandler.getEcoPlayer(clientuuid).getBalance()));
 		}
 	}
 

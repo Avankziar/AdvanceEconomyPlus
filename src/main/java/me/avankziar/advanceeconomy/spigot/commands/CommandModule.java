@@ -28,9 +28,12 @@ public abstract class CommandModule
         if(AdvanceEconomy.getPlugin().getYamlHandler().get().getString("CommandArgumentLanguage").equalsIgnoreCase("english"))
         {
         	map.put(argument, this);
-        } else if(AdvanceEconomy.getPlugin().getYamlHandler().get().getString("CommandArgumentLanguage").equalsIgnoreCase("german")
-				|| AdvanceEconomy.getPlugin().getYamlHandler().get().getString("CommandArgumentLanguage").equalsIgnoreCase("both"))
+        } else if(AdvanceEconomy.getPlugin().getYamlHandler().get().getString("CommandArgumentLanguage").equalsIgnoreCase("german"))
 		{
+			map.put(alias, this);
+		} else if(AdvanceEconomy.getPlugin().getYamlHandler().get().getString("CommandArgumentLanguage").equalsIgnoreCase("both")) 
+		{
+			map.put(argument, this);
 			map.put(alias, this);
 		} else
 		{
@@ -38,6 +41,5 @@ public abstract class CommandModule
 		}
     }
     
-    //This method will process the command.
     public abstract void run(CommandSender sender, String[] args);
 }

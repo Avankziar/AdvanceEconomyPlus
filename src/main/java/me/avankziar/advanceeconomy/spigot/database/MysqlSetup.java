@@ -30,10 +30,11 @@ public class MysqlSetup
 		{
 			return false;
 		}
-		if(!setupDatabaseII())
+		//Disabled until bank accounts are fully implemented
+		/*if(!setupDatabaseII())
 		{
 			return false;
-		}
+		}*/
 		if(!setupDatabaseIII())
 		{
 			return false;
@@ -97,7 +98,8 @@ public class MysqlSetup
 		        		+ " moneyplayerflow boolean DEFAULT '1',"
 		        		+ " moneybankflow boolean DEFAULT '1',"
 		        		+ " generalmessage boolean DEFAULT '1',"
-		        		+ " pendinginvite text DEFAULT NULL);";
+		        		+ " pendinginvite text DEFAULT NULL,"
+		        		+ " frozen boolean DEFAULT '1');";
 		        query = conn.prepareStatement(data);
 		        query.execute();
 		      } catch (SQLException e) 

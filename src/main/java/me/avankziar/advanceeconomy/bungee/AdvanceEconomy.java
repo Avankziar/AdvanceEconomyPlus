@@ -12,7 +12,7 @@ import net.md_5.bungee.api.plugin.PluginManager;
 public class AdvanceEconomy extends Plugin
 {
 	public static Logger log;
-	public static String pluginName = "AutomaticExecute";
+	public static String pluginName = "AdvanceEconomyPlus";
 	private static AdvanceEconomy plugin;
 	
 	public void onEnable() 

@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
@@ -17,7 +18,7 @@ import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.events.EconomyLoggerEvent;
 import main.java.me.avankziar.advanceeconomy.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomySettings;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -83,7 +84,13 @@ public class ARGMoneyPay extends CommandModule
 				
 			}
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayer(player);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
+		if(eco.isFrozen())
+		{
+			player.sendMessage(ChatApi.tl(
+					plugin.getYamlHandler().getL().getString(path+"Freeze.YourAccountIsFrozen")));
+			return;
+		}
 		if(!AdvanceEconomy.getVaultApi().has(player, amount))
 		{
 			//&f%amount% &cübersteigt dein Guthaben!
@@ -101,12 +108,18 @@ public class ARGMoneyPay extends CommandModule
 					.replace("%amount%", amountstring)));
 			return;
 		}
-		EcoPlayer toplayer = EcoPlayer.getEcoPlayerFromName(toplayername);
+		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
 		if(toplayer == null)
 		{
 			//Der Spieler existiert nicht!
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
+			return;
+		}
+		if(toplayer.isFrozen())
+		{
+			player.sendMessage(ChatApi.tl(
+					plugin.getYamlHandler().getL().getString(path+"Freeze.TheAccountIsFrozen")));
 			return;
 		}
 		EconomyResponse withdraw = AdvanceEconomy.getVaultApi().withdrawPlayer(player, amount);
@@ -122,8 +135,8 @@ public class ARGMoneyPay extends CommandModule
 			player.sendMessage(deposit.errorMessage);
 			return;
 		}
-		eco = EcoPlayer.getEcoPlayer(player);
-		toplayer = EcoPlayer.getEcoPlayerFromName(toplayername);
+		eco = EcoPlayerHandler.getEcoPlayer(player);
+		toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
 		Bukkit.getPluginManager().callEvent(new EconomyLoggerEvent(
 				LocalDateTime.now(), player.getUniqueId().toString(), toplayer.getUUID(),
 				player.getName(), toplayer.getName(), player.getUniqueId().toString(), amount, 

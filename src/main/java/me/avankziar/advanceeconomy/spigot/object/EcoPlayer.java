@@ -1,12 +1,6 @@
 package main.java.me.avankziar.advanceeconomy.spigot.object;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.bukkit.OfflinePlayer;
-
-import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 
 public class EcoPlayer
 {
@@ -18,12 +12,13 @@ public class EcoPlayer
 	private boolean moneyBankFlow;
 	private boolean generalMessage;
 	private String pendingInvite;
+	private boolean frozen; //To Freeze a Playeraccount
 	private List<String> bankAccountNumber;
 	
 	public EcoPlayer(int id, String uuid, String name,
 			double balance, List<String> bankAccountNumber,
 			boolean moneyPlayerFlow, boolean moneyBankFlow, boolean generalMessage,
-			String pendingInvite)
+			String pendingInvite, boolean frozen)
 	{
 		setId(id);
 		setUUID(uuid);
@@ -34,24 +29,7 @@ public class EcoPlayer
 		setMoneyBankFlow(moneyBankFlow);
 		setGeneralMessage(generalMessage);
 		setPendingInvite(pendingInvite);
-	}
-	
-	public static EcoPlayer getEcoPlayer(String playeruuid)
-	{
-		return (EcoPlayer) AdvanceEconomy.getPlugin().getMysqlHandler().getData(
-				MysqlHandler.Type.PLAYER, "`player_uuid` = ?", playeruuid);
-	}
-	
-	public static EcoPlayer getEcoPlayerFromName(String playername)
-	{
-		return (EcoPlayer) AdvanceEconomy.getPlugin().getMysqlHandler().getData(
-				MysqlHandler.Type.PLAYER, "`player_name` = ?", playername);
-	}
-	
-	public static EcoPlayer getEcoPlayer(OfflinePlayer player)
-	{
-		return (EcoPlayer) AdvanceEconomy.getPlugin().getMysqlHandler().getData(
-				MysqlHandler.Type.PLAYER, "`player_uuid` = ?", player.getUniqueId().toString());
+		setFrozen(frozen);
 	}
 
 	public int getId()
@@ -143,20 +121,14 @@ public class EcoPlayer
 	{
 		this.pendingInvite = pendingInvite;
 	}
-	
-	public static ArrayList<EcoPlayer> convertList(ArrayList<?> list)
+
+	public boolean isFrozen()
 	{
-		ArrayList<EcoPlayer> el = new ArrayList<>();
-		for(Object o : list)
-		{
-			if(o instanceof EcoPlayer)
-			{
-				el.add((EcoPlayer) o);
-			} else
-			{
-				return null;
-			}
-		}
-		return el;
+		return frozen;
+	}
+
+	public void setFrozen(boolean frozen)
+	{
+		this.frozen = frozen;
 	}
 }

@@ -18,13 +18,12 @@ Mysql:
 Identifier:
   Click: 'click'
   Hover: 'hover'
-  Book: 'book'
 Seperator:
   BetweenFunction: '~'
   WhithinFuction: '@'
   Space: '+'
   HoverNewLine: '~!~'
-CommandArgumentLanguage: 'both' #english, german, both
+CommandArgumentLanguage: 'english' #english, german, both
 StartMoney: 0.0
 CurrencyNameSingular: 'Euro'
 CurrencyNamePlural: 'Euros'

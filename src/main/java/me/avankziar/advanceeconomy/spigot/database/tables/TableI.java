@@ -76,8 +76,8 @@ public interface TableI
 			{
 				String sql = "INSERT INTO `" + plugin.getMysqlHandler().tableNameI 
 						+ "`(`player_uuid`, `player_name`, `balance`, `bankaccountlist`,"
-						+ " `moneyplayerflow`, `moneybankflow`, `generalmessage`, `pendinginvite`) " 
-						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+						+ " `moneyplayerflow`, `moneybankflow`, `generalmessage`, `pendinginvite`, `frozen`) " 
+						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
 		        preparedStatement.setString(1, ep.getUUID());
 		        preparedStatement.setString(2, ep.getName());
@@ -87,6 +87,7 @@ public interface TableI
 		        preparedStatement.setBoolean(6, ep.isMoneyPlayerFlow());
 		        preparedStatement.setBoolean(7, ep.isGeneralMessage());
 		        preparedStatement.setString(8, ep.getPendingInvite());
+		        preparedStatement.setBoolean(9, ep.isFrozen());
 		        
 		        preparedStatement.executeUpdate();
 		        return true;
@@ -131,7 +132,7 @@ public interface TableI
 				String data = "UPDATE `" + plugin.getMysqlHandler().tableNameI
 						+ "` SET `player_uuid` = ?, `player_name` = ?, `balance` = ?,"
 						+ " `bankaccountlist` = ?, `moneyplayerflow` = ?, `moneybankflow` = ?, `generalmessage` = ?,"
-						+ " `pendinginvite` = ?" 
+						+ " `pendinginvite` = ?, `frozen` = ?" 
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
 				preparedStatement.setString(1, ep.getUUID());
@@ -142,7 +143,8 @@ public interface TableI
 		        preparedStatement.setBoolean(6, ep.isMoneyBankFlow());
 		        preparedStatement.setBoolean(7, ep.isGeneralMessage());
 		        preparedStatement.setString(8, ep.getPendingInvite());
-		        int i = 9;
+		        preparedStatement.setBoolean(9, ep.isFrozen());
+		        int i = 10;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -204,7 +206,8 @@ public interface TableI
 		        			result.getBoolean("moneyplayerflow"),
 		        			result.getBoolean("moneybankflow"),
 		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"));
+		        			result.getString("pendinginvite"),
+		        			result.getBoolean("frozen"));
 		        }
 		    } catch (SQLException e) 
 			{
@@ -393,7 +396,8 @@ public interface TableI
 		        			result.getBoolean("moneyplayerflow"),
 		        			result.getBoolean("moneybankflow"),
 		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"));
+		        			result.getString("pendinginvite"),
+		        			result.getBoolean("frozen"));
 		        	list.add(ep);
 		        }
 		        return list;
@@ -452,7 +456,8 @@ public interface TableI
 		        			result.getBoolean("moneyplayerflow"),
 		        			result.getBoolean("moneybankflow"),
 		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"));
+		        			result.getString("pendinginvite"),
+		        			result.getBoolean("frozen"));
 		        	list.add(ep);
 		        }
 		        return list;

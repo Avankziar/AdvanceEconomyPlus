@@ -1,0 +1,75 @@
+========================================================================================================================
+- +Base Plugin Struktur eingerichtet.
+- +EcoPlayer und BankAccount hinzugefügt.
+- +Mysql für SpielerData, Bankdata hinzugefügt.
+- +ChestShopHook
+- +JobsRebornHook
+- +/eco | Listet alle Economy Befehle auf | eco.cmd.eco.admin
+- +/eco spieler <Spielername> | Zeigt alle Information zu einem Spieler | eco.cmd.eco.playerinfo
+- /eco bank <kontoname/nummer> | Zeigt alle Infos zu dem bankkonto | eco.cmd.eco.bankinfo
+- /eco toggle | Togglet ob der Spieler aller generellen Nachrichten bekommt | eco.cmd.eco.toggle
+- /eco banklist | Zeigt alle Bankkontos an | eco.cmd.eco.banklist
+
+- /eco reasonadd <Grund> <Betrag> | Erstellt einen Vordefinierten Grund mit einer Bestimmten summe | eco.cmd.eco.reasonadd
+- /eco reasondelete <Grund> | Löscht einen Vordefinierten Grund | eco.cmd.eco.reasondelete
+- /eco reasonlist | Zeigt alle Gründe mit vordefiniertem Betrag an | eco.cmd.eco.reasonlist
+
+- +/eco recomment <ID> <Nachricht> | Ändert die Notiz des jeweiligen Logs. | eco.cmd.eco.recomment
+- +/eco deletelog <ID> | Löscht den Log mit der jeweiligen Id. Nur für Admins | eco.cmd.eco.deletelog
+
+- +/money | Zeigt den eigenen Geldstand an | eco.cmd.money.info
+- +/money pay <Spielername> <Betrag> | Überweist Geld von einem Spieler zum anderen | eco.cmd.money.pay
+- /money bankpay <kontoname/nummer> <Betrag> | Überweist Geld vom Spieler zu Bankkonto | eco.cmd.money.bankpay
+- +/money give <Spielername> <Betrag> | Gibt dem Spieler als Admin Geld | eco.cmd.money.give
+- +/money take <Spielername> <Betrag> | Nimmt dem Spieler als Admin Geld | eco.cmd.money.take
+- +/money log [SeitenZahl] [Spielername] | Zeigt alle Geldbewegungen des Spielerkontos an. Seitenzahl beginnen bei 0 | eco.cmd.money.log
+- +/money toggle | Togglet ob der Spieler Geldbewegungen angezeigt bekommt, welche sein eigenes Spielerkonto betreffen. | eco.cmd.money.toggle
+- +/money top [Seitenzahl] | Zeigt die bestbetuchten Spieler an. | eco.cmd.money.top
+- +/money gettotal <Spielername/Plugin> | Zeigt die gesamte Geldbetrag der durch die Transaktionen zustanden gekommen ist. | eco.cmd.money.gettotal
+- +/money freeze <Spielername> | Friert das Spielerkonto vom Spieler ein. Nun sind alle Transaktionen vom Spieler unterbunden | eco.cmd.money.freeze
+
+- +/money filterlogbetween <Min> <Max> [Seitenzahl] [Spielername] | Filter, zwischen Min und Max, id desc | eco.cmd.money.logfilterbetween
+- +/money filterlogcomment <Suchwort> [Seitenzahl] [Spielername] | Filter, Notiz Suchwort, id desc | eco.cmd.money.logfiltercomment
+- +/money filterlogcommentascending <Suchwort> [Seitenzahl] [Spielername] | Filter, Notiz Suchwort, amount asc | eco.cmd.money.logfiltercommentascending
+- +/money filterlogcommentdescending <Suchwort> [Seitenzahl] [Spielername] | Filter, Notiz Suchwort, amount desc | eco.cmd.money.logfiltercommentdescending
+- +/money filterlogfrom <Suchwort> [Seitenzahl] [Spielername] | Filter, Von_Spielernamen Suchwort, id desc | eco.cmd.money.logfilterfrom
+- +/money filterloggreaterthan <Value> [Seitenzahl] [Spielername] | Filter, größer als Value Betrag, id desc | eco.cmd.money.filterloggreaterthan
+- +/money filterloglessthan <Value> [Seitenzahl] [Spielername] | Filter, kleiner als Value Betrag, id desc | eco.cmd.money.filterloglessthan
+- +/money filterlogto <Suchwort> [Seitenzahl] [Spielername] | Filter, Zu_Spielernamen Suchwort, id desc | eco.cmd.money.filterlogto
+- +/money filterlogorderer <Suchwort> [Seitenzahl] [Spielername] | Filter, Auftraggeber_Spielername Suchwort, id desc | eco.cmd.money.filterlogorderer
+- +/money filterlogsortascending [Seitenzahl] [Spielername] | Filter, Sortiert aufsteigen nach Betrag | eco.cmd.money.filterlogsortascending
+- +/money filterlogsortdescending [Seitenzahl] [Spielername] | Filter, Sortiert absteigen nach Betrag | eco.cmd.money.filterlogsortdescending
+
+- +/money trendgrafic [Seitenzahl] [Spielername] | Zeigt eine Grafik zum Trendverlauf an. 10 Einträge pro Seite | eco.cmd.money.trendgrafic
+- +/money trenddiagram [SeitenZahl] [Spielername] | Zeigt ein Diagram zum Trendverlauf an. 10 Einträge pro Seite | eco.cmd.money.trenddiagram
+- +/money trendlog [Seitenzahl] [Spielername] | Zeigt ein Log vom trendverlauf. 10 Einträge pro Seite | eco.cmd.money.trendlog
+
+- /money takereason <Spielername> <Grund> | Zieht dem Spieler den vordefinierten Betrag des grundes ab.
+- /money givereason <Spielername> <Grund> | Gibt dem Spieler den vordefinierten Betrag des Grundes.
+
+- /bank | Zeigt deine Bankkonten an | eco.cmd.bank
+- /bank konto <kontoname/nummer> | Zeigt alle zugehörigen Daten zu dem Bankkonto an | eco.cmd.bank.info
+- /bank pay <kontoname/nummer> <Spielername> <Betrag> [Comment] | Überweist vom Bankkonto zum Spieler. | eco.cmd.bank.pay
+- /bank bankpay <VonKontoname/nummer> <ZuKontonummer/name> <Betrag> [Comment] | Überweisung von einen Bankkonto zu einem anderen | eco.cmd.bank.bankpay
+- /bank create <Kontoname> | Errichtet ein neues bankkonto | eco.cmd.bank.create
+- /bank invite <kontoname/nummer> <Spielername> | Lädt den Spieler als Bankkontomitglied ein | eco.cmd.bank.invite
+- /bank kick <kontoname/nummer> <Spielername> | Schmeißt den Spieler aus dem Bankkonto raus. | eco.cmd.bank.kick
+- /bank vice <kontoname/nummer> <Spielername> | Befördert oder degradier den Spieler zu einem Stellvertreter/Mitglied | eco.cmd.bank.vice
+- /bank log <kontoname/nummer> [Seitenzahl] | Zeigt alle Geldbewegungen des Bankkontos ein. | eco.cmd.bank.log
+- /bank submit <kontoname/nummer> <Spielername> | Übergibt die Inhaberrechte an den Spieler | eco.cmd.bank.submit
+- /bank toggle | Togglet, ob der Spieler Geldbewegungen angezeigt bekommt, welche Bankkontos betreffen wo er mindestens mitglied ist. | eco.cmd.bank.toggle
+- /bank accept | Akzeptiert eine Einladung von einem Bankkonto. | eco.cmd.bank.accept
+- /bank leave <kontoname/nummer> | Verlässt das Bankkonto | eco.cmd.bank.leave
+- /bank delete <kontoname/nummer> | Löscht das Bankkonto | eco.cmd.bank.delete
+- /bank top [Seitenzahl] | Zeigt die bestbetuchten Bankkontos an. | eco.cmd.bank.top
+- /bank take <kontoname/nummer> <Betrag> | Nimmt den Betrag von daem Bankkonto ans System. | eco.cmd.bank.take
+- /bank give <kontoname/nummer> <Betrag> | Gibt den Betrag an das Bankkonto vom System. | eco.cmd.bank.give
+
+Der Vielleicht Bereich~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- /eco info | Listet alle Steuern, Zinsen, Verwahrgeld etc auf.
+- /eco steuern <OnlineProzent> <OfflineZinsen> | Stellt die Steuern ein
+- /eco zinsen <Prozent> | Stellt die Zinsen ein
+- /eco verwahrgeld <Betrag> | Stellt das Verwahrgeld ein
+- /eco todesgeld <betrag> <AbFälligkeitsSummer> | Stellt das Todesgeld ein
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+====================================================================================================================================

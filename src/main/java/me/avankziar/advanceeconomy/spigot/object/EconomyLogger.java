@@ -1,8 +1,6 @@
 package main.java.me.avankziar.advanceeconomy.spigot.object;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 public class EconomyLogger
 {
@@ -36,69 +34,6 @@ public class EconomyLogger
 		setAmount(amount);
 		setType(type);
 		setComment(comment);
-	}
-	
-	public static LocalDateTime deserialised(String datetime)
-	{
-		LocalDateTime dt = LocalDateTime.parse((CharSequence) datetime,
-				DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
-		return dt;
-	}
-	
-	public static String serialised(LocalDateTime dt)
-	{
-		String MM = "";
-		int month = 0;
-		if(dt.getMonthValue()<10)
-		{
-			MM+=month;
-		}
-		MM += dt.getMonthValue();
-		String dd = "";
-		int day = 0;
-		if(dt.getDayOfMonth()<10)
-		{
-			dd+=day;
-		}
-		dd +=dt.getDayOfMonth();
-		String hh = "";
-		int hour = 0;
-		if(dt.getHour()<10)
-		{
-			hh+=hour;
-		}
-		hh += dt.getHour();
-		String mm = "";
-		int min = 0;
-		if(dt.getMinute()<10)
-		{
-			mm+=min;
-		}
-		mm += dt.getMinute();
-		String ss = "";
-		int sec = 0;
-		if(dt.getSecond()<10)
-		{
-			ss+=sec;
-		}
-		ss += dt.getSecond();
-		return dd+"."+MM+"."+dt.getYear()+" "+hh+":"+mm+":"+ss;
-	}
-	
-	public static ArrayList<EconomyLogger> convertList(ArrayList<?> list)
-	{
-		ArrayList<EconomyLogger> el = new ArrayList<>();
-		for(Object o : list)
-		{
-			if(o instanceof EconomyLogger)
-			{
-				el.add((EconomyLogger) o);
-			} else
-			{
-				return null;
-			}
-		}
-		return el;
 	}
 
 	public LocalDateTime getDateTime()

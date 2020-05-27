@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.LogHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.LogHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomyLogger;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomySettings;
@@ -60,7 +62,7 @@ public class ARGMoneyGetTotal extends CommandModule
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayerFromName(playername);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayerFromName(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -75,7 +77,7 @@ public class ARGMoneyGetTotal extends CommandModule
 		int last = 0;
 		if(searchword == null)
 		{
-			list = EconomyLogger.convertList(
+			list = ConvertHandler.convertListIII(
 					plugin.getMysqlHandler().getList(Type.LOGGER, "`id`", desc, start, end,
 							"`to_uuidornumber` = ? OR `orderer_uuid` = ? OR `from_uuidornumber` = ?",
 							eco.getUUID(), eco.getUUID(), eco.getUUID()));
@@ -84,14 +86,14 @@ public class ARGMoneyGetTotal extends CommandModule
 					eco.getUUID(), eco.getUUID(), eco.getUUID());
 		} else
 		{
-			EcoPlayer ep = EcoPlayer.getEcoPlayerFromName(searchword);
+			EcoPlayer ep = EcoPlayerHandler.getEcoPlayerFromName(searchword);
 			if(ep != null)
 			{
 				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getL().getString("GetTotal.SearchWordIsPlayer")));
+						plugin.getYamlHandler().getL().getString(path+"GetTotal.SearchWordIsPlayer")));
 				return;
 			}
-			list = EconomyLogger.convertList(
+			list = ConvertHandler.convertListIII(
 					plugin.getMysqlHandler().getList(Type.LOGGER, "`id`", desc, start, end,
 					"(`to_uuidornumber` = ? OR `from_uuidornumber` = ? OR `orderer_uuid` = ?) AND (`orderer_uuid` = ? OR `to_name` = ?  OR `from_name` = ?)",
 					eco.getUUID(), eco.getUUID(), eco.getUUID(), searchword, searchword, searchword));

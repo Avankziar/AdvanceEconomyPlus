@@ -3,12 +3,13 @@ package main.java.me.avankziar.advanceeconomy.spigot.object;
 import java.util.ArrayList;
 
 import main.java.me.avankziar.advanceeconomy.spigot.database.YamlHandler;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.BankAccountHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 
 public class EconomySettings
 {
 	private ArrayList<String> reservedNames;
-	private BankAccount.Type numberType;
+	private BankAccountHandler.Type numberType;
 	private boolean bungee;
 	private boolean mysql;
 	private boolean bank;
@@ -22,7 +23,7 @@ public class EconomySettings
 	
 	public EconomySettings(String prefix, boolean bungee, boolean mysql, boolean playerAccount, boolean bank,
 			String currencySingular, String currencyPlural, int moneyFormat,
-			ArrayList<String> reservedNames, BankAccount.Type numberType)
+			ArrayList<String> reservedNames, BankAccountHandler.Type numberType)
 	{
 		setPrefix(prefix);
 		setBungee(bungee);
@@ -88,12 +89,12 @@ public class EconomySettings
 		{
 			reservedNames = (ArrayList<String>) yh.get().getStringList("ReservedNames");
 		}
-		BankAccount.Type numberType = BankAccount.Type.FOUR_DIGITS_TIMES_THREE;
+		BankAccountHandler.Type numberType = BankAccountHandler.Type.FOUR_DIGITS_TIMES_THREE;
 		if(yh.get().getString("TrendLogger.ValueIsStabil") != null)
 		{
 			try
 			{
-				numberType = BankAccount.Type.valueOf(plugin.getYamlHandler().get().getString("TrendLogger.ValueIsStabil"));
+				numberType = BankAccountHandler.Type.valueOf(plugin.getYamlHandler().get().getString("TrendLogger.ValueIsStabil"));
 			} catch (Exception e) {}
 		}
 		settings = new EconomySettings(prefix, bungee, mysql, playerAccount, bank,
@@ -111,12 +112,12 @@ public class EconomySettings
 		this.reservedNames = reservedNames;
 	}
 
-	public BankAccount.Type getNumberType()
+	public BankAccountHandler.Type getNumberType()
 	{
 		return numberType;
 	}
 
-	public void setNumberType(BankAccount.Type numberType)
+	public void setNumberType(BankAccountHandler.Type numberType)
 	{
 		this.numberType = numberType;
 	}

@@ -3,11 +3,12 @@ package main.java.me.avankziar.advanceeconomy.spigot.commands.money;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomySettings;
 
@@ -34,7 +35,7 @@ public class ARGMoneyToggle extends CommandModule
 					plugin.getYamlHandler().getL().getString("NoBank")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayer.getEcoPlayer(player);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
 		if(eco.isMoneyPlayerFlow())
 		{
 			eco.setMoneyPlayerFlow(false);
