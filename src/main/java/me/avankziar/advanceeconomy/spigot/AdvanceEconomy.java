@@ -95,7 +95,6 @@ public class AdvanceEconomy extends JavaPlugin
 		backgroundTask = new BackgroundTask(this);
 		loggerApi = new LoggerApi(this);
 		new BungeeBridge(this);
-		new ChestShopHook(this);
 		setupEconomy();
 		CommandSetup();
 		ListenerSetup();
