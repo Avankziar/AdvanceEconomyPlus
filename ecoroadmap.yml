@@ -26,6 +26,7 @@
 - +/money toggle | Togglet ob der Spieler Geldbewegungen angezeigt bekommt, welche sein eigenes Spielerkonto betreffen. | eco.cmd.money.toggle
 - +/money top [Seitenzahl] | Zeigt die bestbetuchten Spieler an. | eco.cmd.money.top
 - +/money gettotal <Spielername/Plugin> | Zeigt die gesamte Geldbetrag der durch die Transaktionen zustanden gekommen ist. | eco.cmd.money.gettotal
+- /money get <UhrzeitDatum> [Uhrzeitdatum] [spieler] | Zählt alle Beträge ab und eventuell bis Zeitpunkt zusammen | eco.cmd.money.get 
 - +/money freeze <Spielername> | Friert das Spielerkonto vom Spieler ein. Nun sind alle Transaktionen vom Spieler unterbunden | eco.cmd.money.freeze
 
 - +/money filterlogbetween <Min> <Max> [Seitenzahl] [Spielername] | Filter, zwischen Min und Max, id desc | eco.cmd.money.logfilterbetween
