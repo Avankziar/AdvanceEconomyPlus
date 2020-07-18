@@ -7,10 +7,11 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
-import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
+import main.java.me.avankziar.advanceeconomy.general.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
+import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApiSmall;
+import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomyLogger;
 import main.java.me.avankziar.advanceeconomy.spigot.object.TrendLogger;
@@ -87,7 +88,7 @@ public class LogHandler
 						(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
 								|| player.hasPermission(StringValues.PERM_BYPASS_RECOMMENT)))
 				{
-					player.spigot().sendMessage(ChatApi.generateTextComponent(
+					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 							plugin.getYamlHandler().getL().getString(path+"Log.LoggerBToPPositivAll")
 							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
@@ -98,7 +99,7 @@ public class LogHandler
 							map));
 				} else if(player.hasPermission(StringValues.PERM_CMD_ECO_DELETELOG))
 				{
-					player.spigot().sendMessage(ChatApi.generateTextComponent(
+					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 							plugin.getYamlHandler().getL().getString(path+"Log.LoggerBToPPositivDelete")
 							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
@@ -110,7 +111,7 @@ public class LogHandler
 				} else if(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
 						|| player.hasPermission(StringValues.PERM_BYPASS_RECOMMENT))
 				{
-					player.spigot().sendMessage(ChatApi.generateTextComponent(
+					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 							plugin.getYamlHandler().getL().getString(path+"Log.LoggerBToPPositivRe")
 							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
@@ -121,7 +122,7 @@ public class LogHandler
 							map));
 				} else
 				{
-					player.spigot().sendMessage(ChatApi.generateTextComponent(
+					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 							plugin.getYamlHandler().getL().getString(path+"Log.LoggerBToPPositiv")
 							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
@@ -139,7 +140,7 @@ public class LogHandler
 							(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
 									|| player.hasPermission(StringValues.PERM_BYPASS_RECOMMENT)))
 					{
-						player.spigot().sendMessage(ChatApi.generateTextComponent(
+						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 								plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToBNegativAll")
 								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 								.replace("%fromname%", el.getFromName())
@@ -150,7 +151,7 @@ public class LogHandler
 								map));
 					} else if(player.hasPermission(StringValues.PERM_CMD_ECO_DELETELOG))
 					{
-						player.spigot().sendMessage(ChatApi.generateTextComponent(
+						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 								plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToBNegativDelete")
 								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 								.replace("%fromname%", el.getFromName())
@@ -162,7 +163,7 @@ public class LogHandler
 					} else if(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
 							|| player.hasPermission(StringValues.PERM_BYPASS_RECOMMENT))
 					{
-						player.spigot().sendMessage(ChatApi.generateTextComponent(
+						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 								plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToBNegativRe")
 								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 								.replace("%fromname%", el.getFromName())
@@ -173,7 +174,7 @@ public class LogHandler
 								map));
 					} else
 					{
-						player.spigot().sendMessage(ChatApi.generateTextComponent(
+						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 								plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToBNegativ")
 								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 								.replace("%fromname%", el.getFromName())
@@ -191,7 +192,7 @@ public class LogHandler
 								(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
 										|| player.hasPermission(StringValues.PERM_BYPASS_RECOMMENT)))
 						{
-							player.spigot().sendMessage(ChatApi.generateTextComponent(
+							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 									plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToPNegativAll")
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
@@ -202,7 +203,7 @@ public class LogHandler
 									map));
 						} else if(player.hasPermission(StringValues.PERM_CMD_ECO_DELETELOG))
 						{
-							player.spigot().sendMessage(ChatApi.generateTextComponent(
+							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 									plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToPNegativDelete")
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
@@ -214,7 +215,7 @@ public class LogHandler
 						} else if(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
 								|| player.hasPermission(StringValues.PERM_BYPASS_RECOMMENT))
 						{
-							player.spigot().sendMessage(ChatApi.generateTextComponent(
+							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 									plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToPNegativRe")
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
@@ -225,7 +226,7 @@ public class LogHandler
 									map));
 						} else
 						{
-							player.spigot().sendMessage(ChatApi.generateTextComponent(
+							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 									plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToPNegativ")
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
@@ -241,7 +242,7 @@ public class LogHandler
 								(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
 										|| player.hasPermission(StringValues.PERM_BYPASS_RECOMMENT)))
 						{
-							player.spigot().sendMessage(ChatApi.generateTextComponent(
+							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 									plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToPPositivAll")
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
@@ -252,7 +253,7 @@ public class LogHandler
 									map));
 						} else if(player.hasPermission(StringValues.PERM_CMD_ECO_DELETELOG))
 						{
-							player.spigot().sendMessage(ChatApi.generateTextComponent(
+							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 									plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToPPositivDelete")
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
@@ -264,7 +265,7 @@ public class LogHandler
 						} else if(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
 								|| player.hasPermission(StringValues.PERM_BYPASS_RECOMMENT))
 						{
-							player.spigot().sendMessage(ChatApi.generateTextComponent(
+							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 									plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToPPositivRe")
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
@@ -275,7 +276,7 @@ public class LogHandler
 									map));
 						} else
 						{
-							player.spigot().sendMessage(ChatApi.generateTextComponent(
+							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
 									plugin.getYamlHandler().getL().getString(path+"Log.LoggerPToPPositiv")
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())

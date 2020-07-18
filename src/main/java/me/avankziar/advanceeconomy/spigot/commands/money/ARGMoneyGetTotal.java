@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.general.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;

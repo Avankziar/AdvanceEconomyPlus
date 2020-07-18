@@ -34,7 +34,6 @@ import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyFilte
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyFilterLogSortDescending;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyFilterLogTo;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyFreeze;
-import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyGetTotal;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyGive;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyLog;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.money.ARGMoneyPay;
@@ -184,7 +183,7 @@ public class AdvanceEconomy extends JavaPlugin
 		new ARGMoneyFilterLogSortDescending(plugin);
 		new ARGMoneyFilterLogTo(plugin);
 		new ARGMoneyFreeze(plugin);
-		new ARGMoneyGetTotal(plugin);
+		//new ARGMoneyGetTotal(plugin);
 		new ARGMoneyGive(plugin);
 		new ARGMoneyLog(plugin);
 		new ARGMoneyPay(plugin);

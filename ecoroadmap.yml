@@ -1,4 +1,12 @@
-========================================================================================================================
+Future ==============================================================================================================================
+- Befehle einführen, welche den Spieler ermöglichen, anderen Spielern das Recht zu geben, ihre Logs etc anzuschauen.
+- Loggrafiken und Diagramme mit eingbauter Filterfunktion hinzufügen.
+
+Build 2 ============================================================================================================================
+- +Update auf 1.16.1
+- +Unterstützung von HexColor
+
+Base & Build 1=======================================================================================================================
 - +Base Plugin Struktur eingerichtet.
 - +EcoPlayer und BankAccount hinzugefügt.
 - +Mysql für SpielerData, Bankdata hinzugefügt.

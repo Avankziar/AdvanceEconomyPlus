@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import main.java.me.avankziar.advanceeconomy.bungee.assistance.ChatApi;
 import main.java.me.avankziar.advanceeconomy.bungee.AdvanceEconomy;
+import main.java.me.avankziar.advanceeconomy.general.ChatApi;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

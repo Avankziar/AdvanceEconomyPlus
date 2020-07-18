@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.general.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.Utility;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
@@ -49,7 +49,8 @@ public class ARGMoneyTrendGrafic extends CommandModule
 		}
 		if(args.length == 3)
 		{
-			if(!player.hasPermission(StringValues.PERM_CMD_MONEY_TRENDGRAFIC_OTHER))
+			if(!player.hasPermission(StringValues.PERM_CMD_MONEY_TRENDGRAFIC_OTHER)
+					&& !args[2].equals(playername))
 			{
 				player.sendMessage(ChatApi.tl(
 						plugin.getYamlHandler().getL().getString("NoPermission")));

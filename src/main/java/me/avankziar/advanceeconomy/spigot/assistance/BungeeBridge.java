@@ -8,12 +8,15 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.general.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomySettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Content;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 public class BungeeBridge
 {
@@ -70,14 +73,33 @@ public class BungeeBridge
 			{
 				message += sepb+idhover+sepw+he.getAction().toString()+sepw;
 				int hei = 0;
-				for(BaseComponent hebc : he.getValue())
+				for(Content hebc : he.getContents())
 				{
-					if(he.getValue().length-1==hei)
+					Text t = (Text) hebc;
+					if(t.getValue() != null)
 					{
-						message += hebc.toLegacyText().replace(" ", sepspace);
-					} else
-					{
-						message += hebc.toLegacyText().replace(" ", sepspace)+"~!~";
+						if(t.getValue() instanceof BaseComponent[])
+						{
+							BaseComponent[] bch = (BaseComponent[]) t.getValue();
+							if(bch.length-1 == hei)
+							{
+								for(BaseComponent bchbc : bch)
+								{
+									message += bchbc.toLegacyText().replace(" ", sepspace);
+								}
+							} else
+							{
+								for(BaseComponent bchbc : bch)
+								{
+									message += bchbc.toLegacyText().replace(" ", sepspace)+"~!~";
+								}
+							}
+							
+						} else if(t.getValue() instanceof String)
+						{
+							String sh = (String) t.getValue();
+							message += sh.replace(" ", sepspace);
+						}
 					}
 					hei++;
 				}

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.advanceeconomy.general.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
@@ -52,7 +52,8 @@ public class ARGMoneyTrendLog extends CommandModule
 				playername = args[2];
 			} else
 			{
-				if(!player.hasPermission(StringValues.PERM_CMD_MONEY_LOG_OTHER))
+				if(!player.hasPermission(StringValues.PERM_CMD_MONEY_LOG_OTHER)
+						&& !args[2].equals(playername))
 				{
 					player.sendMessage(ChatApi.tl(
 							plugin.getYamlHandler().getL().getString("NoPermission")));

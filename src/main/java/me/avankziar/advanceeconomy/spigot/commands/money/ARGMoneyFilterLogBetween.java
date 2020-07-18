@@ -6,13 +6,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.assistance.StringValues;
 import main.java.me.avankziar.advanceeconomy.spigot.commands.CommandModule;
 import main.java.me.avankziar.advanceeconomy.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.advanceeconomy.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.handler.EcoPlayerHandler;
 import main.java.me.avankziar.advanceeconomy.spigot.handler.LogHandler;
+import main.java.me.avankziar.advanceeconomy.general.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EcoPlayer;
 import main.java.me.avankziar.advanceeconomy.spigot.object.EconomyLogger;

@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.advanceeconomy.spigot.api.MatchApi;
-import main.java.me.avankziar.advanceeconomy.spigot.assistance.ChatApi;
+import main.java.me.avankziar.advanceeconomy.general.ChatApi;
 import main.java.me.avankziar.advanceeconomy.spigot.AdvanceEconomy;
 import net.md_5.bungee.api.chat.ClickEvent;
 
