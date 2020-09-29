@@ -1,5 +1,5 @@
 Language: 'English'
-Prefix: '&7[&2AdvanceEconomyPlus&7] &r'
+Prefix: '&7[&2AdvancedEconomyPlus&7] &r'
 Bungee: false
 Mysql:
   Status: false
@@ -15,6 +15,9 @@ Mysql:
   TableNameII: 'economyBankData'
   TableNameIII: 'economyLogger'
   TableNameIV: 'economyTrend'
+  TableNameV: 'economyStandingOrder'
+  TableNameVI: 'economyDebtRepayment'
+
 Identifier:
   Click: 'click'
   Hover: 'hover'
@@ -23,19 +26,31 @@ Seperator:
   WhithinFuction: '@'
   Space: '+'
   HoverNewLine: '~!~'
-CommandArgumentLanguage: 'english' #english, german, both
+  
 StartMoney: 0.0
 CurrencyNameSingular: 'Euro'
 CurrencyNamePlural: 'Euros'
+
 UsePlayerAccount: true
 UseBank: false
+UseStandingOrder: false
+UseLoan: false
+
 TrendLogger:
   ValueIsStabil: 1000.0
+GraficSpaceSymbol: 'ˉ'
+GraficPointSymbol: 'x';
+  
 JobsRebornHookTaskTimer:
 - 0
 - 15
 - 30
 - 45
+
 ReservedNames:
 - YourServer
+
 BankAccountFromat: 'FOUR_DIGITS_TIMES_THREE'
+
+StandingOrderRepeatTime: '180' #How Often in seconds the Schedular for StandingOrder should check
+LoanRepaymentRepeatTime: '180'

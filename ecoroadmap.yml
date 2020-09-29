@@ -1,6 +1,31 @@
 Future ==============================================================================================================================
+- Banksystem
+- Tresorsystem (vaults). Dabei wird in ersten GUI jeweils die eigentlichen Vaults angezeigt, bei klick auf die Vaults
+  öffnet sich dann die eigentliche Vault. Spieler haben eine mindestanzahl von freien Vaults, sowie haben vaults einen
+  vordefinierten Anzahl an freien slots- Vaults können bis zu 54 Slots haben, welche kaufbar sein sollen.
+  Vaults haben einen Eigentümer, sowie eine Mitgliederlist, welcher der Eigentümer einstellen kann.
+  Es muss einstellbar sein, wo die Vaults aufgerufen werden dürfen, aka in Welten oder im Umkreis einer Location.
+  Es sollte so abfragbar sein, dass man entweder pro Spieler (UUID) oder für externe Sachen (Gilde etc.) (SchlüsselString Bspw. njuadwcwi215)
+  angeben muss. So kann man für die Api es besser aufteilen. Eventuell auf für BANKEN so machen.
 - Befehle einführen, welche den Spieler ermöglichen, anderen Spielern das Recht zu geben, ihre Logs etc anzuschauen.
-- Loggrafiken und Diagramme mit eingbauter Filterfunktion hinzufügen.
+- Einstellen, dass falls Mechaniken nicht genutzt werden, die in Ingame Hilfe und TabComplet nicht angezeigt werden.
+  
+- BungeeCord Geldunterstützung anbieten.
+- XIDEE: Umleitung für Verdientes geld einrichtbar machen. Warte auf DC-Meinungsumfrage.
+
+Build 3 ============================================================================================================================
+- +CommandTree eingebungen und dahingehend umgeschrieben
+- +commands.yml nun vorhanden und innen veränderbar
+- +FilterLog & Trend befehle wurden auseinander gezogen für bessere Übersicht
+- +Filterlog wurde in FilterActionLog umbenannt, bezieht sich auf Ingame Cmd und commands.yml
+- +FilterBefehle für den trend in Logs, Diagram und Grafik umgesetzt.
+- +Grafik und Diagram für den action log und filterlogs umgesetzt.
+- +/money log, wurde in /money action log, umbenannt.
+- +/money take <playername> <amount> <CustomPlayerishReciever> <CustomOrderer> [Note], wurde mit 2 neuen Argument erweitert. Consolen fähig.
+- +Kredite und Dauerauftragsmechanik hinzugefügt.
+- +Beim Trendlog Farbe verbessern, so soll pro Tag der höchste wert grün sein, der andere rot. Beide gleich, dann aqua
+- +TimeHandler fixen, siehe ASH
+- +GraficSpaceSymbol in config.yml zum einstellen von symbolen in Grafiken.
 
 Build 2 ============================================================================================================================
 - +Update auf 1.16.1

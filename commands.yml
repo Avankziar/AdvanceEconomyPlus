@@ -1,0 +1,684 @@
+Bypass:
+  LogOther: 'eco.cmd.money.logother'
+  FilterLogOther: 'eco.cmd.money.filterlogother'
+  TrendDiagramOther: 'eco.cmd.money.trenddiagramother'
+  TrendGraficOther: 'eco.cmd.money.trendgraficother'
+  TrendLogOther: 'eco.cmd.money.trendlogother'
+  Recomment: 'eco.cmd.bypass.recomment'
+  StandingOrderCreate: 'eco.cmd.bypass.standingorder.create'
+  StandingOrderInfo: 'eco.cmd.bypass.standingorder.info'
+  StandingOrderDelete: 'eco.cmd.bypass.standingorder.delete'
+  StandingOrderPause: 'eco.cmd.bypass.standingorder.pause'
+  StandingOrderList: 'eco.cmd.bypass.standingorder.list'
+  LoanCreate: 'eco.cmd.bypass.loan.create'
+  LoanForgive: 'eco.cmd.bypass.loan.forgive'
+  LoanInfo: 'eco.cmd.bypass.loan.info'
+  LoanList: 'eco.cmd.bypass.loan.list'
+  LoanPause: 'eco.cmd.bypass.loan.pause'
+  LoanTransfer: 'eco.cmd.bypass.loan.transfer'
+eco:
+  Name: 'econ'
+  Permission: 'eco.cmd.eco'
+  Suggestion: '/econ'
+  #Base and Info Command
+eco_deletelog:
+  Argument: 'deletelog'
+  Permission: 'eco.cmd.eco.deletelog'
+  Suggestion: '/econ deletelog <id>'
+  #Delete the log with the <id>
+eco_player:
+  Argument: 'player'
+  Permission: 'eco.cmd.eco.player'
+  Suggestion: '/econ player <player>'
+  #Show the players balance uuid etc.
+eco_recomment:
+  Argument: 'recomment'
+  Permission: 'eco.cmd.eco.recomment'
+  Suggestion: '/econ recomment <id> <message>'
+  #Rewrite a log entry.
+eco_:
+  Argument: ''
+  Permission: 'eco.cmd.eco.'
+  Suggestion: '/eco '
+  #
+money:
+  Name: 'money'
+  Permission: 'eco.cmd.money'
+  Suggestion: '/money'
+  #Display your balance
+  
+money_action:
+  Argument: 'action'
+  Permission: 'eco.cmd.money.action'
+  Suggestion: '/money log [pagenumber] [player]'
+  #Show the logs of all payments
+  
+money_action_diagram:
+  Argument: 'diagram'
+  Permission: 'eco.cmd.money.action.diagram'
+  Suggestion: '/money action diagram'
+  #Default cmd
+money_action_diagram_log:
+  Argument: 'log'
+  Permission: 'eco.cmd.money.action.diagram.log'
+  Suggestion: '/money action diagram log [pagenumber] [player]'
+  CommandString: '/money action diagram log '
+  #Show the logs of all payments in a diagram
+money_action_diagram_filterlog:
+  Argument: 'filterlog'
+  Permission: 'eco.cmd.money.action filterlog'
+  Suggestion: '/money diagram filterlog'
+  #Default Cmd
+
+money_action_diagram_filterlog_between:
+  Argument: 'between'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.between'
+  Suggestion: '/money action diagram filterlog between <min> <max> [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog between '
+  #Filters the log for specific sums that lie between the specified amounts.
+money_action_diagram_filterlog_comment:
+  Argument: 'comment'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.comment'
+  Suggestion: '/money action diagram filterlog comment <searchword> [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog comment '
+  #Filters the log for specific search words.
+money_action_diagram_filterlog_commentasc:
+  Argument: 'commentascending'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.commentascending'
+  Suggestion: '/money action diagram filterlog commentascending <searchword> [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog commentascending '
+  #Filters the log for specific search words, listed by total ascending.
+money_action_diagram_filterlog_commentdesc:
+  Argument: 'commentdescending'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.commentdescending'
+  Suggestion: '/money action diagram filterlog commentdescending <searchword> [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog commentdescending '
+  #Filters the log for specific search words, listed by total descending.
+money_action_diagram_filterlog_from:
+  Argument: 'from'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.from'
+  Suggestion: '/money action diagram filterlog from <searchword> [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog from '
+  #Filters the log for specific players/Npc/etc. from which the money came to you.
+money_action_diagram_filterlog_greaterthan:
+  Argument: 'greaterthan'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.greaterthan'
+  Suggestion: '/money action diagram filterlog greaterthan <value> [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog greaterthan '
+  #Filters the log for certain sums that are greater than the specified sum.
+money_action_diagram_filterlog_lessthan:
+  Argument: 'lessthan'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.lessthan'
+  Suggestion: '/money action diagram filterlog lessthan <value> [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog lessthan '
+  #Filters the log for certain sums that are smaller than the specified sum.
+money_action_diagram_filterlog_orderer:
+  Argument: 'orderer'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.orderer'
+  Suggestion: '/money action diagram filterlog orderer <searchword> [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog orderer '
+  #Filters the log for specific players/Npc/etc. who ordered the transfers.
+money_action_diagram_filterlog_sortasc:
+  Argument: 'sortascending'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.sortascending'
+  Suggestion: '/money action diagram filterlog sortascending [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog sortascending '
+  #Displays the log exactly like the basic command, but instead of time descending, total ascending.
+money_action_diagram_filterlog_sortdesc:
+  Argument: 'sortdescending'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.sortdescending'
+  Suggestion: '/money action diagram filterlog sortdescending [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog sortdescending '
+  #Displays the log in the same way as the basic command, but instead of Time descending, Sum descending.
+money_action_diagram_filterlog_to:
+  Argument: 'to'
+  Permission: 'eco.cmd.money.action.diagram.filterlog.to'
+  Suggestion: '/money action diagram filterlog to <searchword> [pagenumber] [player]'
+  CommandString: '/money action diagram filterlog to '
+  #Filters the log for certain players/Npc/etc. from whom the money came from you.
+  
+money_action_filterlog:
+  Argument: 'filterlog'
+  Permission: 'eco.cmd.money.action filterlog'
+  Suggestion: '/money filterlog'
+  #Default Cmd
+money_action_filterlog_between:
+  Argument: 'between'
+  Permission: 'eco.cmd.money.action.filterlog.between'
+  Suggestion: '/money action filterlog between <min> <max> [pagenumber] [player]'
+  CommandString: '/money action filterlog between '
+  #Filters the log for specific sums that lie between the specified amounts.
+money_action_filterlog_comment:
+  Argument: 'comment'
+  Permission: 'eco.cmd.money.action.filterlog.comment'
+  Suggestion: '/money action filterlog comment <searchword> [pagenumber] [player]'
+  CommandString: '/money action filterlog comment '
+  #Filters the log for specific search words.
+money_action_filterlog_commentasc:
+  Argument: 'commentascending'
+  Permission: 'eco.cmd.money.action.filterlog.commentascending'
+  Suggestion: '/money action filterlog commentascending <searchword> [pagenumber] [player]'
+  CommandString: '/money action filterlog commentascending '
+  #Filters the log for specific search words, listed by total ascending.
+money_action_filterlog_commentdesc:
+  Argument: 'commentdescending'
+  Permission: 'eco.cmd.money.action.filterlog.commentdescending'
+  Suggestion: '/money action filterlog commentdescending <searchword> [pagenumber] [player]'
+  CommandString: '/money action filterlog commentdescending '
+  #Filters the log for specific search words, listed by total descending.
+money_action_filterlog_from:
+  Argument: 'from'
+  Permission: 'eco.cmd.money.action.filterlog.from'
+  Suggestion: '/money action filterlog from <searchword> [pagenumber] [player]'
+  CommandString: '/money action filterlog from '
+  #Filters the log for specific players/Npc/etc. from which the money came to you.
+money_action_filterlog_greaterthan:
+  Argument: 'greaterthan'
+  Permission: 'eco.cmd.money.action.filterlog.greaterthan'
+  Suggestion: '/money action filterlog greaterthan <value> [pagenumber] [player]'
+  CommandString: '/money action filterlog greaterthan '
+  #Filters the log for certain sums that are greater than the specified sum.
+money_action_filterlog_lessthan:
+  Argument: 'lessthan'
+  Permission: 'eco.cmd.money.action.filterlog.lessthan'
+  Suggestion: '/money action filterlog lessthan <value> [pagenumber] [player]'
+  CommandString: '/money action filterlog lessthan '
+  #Filters the log for certain sums that are smaller than the specified sum.
+money_action_filterlog_orderer:
+  Argument: 'orderer'
+  Permission: 'eco.cmd.money.action.filterlog.orderer'
+  Suggestion: '/money action filterlog orderer <searchword> [pagenumber] [player]'
+  CommandString: '/money action filterlog orderer '
+  #Filters the log for specific players/Npc/etc. who ordered the transfers.
+money_action_filterlog_sortasc:
+  Argument: 'sortascending'
+  Permission: 'eco.cmd.money.action.filterlog.sortascending'
+  Suggestion: '/money action filterlog sortascending [pagenumber] [player]'
+  CommandString: '/money action filterlog sortascending '
+  #Displays the log exactly like the basic command, but instead of time descending, total ascending.
+money_action_filterlog_sortdesc:
+  Argument: 'sortdescending'
+  Permission: 'eco.cmd.money.action.filterlog.sortdescending'
+  Suggestion: '/money action filterlog sortdescending [pagenumber] [player]'
+  CommandString: '/money action filterlog sortdescending '
+  #Displays the log in the same way as the basic command, but instead of Time descending, Sum descending.
+money_action_filterlog_to:
+  Argument: 'to'
+  Permission: 'eco.cmd.money.action.filterlog.to'
+  Suggestion: '/money action filterlog to <searchword> [pagenumber] [player]'
+  CommandString: '/money action filterlog to '
+  #Filters the log for certain players/Npc/etc. from whom the money came from you.
+  
+money_action_grafic:
+  Argument: 'grafic'
+  Permission: 'eco.cmd.money.action.grafic'
+  Suggestion: '/money action grafic'
+  #Default cmd
+money_action_grafic_log:
+  Argument: 'log'
+  Permission: 'eco.cmd.money.action.grafic.log'
+  Suggestion: '/money action grafic log [pagenumber] [player]'
+  CommandString: '/money action grafic log '
+  #Show the logs of all payments in a grafic
+money_action_grafic_filterlog:
+  Argument: 'filterlog'
+  Permission: 'eco.cmd.money.action.grafic.filterlog'
+  Suggestion: '/money grafic filterlog'
+  #Default Cmd
+  
+money_action_grafic_filterlog_between:
+  Argument: 'between'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.between'
+  Suggestion: '/money action grafic filterlog between <min> <max> [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog between '
+  #Filters the log for specific sums that lie between the specified amounts.
+money_action_grafic_filterlog_comment:
+  Argument: 'comment'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.comment'
+  Suggestion: '/money action grafic filterlog comment <searchword> [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog comment '
+  #Filters the log for specific search words.
+money_action_grafic_filterlog_commentasc:
+  Argument: 'commentascending'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.commentascending'
+  Suggestion: '/money action grafic filterlog commentascending <searchword> [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog commentascending '
+  #Filters the log for specific search words, listed by total ascending.
+money_action_grafic_filterlog_commentdesc:
+  Argument: 'commentdescending'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.commentdescending'
+  Suggestion: '/money action grafic filterlog commentdescending <searchword> [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog commentdescending '
+  #Filters the log for specific search words, listed by total descending.
+money_action_grafic_filterlog_from:
+  Argument: 'from'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.from'
+  Suggestion: '/money action grafic filterlog from <searchword> [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog from '
+  #Filters the log for specific players/Npc/etc. from which the money came to you.
+money_action_grafic_filterlog_greaterthan:
+  Argument: 'greaterthan'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.greaterthan'
+  Suggestion: '/money action grafic filterlog greaterthan <value> [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog greaterthan '
+  #Filters the log for certain sums that are greater than the specified sum.
+money_action_grafic_filterlog_lessthan:
+  Argument: 'lessthan'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.lessthan'
+  Suggestion: '/money action grafic filterlog lessthan <value> [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog lessthan '
+  #Filters the log for certain sums that are smaller than the specified sum.
+money_action_grafic_filterlog_orderer:
+  Argument: 'orderer'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.orderer'
+  Suggestion: '/money action grafic filterlog orderer <searchword> [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog orderer '
+  #Filters the log for specific players/Npc/etc. who ordered the transfers.
+money_action_grafic_filterlog_sortasc:
+  Argument: 'sortascending'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.sortascending'
+  Suggestion: '/money action grafic filterlog sortascending [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog sortascending '
+  #Displays the log exactly like the basic command, but instead of time descending, total ascending.
+money_action_grafic_filterlog_sortdesc:
+  Argument: 'sortdescending'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.sortdescending'
+  Suggestion: '/money action grafic filterlog sortdescending [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog sortdescending '
+  #Displays the log in the same way as the basic command, but instead of Time descending, Sum descending.
+money_action_grafic_filterlog_to:
+  Argument: 'to'
+  Permission: 'eco.cmd.money.action.grafic.filterlog.to'
+  Suggestion: '/money action grafic filterlog to <searchword> [pagenumber] [player]'
+  CommandString: '/money action grafic filterlog to '
+  #Filters the log for certain players/Npc/etc. from whom the money came from you.
+  
+money_action_log:
+  Argument: 'log'
+  Permission: 'eco.cmd.money.action.log'
+  Suggestion: '/money action log [pagenumber] [player]'
+  CommandString: '/money action log '
+  #Show the logs of all payments
+  
+money_freeze:
+  Argument: 'freeze'
+  Permission: 'eco.cmd.money.freeze'
+  Suggestion: '/money freeze <player>'
+  #Freeze the playeraccount
+money_give:
+  Argument: 'give'
+  Permission: 'eco.cmd.money.give'
+  Suggestion: '/money give <player> <value> <customTo> <customOrderer> [note]'
+  #Give the player from the void money
+  #customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)
+  #customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.
+  
+money_loan:
+  Argument: 'loan'
+  Permission: 'eco.cmd.money.loan'
+  Suggestion: '/money loan'
+  #Default Command
+money_loan_accept:
+  Argument: 'accept'
+  Permission: 'eco.cmd.money.loan.accept'
+  Suggestion: '/money loan accept [confirm]'
+  #Accept the loanproposal from the other player. #AFK, was anderes nachschauen
+money_loan_amount:
+  Argument: 'amount'
+  Permission: 'eco.cmd.money.loan.amount'
+  Suggestion: '/money loan amount <totalamount> <amountratio> <interest>'
+  #Set to a loan in workprogress the totalamount, amountratio and interest.
+money_loan_cancel:
+  Argument: 'cancel'
+  Permission: 'eco.cmd.money.loan.cancel'
+  Suggestion: '/money loan cancel'
+  #Cancel the loan in workprogress.
+money_loan_create:
+  Argument: 'create'
+  Permission: 'eco.cmd.money.loan.create'
+  Suggestion: '/money loan create <name> <from> <to>'
+  #Create a work in progress loanproposal
+money_loan_forgive:
+  Argument: 'forgive'
+  Permission: 'eco.cmd.money.loan.forgive'
+  Suggestion: '/money loan forgive <id> [confirm]'
+  #Forgive the restamount of the loan.
+money_loan_info:
+  Argument: 'info'
+  Permission: 'eco.cmd.money.loan.info'
+  Suggestion: '/money loan info [id]'
+  #Show all info to a loan. By no id, than is the work in progress debt
+money_loan_inherit:
+  Argument: 'inherit'
+  Permission: 'eco.cmd.money.loan.inherit'
+  Suggestion: '/money loan inherit <id> <playername>'
+  #Let the player inherit the loans to pay. Admincommand to inherit loans to player whitch cheats with a second acc.
+money_loan_list:
+  Argument: 'list'
+  Permission: 'eco.cmd.money.loan.list'
+  Suggestion: '/money loan list [page]'
+  CommandString: '/money loan list '
+  #Show a list of all loans of all the player
+money_loan_pause:
+  Argument: 'pause'
+  Permission: 'eco.cmd.money.loan.pause'
+  Suggestion: '/money loan pause <id>'
+  #Pause or unpause a loanrepayment
+money_loan_payback:
+  Argument: 'payback'
+  Permission: 'eco.cmd.money.loan.payback'
+  Suggestion: '/money loan payback <id>'
+  #As admin payback the rest amount to the player.
+money_loan_reject:
+  Argument: 'reject'
+  Permission: 'eco.cmd.money.loan.reject'
+  Suggestion: '/money loan reject'
+  #Reject a loan proposal
+money_loan_repay:
+  Argument: 'repay'
+  Permission: 'eco.cmd.money.loan.repay'
+  Suggestion: '/money loan repay <id> <amount>'
+  #Repay the amount to a loan.
+money_loan_send:
+  Argument: 'send'
+  Permission: 'eco.cmd.money.loan.send'
+  Suggestion: '/money loan send <player>'
+  #Send the player a loan proposal
+money_loan_time:
+  Argument: 'time'
+  Permission: 'eco.cmd.money.loan.time'
+  Suggestion: '/money loan time <starttime> <endtime> <repeatingtime>'
+  #Set the times. Starttime and Endtime in <dd.MM.yyyy-HH:mm> and RepeatingTime in <dd-HH:mm> format
+money_loan_transfer:
+  Argument: 'transfer'
+  Permission: 'eco.cmd.money.loan.transfer'
+  Suggestion: '/money loan transfer <id> <player>'
+  #Transfer the ownerstatus of your loan to the other player.
+money_loans:
+  Argument: 'loans'
+  Permission: 'eco.cmd.money.loans'
+  Suggestion: '/money loans [page] [player]'
+  CommandString: '/money loans '
+  #Show loans of the player
+  #Commandstring is use interns for a page-of System.
+  
+money_pay:
+  Argument: 'pay'
+  Permission: 'eco.cmd.money.pay'
+  Suggestion: '/money pay <player> <value> [note]'
+  #Player to player paying
+money_set:
+  Argument: 'set'
+  Permission: 'eco.cmd.money.set'
+  Suggestion: '/money set <player> <value> <customTo> <customOrderer> [note]'
+  #Set the balance of the player. 
+  #customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)
+  #customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.
+  
+money_standingorder:
+  Argument: 'standingorder'
+  Permission: 'eco.cmd.money.standingorder'
+  Suggestion: '/money standingorder'
+  #Default cmd
+money_standingorder_amount:
+  Argument: 'amount'
+  Permission: 'eco.cmd.money.standingorder.amount'
+  Suggestion: '/money standingorder amount <amount>'
+  #Set to a waiting standingorder the amount
+money_standingorder_cancel:
+  Argument: 'cancel'
+  Permission: 'eco.cmd.money.standingorder.cancel'
+  Suggestion: '/money standingorder cancel'
+  #Cancel the waiting standing order.
+money_standingorder_create:
+  Argument: 'create'
+  Permission: 'eco.cmd.money.standingorder.create'
+  Suggestion: '/money standingorder create <name> <from> <to>'
+  #Create a Standingorder. Additional Settings must be set.
+money_standingorder_delete:
+  Argument: 'delete'
+  Permission: 'eco.cmd.money.standingorder.delete'
+  Suggestion: '/money standingorder delete <id>'
+  #Delete the standing order.
+money_standingorder_info:
+  Argument: 'info'
+  Permission: 'eco.cmd.money.standingorder.info'
+  Suggestion: '/money standingorder info [id]'
+  #Show Infos about standingorder.
+money_standingorder_list:
+  Argument: 'list'
+  Permission: 'eco.cmd.money.standingorder.list'
+  Suggestion: '/money standingorder list [page] [player]'
+  CommandString: '/money standingorder list '
+  #Show a list of all standingorders from the player.
+money_standingorder_pause:
+  Argument: 'pause'
+  Permission: 'eco.cmd.money.standingorder.pause'
+  Suggestion: '/money standingorder pause <id>'
+  #Paused a standingorder or cancelled the cancelstatus.
+money_standingorder_repeatingtime:
+  Argument: 'repeatingtime'
+  Permission: 'eco.cmd.money.standingorder.repeatingtime'
+  Suggestion: '/money standingorder repeatingtime <dd-HH:mm value>'
+  #Set the repeating time of the waiting standing order. Must use the specific >dd-HH:mm< Pattern. For example 01-23:50 for 1 day, 23 hours and 50 seconds
+money_standingorder_starttime:
+  Argument: 'starttime'
+  Permission: 'eco.cmd.money.standingorder.starttime'
+  Suggestion: '/money standingorder starttime <dd.MM.yyyy-HH:mm value>'
+  #Set the starttime in <dd.MM.yyyy-HH:mm> format.
+  
+money_take:
+  Argument: 'take'
+  Permission: 'eco.cmd.money.take'
+  Suggestion: '/money take <player> <value> <customTo> <customOrderer> [note]'
+  #Take the money from a player in the void
+  #customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)
+  #customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.
+money_toggle:
+  Argument: 'toggle'
+  Permission: 'eco.cmd.money.toggle'
+  Suggestion: '/money toggle'
+  #Toggle to see money payment messages
+money_top:
+  Argument: 'top'
+  Permission: 'eco.cmd.money.top'
+  Suggestion: '/money top [pagenumber]'
+  #Show the top balance players
+  
+money_trend:
+  Argument: 'trend'
+  Permission: 'eco.cmd.money.trend'
+  Suggestion: '/money trend'
+  #Default cmd
+  
+money_trend_diagram:
+  Argument: 'diagram'
+  Permission: 'eco.cmd.money.trenddiagram'
+  Suggestion: '/money trend diagram'
+  CommandString: '/money trend diagram '
+  #Default Command
+money_trend_diagram_log:
+  Argument: 'log'
+  Permission: 'eco.cmd.money.trend.diagram.log'
+  Suggestion: '/money trend diagram log [page] [player]'
+  CommandString: '/money trend diagram log '
+  #Show the diagram of the normal trend log
+  
+money_trend_diagram_filterlog:
+  Argument: 'filterlog'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog'
+  Suggestion: '/money trend diagram filterlog'
+  #Default command
+money_trend_diagram_filterlog_between:
+  Argument: 'between'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.between'
+  Suggestion: '/money trend diagram filterlog between <min> <max> [page] [player]'
+  CommandString: '/money trend diagram filterlog between '
+  #Shows a diagram from the filterlog between
+money_trend_diagram_filterlog_greatherthan:
+  Argument: 'greatherthan'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.greatherthan'
+  Suggestion: '/money trend diagram filterlog greatherthan <value> [page] [player]'
+  CommandString: '/money trend diagram filterlog greatherthan '
+  #Shows a diagram from the filterlog greatherthan
+money_trend_diagram_filterlog_lessthan:
+  Argument: 'lessthan'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.lessthan'
+  Suggestion: '/money trend diagram filterlog lessthan <value> [page] [player]'
+  CommandString: '/money trend diagram filterlog lessthan '
+  #Shows a diagram from the filterlog lessthan
+money_trend_diagram_filterlog_sortascending:
+  Argument: 'sortascending'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.sortascending'
+  Suggestion: '/money trend diagram filterlog sortascending [page] [player]'
+  CommandString: '/money trend diagram filterlog sortascending '
+  #Shows a diagram from the filterlog sortascending
+money_trend_diagram_filterlog_sortdescending:
+  Argument: 'sortdescending'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.sortdescending'
+  Suggestion: '/money trend diagram filterlog sortdescending [page] [player]'
+  CommandString: '/money trend diagram filterlog sortdescending '
+  #Shows a diagram from the filterlog sortdescending
+money_trend_diagram_filterlog_standascending:
+  Argument: 'standascending'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.standascending'
+  Suggestion: '/money trend diagram filterlog standascending [page] [player]'
+  CommandString: '/money trend diagram filterlog standascending '
+  #Shows a diagram from the filterlog standascending
+money_trend_diagram_filterlog_standdescending:
+  Argument: 'standdescending'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.standdescending'
+  Suggestion: '/money trend diagram filterlog standdescending [page] [player]'
+  CommandString: '/money trend diagram filterlog standdescending '
+  #Shows a diagram from the filterlog standdescending
+  
+money_trend_filterlog:
+  Argument: 'filterlog'
+  Permission: 'eco.cmd.money.trend.filterlog'
+  Suggestion: '/money trend filterlog'
+  #Default Command.
+money_trend_filterlog_between:
+  Argument: 'between'
+  Permission: 'eco.cmd.money.trend.filterlog.between'
+  Suggestion: '/money trend filterlog between [page] [player]'
+  CommandString: '/money trend filterlog between '
+  #Shows a log from the filterlog between
+money_trend_filterlog_greatherthan:
+  Argument: 'greatherthan'
+  Permission: 'eco.cmd.money.trend.filterlog.greatherthan'
+  Suggestion: '/money trend filterlog greatherthan <value> [page] [player]'
+  CommandString: '/money trend filterlog greatherthan '
+  #Shows a log from the filterlog greatherthan
+money_trend_filterlog_lessthan:
+  Argument: 'lessthan'
+  Permission: 'eco.cmd.money.trend.filterlog.lessthan'
+  Suggestion: '/money trend filterlog lessthan <value> [page] [player]'
+  CommandString: '/money trend filterlog lessthan '
+  #Shows a log from the filterlog lessthan
+money_trend_filterlog_sortascending:
+  Argument: 'sortascending'
+  Permission: 'eco.cmd.money.trend.filterlog.sortascending'
+  Suggestion: '/money trend filterlog sortascending [page] [player]'
+  CommandString: '/money trend filterlog sortascending '
+  #Shows a log from the filterlog sortascending
+money_trend_filterlog_sortdescending:
+  Argument: 'sortdescending'
+  Permission: 'eco.cmd.money.trend.filterlog.sortdescending'
+  Suggestion: '/money trend filterlog sortdescending [page] [player]'
+  CommandString: '/money trend filterlog sortdescending '
+  #Shows a log from the filterlog sortdescending
+money_trend_filterlog_standascending:
+  Argument: 'standascending'
+  Permission: 'eco.cmd.money.trend.filterlog.standascending'
+  Suggestion: '/money trend filterlog standascending [page] [player]'
+  CommandString: '/money trend filterlog standascending '
+  #Shows a log from the filterlog standascending
+money_trend_filterlog_standdescending:
+  Argument: 'standdescending'
+  Permission: 'eco.cmd.money.trend.filterlog.standdescending'
+  Suggestion: '/money trend filterlog standdescending [page] [player]'
+  CommandString: '/money trend filterlog standdescending '
+  #Shows a log from the filterlog standdescending
+  
+money_trend_grafic:
+  Argument: 'grafic'
+  Permission: 'eco.cmd.money.trend.grafic'
+  Suggestion: '/money trend grafic'
+  CommandString: '/money trend grafic '
+  #Default Command.
+money_trend_grafic_log:
+  Argument: 'log'
+  Permission: 'eco.cmd.money.trend.grafic.log'
+  Suggestion: '/money trend grafic log [page] [player]'
+  CommandString: '/money trend grafic log '
+  #Shows the grafic of the normal trend log.
+money_trend_grafic_filterlog:
+  Argument: 'filterlog'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog'
+  Suggestion: '/money trend grafic filterlog'
+  #Default command
+money_trend_grafic_filterlog_between:
+  Argument: 'between'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.between'
+  Suggestion: '/money trend grafic filterlog between [page] [player]'
+  CommandString: '/money trend grafic filterlog between '
+  #Shows a grafic from the filterlog between
+money_trend_grafic_filterlog_greatherthan:
+  Argument: 'greatherthan'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.greatherthan'
+  Suggestion: '/money trend grafic filterlog greatherthan <value> [page] [player]'
+  CommandString: '/money trend grafic filterlog greatherthan '
+  #Shows a grafic from the filterlog greatherthan
+money_trend_grafic_filterlog_lessthan:
+  Argument: 'lessthan'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.lessthan'
+  Suggestion: '/money trend grafic filterlog lessthan <value> [page] [player]'
+  CommandString: '/money trend grafic filterlog lessthan '
+  #Shows a grafic from the filterlog lessthan
+money_trend_grafic_filterlog_sortascending:
+  Argument: 'sortascending'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.sortascending'
+  Suggestion: '/money trend grafic filterlog sortascending [page] [player]'
+  CommandString: '/money trend grafic filterlog sortascending '
+  #Shows a grafic from the filterlog sortascending
+money_trend_grafic_filterlog_sortdescending:
+  Argument: 'sortdescending'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.sortdescending'
+  Suggestion: '/money trend grafic filterlog sortdescending [page] [player]'
+  CommandString: '/money trend grafic filterlog sortdescending '
+  #Shows a grafic from the filterlog sortdescending
+money_trend_grafic_filterlog_standascending:
+  Argument: 'standascending'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.standascending'
+  Suggestion: '/money trend grafic filterlog standascending [page] [player]'
+  CommandString: '/money trend grafic filterlog standascending '
+  #Shows a grafic from the filterlog standascending
+money_trend_grafic_filterlog_standdescending:
+  Argument: 'standdescending'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.standdescending'
+  Suggestion: '/money trend grafic filterlog standdescending [page] [player]'
+  CommandString: '/money trend grafic filterlog standdescending '
+  #Shows a grafic from the filterlog standdescending
+  
+money_trend_log:
+  Argument: 'log'
+  Permission: 'eco.cmd.money.trendlog'
+  Suggestion: '/money trend log [pagenumber] [player]'
+  CommandString: '/money trend log '
+  #Shows the trend log. Newest first.
+  
+money_:
+  Argument: ''
+  Permission: 'eco.cmd.money.'
+  Suggestion: '/money '
+  #
+bank:
+  Name: 'bank'
+  Permission: 'eco.cmd.bank'
+  Suggestion: '/bank'
+  #
+bank_:
+  Argument: ''
+  Permission: 'eco.cmd.money.'
+  Suggestion: '/bank '
+  #
