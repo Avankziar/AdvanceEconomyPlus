@@ -82,13 +82,13 @@ money_action_diagram_filterlog_comment:
   Suggestion: '/money action diagram filterlog comment <searchword> [pagenumber] [player]'
   CommandString: '/money action diagram filterlog comment '
   #Filters the log for specific search words.
-money_action_diagram_filterlog_commentasc:
+money_action_diagram_filterlog_commentascending:
   Argument: 'commentascending'
   Permission: 'eco.cmd.money.action.diagram.filterlog.commentascending'
   Suggestion: '/money action diagram filterlog commentascending <searchword> [pagenumber] [player]'
   CommandString: '/money action diagram filterlog commentascending '
   #Filters the log for specific search words, listed by total ascending.
-money_action_diagram_filterlog_commentdesc:
+money_action_diagram_filterlog_commentdescending:
   Argument: 'commentdescending'
   Permission: 'eco.cmd.money.action.diagram.filterlog.commentdescending'
   Suggestion: '/money action diagram filterlog commentdescending <searchword> [pagenumber] [player]'
@@ -139,7 +139,7 @@ money_action_diagram_filterlog_to:
   
 money_action_filterlog:
   Argument: 'filterlog'
-  Permission: 'eco.cmd.money.action filterlog'
+  Permission: 'eco.cmd.money.action.filterlog'
   Suggestion: '/money filterlog'
   #Default Cmd
 money_action_filterlog_between:
@@ -154,13 +154,13 @@ money_action_filterlog_comment:
   Suggestion: '/money action filterlog comment <searchword> [pagenumber] [player]'
   CommandString: '/money action filterlog comment '
   #Filters the log for specific search words.
-money_action_filterlog_commentasc:
+money_action_filterlog_commentascending:
   Argument: 'commentascending'
   Permission: 'eco.cmd.money.action.filterlog.commentascending'
   Suggestion: '/money action filterlog commentascending <searchword> [pagenumber] [player]'
   CommandString: '/money action filterlog commentascending '
   #Filters the log for specific search words, listed by total ascending.
-money_action_filterlog_commentdesc:
+money_action_filterlog_commentdescending:
   Argument: 'commentdescending'
   Permission: 'eco.cmd.money.action.filterlog.commentdescending'
   Suggestion: '/money action filterlog commentdescending <searchword> [pagenumber] [player]'
@@ -238,13 +238,13 @@ money_action_grafic_filterlog_comment:
   Suggestion: '/money action grafic filterlog comment <searchword> [pagenumber] [player]'
   CommandString: '/money action grafic filterlog comment '
   #Filters the log for specific search words.
-money_action_grafic_filterlog_commentasc:
+money_action_grafic_filterlog_commentascending:
   Argument: 'commentascending'
   Permission: 'eco.cmd.money.action.grafic.filterlog.commentascending'
   Suggestion: '/money action grafic filterlog commentascending <searchword> [pagenumber] [player]'
   CommandString: '/money action grafic filterlog commentascending '
   #Filters the log for specific search words, listed by total ascending.
-money_action_grafic_filterlog_commentdesc:
+money_action_grafic_filterlog_commentdescending:
   Argument: 'commentdescending'
   Permission: 'eco.cmd.money.action.grafic.filterlog.commentdescending'
   Suggestion: '/money action grafic filterlog commentdescending <searchword> [pagenumber] [player]'
@@ -274,13 +274,13 @@ money_action_grafic_filterlog_orderer:
   Suggestion: '/money action grafic filterlog orderer <searchword> [pagenumber] [player]'
   CommandString: '/money action grafic filterlog orderer '
   #Filters the log for specific players/Npc/etc. who ordered the transfers.
-money_action_grafic_filterlog_sortasc:
+money_action_grafic_filterlog_sortascending:
   Argument: 'sortascending'
   Permission: 'eco.cmd.money.action.grafic.filterlog.sortascending'
   Suggestion: '/money action grafic filterlog sortascending [pagenumber] [player]'
   CommandString: '/money action grafic filterlog sortascending '
   #Displays the log exactly like the basic command, but instead of time descending, total ascending.
-money_action_grafic_filterlog_sortdesc:
+money_action_grafic_filterlog_sortdescending:
   Argument: 'sortdescending'
   Permission: 'eco.cmd.money.action.grafic.filterlog.sortdescending'
   Suggestion: '/money action grafic filterlog sortdescending [pagenumber] [player]'
@@ -517,7 +517,7 @@ money_trend_diagram_filterlog_between:
   #Shows a diagram from the filterlog between
 money_trend_diagram_filterlog_greatherthan:
   Argument: 'greatherthan'
-  Permission: 'eco.cmd.money.trend.diagram.filterlog.greatherthan'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.greaterthan'
   Suggestion: '/money trend diagram filterlog greatherthan <value> [page] [player]'
   CommandString: '/money trend diagram filterlog greatherthan '
   #Shows a diagram from the filterlog greatherthan
@@ -565,7 +565,7 @@ money_trend_filterlog_between:
   #Shows a log from the filterlog between
 money_trend_filterlog_greatherthan:
   Argument: 'greatherthan'
-  Permission: 'eco.cmd.money.trend.filterlog.greatherthan'
+  Permission: 'eco.cmd.money.trend.filterlog.greaterthan'
   Suggestion: '/money trend filterlog greatherthan <value> [page] [player]'
   CommandString: '/money trend filterlog greatherthan '
   #Shows a log from the filterlog greatherthan
@@ -623,7 +623,7 @@ money_trend_grafic_filterlog_between:
   Suggestion: '/money trend grafic filterlog between [page] [player]'
   CommandString: '/money trend grafic filterlog between '
   #Shows a grafic from the filterlog between
-money_trend_grafic_filterlog_greatherthan:
+money_trend_grafic_filterlog_greaterthan:
   Argument: 'greatherthan'
   Permission: 'eco.cmd.money.trend.grafic.filterlog.greatherthan'
   Suggestion: '/money trend grafic filterlog greatherthan <value> [page] [player]'
@@ -662,7 +662,7 @@ money_trend_grafic_filterlog_standdescending:
   
 money_trend_log:
   Argument: 'log'
-  Permission: 'eco.cmd.money.trendlog'
+  Permission: 'eco.cmd.money.trend.log'
   Suggestion: '/money trend log [pagenumber] [player]'
   CommandString: '/money trend log '
   #Shows the trend log. Newest first.

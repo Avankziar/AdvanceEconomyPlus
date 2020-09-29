@@ -6,7 +6,7 @@ api-version: 1.16
 description: a Economy-Plugin
 author: Avankziar
 depend: [Vault]
-softdepend: [ChestShop,HeadDatabase]
+softdepend: [ChestShop,JobsReborn,HeadDatabase,QuickShop]
 commands:
   econ:
     description: base admin and info command

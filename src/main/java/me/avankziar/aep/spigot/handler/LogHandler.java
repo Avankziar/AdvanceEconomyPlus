@@ -361,10 +361,34 @@ public class LogHandler
 		while(i<=list.size()-1)
 		{
 			ActionLogger tl = list.get(i);
-			String message = "&e"+tl.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))+": ";
+			String message = "&e"+tl.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy dd:mm"))+": ";
 			final int firstlength = message.length();
-			double percent = (tl.getAmount()/hpercent)*100;
-			int greenBlocks = 10+(int) Utility.round((tl.getAmount()/hpercent)*10,0);
+			double amount = 0;
+			if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
+			{
+				//positiv
+				amount = tl.getAmount();
+			} else
+			{
+				if(MatchApi.isBankAccountNumber(tl.getToUUIDOrNumber()))
+				{
+					//negativ
+					amount = -tl.getAmount();
+				} else
+				{
+					if(tl.getFromUUIDOrNumber().equals(eco.getUUID()))
+					{
+						//negativ
+						amount = -tl.getAmount();
+					} else
+					{
+						//positiv
+						amount = tl.getAmount();
+					}
+				}
+			}
+			double percent = (amount/hpercent)*100;
+			int greenBlocks = 10+(int) Utility.round((amount/hpercent)*10,0);
 			int redBlocks = 20-greenBlocks;
 			if(greenBlocks > 20)
 			{
@@ -380,17 +404,17 @@ public class LogHandler
 			message = StringUtils.rightPad(message, message.length()+redBlocks*3, "&c█");
 			final int secondlength = (message.length()-firstlength)/2;
 			message = message.substring(0, firstlength+secondlength)+"&f|"+message.substring(firstlength+secondlength);
-			if(MatchApi.isPositivNumber(tl.getAmount()))
+			if(MatchApi.isPositivNumber(amount))
 			{
 				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Positiv")
-						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(tl.getAmount()))
+						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(amount))
 						.replace("%percent%", AdvancedEconomyPlus.getVaultApi().format(percent))));
 			} else
 			{
 				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Negativ")
-						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(tl.getAmount()))
+						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(amount))
 						.replace("%percent%", AdvancedEconomyPlus.getVaultApi().format(percent))));
 			}
 			i++;
@@ -405,20 +429,44 @@ public class LogHandler
 		double minamount = 0.0;
 		int safeline = -1;
 		int i = 0;
+		double amount = 0;
 		while(i<list.size())
 		{
 			ActionLogger el  = list.get(i);
+			if(MatchApi.isBankAccountNumber(el.getFromUUIDOrNumber()))
+			{
+				//positiv
+				amount = el.getAmount();
+			} else
+			{
+				if(MatchApi.isBankAccountNumber(el.getToUUIDOrNumber()))
+				{
+					//negativ
+					amount = -el.getAmount();
+				} else
+				{
+					if(el.getFromUUIDOrNumber().equals(eco.getUUID()))
+					{
+						//negativ
+						amount = -el.getAmount();
+					} else
+					{
+						//positiv
+						amount = el.getAmount();
+					}
+				}
+			}
 			if(i == 0)
 			{
-				minamount = el.getAmount();
+				minamount = amount;
 			}
-			if(minamount > el.getAmount())
+			if(minamount > amount)
 			{
-				minamount = el.getAmount();
+				minamount = amount;
 			}
-			if(maxamount < el.getAmount())
+			if(maxamount < amount)
 			{
-				maxamount = el.getAmount();
+				maxamount = amount;
 			}
 			i++;
 		} 
@@ -451,7 +499,30 @@ public class LogHandler
 		while(i>=0)
 		{
 			ActionLogger tl = list.get(i);
-			double median = tl.getAmount();
+			double median = 0;
+			if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
+			{
+				//positiv
+				median = tl.getAmount();
+			} else
+			{
+				if(MatchApi.isBankAccountNumber(tl.getToUUIDOrNumber()))
+				{
+					//negativ
+					median = -tl.getAmount();
+				} else
+				{
+					if(tl.getFromUUIDOrNumber().equals(eco.getUUID()))
+					{
+						//negativ
+						median = -tl.getAmount();
+					} else
+					{
+						//positiv
+						median = tl.getAmount();
+					}
+				}
+			}
 			safeline = (int) Utility.round(((maxamount-median)/hpercent)*10,0);
 			if(safeline > 10)
 			{
@@ -667,7 +738,7 @@ public class LogHandler
 			lastpage = true;
 		}
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.Headline")
-				.replace("%name%", eco.getName())
+				.replace("%player%", eco.getName())
 				.replace("%amount%", String.valueOf(last))));
 		for(TrendLogger tl : list)
 		{

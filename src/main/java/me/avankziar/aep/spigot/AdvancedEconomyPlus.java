@@ -349,9 +349,9 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				2, 4, 6, false, playerMapV);
 		ArgumentConstructor action_fl_c = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_comment",
 				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_casc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_commentasc",
+		ArgumentConstructor action_fl_casc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_commentascending",
 				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_cdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_commentdesc",
+		ArgumentConstructor action_fl_cdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_commentdescending",
 				2, 3, 5, false, playerMapIV);
 		ArgumentConstructor action_fl_f = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_from",
 				2, 3, 5, false, playerMapIV);
@@ -361,13 +361,14 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				2, 3, 5, false, playerMapIV);
 		ArgumentConstructor action_fl_o = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_orderer",
 				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_sasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_sortasc",
+		ArgumentConstructor action_fl_sasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_sortascending",
 				2, 2, 4, false, playerMapIII);
-		ArgumentConstructor action_fl_sdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_sortdesc",
+		ArgumentConstructor action_fl_sdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_sortdescending",
 				2, 2, 4, false, playerMapIII);
 		ArgumentConstructor action_fl_t = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_to",
 				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog", 1, 1, 1, false, null,
+		ArgumentConstructor action_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog",
+				1, 1, 1, false, null,
 				action_fl_bw, action_fl_c, action_fl_casc, action_fl_cdesc,
 				action_fl_f, action_fl_gt, action_fl_lt,
 				action_fl_o, action_fl_sasc, action_fl_sdesc, action_fl_t);
@@ -454,7 +455,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		
 		ArgumentConstructor trend_diagram_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_between",
 				3, 5, 7, false, null);
-		ArgumentConstructor trend_diagram_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_greatherthan",
+		ArgumentConstructor trend_diagram_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_greaterthan",
 				3, 4, 6, false, null);
 		ArgumentConstructor trend_diagram_fl_lt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_lessthan",
 				3, 4, 6, false, null);
@@ -478,7 +479,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		
 		ArgumentConstructor trend_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_between",
 				2, 4, 6, false, null);
-		ArgumentConstructor trend_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_greatherthan",
+		ArgumentConstructor trend_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_greaterthan",
 				2, 3, 5, false, null);
 		ArgumentConstructor trend_fl_lt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_lessthan",
 				2, 3, 5, false, null);
@@ -496,7 +497,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		
 		ArgumentConstructor trend_grafic_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_between",
 				3, 5, 7, false, null);
-		ArgumentConstructor trend_grafic_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_greatherthan",
+		ArgumentConstructor trend_grafic_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_greaterthan",
 				3, 4, 6, false, null);
 		ArgumentConstructor trend_grafic_fl_lt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_lessthan",
 				3, 4, 6, false, null);
@@ -525,7 +526,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		CommandConstructor money = new CommandConstructor(plugin, baseCommandII, false,
 				action, loan, loans, freeze, give, pay, set, storder, take, toggle, top, trend);
 		
-		CommandConstructor bank = new CommandConstructor(plugin, baseCommandIII, false);
+		//CommandConstructor bank = new CommandConstructor(plugin, baseCommandIII, false);
 		
 		registerCommand(eco.getPath(), eco.getName());
 		getCommand(eco.getName()).setExecutor(new EcoCommandExecutor(plugin, eco));
@@ -572,8 +573,9 @@ public class AdvancedEconomyPlus extends JavaPlugin
 						trend_grafic, trend_grafic_log,
 							trend_grafic_fl, trend_grafic_fl_bw, trend_grafic_fl_gt, trend_grafic_fl_lt,
 								trend_grafic_fl_soasc, trend_grafic_fl_sodesc, trend_grafic_fl_stasc, trend_grafic_fl_stdesc,
-						trend_log,
-				bank);
+						trend_log//,
+				//bank
+				);
 		
 		new ARGEcoDeleteLog(plugin, deletelog);
 		new ARGEcoPlayer(plugin, player);
