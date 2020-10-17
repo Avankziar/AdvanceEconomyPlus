@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.trend.filter;
+package main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,12 +12,12 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
 
-public class ARGMoneyTrend_FilterLog_StandDescending extends ArgumentModule
+public class ARGMoneyTrend_Diagram_FilterLog_LastStandDescending extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public ARGMoneyTrend_FilterLog_StandDescending(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGMoneyTrend_Diagram_FilterLog_LastStandDescending(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -30,19 +30,19 @@ public class ARGMoneyTrend_FilterLog_StandDescending extends ArgumentModule
 		Player player = (Player) sender;
 		int page = 0;
 		String playername = player.getName();
-		if(args.length >= 4)
+		if(args.length >= 5)
 		{
-			String pagenumber = args[3];
+			String pagenumber = args[4];
 			if(MatchApi.isInteger(pagenumber))
 			{
 				page = Integer.parseInt(pagenumber);
 			}
 		}
-		if(args.length >= 5)
+		if(args.length >= 6)
 		{
-			if(args[4].equals(playername))
+			if(args[5].equals(playername))
 			{
-				playername = args[4];
+				playername = args[5];
 			} else
 			{
 				if(!player.hasPermission(Utility.PERM_CMD_MONEY_FILTERLOGOTHER))
@@ -51,11 +51,11 @@ public class ARGMoneyTrend_FilterLog_StandDescending extends ArgumentModule
 							plugin.getYamlHandler().getL().getString("NoPermission")));
 					return;
 				}
-				playername = args[4];
+				playername = args[5];
 			}
 		}
 		String cmdstring = plugin.getYamlHandler().getCom().getString(ac.getPath()+".CommandString");
-		LogMethodeHandler.trendLogSort(plugin, Methode.LOG, player, playername, true, page, cmdstring);
+		LogMethodeHandler.trendLogStand(plugin, Methode.DIAGRAM, player, playername, true, false, page, cmdstring);
 		return;
 	}
 }

@@ -87,7 +87,7 @@ public class ARGMoneyGive extends ArgumentModule
 				
 			}
 		}
-		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
+		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
 		if(toplayer == null)
 		{
 			//Der Spieler existiert nicht!
@@ -101,7 +101,7 @@ public class ARGMoneyGive extends ArgumentModule
 			sender.sendMessage(ChatApi.tl(deposit.errorMessage));
 			return;
 		}
-		toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
+		toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(), customTo, toplayer.getUUID(), customTo, toplayer.getName(), 
 				customOrderer,

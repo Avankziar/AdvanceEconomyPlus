@@ -1,5 +1,6 @@
 package main.java.me.avankziar.aep.spigot;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -39,6 +40,8 @@ import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTake;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyToggle;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTop;
 import main.java.me.avankziar.aep.spigot.cmd.money.action.ARGMoneyAction;
+import main.java.me.avankziar.aep.spigot.cmd.money.action.barchart.ARGMoneyAction_BarChart;
+import main.java.me.avankziar.aep.spigot.cmd.money.action.barchart.ARGMoneyAction_BarChart_Log;
 import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram;
 import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog;
 import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_Between;
@@ -107,35 +110,42 @@ import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandin
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Pause;
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Repeatingtime;
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Starttime;
+import main.java.me.avankziar.aep.spigot.cmd.money.statistics.ARGMoneyLoggerSettings;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.ARGMoneyTrend;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_Between;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_FirstStandAscending;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_FirstStandDescending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_GreaterThan;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_LastStandAscending;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_LastStandDescending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_LessThan;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_SortAscending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_SortDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_StandAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_StandDescending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_Log;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_Between;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_FirstStandAscending;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_FirstStandDescending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_GreaterThan;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_LastStandAscending;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_LastStandDescending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_LessThan;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_SortAscending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_SortDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_StandAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_StandDescending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_Log;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_Between;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_FirstStandAscending;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_FirstStandDescending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_GreaterThan;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_LastStandAscending;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_LastStandDescending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_LessThan;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_SortAscending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_SortDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_StandAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_StandDescending;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_Log;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
@@ -144,7 +154,9 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlSetup;
 import main.java.me.avankziar.aep.spigot.database.YamlHandler;
+import main.java.me.avankziar.aep.spigot.database.YamlManager;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.hook.ChestShopHook;
 import main.java.me.avankziar.aep.spigot.hook.HeadDatabaseHook;
 import main.java.me.avankziar.aep.spigot.hook.JobsHook;
@@ -158,6 +170,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 {
 	public static Logger log;
 	public String pluginName = "AdvancedEconomyPlus";
+	private static YamlManager yamlManager;
 	private static YamlHandler yamlHandler;
 	private static MysqlSetup mysqlSetup;
 	private static MysqlHandler mysqlHandler;
@@ -192,9 +205,16 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		helpList = new ArrayList<>();
 		argumentMap = new LinkedHashMap<>();
 		
-		yamlHandler = new YamlHandler(this);
+		try
+		{
+			yamlHandler = new YamlHandler(this);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
 		utility = new Utility(this);
-		if (yamlHandler.get().getBoolean("Mysql.Status", false) == true)
+		if (yamlHandler.getConfig().getBoolean("Mysql.Status", false) == true)
 		{
 			mysqlHandler = new MysqlHandler(this);
 			mysqlSetup = new MysqlSetup(this);
@@ -219,7 +239,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	{
 		Bukkit.getScheduler().cancelTasks(this);
 		HandlerList.unregisterAll(this);
-		if (yamlHandler.get().getBoolean("Mysql.Status", false) == true)
+		if (yamlHandler.getConfig().getBoolean("Mysql.Status", false) == true)
 		{
 			if (mysqlSetup.getConnection() != null) 
 			{
@@ -242,6 +262,16 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	public YamlHandler getYamlHandler() 
 	{
 		return yamlHandler;
+	}
+	
+	public YamlManager getYamlManager()
+	{
+		return yamlManager;
+	}
+
+	public void setYamlManager(YamlManager yamlManager)
+	{
+		AdvancedEconomyPlus.yamlManager = yamlManager;
 	}
 	
 	public MysqlSetup getMysqlSetup() 
@@ -310,6 +340,11 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		
 		CommandConstructor eco = new CommandConstructor(plugin, baseCommandI, false,
 				deletelog, player, recomment);
+		
+		ArgumentConstructor action_barchart_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_barchart_log", 
+				2, 2, 4, false, null);
+		ArgumentConstructor action_barchart = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_barchart", 1, 1, 1, false, null,
+				action_barchart_log);
 		
 		ArgumentConstructor action_diagram_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_between", 
 				3, 5, 7, false, null);
@@ -406,7 +441,11 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				action_grafic_log, action_grafic_fl);
 		
 		ArgumentConstructor action = new ArgumentConstructor(yamlHandler, baseCommandII+"_action", 0, 0, 0, false, null,
-				action_diagram, action_log, action_fl, action_grafic);
+				action_barchart, action_diagram, action_log, action_fl, action_grafic);
+		LoggerSettingsHandler.actionBarChartCmdString = action_barchart.getCommandString();
+		LoggerSettingsHandler.actionDiagramCmdString = action_diagram.getCommandString();
+		LoggerSettingsHandler.actionLogCmdString = action_log.getCommandString();
+		LoggerSettingsHandler.actionGraficCmdString = action_grafic.getCommandString();
 		
 		ArgumentConstructor freeze = new ArgumentConstructor(yamlHandler, baseCommandII+"_freeze", 0, 1, 1, false, playerMapI);
 		ArgumentConstructor give = new ArgumentConstructor(yamlHandler, baseCommandII+"_give", 0, 4, 999, true, playerMapI);
@@ -432,6 +471,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		
 		ArgumentConstructor loans = new ArgumentConstructor(yamlHandler, baseCommandII+"_loans", 0, 0, 2, false, null);
 		
+		ArgumentConstructor loggersettings = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings", 0, 0, 3, false, null);
 		ArgumentConstructor pay = new ArgumentConstructor(yamlHandler, baseCommandII+"_pay", 0, 2, 999, false, playerMapI);
 		ArgumentConstructor set = new ArgumentConstructor(yamlHandler, baseCommandII+"_set", 0, 2, 999, true, playerMapI);
 		
@@ -463,14 +503,18 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				3, 3, 5, false, null);
 		ArgumentConstructor trend_diagram_fl_sodesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_sortdescending",
 				3, 3, 5, false, null);
-		ArgumentConstructor trend_diagram_fl_stasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_standascending",
+		ArgumentConstructor trend_diagram_fl_fstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_firststandascending",
 				3, 3, 5, false, null);
-		ArgumentConstructor trend_diagram_fl_stdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_standdescending",
+		ArgumentConstructor trend_diagram_fl_fstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_firststanddescending",
+				3, 3, 5, false, null);
+		ArgumentConstructor trend_diagram_fl_lstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_laststandascending",
+				3, 3, 5, false, null);
+		ArgumentConstructor trend_diagram_fl_lstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_laststanddescending",
 				3, 3, 5, false, null);
 		ArgumentConstructor trend_diagram_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog",
 				2, 2, 2, false, null,
 				trend_diagram_fl_bw, trend_diagram_fl_gt, trend_diagram_fl_lt, trend_diagram_fl_soasc, trend_diagram_fl_sodesc,
-				trend_diagram_fl_stasc, trend_diagram_fl_stdesc);
+				trend_diagram_fl_fstasc, trend_diagram_fl_fstdesc, trend_diagram_fl_lstasc, trend_diagram_fl_lstdesc);
 		ArgumentConstructor trend_diagram_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_log",
 				2, 2, 4, false, playerMapIV);
 		ArgumentConstructor trend_diagram = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram",
@@ -487,13 +531,18 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				2, 2, 4, false, null);
 		ArgumentConstructor trend_fl_sodesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_sortdescending",
 				2, 2, 4, false, null);
-		ArgumentConstructor trend_fl_stasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_standascending",
+		ArgumentConstructor trend_fl_fstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_firststandascending",
 				2, 2, 4, false, null);
-		ArgumentConstructor trend_fl_stdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_standdescending",
+		ArgumentConstructor trend_fl_fstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_friststanddescending",
+				2, 2, 4, false, null);
+		ArgumentConstructor trend_fl_lstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_laststandascending",
+				2, 2, 4, false, null);
+		ArgumentConstructor trend_fl_lstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_laststanddescending",
 				2, 2, 4, false, null);
 		ArgumentConstructor trend_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog",
 				1, 1, 1, false, null,
-				trend_fl_bw, trend_fl_gt, trend_fl_lt, trend_fl_soasc, trend_fl_sodesc, trend_fl_stasc, trend_fl_stdesc);
+				trend_fl_bw, trend_fl_gt, trend_fl_lt, trend_fl_soasc, trend_fl_sodesc, trend_fl_fstasc, trend_fl_fstdesc,
+				trend_fl_lstasc, trend_fl_lstdesc);
 		
 		ArgumentConstructor trend_grafic_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_between",
 				3, 5, 7, false, null);
@@ -505,14 +554,18 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				3, 3, 5, false, null);
 		ArgumentConstructor trend_grafic_fl_sodesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_sortdescending",
 				3, 3, 5, false, null);
-		ArgumentConstructor trend_grafic_fl_stasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_standascending",
+		ArgumentConstructor trend_grafic_fl_fstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_firststandascending",
 				3, 3, 5, false, null);
-		ArgumentConstructor trend_grafic_fl_stdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_standdescending",
+		ArgumentConstructor trend_grafic_fl_fstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_firststanddescending",
+				3, 3, 5, false, null);
+		ArgumentConstructor trend_grafic_fl_lstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_laststandascending",
+				3, 3, 5, false, null);
+		ArgumentConstructor trend_grafic_fl_lstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_laststanddescending",
 				3, 3, 5, false, null);
 		ArgumentConstructor trend_grafic_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog",
 				2, 2, 2, false, null,
 				trend_grafic_fl_bw, trend_grafic_fl_gt, trend_grafic_fl_lt, trend_grafic_fl_soasc, trend_grafic_fl_sodesc,
-				trend_grafic_fl_stasc, trend_grafic_fl_stdesc);
+				trend_grafic_fl_fstasc, trend_grafic_fl_fstdesc, trend_grafic_fl_lstasc,trend_grafic_fl_lstdesc);
 		ArgumentConstructor trend_grafic_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_log",
 				2, 2, 4, false, playerMapIV);
 		ArgumentConstructor trend_grafic = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic",
@@ -524,7 +577,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				trend_diagram, trend_fl, trend_grafic, trend_log);
 		
 		CommandConstructor money = new CommandConstructor(plugin, baseCommandII, false,
-				action, loan, loans, freeze, give, pay, set, storder, take, toggle, top, trend);
+				action, freeze, give, loan, loans, loggersettings, pay, set, storder, take, toggle, top, trend);
 		
 		//CommandConstructor bank = new CommandConstructor(plugin, baseCommandIII, false);
 		
@@ -546,33 +599,47 @@ public class AdvancedEconomyPlus extends JavaPlugin
 					deletelog, player, recomment,
 				money,
 					action,
-						action_diagram, action_diagram_log, 
-							action_diagram_fl, action_diagram_fl_bw, action_diagram_fl_c, action_diagram_fl_casc, action_diagram_fl_cdesc,
+						action_barchart, 
+							action_barchart_log,
+						action_diagram, 
+							action_diagram_log, 
+							action_diagram_fl, 
+								action_diagram_fl_bw, action_diagram_fl_c, action_diagram_fl_casc, action_diagram_fl_cdesc,
 								action_diagram_fl_f, action_diagram_fl_gt, action_diagram_fl_lt,
 								action_diagram_fl_o, action_diagram_fl_sasc, action_diagram_fl_sdesc, action_diagram_fl_t,
 						action_log, 
-						action_fl, action_fl_bw, action_fl_c, action_fl_casc, action_fl_cdesc,
-							action_fl_f, action_fl_gt, action_fl_lt,
+						action_fl, 
+							action_fl_bw, action_fl_c, action_fl_casc, action_fl_cdesc, action_fl_f, action_fl_gt, action_fl_lt,
 							action_fl_o, action_fl_sasc, action_fl_sdesc, action_fl_t,
-						action_grafic, action_grafic_log, 
-							action_grafic_fl, action_grafic_fl_bw, action_grafic_fl_c, action_grafic_fl_casc, action_grafic_fl_cdesc,
+						action_grafic, 
+							action_grafic_log, 
+							action_grafic_fl, 
+								action_grafic_fl_bw, action_grafic_fl_c, action_grafic_fl_casc, action_grafic_fl_cdesc,
 								action_grafic_fl_f, action_grafic_fl_gt, action_grafic_fl_lt,
 								action_grafic_fl_o, action_grafic_fl_sasc, action_grafic_fl_sdesc, action_grafic_fl_t,
+					 freeze, give, loggersettings, pay, set,
 					loan, loan_accept, loan_amount, loan_cancel, loan_create, loan_forgive, loan_info, loan_inherit, loan_list,
 						loan_pause, loan_payback, loan_reject, loan_repay, loan_send, loan_time, loan_transfer,
 					loans,
-					freeze, give, pay, set,
 					storder, storder_amount, storder_cancel, storder_create, storder_delete, storder_info, storder_list,
 						storder_pause, storder_rt, storder_st,
 					take, toggle, top,
 					trend, 
-						trend_diagram, trend_diagram_log,
-							trend_diagram_fl, trend_diagram_fl_bw, trend_diagram_fl_gt, trend_diagram_fl_lt,
-								trend_diagram_fl_soasc, trend_diagram_fl_sodesc, trend_diagram_fl_stasc, trend_diagram_fl_stdesc,
-						trend_fl, trend_fl_bw, trend_fl_gt, trend_fl_lt, trend_fl_soasc, trend_fl_sodesc, trend_fl_stasc, trend_fl_stdesc,
-						trend_grafic, trend_grafic_log,
-							trend_grafic_fl, trend_grafic_fl_bw, trend_grafic_fl_gt, trend_grafic_fl_lt,
-								trend_grafic_fl_soasc, trend_grafic_fl_sodesc, trend_grafic_fl_stasc, trend_grafic_fl_stdesc,
+						trend_diagram, 
+							trend_diagram_log,
+							trend_diagram_fl, 
+								trend_diagram_fl_bw, trend_diagram_fl_gt, trend_diagram_fl_lt,
+								trend_diagram_fl_soasc, trend_diagram_fl_sodesc, trend_diagram_fl_fstasc, trend_diagram_fl_fstdesc,
+								trend_diagram_fl_lstasc, trend_diagram_fl_lstdesc,
+						trend_fl, 
+							trend_fl_bw, trend_fl_gt, trend_fl_lt, trend_fl_soasc, trend_fl_sodesc, trend_fl_fstasc, trend_fl_fstdesc,
+							trend_fl_lstasc, trend_fl_lstdesc,
+						trend_grafic, 
+							trend_grafic_log,
+							trend_grafic_fl, 
+								trend_grafic_fl_bw, trend_grafic_fl_gt, trend_grafic_fl_lt,
+								trend_grafic_fl_soasc, trend_grafic_fl_sodesc, trend_grafic_fl_fstasc, trend_grafic_fl_fstdesc,
+								trend_grafic_fl_lstasc, trend_grafic_fl_lstdesc,
 						trend_log//,
 				//bank
 				);
@@ -582,6 +649,9 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGEcoReComment(plugin, recomment);
 		
 		new ARGMoneyAction(plugin, action);
+		
+		new ARGMoneyAction_BarChart(plugin, action_barchart);
+		new ARGMoneyAction_BarChart_Log(plugin, action_barchart_log);
 		
 		new ARGMoneyAction_Diagram(plugin, action_diagram);
 		new ARGMoneyAction_Diagram_FilterLog(plugin, action_diagram_fl);
@@ -650,6 +720,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGMoneyFreeze(plugin, freeze);
 		//new ARGMoneyGetTotal(plugin);
 		new ARGMoneyGive(plugin, give);
+		new ARGMoneyLoggerSettings(plugin, loggersettings);
 		new ARGMoneyPay(plugin, pay);
 		new ARGMoneySet(plugin, set);
 		
@@ -677,8 +748,10 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGMoneyTrend_Diagram_FilterLog_LessThan(plugin, trend_diagram_fl_lt);
 		new ARGMoneyTrend_Diagram_FilterLog_SortAscending(plugin, trend_diagram_fl_soasc);
 		new ARGMoneyTrend_Diagram_FilterLog_SortDescending(plugin, trend_diagram_fl_sodesc);
-		new ARGMoneyTrend_Diagram_FilterLog_StandAscending(plugin, trend_diagram_fl_stasc);
-		new ARGMoneyTrend_Diagram_FilterLog_StandDescending(plugin, trend_diagram_fl_stdesc);
+		new ARGMoneyTrend_Diagram_FilterLog_FirstStandAscending(plugin, trend_diagram_fl_fstasc);
+		new ARGMoneyTrend_Diagram_FilterLog_FirstStandDescending(plugin, trend_diagram_fl_fstdesc);
+		new ARGMoneyTrend_Diagram_FilterLog_LastStandAscending(plugin, trend_diagram_fl_lstasc);
+		new ARGMoneyTrend_Diagram_FilterLog_LastStandDescending(plugin, trend_diagram_fl_lstdesc);
 		
 		new ARGMoneyTrend_FilterLog(plugin, trend_fl);
 		new ARGMoneyTrend_FilterLog_Between(plugin, trend_fl_bw);
@@ -686,8 +759,10 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGMoneyTrend_FilterLog_LessThan(plugin, trend_fl_lt);
 		new ARGMoneyTrend_FilterLog_SortAscending(plugin, trend_fl_soasc);
 		new ARGMoneyTrend_FilterLog_SortDescending(plugin, trend_fl_sodesc);
-		new ARGMoneyTrend_FilterLog_StandAscending(plugin, trend_fl_stasc);
-		new ARGMoneyTrend_FilterLog_StandDescending(plugin, trend_fl_stdesc);
+		new ARGMoneyTrend_FilterLog_FirstStandAscending(plugin, trend_fl_fstasc);
+		new ARGMoneyTrend_FilterLog_FirstStandDescending(plugin, trend_fl_fstdesc);
+		new ARGMoneyTrend_FilterLog_LastStandAscending(plugin, trend_fl_lstasc);
+		new ARGMoneyTrend_FilterLog_LastStandDescending(plugin, trend_fl_lstdesc);
 		
 		new ARGMoneyTrend_Grafic(plugin, trend_grafic);
 		new ARGMoneyTrend_Grafic_Log(plugin, trend_grafic_log);
@@ -697,8 +772,10 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGMoneyTrend_Grafic_FilterLog_LessThan(plugin, trend_grafic_fl_lt);
 		new ARGMoneyTrend_Grafic_FilterLog_SortAscending(plugin, trend_grafic_fl_soasc);
 		new ARGMoneyTrend_Grafic_FilterLog_SortDescending(plugin, trend_grafic_fl_sodesc);
-		new ARGMoneyTrend_Grafic_FilterLog_StandAscending(plugin, trend_grafic_fl_stasc);
-		new ARGMoneyTrend_Grafic_FilterLog_StandDescending(plugin, trend_grafic_fl_stdesc);
+		new ARGMoneyTrend_Grafic_FilterLog_FirstStandAscending(plugin, trend_grafic_fl_fstasc);
+		new ARGMoneyTrend_Grafic_FilterLog_FirstStandDescending(plugin, trend_grafic_fl_fstdesc);
+		new ARGMoneyTrend_Grafic_FilterLog_LastStandAscending(plugin, trend_grafic_fl_lstasc);
+		new ARGMoneyTrend_Grafic_FilterLog_LastStandDescending(plugin, trend_grafic_fl_lstdesc);
 		
 		new ARGMoneyTrend_Log(plugin, trend_log);
 	}
@@ -733,11 +810,18 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	public boolean reload()
 	{
-		if(!yamlHandler.loadYamlHandler())
+		try
 		{
-			return false;
+			if(!yamlHandler.loadYamlHandler())
+			{
+				return false;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
 		}
-		if(yamlHandler.get().getBoolean("Mysql.Status", false))
+		
+		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
 		{
 			mysqlSetup.closeConnection();
 			if(!mysqlHandler.loadMysqlHandler())

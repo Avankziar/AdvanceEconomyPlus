@@ -70,7 +70,7 @@ public class JobsHook implements Listener
 	
 	public void runTask()
 	{
-		List<String> times = plugin.getYamlHandler().get().getStringList("JobsRebornHookTaskTimer");
+		List<String> times = plugin.getYamlHandler().getConfig().getStringList("JobsRebornHookTaskTimer");
 		new BukkitRunnable()
 		{
 			

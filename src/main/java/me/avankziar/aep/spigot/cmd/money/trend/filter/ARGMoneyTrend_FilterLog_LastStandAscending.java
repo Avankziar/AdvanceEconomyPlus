@@ -12,12 +12,12 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
 
-public class ARGMoneyTrend_FilterLog_StandAscending extends ArgumentModule
+public class ARGMoneyTrend_FilterLog_LastStandAscending extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public ARGMoneyTrend_FilterLog_StandAscending(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGMoneyTrend_FilterLog_LastStandAscending(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -55,7 +55,7 @@ public class ARGMoneyTrend_FilterLog_StandAscending extends ArgumentModule
 			}
 		}
 		String cmdstring = plugin.getYamlHandler().getCom().getString(ac.getPath()+".CommandString");
-		LogMethodeHandler.trendLogStand(plugin, Methode.LOG, player, playername, false, page, cmdstring);
+		LogMethodeHandler.trendLogStand(plugin, Methode.LOG, player, playername, false, false, page, cmdstring);
 		return;
 	}
 }

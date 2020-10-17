@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
@@ -469,7 +470,7 @@ public interface TableIII
 	}
 	
 	default ArrayList<ActionLogger> getAllListAtIII(AdvancedEconomyPlus plugin, String orderByColumn,
-			String whereColumn, Object...whereObject) throws IOException
+			boolean desc, String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -477,9 +478,18 @@ public interface TableIII
 		if (conn != null) 
 		{
 			try 
-			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+			{
+				String sql = "";
+				if(desc)
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+				} else
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
+				}
+				
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -499,6 +509,76 @@ public interface TableIII
 		        			result.getString("orderer_uuid"), result.getDouble("amount"),
 		        			Type.valueOf(result.getString("eco_type")), result.getString("comment"));
 		        	list.add(el);
+		        }
+		        return list;
+		    } catch (SQLException e) 
+			{
+				  AdvancedEconomyPlus.log.warning("Error: " + e.getMessage());
+				  e.printStackTrace();
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedStatement != null) 
+		    		  {
+		    			  preparedStatement.close();
+		    		  }
+		    	  } catch (Exception e) {
+		    		  e.printStackTrace();
+		    	  }
+		      }
+		}
+		return null;
+	}
+	
+	default ArrayList<ActionLogger> getAllListAtIIIDateTimeModified(AdvancedEconomyPlus plugin, String orderByColumn,
+			boolean desc, LocalDateTime start, LocalDateTime end, String whereColumn, Object...whereObject) throws IOException
+	{
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
+		{
+			try 
+			{
+				String sql = "";
+				if(desc)
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+				} else
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
+				}
+				
+		        preparedStatement = conn.prepareStatement(sql);
+		        int i = 1;
+		        for(Object o : whereObject)
+		        {
+		        	preparedStatement.setObject(i, o);
+		        	i++;
+		        }
+		        result = preparedStatement.executeQuery();
+		        ArrayList<ActionLogger> list = new ArrayList<ActionLogger>();
+		        while (result.next()) 
+		        {
+		        	LocalDateTime dt = ConvertHandler.deserialised(result.getString("datetime"));
+		        	if(dt.isAfter(start) && dt.isBefore(end))
+		        	{
+		        		ActionLogger el = new ActionLogger(
+			        			result.getInt("id"),
+			        			dt,
+			        			result.getString("from_uuidornumber"), result.getString("to_uuidornumber"),
+			        			result.getString("from_name"), result.getString("to_name"),
+			        			result.getString("orderer_uuid"), result.getDouble("amount"),
+			        			Type.valueOf(result.getString("eco_type")), result.getString("comment"));
+			        	list.add(el);
+		        	}
 		        }
 		        return list;
 		    } catch (SQLException e) 

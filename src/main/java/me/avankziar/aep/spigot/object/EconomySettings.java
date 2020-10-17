@@ -51,38 +51,38 @@ public class EconomySettings
 		}
 		YamlHandler yh = plugin.getYamlHandler();
 		String prefix = "&7[&2Economy&7] ";
-		if(yh.get().getString("Prefix") != null)
+		if(yh.getConfig().getString("Prefix") != null)
 		{
-			prefix = yh.get().getString("Prefix");
+			prefix = yh.getConfig().getString("Prefix");
 		}
 		boolean bungee = false;
-		if(plugin.getYamlHandler().get().get("Bungee") != null)
+		if(plugin.getYamlHandler().getConfig().get("Bungee") != null)
 		{
-			bungee = plugin.getYamlHandler().get().getBoolean("Bungee");
+			bungee = plugin.getYamlHandler().getConfig().getBoolean("Bungee");
 		}
 		boolean mysql = false;
 		if(plugin.getMysqlSetup().getConnection() != null)
 		{
 			mysql = true;
 		}
-		boolean playerAccount = plugin.getYamlHandler().get().getBoolean("UsePlayerAccount", false);
-		boolean bank = yh.get().getBoolean("UseBank", false);
-		boolean standingorder = yh.get().getBoolean("UseStandingOrder", false);
-		boolean loanrepayment = yh.get().getBoolean("UseLoanRepayment", false);
-		String currencySingular = yh.get().getString("CurrencyNameSingular","Euro");
-		String currencyPlural = yh.get().getString("CurrencyNamePlural","Euros");
-		int format = yh.get().getInt("MoneyFormat", 0);
+		boolean playerAccount = plugin.getYamlHandler().getConfig().getBoolean("UsePlayerAccount", false);
+		boolean bank = yh.getConfig().getBoolean("UseBank", false);
+		boolean standingorder = yh.getConfig().getBoolean("UseStandingOrder", false);
+		boolean loanrepayment = yh.getConfig().getBoolean("UseLoanRepayment", false);
+		String currencySingular = yh.getConfig().getString("CurrencyNameSingular","Euro");
+		String currencyPlural = yh.getConfig().getString("CurrencyNamePlural","Euros");
+		int format = yh.getConfig().getInt("MoneyFormat", 0);
 		ArrayList<String> reservedNames = new ArrayList<String>();
-		if(yh.get().getStringList("ReservedNames") != null)
+		if(yh.getConfig().getStringList("ReservedNames") != null)
 		{
-			reservedNames = (ArrayList<String>) yh.get().getStringList("ReservedNames");
+			reservedNames = (ArrayList<String>) yh.getConfig().getStringList("ReservedNames");
 		}
 		BankAccountHandler.Type numberType = BankAccountHandler.Type.FOUR_DIGITS_TIMES_THREE;
-		if(yh.get().getString("TrendLogger.ValueIsStabil") != null)
+		if(yh.getConfig().getString("TrendLogger.ValueIsStabil") != null)
 		{
 			try
 			{
-				numberType = BankAccountHandler.Type.valueOf(plugin.getYamlHandler().get().getString("TrendLogger.ValueIsStabil"));
+				numberType = BankAccountHandler.Type.valueOf(plugin.getYamlHandler().getConfig().getString("TrendLogger.ValueIsStabil"));
 			} catch (Exception e) {}
 		}
 		settings = new EconomySettings(prefix,

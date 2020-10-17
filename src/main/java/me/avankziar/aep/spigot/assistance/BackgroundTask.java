@@ -51,7 +51,7 @@ public class BackgroundTask
 	
 	public void runDebtRepayment()
 	{
-		int repeat = plugin.getYamlHandler().get().getInt("LoanRepaymentRepeatTime", 60);
+		int repeat = plugin.getYamlHandler().getConfig().getInt("LoanRepaymentRepeatTime", 60);
 		new BukkitRunnable()
 		{
 			@Override
@@ -131,7 +131,7 @@ public class BackgroundTask
 	
 	public void runStandingOrderPayment()
 	{
-		int repeat = plugin.getYamlHandler().get().getInt("StandingOrderRepeatTime", 60);
+		int repeat = plugin.getYamlHandler().getConfig().getInt("StandingOrderRepeatTime", 60);
 		new BukkitRunnable()
 		{
 			@Override

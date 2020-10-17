@@ -28,6 +28,7 @@ public class Utility
 	PERM_CMD_MONEY_TRENDLOG_OTHER = "",
 	PERM_BYPASS_RECOMMENT = "",
 	PERM_CMD_ECO_DELETELOG = "",
+	PERM_BYPASS_LOGOTHER = "",
 	PERM_BYPASS_STANDINGORDER_CREATE = "",
 	PERM_BYPASS_STANDINGORDER_INFO = "",
 	PERM_BYPASS_STANDINGORDER_DELETE = "",
@@ -49,6 +50,7 @@ public class Utility
 		PERM_CMD_MONEY_TRENDLOG_OTHER = plugin.getYamlHandler().getCom().getString("Bypass.TrendLogOther", "eco.cmd.money.trendlogother");
 		PERM_BYPASS_RECOMMENT = plugin.getYamlHandler().getCom().getString("Bypass.Recomment", "eco.cmd.bypass.recomment");
 		PERM_CMD_ECO_DELETELOG = plugin.getYamlHandler().getCom().getString("eco_deletelog.Permission", "eco.cmd.eco.deletelog");
+		PERM_BYPASS_LOGOTHER = plugin.getYamlHandler().getCom().getString("Bypass.FilterSettingsLogOther", "eco.bypass.logother");
 		PERM_BYPASS_STANDINGORDER_CREATE = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderCreate", "eco.cmd.bypass.standingorder.create");
 		PERM_BYPASS_STANDINGORDER_INFO = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderInfo", "eco.cmd.bypass.standingorder.info");
 		PERM_BYPASS_STANDINGORDER_DELETE = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderDelete", "eco.cmd.bypass.standingorder.delete");
@@ -155,9 +157,14 @@ public class Utility
 	public static double round(double value, int places) 
 	{
 	    if (places < 0) throw new IllegalArgumentException();
-
-	    BigDecimal bd = BigDecimal.valueOf(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
-	    return bd.doubleValue();
+	    try
+	    {
+	    	BigDecimal bd = BigDecimal.valueOf(value);
+		    bd = bd.setScale(places, RoundingMode.HALF_UP);
+		    return bd.doubleValue();
+	    } catch (NumberFormatException e)
+	    {
+	    	return 0;
+	    }
 	}
 }

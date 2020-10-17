@@ -59,7 +59,7 @@ public class _ß_ARGMoneyGetTotal extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayerFromName(playername);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -83,7 +83,7 @@ public class _ß_ARGMoneyGetTotal extends ArgumentModule
 					eco.getUUID(), eco.getUUID(), eco.getUUID());
 		} else
 		{
-			EcoPlayer ep = EcoPlayerHandler.getEcoPlayerFromName(searchword);
+			EcoPlayer ep = EcoPlayerHandler.getEcoPlayer(searchword);
 			if(ep != null)
 			{
 				player.sendMessage(ChatApi.tl(

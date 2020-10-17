@@ -1,5 +1,7 @@
 package main.java.me.avankziar.aep.spigot.handler;
 
+import java.util.UUID;
+
 import org.bukkit.OfflinePlayer;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
@@ -8,13 +10,13 @@ import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
 
 public class EcoPlayerHandler
 {
-	public static EcoPlayer getEcoPlayer(String playeruuid)
+	public static EcoPlayer getEcoPlayer(UUID playeruuid)
 	{
 		return (EcoPlayer) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
-				MysqlHandler.Type.PLAYER, "`player_uuid` = ?", playeruuid);
+				MysqlHandler.Type.PLAYER, "`player_uuid` = ?", playeruuid.toString());
 	}
 	
-	public static EcoPlayer getEcoPlayerFromName(String playername)
+	public static EcoPlayer getEcoPlayer(String playername)
 	{
 		return (EcoPlayer) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
 				MysqlHandler.Type.PLAYER, "`player_name` = ?", playername);

@@ -451,9 +451,9 @@ public class VaultApi implements Economy
 				return false;
 			}
 			double amount = 0.0;
-			if(plugin.getYamlHandler().get().get("StartMoney") != null)
+			if(plugin.getYamlHandler().getConfig().get("StartMoney") != null)
 			{
-				amount = plugin.getYamlHandler().get().getDouble("StartMoney");
+				amount = plugin.getYamlHandler().getConfig().getDouble("StartMoney");
 			}
 			EcoPlayer eco = new EcoPlayer(0, player.getUniqueId().toString(), player.getName(),
 					amount, new ArrayList<String>(), true, true, true, null, false);

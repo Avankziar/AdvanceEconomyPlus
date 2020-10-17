@@ -1,5 +1,7 @@
 package main.java.me.avankziar.aep.spigot.cmd.money.action.diagram;
 
+import java.io.IOException;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -25,7 +27,7 @@ public class ARGMoneyAction_Diagram_Log extends ArgumentModule
 	}
 
 	@Override
-	public void run(CommandSender sender, String[] args)
+	public void run(CommandSender sender, String[] args) throws IOException
 	{
 		Player player = (Player) sender;
 		int page = 0;

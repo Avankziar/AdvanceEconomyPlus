@@ -10,12 +10,13 @@ import main.java.me.avankziar.aep.spigot.database.tables.TableIII;
 import main.java.me.avankziar.aep.spigot.database.tables.TableIV;
 import main.java.me.avankziar.aep.spigot.database.tables.TableV;
 import main.java.me.avankziar.aep.spigot.database.tables.TableVI;
+import main.java.me.avankziar.aep.spigot.database.tables.TableVII;
 
-public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV, TableVI
+public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV, TableVI, TableVII
 {
 	public enum Type
 	{
-		PLAYER, BANKACCOUNT, ACTION, TREND, STANDINGORDER, LOAN;
+		PLAYER, BANKACCOUNT, ACTION, TREND, STANDINGORDER, LOAN, LOGGERSETTINGSPRESET;
 	}
 	
 	private AdvancedEconomyPlus plugin;
@@ -25,6 +26,7 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 	public String tableNameIV; //Trend
 	public String tableNameV; //DauerAuftrag
 	public String tableNameVI; //Schuldentilgung
+	public String tableNameVII; //LoggerSettingsPreset
 	
 	public MysqlHandler(AdvancedEconomyPlus plugin) 
 	{
@@ -34,33 +36,38 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 	
 	public boolean loadMysqlHandler()
 	{
-		tableNameI = plugin.getYamlHandler().get().getString("Mysql.TableNameI");
+		tableNameI = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameI");
 		if(tableNameI == null)
 		{
 			return false;
 		}
-		tableNameII = plugin.getYamlHandler().get().getString("Mysql.TableNameII");
+		tableNameII = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameII");
 		if(tableNameII == null)
 		{
 			return false;
 		}
-		tableNameIII = plugin.getYamlHandler().get().getString("Mysql.TableNameIII");
+		tableNameIII = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameIII");
 		if(tableNameIII == null)
 		{
 			return false;
 		}
-		tableNameIV = plugin.getYamlHandler().get().getString("Mysql.TableNameIV");
+		tableNameIV = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameIV");
 		if(tableNameIV == null)
 		{
 			return false;
 		}
-		tableNameV = plugin.getYamlHandler().get().getString("Mysql.TableNameV");
+		tableNameV = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameV");
 		if(tableNameV == null)
 		{
 			return false;
 		}
-		tableNameVI = plugin.getYamlHandler().get().getString("Mysql.TableNameVI");
+		tableNameVI = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameVI");
 		if(tableNameVI == null)
+		{
+			return false;
+		}
+		tableNameVII = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameVII");
+		if(tableNameVII == null)
 		{
 			return false;
 		}
@@ -83,6 +90,8 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 			return TableV.super.existV(plugin, whereColumn, whereObject);
 		case LOAN:
 			return TableVI.super.existVI(plugin, whereColumn, whereObject);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.existVII(plugin, whereColumn, whereObject);
 		}
 		return false;
 	}
@@ -103,6 +112,8 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 			return TableV.super.createV(plugin, object);
 		case LOAN:
 			return TableVI.super.createVI(plugin, object);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.createVII(plugin, object);
 		}
 		return false;
 	}
@@ -123,6 +134,8 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 			return TableV.super.updateDataV(plugin, object, whereColumn, whereObject);
 		case LOAN:
 			return TableVI.super.updateDataVI(plugin, object, whereColumn, whereObject);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.updateDataVII(plugin, object, whereColumn, whereObject);
 		}
 		return false;
 	}
@@ -143,6 +156,8 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 			return TableV.super.getDataV(plugin, whereColumn, whereObject);
 		case LOAN:
 			return TableVI.super.getDataVI(plugin, whereColumn, whereObject);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.getDataVII(plugin, whereColumn, whereObject);
 		}
 		return null;
 	}
@@ -163,6 +178,8 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 			return TableV.super.deleteDataV(plugin, whereColumn, whereObject);
 		case LOAN:
 			return TableVI.super.deleteDataVI(plugin, whereColumn, whereObject);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.deleteDataVII(plugin, whereColumn, whereObject);
 		}
 		return false;
 	}
@@ -183,6 +200,8 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 			return TableV.super.lastIDV(plugin);
 		case LOAN:
 			return TableVI.super.lastIDVI(plugin);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.lastIDVII(plugin);
 		}
 		return 0;
 	}
@@ -203,6 +222,8 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 			return TableV.super.countWhereIDV(plugin, whereColumn, whereObject);
 		case LOAN:
 			return TableVI.super.countWhereIDVI(plugin, whereColumn, whereObject);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.countWhereIDVII(plugin, whereColumn, whereObject);
 		}
 		return 0;
 	}
@@ -218,11 +239,13 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 		case ACTION:
 			return TableIII.super.getListIII(plugin, orderByColumn, desc, start, end, whereColumn, whereObject);
 		case TREND:
-			return TableIV.super.getListIV(plugin, orderByColumn, start, end, whereColumn, whereObject);
+			return TableIV.super.getListIV(plugin, orderByColumn, desc, start, end, whereColumn, whereObject);
 		case STANDINGORDER:
 			return TableV.super.getListV(plugin, orderByColumn, start, end, whereColumn, whereObject);
 		case LOAN:
 			return TableVI.super.getListVI(plugin, orderByColumn, start, end, whereColumn, whereObject);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.getListVII(plugin, orderByColumn, start, end, whereColumn, whereObject);
 		}
 		return null;
 	}
@@ -243,6 +266,8 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 			return TableV.super.getTopV(plugin, orderByColumn, start, end);
 		case LOAN:
 			return TableVI.super.getTopVI(plugin, orderByColumn, start, end);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.getTopVII(plugin, orderByColumn, start, end);
 		}
 		return null;
 	}
@@ -257,13 +282,15 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 		case BANKACCOUNT:
 			return TableII.super.getAllListAtII(plugin, orderByColumn, whereColumn, whereObject);
 		case ACTION:
-			return TableIII.super.getAllListAtIII(plugin, orderByColumn, whereColumn, whereObject);
+			return TableIII.super.getAllListAtIII(plugin, orderByColumn, desc, whereColumn, whereObject);
 		case TREND:
-			return TableIV.super.getAllListAtIV(plugin, orderByColumn, whereColumn, whereObject);
+			return TableIV.super.getAllListAtIV(plugin, orderByColumn, desc, whereColumn, whereObject);
 		case STANDINGORDER:
 			return TableV.super.getAllListAtV(plugin, orderByColumn, whereColumn, whereObject);
 		case LOAN:
 			return TableVI.super.getAllListAtVI(plugin, orderByColumn, whereColumn, whereObject);
+		case LOGGERSETTINGSPRESET:
+			return TableVII.super.getAllListAtVII(plugin, orderByColumn, whereColumn, whereObject);
 		}
 		return null;
 	}

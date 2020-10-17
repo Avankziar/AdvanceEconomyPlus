@@ -33,7 +33,7 @@ public class ARGMoneyAction_FilterLog_Orderer extends ArgumentModule
 		String searchword = args[3];
 		int page = 0;
 		String playername = player.getName();
-		EcoPlayer orderer = EcoPlayerHandler.getEcoPlayerFromName(searchword);
+		EcoPlayer orderer = EcoPlayerHandler.getEcoPlayer(searchword);
 		if(orderer != null)
 		{
 			searchword = orderer.getUUID();

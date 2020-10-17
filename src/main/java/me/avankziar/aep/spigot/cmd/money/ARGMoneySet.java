@@ -87,7 +87,7 @@ public class ARGMoneySet extends ArgumentModule
 				
 			}
 		}
-		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
+		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
 		if(toplayer == null)
 		{
 			//Der Spieler existiert nicht!
@@ -95,7 +95,7 @@ public class ARGMoneySet extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
 			return;
 		}
-		toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
+		toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
 		toplayer.setBalance(amount);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(), "System", toplayer.getUUID(), customTo, toplayer.getName(),

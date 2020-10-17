@@ -1,5 +1,6 @@
 package main.java.me.avankziar.aep.spigot.handler;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class LogHandler
@@ -478,8 +480,8 @@ public class LogHandler
 			minamount = safe;
 		}
 		double hpercent = (maxamount-minamount);
-		String wim = plugin.getYamlHandler().get().getString("GraficSpaceSymbol", "ˉ");
-		String x = plugin.getYamlHandler().get().getString("GraficPointSymbol", "x");
+		String wim = plugin.getYamlHandler().getConfig().getString("GraficSpaceSymbol", "ˉ");
+		String x = plugin.getYamlHandler().getConfig().getString("GraficPointSymbol", "x");
 		String headmessage = "&a▼"+AdvancedEconomyPlus.getVaultApi().format(maxamount);
 		String messageI = "|";
 		String messageII = "|";
@@ -695,6 +697,314 @@ public class LogHandler
 		return;
 	}
 	
+	public static void sendActionBarChart(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<ActionLogger> list,
+			int page, int end, String playername, int last, String cmdstring)
+	{
+		if(list.size()<2)
+		{
+			player.sendMessage(ChatApi.tl(
+					plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.NotEnoughValues")));
+			return;
+		}
+		double maxNegativ = 0.0;
+		double maxPositiv = 0.0;
+		
+		ArrayList<ActionLogger> firstMonth = new ArrayList<>();
+		ArrayList<ActionLogger> secondMonth = new ArrayList<>();
+		ArrayList<ActionLogger> thirdMonth = new ArrayList<>();
+		ArrayList<ActionLogger> fourthMonth = new ArrayList<>();
+		ArrayList<ActionLogger> fifthMonth = new ArrayList<>();
+		ArrayList<ActionLogger> sixthMonth = new ArrayList<>();
+		ArrayList<ActionLogger> seventhMonth = new ArrayList<>();
+		ArrayList<ActionLogger> eighthMonth = new ArrayList<>();
+		ArrayList<ActionLogger> ninthMonth = new ArrayList<>();
+		ArrayList<ActionLogger> tenthMonth = new ArrayList<>();
+		ArrayList<ActionLogger> eleventhMonth = new ArrayList<>();
+		ArrayList<ActionLogger> twelfthMonth = new ArrayList<>();
+		ArrayList<ActionLogger> thirteenthMonth = new ArrayList<>();
+		
+		int i = 0;
+		LocalDateTime startDate = list.get(0).getDateTime();
+		while(i<list.size())
+		{
+			ActionLogger tl  = list.get(i);
+			if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
+			{
+				//positiv
+				maxPositiv += tl.getAmount();
+			} else
+			{
+				if(MatchApi.isBankAccountNumber(tl.getToUUIDOrNumber()))
+				{
+					//negativ
+					maxNegativ -= tl.getAmount();
+				} else
+				{
+					if(tl.getFromUUIDOrNumber().equals(eco.getUUID()))
+					{
+						//negativ
+						maxNegativ -= tl.getAmount();
+					} else
+					{
+						//positiv
+						maxPositiv += tl.getAmount();
+					}
+				}
+			}
+			LocalDateTime tldt = tl.getDateTime();
+			LocalDateTime sdClone = startDate;
+			int j = 1;
+			sdClone = sdClone.minusMonths(1);
+			while(j <= 13)
+			{
+				sdClone = sdClone.plusMonths(1);
+				AdvancedEconomyPlus.log.info("tldt: "+tldt.toString()+" | sdClone: "+sdClone.toString());
+				AdvancedEconomyPlus.log.info(tldt.getMonthValue()+" == "+sdClone.getMonthValue()
+				+" | "+tldt.getYear()+" == "+sdClone.getYear());
+				if(tldt.getMonthValue() == sdClone.getMonthValue() && tldt.getYear() == sdClone.getYear())
+				{
+					switch(j)
+					{
+					case 13:
+						firstMonth.add(tl);
+						break;  //Break unterbricht switch case
+					case 12:
+						secondMonth.add(tl);
+						break;
+					case 11:
+						thirdMonth.add(tl);
+						break;
+					case 10:
+						fourthMonth.add(tl);
+						break;
+					case 9:
+						fifthMonth.add(tl);
+						break;
+					case 8:
+						sixthMonth.add(tl);
+						break;
+					case 7:
+						seventhMonth.add(tl);
+						break;
+					case 6:
+						eighthMonth.add(tl);
+						break;
+					case 5:
+						ninthMonth.add(tl);
+						break;
+					case 4:
+						tenthMonth.add(tl);
+						break;
+					case 3:
+						eleventhMonth.add(tl);
+						break;
+					case 2:
+						twelfthMonth.add(tl);
+						break;
+					case 1:
+						thirteenthMonth.add(tl);
+						break;
+					}
+					AdvancedEconomyPlus.log.info("tldt break");
+					break;
+				}
+				j++;
+			}			
+			i++;
+		}
+		//double maxTotal = maxPositiv + maxNegativ;
+		//double median = 
+		
+		ArrayList<ArrayList<ActionLogger>> totallist = new ArrayList<>();
+		totallist.add(list);
+		totallist.add(firstMonth);
+		totallist.add(secondMonth);
+		totallist.add(thirdMonth);
+		totallist.add(fourthMonth);
+		totallist.add(fifthMonth);
+		totallist.add(sixthMonth);
+		totallist.add(seventhMonth);
+		totallist.add(eighthMonth);
+		totallist.add(ninthMonth);
+		totallist.add(tenthMonth);
+		totallist.add(eleventhMonth);
+		totallist.add(twelfthMonth);
+		totallist.add(thirteenthMonth);
+		
+		ArrayList<BaseComponent> firstbc = new ArrayList<>();
+		ArrayList<BaseComponent> secondbc = new ArrayList<>();
+		ArrayList<BaseComponent> thirdbc = new ArrayList<>();
+		ArrayList<BaseComponent> fourthbc = new ArrayList<>();
+		ArrayList<BaseComponent> fifthbc = new ArrayList<>();
+		ArrayList<BaseComponent> sixthbc = new ArrayList<>();
+		ArrayList<BaseComponent> seventhbc = new ArrayList<>();
+		ArrayList<BaseComponent> eighthbc = new ArrayList<>();
+		ArrayList<BaseComponent> ninthbc = new ArrayList<>();
+		ArrayList<BaseComponent> tenthbc = new ArrayList<>();
+		ArrayList<BaseComponent> eleventhbc = new ArrayList<>();
+		ArrayList<BaseComponent> twelfthbc = new ArrayList<>();
+		ArrayList<BaseComponent> thirteenthbc = new ArrayList<>();
+		ArrayList<BaseComponent> yearbc = new ArrayList<>();
+		ArrayList<ArrayList<BaseComponent>> totalbc = new ArrayList<>();
+		totalbc.add(yearbc);
+		totalbc.add(firstbc);
+		totalbc.add(secondbc);
+		totalbc.add(thirdbc);
+		totalbc.add(fourthbc);
+		totalbc.add(fifthbc);
+		totalbc.add(sixthbc);
+		totalbc.add(seventhbc);
+		totalbc.add(eighthbc);
+		totalbc.add(ninthbc);
+		totalbc.add(tenthbc);
+		totalbc.add(eleventhbc);
+		totalbc.add(twelfthbc);
+		totalbc.add(thirteenthbc);
+		
+		
+		int k = 0;
+		for(ArrayList<ActionLogger> lists : totallist)
+		{
+			//Hier Rechnung für die spezifischen maxTotal, maxPositiv, maxNegativ
+			double smaxPositiv = 0.0;
+			double smaxNegativ = 0.0;
+			LocalDateTime month = null;
+			if(lists.size() >= 1)
+			{
+				month = lists.get(0).getDateTime();
+			} else
+			{
+				k++;
+				continue;
+			}
+			for(ActionLogger tl : lists)
+			{
+				if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
+				{
+					//positiv
+					smaxPositiv += tl.getAmount();
+				} else
+				{
+					if(MatchApi.isBankAccountNumber(tl.getToUUIDOrNumber()))
+					{
+						//negativ
+						smaxNegativ -= tl.getAmount();
+					} else
+					{
+						if(tl.getFromUUIDOrNumber().equals(eco.getUUID()))
+						{
+							//negativ
+							smaxNegativ -= tl.getAmount();
+						} else
+						{
+							//positiv
+							smaxPositiv += tl.getAmount();
+						}
+					}
+				}
+			}
+			double smaxTotal = smaxPositiv + smaxNegativ;		
+			
+			double hpercentP = (smaxPositiv/maxPositiv)*100;
+			double hpercentN = (smaxNegativ/maxNegativ)*100;
+			int amountBarsGreen = (int) Utility.round(hpercentP/2,5);
+			if(amountBarsGreen < 0)
+			{
+				amountBarsGreen = 0;
+			}
+			int amountBarsGray = 50-amountBarsGreen;
+			//Hier die Balken berechnen
+			String bars = "";
+			bars = StringUtils.rightPad(bars, bars.length()+amountBarsGray*3, "&7|");
+			bars = StringUtils.rightPad(bars, bars.length()+amountBarsGreen*3, "&a|");
+			
+			int amountBarsRed = (int) Utility.round(hpercentN/2,5);
+			if(amountBarsRed < 0)
+			{
+				amountBarsRed = 0;
+			}
+			int amountBarsGrayII = 50-amountBarsRed;
+			//Hier die Balken berechnen
+			String barsII = "";
+			barsII = StringUtils.rightPad(barsII, barsII.length()+amountBarsRed*3, "&c|");
+			barsII = StringUtils.rightPad(barsII, barsII.length()+amountBarsGrayII*3, "&7|");
+			
+			
+			String color = "";
+			if(smaxTotal > 0)
+			{
+				color = "&a";
+			} else
+			{
+				color = "&c";
+			}
+			
+			if(k == 0)
+			{
+				totalbc.get(k).add(ChatApi.hoverEvent(bars, Action.SHOW_TEXT,
+						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessageII")
+						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVaultApi().format(smaxTotal))
+						.replace("%positivvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxPositiv))
+						.replace("%negativvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxNegativ))
+						.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+						));
+				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.LastYear")));
+				totalbc.get(k).add(ChatApi.hoverEvent(barsII, Action.SHOW_TEXT,
+						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessageII")
+						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVaultApi().format(smaxTotal))
+						.replace("%positivvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxPositiv))
+						.replace("%negativvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxNegativ))
+						.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+						));
+			} else
+			{
+				totalbc.get(k).add(ChatApi.hoverEvent(bars, Action.SHOW_TEXT,
+						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessage")
+						.replace("%percentP%", AdvancedEconomyPlus.getVaultApi().format(hpercentP))
+						.replace("%percentN%", AdvancedEconomyPlus.getVaultApi().format(hpercentN))
+						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVaultApi().format(smaxTotal))
+						.replace("%positivvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxPositiv))
+						.replace("%negativvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxNegativ))
+						.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+						));
+				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.Month")
+						.replace("%month%", month.format(DateTimeFormatter.ofPattern("MM.yyyy")))));
+				totalbc.get(k).add(ChatApi.hoverEvent(barsII, Action.SHOW_TEXT,
+						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessage")
+						.replace("%percentP%", AdvancedEconomyPlus.getVaultApi().format(hpercentP))
+						.replace("%percentN%", AdvancedEconomyPlus.getVaultApi().format(hpercentN))
+						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVaultApi().format(smaxTotal))
+						.replace("%positivvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxPositiv))
+						.replace("%negativvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxNegativ))
+						.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+						));
+			}
+			k++;
+		}
+		
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.Headline")
+				.replace("%player%", eco.getName())
+				.replace("%amount%", String.valueOf(list.size()-1))));
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.Infoline")));
+		for(ArrayList<BaseComponent> bc : totalbc)
+		{
+			if(!bc.isEmpty())
+			{
+				TextComponent tc = ChatApi.tc("");
+				tc.setExtra(bc);
+				player.spigot().sendMessage(tc);
+			}
+		}
+		
+		boolean lastpage = false;
+		if(end > last)
+		{
+			lastpage = true;
+		}
+		LogHandler.pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
+		return;
+	}
+	
 	//TODO nicht richtig
 	public static void sendGetTotal(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, String path, ArrayList<ActionLogger> list,
 			String playername, int last, String searchword)
@@ -777,7 +1087,7 @@ public class LogHandler
 		pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
 	}
 	
-	public static void sendTrendDiagram(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco,ArrayList<TrendLogger> list,
+	public static void sendTrendDiagram(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<TrendLogger> list,
 			int page, int end, String playername, int last, String cmdstring)
 	{
 		if(list.size()<2)
@@ -789,9 +1099,13 @@ public class LogHandler
 		double maxamount = 0.0;
 		double minamount = 0.0;
 		int i = 0;
-		while(i<list.size())
+		while(i < list.size())
 		{
 			TrendLogger el  = list.get(i);
+			if(el == null)
+			{
+				continue;
+			}
 			if(i == 0)
 			{
 				minamount = el.getFirstValue();
@@ -828,13 +1142,17 @@ public class LogHandler
 				.replace("%max%", AdvancedEconomyPlus.getVaultApi().format(maxamount))
 				.replace("%min%", AdvancedEconomyPlus.getVaultApi().format(minamount))
 				.replace("%median%", AdvancedEconomyPlus.getVaultApi().format(median))));
-		while(i<=list.size()-1)
+		while(i < list.size())
 		{
 			TrendLogger tl = list.get(i);
+			if(tl == null)
+			{
+				continue;
+			}
 			String message = "&e"+tl.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))+": ";
 			final int firstlength = message.length();
 			double percent = (tl.getRelativeAmountChange()/hpercent)*100;
-			int greenBlocks = 10+(int) Utility.round((tl.getRelativeAmountChange()/hpercent)*10,0);
+			int greenBlocks =10+ (int)percent/10;
 			int redBlocks = 20-greenBlocks;
 			if(greenBlocks > 20)
 			{
@@ -886,6 +1204,10 @@ public class LogHandler
 		while(i<list.size())
 		{
 			TrendLogger el  = list.get(i);
+			if(el == null)
+			{
+				continue;
+			}
 			if(i == 0)
 			{
 				minamount = el.getFirstValue();
@@ -916,8 +1238,8 @@ public class LogHandler
 			minamount = safe;
 		}
 		double hpercent = (maxamount-minamount);
-		String wim = plugin.getYamlHandler().get().getString("GraficSpaceSymbol", "ˉ");
-		String x = plugin.getYamlHandler().get().getString("GraficPointSymbol", "x");
+		String wim = plugin.getYamlHandler().getConfig().getString("GraficSpaceSymbol", "ˉ");
+		String x = plugin.getYamlHandler().getConfig().getString("GraficPointSymbol", "x");
 		String headmessage = "&a▼"+AdvancedEconomyPlus.getVaultApi().format(maxamount);
 		String messageI = "|";
 		String messageII = "|";
@@ -937,6 +1259,10 @@ public class LogHandler
 		while(i>=0)
 		{
 			TrendLogger tl = list.get(i);
+			if(tl == null)
+			{
+				continue;
+			}
 			double median = (Math.max(tl.getFirstValue(), tl.getLastValue())+Math.min(tl.getFirstValue(), tl.getLastValue()))/2;
 			safeline = (int) Utility.round(((maxamount-median)/hpercent)*10,0);
 			if(safeline > 10)

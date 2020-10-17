@@ -346,7 +346,7 @@ public interface TableIV
 	}
 	
 	default ArrayList<TrendLogger> getListIV(AdvancedEconomyPlus plugin, String orderByColumn,
-			int start, int end, String whereColumn, Object... whereObject)
+			boolean desc, int start, int end, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -354,9 +354,17 @@ public interface TableIV
 		if (conn != null) 
 		{
 			try 
-			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV 
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+			{
+				String sql = "";
+				if(desc)
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV 
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+				} else
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV 
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC LIMIT "+start+", "+end;
+				}
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -452,7 +460,7 @@ public interface TableIV
 	}
 	
 	default ArrayList<TrendLogger> getAllListAtIV(AdvancedEconomyPlus plugin, String orderByColumn,
-			String whereColumn, Object...whereObject) throws IOException
+			boolean desc, String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -460,9 +468,17 @@ public interface TableIV
 		if (conn != null) 
 		{
 			try 
-			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+			{
+				String sql = "";
+				if(desc)
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+				} else
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
+				}
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)

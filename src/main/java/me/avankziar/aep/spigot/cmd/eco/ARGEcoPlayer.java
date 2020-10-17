@@ -32,7 +32,7 @@ public class ARGEcoPlayer extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayerFromName(playername);
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!

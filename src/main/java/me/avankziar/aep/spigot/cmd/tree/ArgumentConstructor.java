@@ -24,6 +24,7 @@ public class ArgumentConstructor extends BaseConstructor
     			path,
     			yamlHandler.getCom().getString(path+".Permission"),
     			yamlHandler.getCom().getString(path+".Suggestion"),
+    			yamlHandler.getCom().getString(path+".CommandString"),
     			canConsoleAccess);
         this.minArgsConstructor = minArgs;
         this.maxArgsConstructor = maxArgs;

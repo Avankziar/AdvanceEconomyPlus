@@ -1,4 +1,6 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram;
+package main.java.me.avankziar.aep.spigot.cmd.money.action.barchart;
+
+import java.io.IOException;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,12 +14,12 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
 
-public class ARGMoneyTrend_Diagram_FilterLog_StandAscending extends ArgumentModule
+public class ARGMoneyAction_BarChart_Log extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public ARGMoneyTrend_Diagram_FilterLog_StandAscending(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGMoneyAction_BarChart_Log(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -25,37 +27,37 @@ public class ARGMoneyTrend_Diagram_FilterLog_StandAscending extends ArgumentModu
 	}
 
 	@Override
-	public void run(CommandSender sender, String[] args)
+	public void run(CommandSender sender, String[] args) throws IOException
 	{
 		Player player = (Player) sender;
 		int page = 0;
 		String playername = player.getName();
-		if(args.length >= 5)
+		if(args.length >= 4)
 		{
-			String pagenumber = args[4];
+			String pagenumber = args[3];
 			if(MatchApi.isInteger(pagenumber))
 			{
 				page = Integer.parseInt(pagenumber);
 			}
 		}
-		if(args.length >= 6)
+		if(args.length >= 5)
 		{
-			if(args[5].equals(playername))
+			if(args[4].equals(playername))
 			{
-				playername = args[5];
+				playername = args[4];
 			} else
 			{
-				if(!player.hasPermission(Utility.PERM_CMD_MONEY_FILTERLOGOTHER))
+				if(!player.hasPermission(Utility.PERM_CMD_MONEY_LOG_OTHER))
 				{
 					player.sendMessage(ChatApi.tl(
 							plugin.getYamlHandler().getL().getString("NoPermission")));
 					return;
 				}
-				playername = args[5];
+				playername = args[4];
 			}
 		}
 		String cmdstring = plugin.getYamlHandler().getCom().getString(ac.getPath()+".CommandString");
-		LogMethodeHandler.trendLogStand(plugin, Methode.DIAGRAM, player, playername, false, page, cmdstring);
+		LogMethodeHandler.actionLog(plugin, Methode.BARCHART, player, playername, page, cmdstring);
 		return;
 	}
 }

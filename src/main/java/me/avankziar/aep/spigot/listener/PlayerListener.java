@@ -39,7 +39,7 @@ public class PlayerListener implements Listener
 				plugin.getMysqlHandler().updateData(Type.PLAYER, eco, "`id` = ?", eco.getId());
 			}
 		}
-		eco = EcoPlayerHandler.getEcoPlayer(event.getPlayer().getUniqueId().toString());
+		eco = EcoPlayerHandler.getEcoPlayer(event.getPlayer().getUniqueId());
 		if(!plugin.getMysqlHandler().exist(Type.TREND,
 				"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(LocalDate.now()), event.getPlayer().getUniqueId().toString()))
 		{

@@ -5,6 +5,7 @@ Bypass:
   TrendGraficOther: 'eco.cmd.money.trendgraficother'
   TrendLogOther: 'eco.cmd.money.trendlogother'
   Recomment: 'eco.cmd.bypass.recomment'
+  Bypass.FilterSettingsLogOther: 'eco.bypass.logother'
   StandingOrderCreate: 'eco.cmd.bypass.standingorder.create'
   StandingOrderInfo: 'eco.cmd.bypass.standingorder.info'
   StandingOrderDelete: 'eco.cmd.bypass.standingorder.delete'
@@ -50,8 +51,20 @@ money:
 money_action:
   Argument: 'action'
   Permission: 'eco.cmd.money.action'
-  Suggestion: '/money log [pagenumber] [player]'
-  #Show the logs of all payments
+  Suggestion: '/money action'
+  #Default command
+  
+money_action_barchart:
+  Argument: 'barchart'
+  Permission: 'eco.cmd.money.action.barchart'
+  Suggestion: '/money barchart'
+  #Default command
+money_action_barchart_log:
+  Argument: 'log'
+  Permission: 'eco.cmd.money.action.barchart.log'
+  Suggestion: '/money action barchart log [pagenumber] [player]'
+  CommandString: '/money action barchart log '
+  #Show the logs calculated in month and in the last year togeather.
   
 money_action_diagram:
   Argument: 'diagram'
@@ -539,18 +552,30 @@ money_trend_diagram_filterlog_sortdescending:
   Suggestion: '/money trend diagram filterlog sortdescending [page] [player]'
   CommandString: '/money trend diagram filterlog sortdescending '
   #Shows a diagram from the filterlog sortdescending
-money_trend_diagram_filterlog_standascending:
-  Argument: 'standascending'
-  Permission: 'eco.cmd.money.trend.diagram.filterlog.standascending'
-  Suggestion: '/money trend diagram filterlog standascending [page] [player]'
-  CommandString: '/money trend diagram filterlog standascending '
-  #Shows a diagram from the filterlog standascending
-money_trend_diagram_filterlog_standdescending:
-  Argument: 'standdescending'
-  Permission: 'eco.cmd.money.trend.diagram.filterlog.standdescending'
-  Suggestion: '/money trend diagram filterlog standdescending [page] [player]'
-  CommandString: '/money trend diagram filterlog standdescending '
-  #Shows a diagram from the filterlog standdescending
+money_trend_diagram_filterlog_firststandascending:
+  Argument: 'firststandascending'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.firststandascending'
+  Suggestion: '/money trend diagram filterlog firststandascending [page] [player]'
+  CommandString: '/money trend diagram filterlog firststandascending '
+  #Shows a diagram from the filterlog firststandascending
+money_trend_diagram_filterlog_firststanddescending:
+  Argument: 'firststanddescending'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.firststanddescending'
+  Suggestion: '/money trend diagram filterlog firststanddescending [page] [player]'
+  CommandString: '/money trend diagram filterlog firststanddescending '
+  #Shows a diagram from the filterlog firststanddescending
+money_trend_diagram_filterlog_laststandascending:
+  Argument: 'laststandascending'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.laststandascending'
+  Suggestion: '/money trend diagram filterlog laststandascending [page] [player]'
+  CommandString: '/money trend diagram filterlog laststandascending '
+  #Shows a diagram from the filterlog laststandascending
+money_trend_diagram_filterlog_firststanddescending:
+  Argument: 'laststanddescending'
+  Permission: 'eco.cmd.money.trend.diagram.filterlog.laststanddescending'
+  Suggestion: '/money trend diagram filterlog laststanddescending [page] [player]'
+  CommandString: '/money trend diagram filterlog laststanddescending '
+  #Shows a diagram from the filterlog laststanddescending
   
 money_trend_filterlog:
   Argument: 'filterlog'
@@ -587,18 +612,30 @@ money_trend_filterlog_sortdescending:
   Suggestion: '/money trend filterlog sortdescending [page] [player]'
   CommandString: '/money trend filterlog sortdescending '
   #Shows a log from the filterlog sortdescending
-money_trend_filterlog_standascending:
-  Argument: 'standascending'
-  Permission: 'eco.cmd.money.trend.filterlog.standascending'
-  Suggestion: '/money trend filterlog standascending [page] [player]'
-  CommandString: '/money trend filterlog standascending '
-  #Shows a log from the filterlog standascending
-money_trend_filterlog_standdescending:
-  Argument: 'standdescending'
-  Permission: 'eco.cmd.money.trend.filterlog.standdescending'
-  Suggestion: '/money trend filterlog standdescending [page] [player]'
-  CommandString: '/money trend filterlog standdescending '
-  #Shows a log from the filterlog standdescending
+money_trend_filterlog_firststandascending:
+  Argument: 'firststandascending'
+  Permission: 'eco.cmd.money.trend.filterlog.firststandascending'
+  Suggestion: '/money trend filterlog firststandascending [page] [player]'
+  CommandString: '/money trend filterlog firststandascending '
+  #Shows a log from the filterlog firststandascending
+money_trend_filterlog_firststanddescending:
+  Argument: 'firststanddescending'
+  Permission: 'eco.cmd.money.trend.filterlog.firststanddescending'
+  Suggestion: '/money trend filterlog firststanddescending [page] [player]'
+  CommandString: '/money trend filterlog firststanddescending '
+  #Shows a log from the filterlog firststanddescending
+money_trend_filterlog_laststandascending:
+  Argument: 'laststandascending'
+  Permission: 'eco.cmd.money.trend.filterlog.laststandascending'
+  Suggestion: '/money trend filterlog laststandascending [page] [player]'
+  CommandString: '/money trend filterlog laststandascending '
+  #Shows a log from the filterlog laststandascending
+money_trend_filterlog_laststanddescending:
+  Argument: 'laststanddescending'
+  Permission: 'eco.cmd.money.trend.filterlog.laststanddescending'
+  Suggestion: '/money trend filterlog laststanddescending [page] [player]'
+  CommandString: '/money trend filterlog laststanddescending '
+  #Shows a log from the filterlog laststanddescending
   
 money_trend_grafic:
   Argument: 'grafic'
@@ -647,18 +684,30 @@ money_trend_grafic_filterlog_sortdescending:
   Suggestion: '/money trend grafic filterlog sortdescending [page] [player]'
   CommandString: '/money trend grafic filterlog sortdescending '
   #Shows a grafic from the filterlog sortdescending
-money_trend_grafic_filterlog_standascending:
-  Argument: 'standascending'
-  Permission: 'eco.cmd.money.trend.grafic.filterlog.standascending'
-  Suggestion: '/money trend grafic filterlog standascending [page] [player]'
-  CommandString: '/money trend grafic filterlog standascending '
-  #Shows a grafic from the filterlog standascending
-money_trend_grafic_filterlog_standdescending:
-  Argument: 'standdescending'
-  Permission: 'eco.cmd.money.trend.grafic.filterlog.standdescending'
-  Suggestion: '/money trend grafic filterlog standdescending [page] [player]'
-  CommandString: '/money trend grafic filterlog standdescending '
-  #Shows a grafic from the filterlog standdescending
+money_trend_grafic_filterlog_firststandascending:
+  Argument: 'firststandascending'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.firststandascending'
+  Suggestion: '/money trend grafic filterlog firststandascending [page] [player]'
+  CommandString: '/money trend grafic filterlog firststandascending '
+  #Shows a grafic from the filterlog firststandascending
+money_trend_grafic_filterlog_firststanddescending:
+  Argument: 'firststanddescending'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.firststanddescending'
+  Suggestion: '/money trend grafic filterlog firststanddescending [page] [player]'
+  CommandString: '/money trend grafic filterlog firststanddescending '
+  #Shows a grafic from the filterlog firststanddescending
+money_trend_grafic_filterlog_laststandascending:
+  Argument: 'laststandascending'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.laststandascending'
+  Suggestion: '/money trend grafic filterlog laststandascending [page] [player]'
+  CommandString: '/money trend grafic filterlog laststandascending '
+  #Shows a grafic from the filterlog laststandascending
+money_trend_grafic_filterlog_laststanddescending:
+  Argument: 'laststanddescending'
+  Permission: 'eco.cmd.money.trend.grafic.filterlog.laststanddescending'
+  Suggestion: '/money trend grafic filterlog laststanddescending [page] [player]'
+  CommandString: '/money trend grafic filterlog laststanddescending '
+  #Shows a grafic from the filterlog laststanddescending
   
 money_trend_log:
   Argument: 'log'

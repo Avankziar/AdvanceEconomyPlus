@@ -19,7 +19,7 @@ public class ChatApiSmall
 	public static TextComponent generateTextComponent(String message)
 	{
 		String[] array = message.split(" ");
-		YamlConfiguration cfg = AdvancedEconomyPlus.getPlugin().getYamlHandler().get();
+		YamlConfiguration cfg = AdvancedEconomyPlus.getPlugin().getYamlHandler().getConfig();
 		String idclick = cfg.getString("Identifier.Click");
 		String idhover = cfg.getString("Identifier.Hover");
 		String sepb = cfg.getString("Seperator.BetweenFunction");
@@ -101,7 +101,7 @@ public class ChatApiSmall
 	public static TextComponent generateTextComponent(String message, HashMap<String,String> hoverReplacer)
 	{
 		String[] array = message.split(" ");
-		YamlConfiguration cfg = AdvancedEconomyPlus.getPlugin().getYamlHandler().get();
+		YamlConfiguration cfg = AdvancedEconomyPlus.getPlugin().getYamlHandler().getConfig();
 		String idclick = cfg.getString("Identifier.Click");
 		String idhover = cfg.getString("Identifier.Hover");
 		String sepb = cfg.getString("Seperator.BetweenFunction");

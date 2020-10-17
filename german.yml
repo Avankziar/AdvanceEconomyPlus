@@ -51,6 +51,9 @@ CmdEco:
     eco_recomment: '&c/econ recomment <Id> <Note> &f| Ändert die angehängte Notiz des Log-Eintrages.'
     money: '&c/money &f| Zeigt dein Guthaben an.'
     money_action: '&c/money action &f| Zwischenbefehl'
+    money_action_barchart: '&c/money action barchart &f| Zwischenbefehl'
+    money_action_barchart_log: '&c/money action barchart log [Seitenzahl] [Spielername] &f| Barchart von allen Aktionlogeinträge des letzten Jahres.'
+    
     money_action_diagram: '&c/money action diagram &f| Zwischenbefehl.'
     money_action_diagram_filterlog: '&c/money action diagram filterlog &f| Zwischenbefehl.'
     money_action_diagram_filterlog_between: '&c/money action diagram filterlog between <min> <max> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle AktionLogs in einem Diagram zwischen Min. und Max.'
@@ -65,6 +68,7 @@ CmdEco:
     money_action_diagram_filterlog_sortdescending: '&c/money action diagram filterlog sortdescending [Seitenzahl] [Spielername] &f| Zeigt alle Aktionlogs in einem Diagram absteigend nach relative Geldänderung an.'
     money_action_diagram_filterlog_to: '&c/money action diagram filterlog to <Suchwort> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend die Logs in einem Diagram mit dem Suchwort als Empfänger an.'
     money_action_diagram_log: '&c/money action diagram log [Seitenzahl] [Spielername] &f| Balkendiagram vom Aktionlog.'
+    
     money_action_filterlog: '&c/money actionfilterlog &f| Zwischenbefehl'
     money_action_filterlog_between: '&c/money action filterlog between <min> <max> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle Aktionlogs zwischen Min. und Max.'
     money_action_filterlog_comment: '&c/money action filterlog comment <Suchwort> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle Aktionlogs mit einem spezifischen Wort in den Notizen.'
@@ -77,6 +81,7 @@ CmdEco:
     money_action_filterlog_sortascending: '&c/money action filterlog sortascending [Seitenzahl] [Spielername] &f| Zeigt alle Aktionlogs aufsteigend nach Geldbetrag an.'
     money_action_filterlog_sortdescending: '&c/money action filterlog sortdescending [Seitenzahl] [Spielername] &f| Zeigt alle Aktionlogs absteigend nach Geldbetrag an.'
     money_action_filterlog_to: '&c/money action filterlog to <Suchwort> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend die Logs mit dem Suchwort als Empfänger an.'
+    
     money_action_grafic: '&c/money action grafic &f| Zwischenbefehl.'
     money_action_grafic_filterlog: '&c/money action grafic filterlog &f| Zwischenbefehl.'
     money_action_grafic_filterlog_between: '&c/money action grafic filterlog between <min> <max> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle AktionLogs in einer Grafik zwischen Min. und Max.'
@@ -92,6 +97,7 @@ CmdEco:
     money_action_grafic_filterlog_to: '&c/money action grafic filterlog to <Suchwort> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend die Logs in einer Grafik mit dem Suchwort als Empfänger an.'
     money_action_grafic_log: '&c/money action grafic log [Seitenzahl] [Spielername] &f| Balkendiagram vom Trendlog.'
     money_action_log: '&c/money action log [Seitenzahl] &f| Zeigt, wenn vorhanden, die 10 letzten Einträge der Geldbewegungen von oder zu dem Spielerkonto an.'
+    
     money_loan: '&c/money loan &f| Zwischenbefehl'
     money_loan_accept: '&c/money loan accept [bestätigen] &f| Akzeptiert einen Kreditvorschlag.'
     money_loan_amount: '&c/money loan amount <gesamtbetrag> <ratenbetrag> <zinzen in %> &f| Setzt für den Gesamtbetrag, Ratenbetrag und die Zinsen für einen Kredit, welcher sich noch in Bearbeitung befindet.'
@@ -109,11 +115,13 @@ CmdEco:
     money_loan_time: '&c/money loan time <startdatum|dd.MM.yyyy-HH:mm> <entdatum|dd.MM.yyyy-HH:mm> <ratenzyklus|dd-HH:mm> &f| Setzt die Zeiten für den Kreditvorschlag.'
     money_loan_transfer: '&c/money loan transfer <id> <Spielername> &f| Überträgt den Eigentümerstatus und Rückzahlrecht an den Spieler.'
     money_loans: '&c/money Loans [Seitenzahl] [Spielername] &f| Zeigt alle Kredite des Spielers an.'
+   
     money_freeze: '&c/money freeze <Spielername> &f| Friert das Spielerkonto ein oder gibt es frei.'
     money_gettotal: '&c/money gettotal [Suchwort] [Spielername] &f| Listet den positiven, den negativen und den Gesamtbetrag auf, welche mit dem Suchwort übereinstimmen.'
     money_give: '&c/money give <Spielername> <Betrag> &f| Überweist den Betrag auf das Spielerkonto.'
     money_pay: '&c/money pay <Spielername> <Betrag> &f| Zahlt dem Spieler den Betrag.'
     money_set: '&c/money set <Spielername> <Betrag> &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.'
+    
     money_standingorder: '&c/money standingorder &f| Zwischenbefehl'
     money_standingorder_amount: '&c/money standingorder amount <Betrag> &f| Setzt den Betrag für ein noch wartenden Dauerauftrag.'
     money_standingorder_cancel: '&c/money standingorder cancel &f| Bricht den noch wartenden Dauerauftrag ab.'
@@ -124,10 +132,13 @@ CmdEco:
     money_standingorder_pause: '&c/money standingorder pause <ID> &f| Pausiert den Dauerauftrag. Falls er vorher abgebrochen wurde, setzte er den Status zurück.'
     money_standingorder_repeatingtime: '&c/money standingorder repeatingtime <dd-HH:mm Wert> &f| Setzt eine Wiederholungsvariable, welche im dd-HH:mm Format geschrieben werden muss.'
     money_standingorder_starttime: '&c/money standingorder starttime <dd.MM.yyyy-HH:mm Wert> &f| Setzt das Startdatum. Es müssen vorher alle anderen Eigenschaften gesetzt sein!'
+    
     money_take: '&c/money take <Spielername> <Betrag> &f| Zieht den Betrag vom Spielerkonto ab.'
     money_top: '&c/money top [Seitenzahl] &f| Zeigt die Liste der bestbetuchten Spieler an.'
     money_toggle: '&c/money toggle &f| Schaltet Nachrichten aus und ein, die als Überweisung auf euer Spielerkonto eingehen.'
+    
     money_trend: '&c/money trend &f| Zwischenbefehl'
+    
     money_trend_diagram: '&c/money trend diagram &f| Zwischenbefehl.'
     money_trend_diagram_filterlog: '&c/money trend diagram filterlog &f| Zwischenbefehl.'
     money_trend_diagram_filterlog_between: '&c/money trend diagram filterlog between <min> <max> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle TrendLogs in einem Diagram zwischen Min. und Max. (Relative Geldänderung)'
@@ -135,17 +146,23 @@ CmdEco:
     money_trend_diagram_filterlog_lessthan: '&c/money trend diagram filterlog lessthan <Wert> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle TrendLogs in einem Diagram kleiner als der Wert (Relative Geldänderung)'
     money_trend_diagram_filterlog_sortascending: '&c/money trend diagram filterlog sortascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram aufsteigend nach relative Geldänderung an.'
     money_trend_diagram_filterlog_sortdescending: '&c/money trend diagram filterlog sortdescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram absteigend nach relative Geldänderung an.'
-    money_trend_diagram_filterlog_standascending: '&c/money trend diagram filterlog standascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram aufsteigend nach Geldstand an.'
-    money_trend_diagram_filterlog_standdescending: '&c/money trend diagram filterlog standdescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram absteigend nach Geldstand an.'
+    money_trend_diagram_filterlog_firststandascending: '&c/money trend diagram filterlog firststandascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram aufsteigend nach Beginnenden Geldstand an.'
+    money_trend_diagram_filterlog_firststanddescending: '&c/money trend diagram filterlog firststanddescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram absteigend nach Beginnenden  Geldstand an.'
+    money_trend_diagram_filterlog_laststandascending: '&c/money trend diagram filterlog laststandascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram aufsteigend nach Endenen Geldstand an.'
+    money_trend_diagram_filterlog_laststanddescending: '&c/money trend diagram filterlog laststanddescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram absteigend nach Endenen Geldstand an.'
     money_trend_diagram_log: '&c/money trend diagram log [Seitenzahl] [Spielername] &f| Balkendiagram vom Trendlog.'
+    
     money_trend_filterlog: '&c/money trend filterlog &f| Zwischenbefehl'
     money_trend_filterlog_between: '&c/money trend filterlog between <min> <max> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle TrendLogs zwischen Min. und Max. (Relative Geldänderung)'
     money_trend_filterlog_greaterthan: '&c/money trend filterlog greaterthan <Wert> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle TrendLogs größer als der Wert (Relative Geldänderung)'
     money_trend_filterlog_lessthan: '&c/money trend filterlog lessthan <Wert> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle TrendLogs kleiner als der Wert (Relative Geldänderung)'
     money_trend_filterlog_sortascending: '&c/money trend filterlog sortascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs aufsteigend nach relative Geldänderung an.'
     money_trend_filterlog_sortdescending: '&c/money trend filterlog sortdescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs absteigend nach relative Geldänderung an.'
-    money_trend_filterlog_standascending: '&c/money trend filterlog standascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs aufsteigend nach Geldstand an.'
-    money_trend_filterlog_standdescending: '&c/money trend filterlog standdescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs absteigend nach Geldstand an.'
+    money_trend_filterlog_firststandascending: '&c/money trend filterlog firststandascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs aufsteigend nach Beginnenden Geldstand an.'
+    money_trend_filterlog_firststanddescending: '&c/money trend filterlog firststanddescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs absteigend nach Beginnenden Geldstand an.'
+    money_trend_filterlog_laststandascending: '&c/money trend filterlog laststandascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs aufsteigend nach Endenen Geldstand an.'
+    money_trend_filterlog_laststanddescending: '&c/money trend filterlog laststanddescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs absteigend nach Endenen Geldstand an.'
+    
     money_trend_grafic: '&c/money trend grafic &f| Zwischenbefehl.'
     money_trend_grafic_filterlog: '&c/money trend grafic filterlog &f| Zwischenbefehl.'
     money_trend_grafic_filterlog_between: '&c/money trend grafic filterlog between <min> <max> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle TrendLogs in einem Diagram zwischen Min. und Max. (Relative Geldänderung)'
@@ -153,8 +170,10 @@ CmdEco:
     money_trend_grafic_filterlog_lessthan: '&c/money trend grafic filterlog lessthan <Wert> [Seitenzahl] [Spielername] &f| Zeigt chronologisch absteigend alle TrendLogs in einem Diagram kleiner als der Wert (Relative Geldänderung)'
     money_trend_grafic_filterlog_sortascending: '&c/money trend grafic filterlog sortascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram aufsteigend nach relative Geldänderung an.'
     money_trend_grafic_filterlog_sortdescending: '&c/money trend grafic filterlog sortdescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram absteigend nach relative Geldänderung an.'
-    money_trend_grafic_filterlog_standascending: '&c/money trend grafic filterlog standascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram aufsteigend nach Geldstand an.'
-    money_trend_grafic_filterlog_standdescending: '&c/money trend grafic filterlog standdescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram absteigend nach Geldstand an.'
+    money_trend_grafic_filterlog_firststandascending: '&c/money trend grafic filterlog firststandascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram aufsteigend nach Beginnenden Geldstand an.'
+    money_trend_grafic_filterlog_firststanddescending: '&c/money trend grafic filterlog firststanddescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram absteigend nach Beginnenden Geldstand an.'
+    money_trend_grafic_filterlog_laststandascending: '&c/money trend grafic filterlog laststandascending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram aufsteigend nach Endenen Geldstand an.'
+    money_trend_grafic_filterlog_laststanddescending: '&c/money trend grafic filterlog laststanddescending [Seitenzahl] [Spielername] &f| Zeigt alle Trendlogs in einem Diagram absteigend nach Endenen Geldstand an.'
     money_trend_grafic_log: '&c/money trend grafic log [Seitenzahl] [Spielername] &f| Balkendiagram vom Trendlog.'
     money_trend_log: '&c/money trend log [Seitenzahl] [Spielername] &f| Normaler Log vom Trendlog.'
     bank: '&c/bank &f| Zeigt alle deine Bankkonten an.'
@@ -176,6 +195,13 @@ CmdMoney:
   PlayerWithDraw: '&f%amount% &e%currency% wurden vom %name% abgezogen. Aktuelles Guthaben: &2%balance%'
   BankPay:
     DepositWithDraw: '&6%amount% &2%currency% &ewurden von &6%name1% &ean &6%number2%&f|&6%name2% &eüberwiesen. &eAktuelles Guthaben von &6%name%&e: &2%balance%'
+  BarChart:
+    Headline: '&e=======&7[&2Economy &bBarChart: &f%player%&7 | Log-Anzahl: %amount%&7]&e======='
+    Infoline: '&aEinnahmen &7[in %-Anteil vom Jahr] &e| &cAusgaben &7[in %-Anteil vom Jahr]'
+    HoverMessage: '&aEinnahmen in Monat = &f%positivvalue% %currency%~!~&aProzentualer Anteil der Einnahmen = &f%percentP% %~!~&cAusgaben im Monat = &f%negativvalue% %currency%~!~&cProzentualer Anteil der Ausgaben = &f%percentN% %~!~&eGesamtveränderung im Monat = &r%totalvalue% %currency%'
+    HoverMessageII: '&aEinnahmen in letzten Jahr = &f%positivvalue% %currency%~!~&cAusgaben im letzten Jahr = &f%negativvalue% %currency%~!~&eGesamtveränderung im letzten Jahr = &r%totalvalue% %currency%'
+    Month:    '&e -    %month%    - &r'
+    LastYear: '&e - Letztes Jahr - &r'
   Loan:
     AcceptCmd: '/money loan accept bestätigen'
     InfoCmd: '/money loan info'

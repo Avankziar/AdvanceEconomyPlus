@@ -117,11 +117,11 @@ public class LoggerApi
 					"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(date), UUIDOrNumber);
 			double newrelative = trendLogger.getRelativeAmountChange()+oldtrendLogger.getRelativeAmountChange();
 			if(MatchApi.isPositivNumber(newrelative) 
-					&& newrelative > plugin.getYamlHandler().get().getDouble("TrendLogger.ValueIsStabil"))
+					&& newrelative > plugin.getYamlHandler().getConfig().getDouble("TrendLogger.ValueIsStabil"))
 			{
 				newtype = TrendLogger.Type.UP;
 			} else if(!MatchApi.isPositivNumber(newrelative) 
-					&& newrelative < plugin.getYamlHandler().get().getDouble("TrendLogger.ValueIsStabil"))
+					&& newrelative < plugin.getYamlHandler().getConfig().getDouble("TrendLogger.ValueIsStabil"))
 			{
 				newtype = TrendLogger.Type.DOWN;
 			}
@@ -155,11 +155,11 @@ public class LoggerApi
 					trendLogger.getUUIDOrNumber());
 			double newrelative = trendLogger.getRelativeAmountChange()+oldtrendLogger.getRelativeAmountChange();
 			if(MatchApi.isPositivNumber(newrelative) 
-					&& newrelative > plugin.getYamlHandler().get().getDouble("TrendLogger.ValueIsStabil"))
+					&& newrelative > plugin.getYamlHandler().getConfig().getDouble("TrendLogger.ValueIsStabil"))
 			{
 				newtype = TrendLogger.Type.UP;
 			} else if(!MatchApi.isPositivNumber(newrelative) 
-					&& newrelative < -plugin.getYamlHandler().get().getDouble("TrendLogger.ValueIsStabil"))
+					&& newrelative < -plugin.getYamlHandler().getConfig().getDouble("TrendLogger.ValueIsStabil"))
 			{
 				newtype = TrendLogger.Type.DOWN;
 			}

@@ -105,7 +105,7 @@ public class ARGMoneyPay extends ArgumentModule
 					.replace("%amount%", amountstring)));
 			return;
 		}
-		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
+		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
 		if(toplayer == null)
 		{
 			//Der Spieler existiert nicht!
@@ -133,7 +133,7 @@ public class ARGMoneyPay extends ArgumentModule
 			return;
 		}
 		eco = EcoPlayerHandler.getEcoPlayer(player);
-		toplayer = EcoPlayerHandler.getEcoPlayerFromName(toplayername);
+		toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(), player.getUniqueId().toString(), toplayer.getUUID(),
 				player.getName(), toplayer.getName(), player.getUniqueId().toString(), amount, 
