@@ -27,8 +27,8 @@ public class YamlHandler
 	private File language = null;
 	private YamlConfiguration lang = new YamlConfiguration();
 	
-	private File filtersettings = null;
-	private YamlConfiguration fst = new YamlConfiguration();
+	private File loggersettings = null;
+	private YamlConfiguration ls = new YamlConfiguration();
 
 	public YamlHandler(AdvancedEconomyPlus plugin) throws IOException 
 	{
@@ -53,7 +53,7 @@ public class YamlHandler
 	
 	public YamlConfiguration getFilSet()
 	{
-		return fst;
+		return ls;
 	}
 	
 	public boolean loadYamlHandler() throws IOException
@@ -62,8 +62,6 @@ public class YamlHandler
 		{
 			return false;
 		}
-		
-		languages = cfg.getString("Language", "ENGLISH").toUpperCase();
 		
 		if(!mkdirDynamicFiles()) //Per language one file
 		{
@@ -100,6 +98,7 @@ public class YamlHandler
 		//Niederschreiben aller Werte für die Datei
 		writeFile(config, cfg, plugin.getYamlManager().getConfigKey());
 		
+		languages = cfg.getString("Language", "ENGLISH").toUpperCase();
 		
 		commands = new File(plugin.getDataFolder(), "commands.yml");
 		if(!commands.exists()) 
@@ -183,30 +182,30 @@ public class YamlHandler
 	private boolean mkdirFilterSettings() throws IOException
 	{
 		String languageString = plugin.getYamlManager().getLanguageType().toString().toLowerCase();
-		File directory = new File(plugin.getDataFolder()+"/FilterSettings/");
+		File directory = new File(plugin.getDataFolder()+"/LoggerSettings/");
 		if(!directory.exists())
 		{
 			directory.mkdir();
 		}
-		filtersettings = new File(directory.getPath(), languageString+"filtersettings.yml");
-		if(!filtersettings.exists()) 
+		loggersettings = new File(directory.getPath(), languageString+"loggersettings.yml");
+		if(!loggersettings.exists()) 
 		{
-			AdvancedEconomyPlus.log.info("Create %lang%filtersettings.yml...".replace("%lang%", languageString));
+			AdvancedEconomyPlus.log.info("Create %lang%loggersettings.yml...".replace("%lang%", languageString));
 			try
 			{
-				FileUtils.copyToFile(plugin.getResource("default.yml"), filtersettings);
+				FileUtils.copyToFile(plugin.getResource("default.yml"), loggersettings);
 			} catch (IOException e)
 			{
 				e.printStackTrace();
 			}
 		}
 		//Laden der Datei
-		if(!loadYamlTask(filtersettings, fst, languageString+"filtersettings.yml"))
+		if(!loadYamlTask(loggersettings, ls, languageString+"loggersettings.yml"))
 		{
 			return false;
 		}
 		//Niederschreiben aller Werte in die Datei
-		writeFile(filtersettings, fst, plugin.getYamlManager().getLoggerSettingsKey());
+		writeFile(loggersettings, ls, plugin.getYamlManager().getLoggerSettingsKey());
 		return true;
 	}
 	

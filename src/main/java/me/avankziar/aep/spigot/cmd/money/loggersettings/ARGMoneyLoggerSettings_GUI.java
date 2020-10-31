@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.statistics;
+package main.java.me.avankziar.aep.spigot.cmd.money.loggersettings;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -18,11 +18,11 @@ import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 
-public class ARGMoneyLoggerSettings extends ArgumentModule
+public class ARGMoneyLoggerSettings_GUI extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyLoggerSettings(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGMoneyLoggerSettings_GUI(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -35,11 +35,11 @@ public class ARGMoneyLoggerSettings extends ArgumentModule
 		int page = 0;
 		String otherplayername = player.getName();
 		Methode methode = Methode.LOG;
-		if(args.length >= 2)
+		if(args.length >= 3)
 		{
-			if(args[1].equals(otherplayername))
+			if(args[2].equals(otherplayername))
 			{
-				otherplayername = args[1];
+				otherplayername = args[2];
 			} else
 			{
 				if(!player.hasPermission(Utility.PERM_BYPASS_LOGOTHER))
@@ -48,22 +48,22 @@ public class ARGMoneyLoggerSettings extends ArgumentModule
 							plugin.getYamlHandler().getL().getString("NoPermission")));
 					return;
 				}
-				otherplayername = args[1];
+				otherplayername = args[2];
 			}
 		}
-		if(args.length >= 3)
+		if(args.length >= 4)
 		{
-			String pagenumber = args[2];
+			String pagenumber = args[3];
 			if(MatchApi.isInteger(pagenumber))
 			{
 				page = Integer.parseInt(pagenumber);
 			}
 		}
-		if(args.length >= 4)
+		if(args.length >= 5)
 		{
 			try
 			{
-				methode = Methode.valueOf(args[3]);
+				methode = Methode.valueOf(args[4]);
 			} catch(EnumConstantNotPresentException e) {}
 		}
 		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(otherplayername);
@@ -74,15 +74,15 @@ public class ARGMoneyLoggerSettings extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
 			return;
 		}
-		if(args.length <= 2)
+		if(args.length <= 3)
 		{
 			new LoggerSettingsHandler(plugin).generateGUI(player, player.getUniqueId(), UUID.fromString(eco.getUUID()), null, null, page);
 		} else
 		{
 			if(!LoggerSettingsHandler.getLoggerSettings().containsKey(player.getUniqueId()))
 			{
-				player.sendMessage(ChatApi.tl("No loggersettings found"));
-				return; //TODO
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getConfig().getString("CmdMoney.Log.NoLoggerSettingsFound")));
+				return;
 			}
 			LoggerSettings fst = LoggerSettingsHandler.getLoggerSettings().get(player.getUniqueId());
 			new LoggerSettingsHandler(plugin).forwardingToOutput(player, fst, fst.isAction(), methode, page);

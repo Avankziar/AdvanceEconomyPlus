@@ -497,7 +497,7 @@ public class VaultApi implements Economy
 					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
 					.replace("%args%", format(amount)));
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player.getUniqueId().toString());
+		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
 		if(eco == null)
 		{
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,

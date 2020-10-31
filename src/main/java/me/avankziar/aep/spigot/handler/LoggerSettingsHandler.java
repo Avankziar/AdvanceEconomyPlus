@@ -20,26 +20,23 @@ import org.bukkit.inventory.meta.ItemMeta;
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
+import main.java.me.avankziar.aep.spigot.database.LanguageObject.LanguageType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
-import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.InventoryHandlerType;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.OrderType;
+import main.java.me.avankziar.aep.spigot.object.TrendLogger;
+import net.md_5.bungee.api.chat.ClickEvent.Action;
 
 public class LoggerSettingsHandler
 {
 	public AdvancedEconomyPlus plugin;
 	private static LinkedHashMap<UUID, LoggerSettings> filterSettings = new LinkedHashMap<>();
-	public static String actionBarChartCmdString = "";
-	public static String actionDiagramCmdString = "";
-	public static String trendDiagramCmdString = "";
-	public static String actionGraficCmdString = "";
-	public static String trendGraficCmdString = "";
-	public static String actionLogCmdString = "";
-	public static String trendLogCmdString = "";
+	public static String loggerSettingsCommandString = "";
+	public static String loggerSettingsTextCommandString = "";
 	
 	public LoggerSettingsHandler(AdvancedEconomyPlus plugin)
 	{
@@ -56,13 +53,14 @@ public class LoggerSettingsHandler
 		Inventory inventory = openInventory;
 		if(openInventory == null)
 		{
-			inventory = Bukkit.createInventory(null, 9*6, ChatApi.tl("&cFilter &aSettings"));
+			inventory = Bukkit.createInventory(null, 9*6, ChatApi.tl("&cLogger &aSettings"));
 		}
 		LoggerSettings fst = getLoggerSettings().get(uuid);
 		if(fst == null)
 		{
 			fst = new LoggerSettings(UseUUID, UseBankNumber, page);
 			fst.setInventoryHandlerType(InventoryHandlerType.NORMAL);
+			getLoggerSettings().put(uuid, fst);
 		}
 		for(int i = 0; i < inventory.getSize(); i++)
 		{
@@ -114,7 +112,7 @@ public class LoggerSettingsHandler
 			case 44: //PreSet 2
 			case 45: //PreSet 3
 			case 53: //PreSet 4
-				ItemStack preset = generateItem(i, fst, uuid, true, true);
+				ItemStack preset = generateItem(i, fst, uuid, false, true);
 				inventory.setItem(i, preset);
 				break;
 			default:
@@ -166,91 +164,239 @@ public class LoggerSettingsHandler
 			event.getWhoClicked().closeInventory();
 			return;
 		}
+		event.setResult(Result.DENY);
+		event.setCancelled(true);
 		switch(event.getSlot())
 		{
 		default:
 			break;
 			
 		case 40: //Barchart Befehl ausführen
+			fst.setAction(true);
+			getLoggerSettings().replace(uuid, fst);
 			forwardingToOutput((Player) event.getWhoClicked(), fst, true, Methode.BARCHART, 0);
 			break;
 		case 48: //Diagram Befehl ausführen. Linksklick: Action | Rechtsklick: Trend
 			if(event.isLeftClick())
 			{
+				fst.setAction(true);
+				getLoggerSettings().replace(uuid, fst);
 				forwardingToOutput((Player) event.getWhoClicked(), fst, true, Methode.DIAGRAM, 0);
 			} else if(event.isRightClick())
 			{
-				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.DIAGRAM, 0);
 				fst.setAction(false);
 				getLoggerSettings().replace(uuid, fst);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.DIAGRAM, 0);
 			}
 			break;
 		case 50: //Grafik Befehl ausführen.
 			if(event.isLeftClick())
 			{
+				fst.setAction(true);
+				getLoggerSettings().replace(uuid, fst);
 				forwardingToOutput((Player) event.getWhoClicked(), fst, true, Methode.GRAFIC, 0);
 			} else if(event.isRightClick())
 			{
-				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.GRAFIC, 0);
 				fst.setAction(false);
 				getLoggerSettings().replace(uuid, fst);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.GRAFIC, 0);
 			}
 			break;
 		case 49: //Log Befehl ausführen.
 			if(event.isLeftClick())
 			{
+				fst.setAction(true);
+				getLoggerSettings().replace(uuid, fst);
 				forwardingToOutput((Player) event.getWhoClicked(), fst, true, Methode.LOG, 0);
 			} else if(event.isRightClick())
 			{
-				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.LOG, 0);
 				fst.setAction(false);
 				getLoggerSettings().replace(uuid, fst);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.LOG, 0);
 			}
 			break;
 		
-		case 36: //PreSet 1 TODO
+		case 36: //PreSet 1
+			int slotid = 1;
 			if(event.isShiftClick())
 			{
-				
-				getLoggerSettings().replace(uuid, fst);
+				if(!plugin.getMysqlHandler().exist(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString()))
+				{
+					return;
+				}
+				plugin.getMysqlHandler().deleteData(Type.LOGGERSETTINGSPRESET, "`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
 			} else if(event.isLeftClick())
 			{
-				
-				getLoggerSettings().replace(uuid, fst);
+				LoggerSettings ls = (LoggerSettings) plugin.getMysqlHandler().getData(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
+				if(ls == null)
+				{
+					return;
+				}
+				getLoggerSettings().replace(uuid, ls);
 			} else if(event.isRightClick())
 			{
-				
-				getLoggerSettings().replace(uuid, fst);
+				if(plugin.getMysqlHandler().exist(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString()))
+				{
+					return;
+				}
+				fst.setSlotid(slotid);
+				plugin.getMysqlHandler().create(Type.LOGGERSETTINGSPRESET, fst);
 			}
 			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
 			break;
 		case 44: //PreSet 2
+			slotid = 2;
+			if(event.isShiftClick())
+			{
+				if(!plugin.getMysqlHandler().exist(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString()))
+				{
+					return;
+				}
+				plugin.getMysqlHandler().deleteData(Type.LOGGERSETTINGSPRESET, "`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
+			} else if(event.isLeftClick())
+			{
+				LoggerSettings ls = (LoggerSettings) plugin.getMysqlHandler().getData(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
+				if(ls == null)
+				{
+					return;
+				}
+				getLoggerSettings().replace(uuid, ls);
+			} else if(event.isRightClick())
+			{
+				if(plugin.getMysqlHandler().exist(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString()))
+				{
+					return;
+				}
+				fst.setSlotid(slotid);
+				plugin.getMysqlHandler().create(Type.LOGGERSETTINGSPRESET, fst);
+			}
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
 			break;
 		case 45: //PreSet 3
+			slotid = 3;
+			if(event.isShiftClick())
+			{
+				if(!plugin.getMysqlHandler().exist(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString()))
+				{
+					return;
+				}
+				plugin.getMysqlHandler().deleteData(Type.LOGGERSETTINGSPRESET, "`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
+			} else if(event.isLeftClick())
+			{
+				LoggerSettings ls = (LoggerSettings) plugin.getMysqlHandler().getData(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
+				if(ls == null)
+				{
+					return;
+				}
+				getLoggerSettings().replace(uuid, ls);
+			} else if(event.isRightClick())
+			{
+				if(plugin.getMysqlHandler().exist(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString()))
+				{
+					return;
+				}
+				fst.setSlotid(slotid);
+				plugin.getMysqlHandler().create(Type.LOGGERSETTINGSPRESET, fst);
+			}
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
 			break;
 		case 53: //PreSet 4
+			slotid = 4;
+			if(event.isShiftClick())
+			{
+				if(!plugin.getMysqlHandler().exist(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString()))
+				{
+					return;
+				}
+				plugin.getMysqlHandler().deleteData(Type.LOGGERSETTINGSPRESET, "`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
+			} else if(event.isLeftClick())
+			{
+				LoggerSettings ls = (LoggerSettings) plugin.getMysqlHandler().getData(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
+				if(ls == null)
+				{
+					return;
+				}
+				getLoggerSettings().replace(uuid, ls);
+			} else if(event.isRightClick())
+			{
+				if(plugin.getMysqlHandler().exist(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString()))
+				{
+					return;
+				}
+				fst.setSlotid(slotid);
+				plugin.getMysqlHandler().create(Type.LOGGERSETTINGSPRESET, fst);
+			}
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
 			break;
 			
 		case 3: //From Set Befehl ausführen
-			fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_FROM);
-			getLoggerSettings().replace(uuid, fst);
-			generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
-			break;
+			if(event.isShiftClick())
+			{
+				fst.getActionFilter().setFrom(null);
+				getLoggerSettings().replace(uuid, fst);
+				generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+				break;
+			} else if(event.isRightClick() || event.isLeftClick())
+			{
+				fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_FROM);
+				getLoggerSettings().replace(uuid, fst);
+				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
+				break;
+			}
 		case 4: //Orderer Befehl ausführen. Wird auf für den Trend genutzt.
-			fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_ORDERER);
-			getLoggerSettings().replace(uuid, fst);
-			generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
-			break;
+			if(event.isShiftClick())
+			{
+				fst.getActionFilter().setOrderer(null);
+				getLoggerSettings().replace(uuid, fst);
+				generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+				break;
+			} else if(event.isRightClick() || event.isLeftClick())
+			{
+				fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_ORDERER);
+				getLoggerSettings().replace(uuid, fst);
+				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
+				break;
+			}
 		case 5: //to Set Befehl ausführen
-			fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_TO);
-			getLoggerSettings().replace(uuid, fst);
-			generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
-			break;
+			if(event.isShiftClick())
+			{
+				fst.getActionFilter().setTo(null);
+				getLoggerSettings().replace(uuid, fst);
+				generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+				break;
+			} else if(event.isRightClick() || event.isLeftClick())
+			{
+				fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_TO);
+				getLoggerSettings().replace(uuid, fst);
+				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
+				break;
+			}
 		case 13: //Comment Set
-			fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_COMMENT);
-			getLoggerSettings().replace(uuid, fst);
-			generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
-			break;
+			if(event.isShiftClick())
+			{
+				fst.getActionFilter().setComment(null);
+				getLoggerSettings().replace(uuid, fst);
+				generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+				break;
+			} else if(event.isRightClick() || event.isLeftClick())
+			{
+				fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_COMMENT);
+				getLoggerSettings().replace(uuid, fst);
+				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
+				break;
+			}
 			
 		//Min ist für LessThan, Between
 		case 0: //Min. Linksklick: +1 | Rechtsklick: +50
@@ -661,52 +807,54 @@ public class LoggerSettingsHandler
 	public void generateAnvilStringEditor(Player player, LoggerSettings fst)
 	{
 		player.closeInventory();
-		Inventory anvil = Bukkit.createInventory(null, InventoryType.ANVIL, "§eFilterSettings AnvilEditor");
-		ItemStack is = generateItem(100, fst, player.getUniqueId(), false, false);
-		anvil.setItem(0, is);
-		player.openInventory(anvil);
+		player.spigot().sendMessage(ChatApi.clickEvent
+				(plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsTextSuggest")
+				, Action.SUGGEST_COMMAND, loggerSettingsTextCommandString));
 	}
 	
-	public void anvilStringEditorOutput(InventoryClickEvent event)
+	public void anvilStringEditorOutput(Player player, String searchtext)
 	{
-		ItemStack edited = event.getCurrentItem().clone();
-		if(edited == null)
-		{
-			return;
-		}
-		if(!edited.hasItemMeta() || !edited.getItemMeta().hasDisplayName())
-		{
-			event.setCurrentItem(null);
-			return;
-		}
-		String s = edited.getItemMeta().getDisplayName();
-		LoggerSettings fst = getLoggerSettings().get(event.getWhoClicked().getUniqueId());
+		LoggerSettings fst = LoggerSettingsHandler.getLoggerSettings().get(player.getUniqueId());
 		if(fst == null)
 		{
-			event.setCurrentItem(null);
 			return;
 		}
+		EcoPlayer eco = null;
 		if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_COMMENT)
 		{
-			fst.getActionFilter().setComment(s);
+			fst.getActionFilter().setComment(searchtext.replace("'", ""));
 		} else if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_FROM)
 		{
-			fst.getActionFilter().setFrom(s);
+			eco = EcoPlayerHandler.getEcoPlayer(searchtext.replace("'", ""));
+			if(eco == null)
+			{
+				fst.getActionFilter().setFrom(searchtext.replace("'", ""));
+			} else
+			{
+				fst.getActionFilter().setFrom(eco.getUUID().toString());
+			}
 		} else if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_TO)
 		{
-			fst.getActionFilter().setTo(s);
+			eco = EcoPlayerHandler.getEcoPlayer(searchtext.replace("'", ""));
+			if(eco == null)
+			{
+				fst.getActionFilter().setTo(searchtext.replace("'", ""));
+			} else
+			{
+				fst.getActionFilter().setTo(eco.getUUID().toString());
+			}
 		} else if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_ORDERER)
 		{
-			fst.getActionFilter().setOrderer(s);
-		} else
-		{
-			event.setResult(Result.DENY);
-			event.setCancelled(true);
-			event.getWhoClicked().closeInventory();
-			return;
+			eco = EcoPlayerHandler.getEcoPlayer(searchtext.replace("'", ""));
+			if(eco == null)
+			{
+				fst.getActionFilter().setOrderer(searchtext.replace("'", ""));
+			} else
+			{
+				fst.getActionFilter().setOrderer(eco.getUUID().toString());
+			}
 		}
-		fst.setInventoryHandlerType(InventoryHandlerType.NORMAL);
-		generateGUI((Player) event.getWhoClicked(), event.getWhoClicked().getUniqueId(), null, null, null, fst.getPage());
+		generateGUI(player, player.getUniqueId(), null, null, null, fst.getPage());
 	}
 	
 	public ItemStack generateItem(int slot, LoggerSettings fst, UUID uuid, boolean withEnd, boolean isPreset)
@@ -732,71 +880,86 @@ public class LoggerSettingsHandler
 			{
 				slotid = 4;
 			}
-			ls = (LoggerSettings) plugin.getMysqlHandler().getData(Type.LOGGERSETTINGSPRESET,
-					"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
-			if(ls != null)
+			
+			if(plugin.getMysqlHandler().exist(Type.LOGGERSETTINGSPRESET, "`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString()))
 			{
+				ls = (LoggerSettings) plugin.getMysqlHandler().getData(Type.LOGGERSETTINGSPRESET,
+						"`slotid` = ? AND `player_uuid` = ?", slotid, uuid.toString());
 				ArrayList<String> actualValues = (ArrayList<String>) plugin.getYamlHandler().getFilSet().getStringList("ActualParameter");
 				for(int i = 0; i < actualValues.size(); i++)
 				{
 					String s = actualValues.get(i);
-					if(i == 0)
+					if(i == 0 || i == 1)
 					{
 						lore.add(s);
 						continue;
 					}
 					if(s.contains("%ordercolumn%"))
 					{
-						s = s.replace("%ordercolumn%", fst.getOrderType().toString());
+						s = s.replace("%ordercolumn%", ls.getOrderType().toString());
 						lore.add(s);
 						continue;
 					}
 					if(s.contains("%descending%"))
 					{
-						s = s.replace("%descending%", String.valueOf(fst.isDescending()));
+						s = s.replace("%descending%", valueOf(ls.isDescending()));
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%uuid%") && fst.getUuid() != null)
+					if(s.contains("%uuid%") && ls.getUuid() != null)
 					{
-						EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(fst.getUuid());
+						EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(ls.getUuid());
 						if(eco != null)
 						{
 							s = s.replace("%uuid%", eco.getName());
 						} else
 						{
-							s = s.replace("%uuid%", fst.getUuid().toString());
+							s = s.replace("%uuid%", ls.getUuid().toString());
 						}
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%number%") && fst.getBankNumber() != null)
+					if(s.contains("%number%") && ls.getBankNumber() != null)
 					{
-						s = s.replace("%number%", fst.getBankNumber());
+						s = s.replace("%number%", ls.getBankNumber());
 						lore.add(s);
 						continue;
 					}
 					if((s.contains("%from%") || s.contains("%to%"))
-							&& (fst.getActionFilter().getFrom() != null || fst.getActionFilter().getTo() != null))
+							&& (ls.getActionFilter().getFrom() != null || ls.getActionFilter().getTo() != null))
 					{
-						EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(fst.getActionFilter().getFrom());
+						EcoPlayer eco = null;
+						if(ls.getActionFilter().getFrom() != null)
+						{
+							try
+							{
+								eco = EcoPlayerHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getFrom()));
+							} catch(IllegalArgumentException e) {}
+						}
 						if(eco != null)
 						{
 							s = s.replace("%from%", eco.getName());
-						} else if(fst.getActionFilter().getFrom() != null)
+						} else if(ls.getActionFilter().getFrom() != null)
 						{
-							s = s.replace("%from%", fst.getActionFilter().getFrom());
+							s = s.replace("%from%", ls.getActionFilter().getFrom());
 						} else
 						{
 							s = s.replace("%from%", "/");
 						}
-						EcoPlayer ecoII = EcoPlayerHandler.getEcoPlayer(fst.getActionFilter().getTo());
+						EcoPlayer ecoII = null;
+						if(ls.getActionFilter().getTo() != null)
+						{
+							try
+							{
+								ecoII = EcoPlayerHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getTo()));
+							} catch(IllegalArgumentException e) {}
+						}
 						if(ecoII != null)
 						{
 							s = s.replace("%to%", ecoII.getName());
-						} else if(fst.getActionFilter().getTo() != null)
+						} else if(ls.getActionFilter().getTo() != null)
 						{
-							s = s.replace("%to%", fst.getActionFilter().getFrom());
+							s = s.replace("%to%", ls.getActionFilter().getFrom());
 						} else
 						{
 							s = s.replace("%to%", "/");
@@ -804,31 +967,42 @@ public class LoggerSettingsHandler
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%orderer%") && fst.getActionFilter().getOrderer() != null)
+					if(s.contains("%orderer%") && ls.getActionFilter().getOrderer() != null)
 					{
-						s = s.replace("%orderer%", fst.getActionFilter().getOrderer());
+						EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getOrderer()));
+						if(eco != null)
+						{
+							s = s.replace("%orderer%", eco.getName());
+						} else if(ls.getActionFilter().getOrderer() != null)
+						{
+							s = s.replace("%orderer%", ls.getActionFilter().getOrderer());
+						} else
+						{
+							s = s.replace("%orderer%", "/");
+						}
+						s = s.replace("%orderer%", ls.getActionFilter().getOrderer());
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%comment%") && fst.getActionFilter().getComment() != null)
+					if(s.contains("%comment%") && ls.getActionFilter().getComment() != null)
 					{
-						s = s.replace("%comment%", fst.getActionFilter().getComment());
+						s = s.replace("%comment%", ChatApi.tl(ls.getActionFilter().getComment()));
 						lore.add(s);
 						continue;
 					}
 					if((s.contains("%min%") || s.contains("%max%"))
-							&& (fst.getMin() != null || fst.getMax() != null))
+							&& (ls.getMin() != null || ls.getMax() != null))
 					{
-						if(fst.getMin() != null)
+						if(ls.getMin() != null)
 						{
-							s = s.replace("%min%", AdvancedEconomyPlus.getVaultApi().format(fst.getMin()));
+							s = s.replace("%min%", AdvancedEconomyPlus.getVaultApi().format(ls.getMin()));
 						} else
 						{
 							s = s.replace("%min%", "/");
 						}
-						if(fst.getMax() != null)
+						if(ls.getMax() != null)
 						{
-							s = s.replace("%max%", AdvancedEconomyPlus.getVaultApi().format(fst.getMax()));
+							s = s.replace("%max%", AdvancedEconomyPlus.getVaultApi().format(ls.getMax()));
 						} else
 						{
 							s = s.replace("%max%", "/");
@@ -836,15 +1010,15 @@ public class LoggerSettingsHandler
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%firststand%") && fst.getTrendfFilter().getFirstStand() != null)
+					if(s.contains("%firststand%") && ls.getTrendfFilter().getFirstStand() != null)
 					{
-						s = s.replace("%firststand%", AdvancedEconomyPlus.getVaultApi().format(fst.getTrendfFilter().getFirstStand()));
+						s = s.replace("%firststand%", AdvancedEconomyPlus.getVaultApi().format(ls.getTrendfFilter().getFirstStand()));
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%laststand%") && fst.getTrendfFilter().getLastStand() != null)
+					if(s.contains("%laststand%") && ls.getTrendfFilter().getLastStand() != null)
 					{
-						s = s.replace("%laststand%", AdvancedEconomyPlus.getVaultApi().format(fst.getTrendfFilter().getLastStand()));
+						s = s.replace("%laststand%", AdvancedEconomyPlus.getVaultApi().format(ls.getTrendfFilter().getLastStand()));
 						lore.add(s);
 						continue;
 					}
@@ -861,7 +1035,7 @@ public class LoggerSettingsHandler
 			for(int i = 0; i < actualValues.size(); i++)
 			{
 				String s = actualValues.get(i);
-				if(i == 0)
+				if(i == 0 || i == 1)
 				{
 					lore.add(s);
 					continue;
@@ -874,7 +1048,7 @@ public class LoggerSettingsHandler
 				}
 				if(s.contains("%descending%"))
 				{
-					s = s.replace("%descending%", String.valueOf(fst.isDescending()));
+					s = s.replace("%descending%", valueOf(fst.isDescending()));
 					lore.add(s);
 					continue;
 				}
@@ -900,7 +1074,14 @@ public class LoggerSettingsHandler
 				if((s.contains("%from%") || s.contains("%to%"))
 						&& (fst.getActionFilter().getFrom() != null || fst.getActionFilter().getTo() != null))
 				{
-					EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(fst.getActionFilter().getFrom());
+					EcoPlayer eco = null;
+					if(fst.getActionFilter().getFrom() != null)
+					{
+						try
+						{
+							eco = EcoPlayerHandler.getEcoPlayer(UUID.fromString(fst.getActionFilter().getFrom()));
+						} catch(IllegalArgumentException e) {}
+					}
 					if(eco != null)
 					{
 						s = s.replace("%from%", eco.getName());
@@ -911,7 +1092,14 @@ public class LoggerSettingsHandler
 					{
 						s = s.replace("%from%", "/");
 					}
-					EcoPlayer ecoII = EcoPlayerHandler.getEcoPlayer(fst.getActionFilter().getTo());
+					EcoPlayer ecoII = null;
+					if(fst.getActionFilter().getTo() != null)
+					{
+						try
+						{
+							ecoII = EcoPlayerHandler.getEcoPlayer(UUID.fromString(fst.getActionFilter().getTo()));
+						} catch(IllegalArgumentException e) {}
+					}
 					if(ecoII != null)
 					{
 						s = s.replace("%to%", ecoII.getName());
@@ -927,13 +1115,28 @@ public class LoggerSettingsHandler
 				}
 				if(s.contains("%orderer%") && fst.getActionFilter().getOrderer() != null)
 				{
+					EcoPlayer eco = null;
+					try
+					{
+						eco = EcoPlayerHandler.getEcoPlayer(UUID.fromString(fst.getActionFilter().getOrderer()));
+					} catch(IllegalArgumentException e) {}
+					if(eco != null)
+					{
+						s = s.replace("%orderer%", eco.getName());
+					} else if(fst.getActionFilter().getOrderer() != null)
+					{
+						s = s.replace("%orderer%", fst.getActionFilter().getOrderer());
+					} else
+					{
+						s = s.replace("%orderer%", "/");
+					}
 					s = s.replace("%orderer%", fst.getActionFilter().getOrderer());
 					lore.add(s);
 					continue;
 				}
 				if(s.contains("%comment%") && fst.getActionFilter().getComment() != null)
 				{
-					s = s.replace("%comment%", fst.getActionFilter().getComment());
+					s = s.replace("%comment%", ChatApi.tl(fst.getActionFilter().getComment()));
 					lore.add(s);
 					continue;
 				}
@@ -1006,7 +1209,7 @@ public class LoggerSettingsHandler
 				whereObjects.add(fst.getActionFilter().getFrom());
 			} else
 			{
-				query += "`from_uuidornumber` = ? OR ";
+				query += "(`from_uuidornumber` = ? OR ";
 				if(fst.getUuid() != null)
 				{
 					whereObjects.add(fst.getUuid().toString());
@@ -1056,6 +1259,15 @@ public class LoggerSettingsHandler
 			{
 				order = "`relative_amount_change`";
 			}
+			if(fst.getUuid() != null)
+			{
+				query += "`uuidornumber` = ? AND ";
+				whereObjects.add(fst.getUuid().toString());
+			} else if(fst.getBankNumber() != null)
+			{
+				query += "`uuidornumber` = ? AND ";
+				whereObjects.add(fst.getBankNumber());
+			}
 			if(fst.getTrendfFilter().getFirstStand() != null)
 			{
 				query += "`firstvalue` > ? AND ";
@@ -1091,6 +1303,7 @@ public class LoggerSettingsHandler
 		int start = 0;
 		int end = 0;
 		player.closeInventory();
+		Object[] whereObject = whereObjects.toArray(new Object[whereObjects.size()]);
 		if(Methode.BARCHART == methode)
 		{
 			start = page*1;
@@ -1109,9 +1322,9 @@ public class LoggerSettingsHandler
 					1, 0, 0, 1);
 			ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
 					plugin.getMysqlHandler().getAllListAtIIIDateTimeModified(plugin, order, fst.isDescending(), starting, ending,
-					query,whereObjects));
-			int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query,whereObjects);
-			LogHandler.sendActionBarChart(plugin, player, eco, list, page, end, player.getName(), last, actionBarChartCmdString);
+					query,whereObject));
+			int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
+			LogHandler.sendActionBarChart(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
 			return;
 		} else if(Methode.DIAGRAM == methode)
 		{
@@ -1121,9 +1334,9 @@ public class LoggerSettingsHandler
 				end = 9;
 				ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
 						plugin.getMysqlHandler().getList(Type.ACTION, order, fst.isDescending(), start, end,
-								query, whereObjects));
-				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION,query, whereObjects);
-				LogHandler.sendActionDiagram(plugin, player, eco, list, page, end, player.getName(), last, actionDiagramCmdString);
+								query, whereObject));
+				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
+				LogHandler.sendActionDiagram(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
 				return;
 			} else
 			{
@@ -1131,32 +1344,32 @@ public class LoggerSettingsHandler
 				end = 9;
 				ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
 						plugin.getMysqlHandler().getList(Type.TREND, order, fst.isDescending(), start, end,
-								query, whereObjects));
-				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObjects);
-				LogHandler.sendTrendDiagram(plugin, player, eco, list, page, end, player.getName(), last, trendLogCmdString);
+								query, whereObject));
+				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
+				LogHandler.sendTrendDiagram(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
 				return;
 			}
 		} else if(Methode.GRAFIC == methode)
 		{
 			if(isAction)
 			{
-				start = page*25;
-				end = 24;
+				start = page*26;
+				end = 25;
 				ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
 						plugin.getMysqlHandler().getList(Type.ACTION, order, fst.isDescending(), start, end,
-								query, whereObjects));
-				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObjects);
-				LogHandler.sendActionGrafic(plugin, player, eco, list, page, end, player.getName(), last, actionGraficCmdString);
+								query, whereObject));
+				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
+				LogHandler.sendActionGrafic(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
 				return;
 			} else
 			{
-				start = page*25;
-				end = 24;
+				start = page*26;
+				end = 26;
 				ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
 						plugin.getMysqlHandler().getList(Type.TREND, order, fst.isDescending(), start, end,
-								query, whereObjects));
-				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObjects);
-				LogHandler.sendTrendGrafic(plugin, player, eco, list, page, end, player.getName(), last, trendGraficCmdString);
+								query, whereObject));
+				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
+				LogHandler.sendTrendGrafic(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
 				return;
 			}
 		} else if(Methode.LOG == methode)
@@ -1167,9 +1380,9 @@ public class LoggerSettingsHandler
 				end = 9;
 				ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
 						plugin.getMysqlHandler().getList(Type.ACTION, order, fst.isDescending(), start, end,
-								query, whereObjects));
-				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObjects);
-				LogHandler.sendActionLogs(plugin, player, eco, list, page, end, player.getName(), last, actionLogCmdString);
+								query, whereObject));
+				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
+				LogHandler.sendActionLogs(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
 				return;
 			} else
 			{
@@ -1177,10 +1390,27 @@ public class LoggerSettingsHandler
 				end = 9;
 				ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
 						plugin.getMysqlHandler().getList(Type.TREND, order, fst.isDescending(), start, end,
-								query, whereObjects));
-				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObjects);
-				LogHandler.sendTrendLogs(plugin, player, eco, list, page, end, player.getName(), last, trendLogCmdString);
+								query, whereObject));
+				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
+				LogHandler.sendTrendLogs(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
 				return;
+			}
+		}
+	}
+	
+	public String valueOf(boolean boo)
+	{
+		if(plugin.getYamlManager().getLanguageType() != LanguageType.GERMAN)
+		{
+			return String.valueOf(boo);
+		} else
+		{
+			if(boo)
+			{
+				return "Ja";
+			} else
+			{
+				return "Nein";
 			}
 		}
 	}

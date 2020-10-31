@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
+import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
@@ -20,12 +21,12 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class ARGMoneyStandingOrder_List extends ArgumentModule
+public class ARGMoneyStandingOrders extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public ARGMoneyStandingOrder_List(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGMoneyStandingOrders(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -43,19 +44,39 @@ public class ARGMoneyStandingOrder_List extends ArgumentModule
 			return;
 		}
 		int page = 0;
-		if(args.length >= 3)
+		String playername = player.getName();
+		if(args.length >= 2)
 		{
-			String pagenumber = args[2];
+			String pagenumber = args[1];
 			if(MatchApi.isInteger(pagenumber))
 			{
 				page = Integer.parseInt(pagenumber);
 			}
 		}
+		if(args.length >= 3)
+		{
+			if(args[2].equals(playername))
+			{
+				playername = args[2];
+			} else
+			{
+				if(!player.hasPermission(Utility.PERM_BYPASS_STANDINGORDER_LIST))
+				{
+					player.sendMessage(ChatApi.tl(
+							plugin.getYamlHandler().getL().getString("NoPermission")));
+					return;
+				}
+				playername = args[2];
+			}
+		}
 		int start = page*25;
 		int end = 24;
+		boolean desc = true;
 		ArrayList<StandingOrder> list = ConvertHandler.convertListV(
-				plugin.getMysqlHandler().getTop(MysqlHandler.Type.STANDINGORDER, "`id`", start, end));
-		int last = plugin.getMysqlHandler().lastID(MysqlHandler.Type.STANDINGORDER);
+				plugin.getMysqlHandler().getList(MysqlHandler.Type.STANDINGORDER, "`id`", desc, start, end,
+						"`from_player` = ? OR `to_player` = ?", player.getUniqueId().toString(), player.getUniqueId().toString()));
+		int last = plugin.getMysqlHandler().countWhereID(MysqlHandler.Type.STANDINGORDER,
+				"`from_player` = ? OR `to_player` = ?", player.getUniqueId().toString(), player.getUniqueId().toString());
 		boolean lastpage = false;
 		if(end > last)
 		{
@@ -79,7 +100,7 @@ public class ARGMoneyStandingOrder_List extends ArgumentModule
 				.replace("%name%", player.getName())));
 		player.spigot().sendMessage(tx);
 		String cmdstring = plugin.getYamlHandler().getCom().getString(ac.getPath()+".CommandString");
-		LogHandler.pastNextPage(plugin, player, "CmdMoney.", "", page, lastpage, cmdstring);
+		LogHandler.pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
 		return;
 	}
 }

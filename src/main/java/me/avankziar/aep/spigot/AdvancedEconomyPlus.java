@@ -39,50 +39,6 @@ import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneySet;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTake;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyToggle;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTop;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.ARGMoneyAction;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.barchart.ARGMoneyAction_BarChart;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.barchart.ARGMoneyAction_BarChart_Log;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_Between;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_Comment;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_CommentAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_CommentDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_From;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_GreaterThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_LessThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_Orderer;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_SortAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_SortDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_FilterLog_To;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.diagram.ARGMoneyAction_Diagram_Log;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_Between;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_Comment;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_CommentAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_CommentDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_From;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_GreaterThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_LessThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_Orderer;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_SortAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_SortDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_FilterLog_To;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.filter.ARGMoneyAction_Log;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_Between;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_Comment;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_CommentAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_CommentDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_From;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_GreaterThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_LessThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_Orderer;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_SortAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_SortDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_FilterLog_To;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.grafic.ARGMoneyAction_Grafic_Log;
 import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoan;
 import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoan_Accept;
 import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoan_Amount;
@@ -100,6 +56,10 @@ import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoan_Send;
 import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoan_Time;
 import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoan_Transfer;
 import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoans;
+import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings;
+import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings_GUI;
+import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings_Other;
+import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings_Text;
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder;
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Amount;
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Cancel;
@@ -110,43 +70,7 @@ import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandin
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Pause;
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Repeatingtime;
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Starttime;
-import main.java.me.avankziar.aep.spigot.cmd.money.statistics.ARGMoneyLoggerSettings;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.ARGMoneyTrend;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_Between;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_FirstStandAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_FirstStandDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_GreaterThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_LastStandAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_LastStandDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_LessThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_SortAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_FilterLog_SortDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.diagram.ARGMoneyTrend_Diagram_Log;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_Between;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_FirstStandAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_FirstStandDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_GreaterThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_LastStandAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_LastStandDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_LessThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_SortAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_FilterLog_SortDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.filter.ARGMoneyTrend_Log;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_Between;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_FirstStandAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_FirstStandDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_GreaterThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_LastStandAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_LastStandDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_LessThan;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_SortAscending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_FilterLog_SortDescending;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.grafic.ARGMoneyTrend_Grafic_Log;
+import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrders;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
@@ -163,6 +87,7 @@ import main.java.me.avankziar.aep.spigot.hook.JobsHook;
 import main.java.me.avankziar.aep.spigot.hook.QuickShopHook;
 import main.java.me.avankziar.aep.spigot.listener.LoggerListener;
 import main.java.me.avankziar.aep.spigot.listener.PlayerListener;
+import main.java.me.avankziar.aep.spigot.listenerhandler.LoggerSettingsListenerHandler;
 import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
@@ -224,7 +149,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
 			return;
 		}
-		EconomySettings.initSettings(this);
+		EconomySettings.initSettings(plugin); //TODO Weil EcoPlayerHandler die Methode generaliesiert wurde, müssen alle Übergabe Werte kontrolliert werden
 		backgroundTask = new BackgroundTask(this);
 		loggerApi = new LoggerApi(this);
 		new BungeeBridge(this);
@@ -341,7 +266,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		CommandConstructor eco = new CommandConstructor(plugin, baseCommandI, false,
 				deletelog, player, recomment);
 		
-		ArgumentConstructor action_barchart_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_barchart_log", 
+		/*ArgumentConstructor action_barchart_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_barchart_log", 
 				2, 2, 4, false, null);
 		ArgumentConstructor action_barchart = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_barchart", 1, 1, 1, false, null,
 				action_barchart_log);
@@ -441,11 +366,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				action_grafic_log, action_grafic_fl);
 		
 		ArgumentConstructor action = new ArgumentConstructor(yamlHandler, baseCommandII+"_action", 0, 0, 0, false, null,
-				action_barchart, action_diagram, action_log, action_fl, action_grafic);
-		LoggerSettingsHandler.actionBarChartCmdString = action_barchart.getCommandString();
-		LoggerSettingsHandler.actionDiagramCmdString = action_diagram.getCommandString();
-		LoggerSettingsHandler.actionLogCmdString = action_log.getCommandString();
-		LoggerSettingsHandler.actionGraficCmdString = action_grafic.getCommandString();
+				action_barchart, action_diagram, action_log, action_fl, action_grafic);*/
 		
 		ArgumentConstructor freeze = new ArgumentConstructor(yamlHandler, baseCommandII+"_freeze", 0, 1, 1, false, playerMapI);
 		ArgumentConstructor give = new ArgumentConstructor(yamlHandler, baseCommandII+"_give", 0, 4, 999, true, playerMapI);
@@ -471,7 +392,13 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		
 		ArgumentConstructor loans = new ArgumentConstructor(yamlHandler, baseCommandII+"_loans", 0, 0, 2, false, null);
 		
-		ArgumentConstructor loggersettings = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings", 0, 0, 3, false, null);
+		
+		ArgumentConstructor loggersettings_gui = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings_gui", 1, 1, 4, false, null);
+		ArgumentConstructor loggersettings_other = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings_other", 1, 2, 2, false, null);
+		ArgumentConstructor loggersettings_text = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings_text", 1, 2, 999, false, null);
+		ArgumentConstructor loggersettings = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings", 0, 0, 0, false, null,
+				loggersettings_gui, loggersettings_other, loggersettings_text);
+		
 		ArgumentConstructor pay = new ArgumentConstructor(yamlHandler, baseCommandII+"_pay", 0, 2, 999, false, playerMapI);
 		ArgumentConstructor set = new ArgumentConstructor(yamlHandler, baseCommandII+"_set", 0, 2, 999, true, playerMapI);
 		
@@ -488,12 +415,14 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				storder_amount, storder_cancel, storder_create, storder_delete, storder_info,
 				storder_list, storder_pause, storder_rt, storder_st);
 		
+		ArgumentConstructor storders = new ArgumentConstructor(yamlHandler, baseCommandII+"_standingorders", 0, 0, 0, false, null);
+		
 		ArgumentConstructor take = new ArgumentConstructor(yamlHandler, baseCommandII+"_take", 0, 4, 999, true, playerMapI);
 		ArgumentConstructor toggle = new ArgumentConstructor(yamlHandler, baseCommandII+"_toggle", 0, 0, 0, false, null);
 		ArgumentConstructor top = new ArgumentConstructor(yamlHandler, baseCommandII+"_top", 0, 0, 1, false, null);
 		
 		
-		ArgumentConstructor trend_diagram_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_between",
+		/*ArgumentConstructor trend_diagram_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_between",
 				3, 5, 7, false, null);
 		ArgumentConstructor trend_diagram_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_greaterthan",
 				3, 4, 6, false, null);
@@ -574,10 +503,15 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		
 		ArgumentConstructor trend_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_log", 1, 1, 3, false, playerMapIII);
 		ArgumentConstructor trend = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend", 0, 0, 0, false, null,
-				trend_diagram, trend_fl, trend_grafic, trend_log);
+				trend_diagram, trend_fl, trend_grafic, trend_log);*/
 		
 		CommandConstructor money = new CommandConstructor(plugin, baseCommandII, false,
-				action, freeze, give, loan, loans, loggersettings, pay, set, storder, take, toggle, top, trend);
+				freeze, give, loggersettings, pay, set, take, toggle, top,
+				loan, loans,
+				storder, storders);
+		
+		LoggerSettingsHandler.loggerSettingsCommandString = loggersettings_gui.getCommandString();
+		LoggerSettingsHandler.loggerSettingsTextCommandString = loggersettings_text.getCommandString();
 		
 		//CommandConstructor bank = new CommandConstructor(plugin, baseCommandIII, false);
 		
@@ -598,7 +532,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				eco, 
 					deletelog, player, recomment,
 				money,
-					action,
+					/*action,
 						action_barchart, 
 							action_barchart_log,
 						action_diagram, 
@@ -616,15 +550,16 @@ public class AdvancedEconomyPlus extends JavaPlugin
 							action_grafic_fl, 
 								action_grafic_fl_bw, action_grafic_fl_c, action_grafic_fl_casc, action_grafic_fl_cdesc,
 								action_grafic_fl_f, action_grafic_fl_gt, action_grafic_fl_lt,
-								action_grafic_fl_o, action_grafic_fl_sasc, action_grafic_fl_sdesc, action_grafic_fl_t,
-					 freeze, give, loggersettings, pay, set,
+								action_grafic_fl_o, action_grafic_fl_sasc, action_grafic_fl_sdesc, action_grafic_fl_t,*/
+					freeze, give, loggersettings, loggersettings_gui, loggersettings_other, loggersettings_text, pay, set,
 					loan, loan_accept, loan_amount, loan_cancel, loan_create, loan_forgive, loan_info, loan_inherit, loan_list,
 						loan_pause, loan_payback, loan_reject, loan_repay, loan_send, loan_time, loan_transfer,
 					loans,
 					storder, storder_amount, storder_cancel, storder_create, storder_delete, storder_info, storder_list,
 						storder_pause, storder_rt, storder_st,
-					take, toggle, top,
-					trend, 
+					storders,
+					take, toggle, top//,
+					/*trend, 
 						trend_diagram, 
 							trend_diagram_log,
 							trend_diagram_fl, 
@@ -640,7 +575,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 								trend_grafic_fl_bw, trend_grafic_fl_gt, trend_grafic_fl_lt,
 								trend_grafic_fl_soasc, trend_grafic_fl_sodesc, trend_grafic_fl_fstasc, trend_grafic_fl_fstdesc,
 								trend_grafic_fl_lstasc, trend_grafic_fl_lstdesc,
-						trend_log//,
+						trend_log//,*/
 				//bank
 				);
 		
@@ -648,7 +583,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGEcoPlayer(plugin, player);
 		new ARGEcoReComment(plugin, recomment);
 		
-		new ARGMoneyAction(plugin, action);
+		/*new ARGMoneyAction(plugin, action);
 		
 		new ARGMoneyAction_BarChart(plugin, action_barchart);
 		new ARGMoneyAction_BarChart_Log(plugin, action_barchart_log);
@@ -696,7 +631,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGMoneyAction_Grafic_FilterLog_To(plugin, action_grafic_fl_t);
 		new ARGMoneyAction_Grafic_Log(plugin, action_grafic_log);
 		
-		new ARGMoneyAction_Log(plugin, action_log);
+		new ARGMoneyAction_Log(plugin, action_log);*/
 		
 		new ARGMoneyLoan(plugin, loan);
 		new ARGMoneyLoan_Accept(plugin, loan_accept);
@@ -720,7 +655,12 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGMoneyFreeze(plugin, freeze);
 		//new ARGMoneyGetTotal(plugin);
 		new ARGMoneyGive(plugin, give);
+		
 		new ARGMoneyLoggerSettings(plugin, loggersettings);
+		new ARGMoneyLoggerSettings_GUI(plugin, loggersettings_gui);
+		new ARGMoneyLoggerSettings_Other(plugin, loggersettings_other);
+		new ARGMoneyLoggerSettings_Text(plugin, loggersettings_text);
+		
 		new ARGMoneyPay(plugin, pay);
 		new ARGMoneySet(plugin, set);
 		
@@ -735,10 +675,13 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGMoneyStandingOrder_Repeatingtime(plugin, storder_rt);
 		new ARGMoneyStandingOrder_Starttime(plugin, storder_st);
 		
+		new ARGMoneyStandingOrders(plugin, storders);
+		
 		new ARGMoneyTake(plugin, take);
 		new ARGMoneyToggle(plugin, toggle);
 		new ARGMoneyTop(plugin, top);
-		new ARGMoneyTrend(plugin, trend);
+		
+		/*new ARGMoneyTrend(plugin, trend);
 		
 		new ARGMoneyTrend_Diagram(plugin, trend_diagram);
 		new ARGMoneyTrend_Diagram_Log(plugin, trend_diagram_log);
@@ -777,7 +720,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGMoneyTrend_Grafic_FilterLog_LastStandAscending(plugin, trend_grafic_fl_lstasc);
 		new ARGMoneyTrend_Grafic_FilterLog_LastStandDescending(plugin, trend_grafic_fl_lstdesc);
 		
-		new ARGMoneyTrend_Log(plugin, trend_log);
+		new ARGMoneyTrend_Log(plugin, trend_log);*/
 	}
 	
 	public void ListenerSetup()
@@ -786,6 +729,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "advanceeconomy:spigottobungee");
 		pm.registerEvents(new PlayerListener(plugin), plugin);
 		pm.registerEvents(new LoggerListener(), plugin);
+		pm.registerEvents(new LoggerSettingsListenerHandler(plugin), plugin);
 		if(existHook("ChestShop"))
 		{
 			log.info(pluginName+" hook with ChestShop");

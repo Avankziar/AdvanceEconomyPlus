@@ -17,6 +17,7 @@ public class CommandConstructor extends BaseConstructor
 				plugin.getYamlHandler().getCom().getString(path+".Permission"),
 				plugin.getYamlHandler().getCom().getString(path+".Suggestion"),
 				plugin.getYamlHandler().getCom().getString(path+".CommandString"),
+				plugin.getYamlHandler().getCom().getString(path+".HelpInfo"),
 				canConsoleAccess);
         this.subcommands = new ArrayList<>();
         this.tablist = new ArrayList<>();

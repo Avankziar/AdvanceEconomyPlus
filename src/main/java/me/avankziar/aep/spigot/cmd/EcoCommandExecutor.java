@@ -141,7 +141,7 @@ public class EcoCommandExecutor implements CommandExecutor
 			{
 				if(player.hasPermission(bc.getPermission()))
 				{
-					sendInfo(player, bc.getPath(), bc.getSuggestion());
+					sendInfo(player, bc);
 				}
 			}
 			count++;
@@ -155,11 +155,11 @@ public class EcoCommandExecutor implements CommandExecutor
 		pastNextPage(player, AdvancedEconomyPlus.infoCommandPath, page, lastpage, AdvancedEconomyPlus.infoCommand);
 	}
 	
-	private void sendInfo(Player player, String path, String suggestion)
+	private void sendInfo(Player player, BaseConstructor bc)
 	{
 		player.spigot().sendMessage(ChatApi.apiChat(
-				plugin.getYamlHandler().getL().getString(AdvancedEconomyPlus.infoCommandPath+".BaseInfo."+path),
-				ClickEvent.Action.SUGGEST_COMMAND, suggestion,
+				bc.getHelpInfo(),
+				ClickEvent.Action.SUGGEST_COMMAND, bc.getSuggestion(),
 				HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getL().getString("GeneralHover")));
 	}
 	

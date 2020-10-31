@@ -296,6 +296,9 @@ CmdMoney:
     HoverRecomment: '&eKlicke hier um die Notiz des Log-Eintrages zu ändern.'
     Next: '&e&nnächste Seite &e==>'
     Past: '&e<== &nvorherige Seite'
+    NoLoggerSettingsFound: '&cDu hast keinen LoggerSetting ausgewählt!'
+    NoOtherLoggerSettingsFound: '&cDer Spieler hat keinen LoggerSetting ausgewählt!'
+    LoggerSettingsTextSuggest: '&eKlicke hier auf die Nachricht, um einen Befehlsvorschlag zu erhalten. Tippe dann dein Suchtext ein und drücke &b>Enter<'
   Freeze:
     YouFrozenSomeone: '&eDu hast das Spielerkonto von &f%player% &eeingefroren! &cAchtung! Externe Plugins können bei schlechter Abfrage zu Fehlern führen!'
     YourAccountWasFrozen: '&cDein Spielerkonto wurden von &f%player% &ceingefroren! Du kannst nun keine Geld-Transaktion ausführen!'

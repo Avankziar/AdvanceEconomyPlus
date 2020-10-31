@@ -92,14 +92,22 @@ public interface TableVII
 		        preparedStatement.setString(5, ep.getInventoryHandlerType().toString());
 		        preparedStatement.setBoolean(6, ep.isDescending());
 		        preparedStatement.setString(7, ep.getOrderType().toString());
-		        preparedStatement.setDouble(8, ep.getMin());
-		        preparedStatement.setDouble(9, ep.getMax());
+		        Double min = ep.getMin();
+		        if(min == null) {min = 0.0;}
+		        Double max = ep.getMax();
+		        if(max == null) {max = 0.0;}
+		        preparedStatement.setDouble(8, min);
+		        preparedStatement.setDouble(9, max);
 		        preparedStatement.setString(10, ep.getActionFilter().getFrom());
 		        preparedStatement.setString(11, ep.getActionFilter().getTo());
 		        preparedStatement.setString(12, ep.getActionFilter().getOrderer());
 		        preparedStatement.setString(13, ep.getActionFilter().getComment());
-		        preparedStatement.setDouble(14, ep.getTrendfFilter().getFirstStand());
-		        preparedStatement.setDouble(15, ep.getTrendfFilter().getLastStand());
+		        Double firststand = ep.getTrendfFilter().getFirstStand();
+		        if(firststand == null) {firststand = 0.0;}
+		        Double laststand = ep.getTrendfFilter().getLastStand();
+		        if(laststand == null) {laststand = 0.0;}
+		        preparedStatement.setDouble(14, firststand);
+		        preparedStatement.setDouble(15, laststand);
 		        
 		        preparedStatement.executeUpdate();
 		        return true;

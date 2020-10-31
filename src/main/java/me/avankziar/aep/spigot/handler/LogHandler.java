@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
@@ -14,6 +15,7 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.ChatApiSmall;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
+import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
@@ -68,6 +70,51 @@ public class LogHandler
 		player.spigot().sendMessage(MSG);
 	}
 	
+	public static void pastNextPageFirstNameThanNumber(AdvancedEconomyPlus plugin, Player player, String path, String playername,
+			int page, boolean lastpage, String cmdstring, String methode)
+	{
+		if(page==0 && lastpage)
+		{
+			return;
+		}
+		int i = page+1;
+		int j = page-1;
+		TextComponent MSG = ChatApi.tctl("");
+		List<BaseComponent> pages = new ArrayList<BaseComponent>();
+		if(page!=0)
+		{
+			TextComponent msg2 = ChatApi.tctl(
+					plugin.getYamlHandler().getL().getString(path+"Log.Past"));
+			String cmd = cmdstring;
+			if(playername != null)
+			{
+				cmd += playername;
+			}
+			cmd += " "+String.valueOf(j)+" "+methode;
+			msg2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
+			pages.add(msg2);
+		}
+		if(!lastpage)
+		{
+			TextComponent msg1 = ChatApi.tctl(
+					plugin.getYamlHandler().getL().getString(path+"Log.Next"));
+			String cmd = cmdstring;
+			if(playername != null)
+			{
+				cmd += playername;
+			}
+			cmd += " "+String.valueOf(i)+" "+methode;
+			msg1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
+			if(pages.size()==1)
+			{
+				pages.add(ChatApi.tc(" | "));
+			}
+			pages.add(msg1);
+		}
+		MSG.setExtra(pages);	
+		player.spigot().sendMessage(MSG);
+	}
+	
 	public static void sendActionLogs(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<ActionLogger> list,
 			int page, int end, String playername, int last,  String cmdstring)
 	{
@@ -82,7 +129,7 @@ public class LogHandler
 		for(ActionLogger el : list)
 		{
 			String orderer = "";
-			EcoPlayer ord = EcoPlayerHandler.getEcoPlayer(el.getOrdereruuid());
+			EcoPlayer ord = EcoPlayerHandler.getEcoPlayer(UUID.fromString(el.getOrdereruuid()));
 			if(ord == null)
 			{
 				orderer = el.getOrdereruuid();
@@ -306,7 +353,7 @@ public class LogHandler
 				}
 			}
 		}
-		pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
+		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.LOG.toString());
 	}
 	
 	public static void sendActionDiagram(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<ActionLogger> list,
@@ -363,7 +410,7 @@ public class LogHandler
 		while(i<=list.size()-1)
 		{
 			ActionLogger tl = list.get(i);
-			String message = "&e"+tl.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy dd:mm"))+": ";
+			String message = "&e"+tl.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))+": ";
 			final int firstlength = message.length();
 			double amount = 0;
 			if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
@@ -421,7 +468,7 @@ public class LogHandler
 			}
 			i++;
 		}
-		LogHandler.pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
+		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.DIAGRAM.toString());
 	}
 	
 	public static void sendActionGrafic(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<ActionLogger> list,
@@ -496,7 +543,7 @@ public class LogHandler
 		String messageX = "|";
 		String messageXI = wim;
 		String bottommessage = "&c▲"+AdvancedEconomyPlus.getVaultApi().format(minamount);
-		String lastline = "&6▲"+list.get(list.size()-1).getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy "));
+		String lastline = "&6▲"+list.get(list.size()-1).getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
 		i = list.size()-1;
 		while(i>=0)
 		{
@@ -674,7 +721,7 @@ public class LogHandler
 		{
 			lastpage = true;
 		}
-		lastline += "&6"+list.get(0).getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))+"▲";
+		lastline += "&6"+list.get(0).getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))+"▲";
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendGrafic.HeadlineII")
 				.replace("%player%", eco.getName())
 				.replace("%amount%", String.valueOf(last))));
@@ -693,7 +740,7 @@ public class LogHandler
 		player.sendMessage(ChatApi.tl(messageXI));
 		player.sendMessage(ChatApi.tl(bottommessage));
 		player.sendMessage(ChatApi.tl(lastline));
-		LogHandler.pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
+		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.GRAFIC.toString());
 		return;
 	}
 	
@@ -1001,7 +1048,7 @@ public class LogHandler
 		{
 			lastpage = true;
 		}
-		LogHandler.pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
+		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.BARCHART.toString());
 		return;
 	}
 	
@@ -1084,7 +1131,7 @@ public class LogHandler
 						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(tl.getRelativeAmountChange()))));
 			}
 		}
-		pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
+		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.LOG.toString());
 	}
 	
 	public static void sendTrendDiagram(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<TrendLogger> list,
@@ -1183,7 +1230,7 @@ public class LogHandler
 			}
 			i++;
 		}
-		LogHandler.pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
+		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.DIAGRAM.toString());
 	}
 	
 	public static void sendTrendGrafic(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<TrendLogger> list,
@@ -1432,7 +1479,7 @@ public class LogHandler
 		player.sendMessage(ChatApi.tl(messageXI));
 		player.sendMessage(ChatApi.tl(bottommessage));
 		player.sendMessage(ChatApi.tl(lastline));
-		LogHandler.pastNextPage(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring);
+		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.GRAFIC.toString());
 		return;
 	}
 }

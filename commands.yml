@@ -48,6 +48,196 @@ money:
   Suggestion: '/money'
   #Display your balance
   
+money_freeze:
+  Argument: 'freeze'
+  Permission: 'eco.cmd.money.freeze'
+  Suggestion: '/money freeze <player>'
+  #Freeze the playeraccount
+money_give:
+  Argument: 'give'
+  Permission: 'eco.cmd.money.give'
+  Suggestion: '/money give <player> <value> <customTo> <customOrderer> [note]'
+  #Give the player from the void money
+  #customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)
+  #customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.
+money_pay:
+  Argument: 'pay'
+  Permission: 'eco.cmd.money.pay'
+  Suggestion: '/money pay <player> <value> [note]'
+  #Player to player paying
+money_set:
+  Argument: 'set'
+  Permission: 'eco.cmd.money.set'
+  Suggestion: '/money set <player> <value> <customTo> <customOrderer> [note]'
+  #Set the balance of the player. 
+  #customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)
+  #customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.
+money_take:
+  Argument: 'take'
+  Permission: 'eco.cmd.money.take'
+  Suggestion: '/money take <player> <value> <customTo> <customOrderer> [note]'
+  #Take the money from a player in the void
+  #customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)
+  #customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.
+money_toggle:
+  Argument: 'toggle'
+  Permission: 'eco.cmd.money.toggle'
+  Suggestion: '/money toggle'
+  #Toggle to see money payment messages
+money_top:
+  Argument: 'top'
+  Permission: 'eco.cmd.money.top'
+  Suggestion: '/money top [pagenumber]'
+  #Show the top balance players
+
+money_loan:
+  Argument: 'loan'
+  Permission: 'eco.cmd.money.loan'
+  Suggestion: '/money loan'
+  #Default Command
+money_loan_accept:
+  Argument: 'accept'
+  Permission: 'eco.cmd.money.loan.accept'
+  Suggestion: '/money loan accept [confirm]'
+  #Accept the loanproposal from the other player.
+money_loan_amount:
+  Argument: 'amount'
+  Permission: 'eco.cmd.money.loan.amount'
+  Suggestion: '/money loan amount <totalamount> <amountratio> <interest>'
+  #Set to a loan in workprogress the totalamount, amountratio and interest.
+money_loan_cancel:
+  Argument: 'cancel'
+  Permission: 'eco.cmd.money.loan.cancel'
+  Suggestion: '/money loan cancel'
+  #Cancel the loan work in progress.
+money_loan_create:
+  Argument: 'create'
+  Permission: 'eco.cmd.money.loan.create'
+  Suggestion: '/money loan create <name> <from> <to>'
+  #Create a work in progress loanproposal
+money_loan_forgive:
+  Argument: 'forgive'
+  Permission: 'eco.cmd.money.loan.forgive'
+  Suggestion: '/money loan forgive <id> [confirm]'
+  #Forgive the restamount of the loan.
+money_loan_info:
+  Argument: 'info'
+  Permission: 'eco.cmd.money.loan.info'
+  Suggestion: '/money loan info [id]'
+  #Show all info to a loan. By no id, than is the work in progress debt
+money_loan_inherit:
+  Argument: 'inherit'
+  Permission: 'eco.cmd.money.loan.inherit'
+  Suggestion: '/money loan inherit <id> <playername>'
+  #Let the player inherit the loans to pay. Admincommand to inherit loans to player whitch cheats with a second acc.
+money_loan_list:
+  Argument: 'list'
+  Permission: 'eco.cmd.money.loan.list'
+  Suggestion: '/money loan list [page]'
+  CommandString: '/money loan list '
+  #Show a list of all loans of all the player
+money_loan_pause:
+  Argument: 'pause'
+  Permission: 'eco.cmd.money.loan.pause'
+  Suggestion: '/money loan pause <id>'
+  #Pause or unpause a loanrepayment
+money_loan_payback:
+  Argument: 'payback'
+  Permission: 'eco.cmd.money.loan.payback'
+  Suggestion: '/money loan payback <id>'
+  #As admin payback the rest amount to the player.
+money_loan_reject:
+  Argument: 'reject'
+  Permission: 'eco.cmd.money.loan.reject'
+  Suggestion: '/money loan reject'
+  #Reject a loan proposal
+money_loan_repay:
+  Argument: 'repay'
+  Permission: 'eco.cmd.money.loan.repay'
+  Suggestion: '/money loan repay <id> <amount>'
+  #Repay the amount to a loan.
+money_loan_send:
+  Argument: 'send'
+  Permission: 'eco.cmd.money.loan.send'
+  Suggestion: '/money loan send <player>'
+  #Send the player a loan proposal
+money_loan_time:
+  Argument: 'time'
+  Permission: 'eco.cmd.money.loan.time'
+  Suggestion: '/money loan time <starttime> <endtime> <repeatingtime>'
+  #Set the times. Starttime and Endtime in <dd.MM.yyyy-HH:mm> and RepeatingTime in <dd-HH:mm> format
+money_loan_transfer:
+  Argument: 'transfer'
+  Permission: 'eco.cmd.money.loan.transfer'
+  Suggestion: '/money loan transfer <id> <player>'
+  #Transfer the ownerstatus of your loan to the other player.
+money_loans:
+  Argument: 'loans'
+  Permission: 'eco.cmd.money.loans'
+  Suggestion: '/money loans [page] [player]'
+  CommandString: '/money loans '
+  #Show loans of the player
+  #Commandstring is use interns for a page-of System.
+
+money_standingorder:
+  Argument: 'standingorder'
+  Permission: 'eco.cmd.money.standingorder'
+  Suggestion: '/money standingorder'
+  #Default cmd
+money_standingorder_amount:
+  Argument: 'amount'
+  Permission: 'eco.cmd.money.standingorder.amount'
+  Suggestion: '/money standingorder amount <amount>'
+  #Set to a waiting standingorder the amount
+money_standingorder_cancel:
+  Argument: 'cancel'
+  Permission: 'eco.cmd.money.standingorder.cancel'
+  Suggestion: '/money standingorder cancel'
+  #Cancel the waiting standing order.
+money_standingorder_create:
+  Argument: 'create'
+  Permission: 'eco.cmd.money.standingorder.create'
+  Suggestion: '/money standingorder create <name> <from> <to>'
+  #Create a Standingorder. Additional Settings must be set.
+money_standingorder_delete:
+  Argument: 'delete'
+  Permission: 'eco.cmd.money.standingorder.delete'
+  Suggestion: '/money standingorder delete <id>'
+  #Delete the standing order.
+money_standingorder_info:
+  Argument: 'info'
+  Permission: 'eco.cmd.money.standingorder.info'
+  Suggestion: '/money standingorder info [id]'
+  #Show Infos about standingorder.
+money_standingorder_list:
+  Argument: 'list'
+  Permission: 'eco.cmd.money.standingorder.list'
+  Suggestion: '/money standingorder list [page] [player]'
+  CommandString: '/money standingorder list '
+  #Show a list of all standingorders from the player.
+money_standingorder_pause:
+  Argument: 'pause'
+  Permission: 'eco.cmd.money.standingorder.pause'
+  Suggestion: '/money standingorder pause <id>'
+  #Paused a standingorder or cancelled the cancelstatus.
+money_standingorder_repeatingtime:
+  Argument: 'repeatingtime'
+  Permission: 'eco.cmd.money.standingorder.repeatingtime'
+  Suggestion: '/money standingorder repeatingtime <dd-HH:mm value>'
+  #Set the repeating time of the waiting standing order. Must use the specific >dd-HH:mm< Pattern. For example 01-23:50 for 1 day, 23 hours and 50 seconds
+money_standingorder_starttime:
+  Argument: 'starttime'
+  Permission: 'eco.cmd.money.standingorder.starttime'
+  Suggestion: '/money standingorder starttime <dd.MM.yyyy-HH:mm value>'
+  #Set the starttime in <dd.MM.yyyy-HH:mm> format.
+
+
+
+
+
+
+
+
 money_action:
   Argument: 'action'
   Permission: 'eco.cmd.money.action'
@@ -312,191 +502,6 @@ money_action_log:
   Suggestion: '/money action log [pagenumber] [player]'
   CommandString: '/money action log '
   #Show the logs of all payments
-  
-money_freeze:
-  Argument: 'freeze'
-  Permission: 'eco.cmd.money.freeze'
-  Suggestion: '/money freeze <player>'
-  #Freeze the playeraccount
-money_give:
-  Argument: 'give'
-  Permission: 'eco.cmd.money.give'
-  Suggestion: '/money give <player> <value> <customTo> <customOrderer> [note]'
-  #Give the player from the void money
-  #customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)
-  #customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.
-  
-money_loan:
-  Argument: 'loan'
-  Permission: 'eco.cmd.money.loan'
-  Suggestion: '/money loan'
-  #Default Command
-money_loan_accept:
-  Argument: 'accept'
-  Permission: 'eco.cmd.money.loan.accept'
-  Suggestion: '/money loan accept [confirm]'
-  #Accept the loanproposal from the other player. #AFK, was anderes nachschauen
-money_loan_amount:
-  Argument: 'amount'
-  Permission: 'eco.cmd.money.loan.amount'
-  Suggestion: '/money loan amount <totalamount> <amountratio> <interest>'
-  #Set to a loan in workprogress the totalamount, amountratio and interest.
-money_loan_cancel:
-  Argument: 'cancel'
-  Permission: 'eco.cmd.money.loan.cancel'
-  Suggestion: '/money loan cancel'
-  #Cancel the loan in workprogress.
-money_loan_create:
-  Argument: 'create'
-  Permission: 'eco.cmd.money.loan.create'
-  Suggestion: '/money loan create <name> <from> <to>'
-  #Create a work in progress loanproposal
-money_loan_forgive:
-  Argument: 'forgive'
-  Permission: 'eco.cmd.money.loan.forgive'
-  Suggestion: '/money loan forgive <id> [confirm]'
-  #Forgive the restamount of the loan.
-money_loan_info:
-  Argument: 'info'
-  Permission: 'eco.cmd.money.loan.info'
-  Suggestion: '/money loan info [id]'
-  #Show all info to a loan. By no id, than is the work in progress debt
-money_loan_inherit:
-  Argument: 'inherit'
-  Permission: 'eco.cmd.money.loan.inherit'
-  Suggestion: '/money loan inherit <id> <playername>'
-  #Let the player inherit the loans to pay. Admincommand to inherit loans to player whitch cheats with a second acc.
-money_loan_list:
-  Argument: 'list'
-  Permission: 'eco.cmd.money.loan.list'
-  Suggestion: '/money loan list [page]'
-  CommandString: '/money loan list '
-  #Show a list of all loans of all the player
-money_loan_pause:
-  Argument: 'pause'
-  Permission: 'eco.cmd.money.loan.pause'
-  Suggestion: '/money loan pause <id>'
-  #Pause or unpause a loanrepayment
-money_loan_payback:
-  Argument: 'payback'
-  Permission: 'eco.cmd.money.loan.payback'
-  Suggestion: '/money loan payback <id>'
-  #As admin payback the rest amount to the player.
-money_loan_reject:
-  Argument: 'reject'
-  Permission: 'eco.cmd.money.loan.reject'
-  Suggestion: '/money loan reject'
-  #Reject a loan proposal
-money_loan_repay:
-  Argument: 'repay'
-  Permission: 'eco.cmd.money.loan.repay'
-  Suggestion: '/money loan repay <id> <amount>'
-  #Repay the amount to a loan.
-money_loan_send:
-  Argument: 'send'
-  Permission: 'eco.cmd.money.loan.send'
-  Suggestion: '/money loan send <player>'
-  #Send the player a loan proposal
-money_loan_time:
-  Argument: 'time'
-  Permission: 'eco.cmd.money.loan.time'
-  Suggestion: '/money loan time <starttime> <endtime> <repeatingtime>'
-  #Set the times. Starttime and Endtime in <dd.MM.yyyy-HH:mm> and RepeatingTime in <dd-HH:mm> format
-money_loan_transfer:
-  Argument: 'transfer'
-  Permission: 'eco.cmd.money.loan.transfer'
-  Suggestion: '/money loan transfer <id> <player>'
-  #Transfer the ownerstatus of your loan to the other player.
-money_loans:
-  Argument: 'loans'
-  Permission: 'eco.cmd.money.loans'
-  Suggestion: '/money loans [page] [player]'
-  CommandString: '/money loans '
-  #Show loans of the player
-  #Commandstring is use interns for a page-of System.
-  
-money_pay:
-  Argument: 'pay'
-  Permission: 'eco.cmd.money.pay'
-  Suggestion: '/money pay <player> <value> [note]'
-  #Player to player paying
-money_set:
-  Argument: 'set'
-  Permission: 'eco.cmd.money.set'
-  Suggestion: '/money set <player> <value> <customTo> <customOrderer> [note]'
-  #Set the balance of the player. 
-  #customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)
-  #customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.
-  
-money_standingorder:
-  Argument: 'standingorder'
-  Permission: 'eco.cmd.money.standingorder'
-  Suggestion: '/money standingorder'
-  #Default cmd
-money_standingorder_amount:
-  Argument: 'amount'
-  Permission: 'eco.cmd.money.standingorder.amount'
-  Suggestion: '/money standingorder amount <amount>'
-  #Set to a waiting standingorder the amount
-money_standingorder_cancel:
-  Argument: 'cancel'
-  Permission: 'eco.cmd.money.standingorder.cancel'
-  Suggestion: '/money standingorder cancel'
-  #Cancel the waiting standing order.
-money_standingorder_create:
-  Argument: 'create'
-  Permission: 'eco.cmd.money.standingorder.create'
-  Suggestion: '/money standingorder create <name> <from> <to>'
-  #Create a Standingorder. Additional Settings must be set.
-money_standingorder_delete:
-  Argument: 'delete'
-  Permission: 'eco.cmd.money.standingorder.delete'
-  Suggestion: '/money standingorder delete <id>'
-  #Delete the standing order.
-money_standingorder_info:
-  Argument: 'info'
-  Permission: 'eco.cmd.money.standingorder.info'
-  Suggestion: '/money standingorder info [id]'
-  #Show Infos about standingorder.
-money_standingorder_list:
-  Argument: 'list'
-  Permission: 'eco.cmd.money.standingorder.list'
-  Suggestion: '/money standingorder list [page] [player]'
-  CommandString: '/money standingorder list '
-  #Show a list of all standingorders from the player.
-money_standingorder_pause:
-  Argument: 'pause'
-  Permission: 'eco.cmd.money.standingorder.pause'
-  Suggestion: '/money standingorder pause <id>'
-  #Paused a standingorder or cancelled the cancelstatus.
-money_standingorder_repeatingtime:
-  Argument: 'repeatingtime'
-  Permission: 'eco.cmd.money.standingorder.repeatingtime'
-  Suggestion: '/money standingorder repeatingtime <dd-HH:mm value>'
-  #Set the repeating time of the waiting standing order. Must use the specific >dd-HH:mm< Pattern. For example 01-23:50 for 1 day, 23 hours and 50 seconds
-money_standingorder_starttime:
-  Argument: 'starttime'
-  Permission: 'eco.cmd.money.standingorder.starttime'
-  Suggestion: '/money standingorder starttime <dd.MM.yyyy-HH:mm value>'
-  #Set the starttime in <dd.MM.yyyy-HH:mm> format.
-  
-money_take:
-  Argument: 'take'
-  Permission: 'eco.cmd.money.take'
-  Suggestion: '/money take <player> <value> <customTo> <customOrderer> [note]'
-  #Take the money from a player in the void
-  #customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)
-  #customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.
-money_toggle:
-  Argument: 'toggle'
-  Permission: 'eco.cmd.money.toggle'
-  Suggestion: '/money toggle'
-  #Toggle to see money payment messages
-money_top:
-  Argument: 'top'
-  Permission: 'eco.cmd.money.top'
-  Suggestion: '/money top [pagenumber]'
-  #Show the top balance players
   
 money_trend:
   Argument: 'trend'

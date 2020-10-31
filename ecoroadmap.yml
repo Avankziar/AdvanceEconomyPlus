@@ -9,6 +9,11 @@ Future =========================================================================
   angeben muss. So kann man für die Api es besser aufteilen. Eventuell auf für BANKEN so machen.
 - Befehle einführen, welche den Spieler ermöglichen, anderen Spielern das Recht zu geben, ihre Logs etc anzuschauen.
 - Einstellen, dass falls Mechaniken nicht genutzt werden, die in Ingame Hilfe und TabComplet nicht angezeigt werden.
+- Steuern:
+  - Transaktionsteuer
+  - Playerkonto- & Bankkontosteuer. Einstellbar Zeiteinheit und Betrag, sowie wenn Prozentual dann die Prozente.
+- Neue Mysql mit Tagensdaten, wieviel Geld ins und aus dem System gegangen ist. Mit Grafik oder ähnlich arbeiten.
+  Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
   
 - BungeeCord Geldunterstützung anbieten.
 - XIDEE: Umleitung für Verdientes geld einrichtbar machen. Warte auf DC-Meinungsumfrage.
@@ -40,6 +45,7 @@ Build 3 ========================================================================
 - Ein Befehl um andere Settings zu sehen /money loggersettingsother <Spielername>
 - Mysql für Preset LoggerSettings insgesamt 4 Stück (Im Inventar unten links und rechts) (Linksklick ist zum Laden,
 	 Rechtsklick zum Speicher (nicht überschreiben), Shiftklick zum löschen). Ist Preset nicht vorhanden, linksklick passiert nichts.
+- /money log, Shortcut für die Ausgabe des Logs
 
 Build 2 ============================================================================================================================
 - +Update auf 1.16.1

@@ -65,10 +65,10 @@ public class EconomySettings
 		{
 			mysql = true;
 		}
-		boolean playerAccount = plugin.getYamlHandler().getConfig().getBoolean("UsePlayerAccount", false);
-		boolean bank = yh.getConfig().getBoolean("UseBank", false);
-		boolean standingorder = yh.getConfig().getBoolean("UseStandingOrder", false);
-		boolean loanrepayment = yh.getConfig().getBoolean("UseLoanRepayment", false);
+		boolean playerAccount = yh.getConfig().getBoolean("Use.PlayerAccount", false);
+		boolean bank = yh.getConfig().getBoolean("Use.Bank", false);
+		boolean standingorder = yh.getConfig().getBoolean("Use.StandingOrder", false);
+		boolean loanrepayment = yh.getConfig().getBoolean("Use.LoanRepayment", false);
 		String currencySingular = yh.getConfig().getString("CurrencyNameSingular","Euro");
 		String currencyPlural = yh.getConfig().getString("CurrencyNamePlural","Euros");
 		int format = yh.getConfig().getInt("MoneyFormat", 0);
