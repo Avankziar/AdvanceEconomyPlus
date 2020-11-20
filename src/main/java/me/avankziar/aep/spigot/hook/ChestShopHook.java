@@ -17,8 +17,8 @@ import com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 
 public class ChestShopHook implements Listener
 {
@@ -44,8 +44,8 @@ public class ChestShopHook implements Listener
 		String itemId = "";
         int itemQuantities = 0;
         Material itemType = null;
-        EcoPlayer owner = EcoPlayerHandler.getEcoPlayer(owneruuid);
-        EcoPlayer client = EcoPlayerHandler.getEcoPlayer(clientuuid);
+        AEPUser owner = AEPUserHandler.getEcoPlayer(owneruuid);
+        AEPUser client = AEPUserHandler.getEcoPlayer(clientuuid);
         Double balanceowner = 0.0; //TODO bank
         Double balanceclient = 0.0;
         
@@ -88,7 +88,7 @@ public class ChestShopHook implements Listener
 					LocalDate.now(), 
 					owneruuid, 
 					amount, 
-					EcoPlayerHandler.getEcoPlayer(
+					AEPUserHandler.getEcoPlayer(
 							owneruuid)
 					.getBalance()));
 			Bukkit.getPluginManager().callEvent(
@@ -96,7 +96,7 @@ public class ChestShopHook implements Listener
 					LocalDate.now(), 
 					clientuuid,
 					-amount,
-					EcoPlayerHandler.getEcoPlayer(
+					AEPUserHandler.getEcoPlayer(
 							clientuuid)
 					.getBalance()));
 		} else 

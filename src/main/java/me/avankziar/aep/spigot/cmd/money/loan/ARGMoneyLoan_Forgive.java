@@ -14,9 +14,9 @@ import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class ARGMoneyLoan_Forgive extends ArgumentModule
@@ -85,8 +85,8 @@ public class ARGMoneyLoan_Forgive extends ArgumentModule
 		}
 		dr.setForgiven(true);
 		plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-		EcoPlayer fromplayer = EcoPlayerHandler.getEcoPlayer(dr.getFrom());
-		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayer(dr.getTo());
+		AEPUser fromplayer = AEPUserHandler.getEcoPlayer(dr.getFrom());
+		AEPUser toplayer = AEPUserHandler.getEcoPlayer(dr.getTo());
 		String tomsg = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Forgive.LoanIsForgiven")
 				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
 				.replace("%dif%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(dif)))
@@ -129,7 +129,7 @@ public class ARGMoneyLoan_Forgive extends ArgumentModule
 		} else if(!dr.getTo().equals(dr.getLoanOwner()) && dr.getTo().equals(player.getUniqueId().toString()))
 		{
 			player.sendMessage(tomsg);
-			EcoPlayer doplayer = EcoPlayerHandler.getEcoPlayer(dr.getLoanOwner());
+			AEPUser doplayer = AEPUserHandler.getEcoPlayer(dr.getLoanOwner());
 			if(toplayer.isMoneyPlayerFlow())
 			{
 				if(bungee)
@@ -159,7 +159,7 @@ public class ARGMoneyLoan_Forgive extends ArgumentModule
 					}
 				}
 			}
-			EcoPlayer doplayer = EcoPlayerHandler.getEcoPlayer(dr.getLoanOwner());
+			AEPUser doplayer = AEPUserHandler.getEcoPlayer(dr.getLoanOwner());
 			if(toplayer.isMoneyPlayerFlow())
 			{
 				if(bungee)

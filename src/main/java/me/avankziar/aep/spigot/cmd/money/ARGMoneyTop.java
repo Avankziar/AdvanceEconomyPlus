@@ -12,7 +12,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class ARGMoneyTop extends ArgumentModule
@@ -46,7 +46,7 @@ public class ARGMoneyTop extends ArgumentModule
 		}
 		int start = page*10;
 		int end = 10;
-		ArrayList<EcoPlayer> top = ConvertHandler.convertListI(
+		ArrayList<AEPUser> top = ConvertHandler.convertListI(
 				plugin.getMysqlHandler().getTop(Type.PLAYER, "`balance`", start, end));
 
 		if(top.size()<10)
@@ -58,7 +58,7 @@ public class ARGMoneyTop extends ArgumentModule
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getL().getString("CmdMoney.Top.Headline")
 				.replace("%page%", String.valueOf(page))));
-		for(EcoPlayer eco : top)
+		for(AEPUser eco : top)
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("CmdMoney.Top.TopLine")

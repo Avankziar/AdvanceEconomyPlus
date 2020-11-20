@@ -8,8 +8,8 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class ARGMoneyToggle extends ArgumentModule
@@ -32,7 +32,7 @@ public class ARGMoneyToggle extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("NoBank")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(player);
 		if(eco.isMoneyPlayerFlow())
 		{
 			eco.setMoneyPlayerFlow(false);

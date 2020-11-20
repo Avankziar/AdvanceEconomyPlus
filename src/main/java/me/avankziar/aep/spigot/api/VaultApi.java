@@ -23,10 +23,10 @@ import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.BankAccountHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.BankAccount;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -110,7 +110,7 @@ public class VaultApi implements Economy
 	@Override
 	public String getName()
 	{
-		return "AdvanceEconomy";
+		return "AdvanceEconomyPlus";
 	}
 	
 	@Override
@@ -414,7 +414,7 @@ public class VaultApi implements Economy
 	@Override
 	public boolean hasAccount(OfflinePlayer player)
 	{
-		if(EcoPlayerHandler.getEcoPlayer(player) != null)
+		if(AEPUserHandler.getEcoPlayer(player) != null)
 		{
 			return true;
 		}
@@ -446,7 +446,7 @@ public class VaultApi implements Economy
 	{
 		if(isMysql() && usePlayerAccount())
 		{
-			if(EcoPlayerHandler.getEcoPlayer(player) != null)
+			if(AEPUserHandler.getEcoPlayer(player) != null)
 			{
 				return false;
 			}
@@ -455,7 +455,7 @@ public class VaultApi implements Economy
 			{
 				amount = plugin.getYamlHandler().getConfig().getDouble("StartMoney");
 			}
-			EcoPlayer eco = new EcoPlayer(0, player.getUniqueId().toString(), player.getName(),
+			AEPUser eco = new AEPUser(0, player.getUniqueId().toString(), player.getName(),
 					amount, new ArrayList<String>(), true, true, true, null, false);
 			plugin.getMysqlHandler().create(Type.PLAYER, eco);
 			return true;
@@ -497,7 +497,7 @@ public class VaultApi implements Economy
 					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
 					.replace("%args%", format(amount)));
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(player);
 		if(eco == null)
 		{
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
@@ -572,7 +572,7 @@ public class VaultApi implements Economy
 		{
 			return 0;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(player);
 		if(eco == null)
 		{
 			return 0.0;
@@ -605,7 +605,7 @@ public class VaultApi implements Economy
 	{
 		if(isMysql() && usePlayerAccount())
 		{
-			EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
+			AEPUser eco = AEPUserHandler.getEcoPlayer(player);
 			if(eco == null)
 			{
 				return false;
@@ -646,7 +646,7 @@ public class VaultApi implements Economy
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount"));
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(player);
 		if(eco == null)
 		{
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
@@ -694,8 +694,8 @@ public class VaultApi implements Economy
 	{
 		String from = "";
 		String to = "";
-		EcoPlayer ecofrom = EcoPlayerHandler.getEcoPlayer(dr.getFrom());
-		EcoPlayer ecoto = EcoPlayerHandler.getEcoPlayer(dr.getTo());
+		AEPUser ecofrom = AEPUserHandler.getEcoPlayer(dr.getFrom());
+		AEPUser ecoto = AEPUserHandler.getEcoPlayer(dr.getTo());
 		try
 		{
 			from = Utility.convertUUIDToName(dr.getFrom());

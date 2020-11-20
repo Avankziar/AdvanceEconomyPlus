@@ -6,25 +6,25 @@ import org.bukkit.OfflinePlayer;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 
-public class EcoPlayerHandler
+public class AEPUserHandler
 {
-	public static EcoPlayer getEcoPlayer(UUID playeruuid)
+	public static AEPUser getEcoPlayer(UUID playeruuid)
 	{
-		return (EcoPlayer) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
+		return (AEPUser) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
 				MysqlHandler.Type.PLAYER, "`player_uuid` = ?", playeruuid.toString());
 	}
 	
-	public static EcoPlayer getEcoPlayer(String playername)
+	public static AEPUser getEcoPlayer(String playername)
 	{
-		return (EcoPlayer) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
+		return (AEPUser) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
 				MysqlHandler.Type.PLAYER, "`player_name` = ?", playername);
 	}
 	
-	public static EcoPlayer getEcoPlayer(OfflinePlayer player)
+	public static AEPUser getEcoPlayer(OfflinePlayer player)
 	{
-		return (EcoPlayer) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
+		return (AEPUser) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
 				MysqlHandler.Type.PLAYER, "`player_uuid` = ?", player.getUniqueId().toString());
 	}
 }

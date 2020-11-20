@@ -14,10 +14,10 @@ import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -60,7 +60,7 @@ public class ARGMoneyLoan_Accept extends ArgumentModule
 			return;
 		}
 		LoanRepayment dr = PendingHandler.loanToAccept.get(player.getUniqueId().toString());
-		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayer(dr.getTo());
+		AEPUser toplayer = AEPUserHandler.getEcoPlayer(dr.getTo());
 		
 		EconomyResponse withdraw = AdvancedEconomyPlus.getVaultApi().withdrawPlayer(
 				Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), dr.getTotalAmount());
@@ -109,7 +109,7 @@ public class ARGMoneyLoan_Accept extends ArgumentModule
 		}
 		if(!dr.getTo().equals(dr.getLoanOwner()))
 		{
-			EcoPlayer Loanowner = EcoPlayerHandler.getEcoPlayer(dr.getLoanOwner());
+			AEPUser Loanowner = AEPUserHandler.getEcoPlayer(dr.getLoanOwner());
 			if(Loanowner.isMoneyPlayerFlow())
 			{
 				if(bungee)

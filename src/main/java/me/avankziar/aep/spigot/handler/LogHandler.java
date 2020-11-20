@@ -17,7 +17,7 @@ import main.java.me.avankziar.aep.spigot.assistance.ChatApiSmall;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -115,7 +115,7 @@ public class LogHandler
 		player.spigot().sendMessage(MSG);
 	}
 	
-	public static void sendActionLogs(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<ActionLogger> list,
+	public static void sendActionLogs(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<ActionLogger> list,
 			int page, int end, String playername, int last,  String cmdstring)
 	{
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Log.Headline")
@@ -129,13 +129,24 @@ public class LogHandler
 		for(ActionLogger el : list)
 		{
 			String orderer = "";
-			EcoPlayer ord = EcoPlayerHandler.getEcoPlayer(UUID.fromString(el.getOrdereruuid()));
-			if(ord == null)
+			UUID uuid = null;
+			try
 			{
-				orderer = el.getOrdereruuid();
+				uuid = UUID.fromString(el.getOrdereruuid());
+			} catch(IllegalArgumentException e) {}
+			if(uuid != null)
+			{
+				AEPUser ord = AEPUserHandler.getEcoPlayer(uuid);
+				if(ord == null)
+				{
+					orderer = el.getOrdereruuid();
+				} else
+				{
+					orderer = ord.getName();
+				}
 			} else
 			{
-				orderer = EcoPlayerHandler.getEcoPlayer(el.getOrdereruuid()).getName();
+				orderer = el.getOrdereruuid();
 			}
 			String comment = "";
 			if(el.getComment() != null)
@@ -356,7 +367,7 @@ public class LogHandler
 		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.LOG.toString());
 	}
 	
-	public static void sendActionDiagram(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<ActionLogger> list,
+	public static void sendActionDiagram(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<ActionLogger> list,
 			int page, int end, String playername, int last, String cmdstring)
 	{
 		if(list.size()<2)
@@ -471,7 +482,7 @@ public class LogHandler
 		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.DIAGRAM.toString());
 	}
 	
-	public static void sendActionGrafic(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<ActionLogger> list,
+	public static void sendActionGrafic(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<ActionLogger> list,
 			int page, int end, String playername, int last, String cmdstring)
 	{
 		double maxamount = 0.0;
@@ -744,7 +755,8 @@ public class LogHandler
 		return;
 	}
 	
-	public static void sendActionBarChart(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<ActionLogger> list,
+	//TODO:System.outs
+	public static void sendActionBarChart(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<ActionLogger> list,
 			int page, int end, String playername, int last, String cmdstring)
 	{
 		if(list.size()<2)
@@ -771,8 +783,8 @@ public class LogHandler
 		ArrayList<ActionLogger> thirteenthMonth = new ArrayList<>();
 		
 		int i = 0;
-		LocalDateTime startDate = list.get(0).getDateTime();
-		while(i<list.size())
+		LocalDateTime startDate = list.get(list.size()-1).getDateTime();
+		while(i < list.size())
 		{
 			ActionLogger tl  = list.get(i);
 			if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
@@ -805,9 +817,9 @@ public class LogHandler
 			while(j <= 13)
 			{
 				sdClone = sdClone.plusMonths(1);
-				AdvancedEconomyPlus.log.info("tldt: "+tldt.toString()+" | sdClone: "+sdClone.toString());
-				AdvancedEconomyPlus.log.info(tldt.getMonthValue()+" == "+sdClone.getMonthValue()
-				+" | "+tldt.getYear()+" == "+sdClone.getYear());
+				AdvancedEconomyPlus.log.info(tldt.toString()+" | "+sdClone.toString());
+				AdvancedEconomyPlus.log.info((tldt.getMonthValue()==sdClone.getMonthValue())
+				+" | "+(tldt.getYear() == sdClone.getYear()));
 				if(tldt.getMonthValue() == sdClone.getMonthValue() && tldt.getYear() == sdClone.getYear())
 				{
 					switch(j)
@@ -1031,7 +1043,7 @@ public class LogHandler
 		
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.Headline")
 				.replace("%player%", eco.getName())
-				.replace("%amount%", String.valueOf(list.size()-1))));
+				.replace("%amount%", String.valueOf(list.size()))));
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.Infoline")));
 		for(ArrayList<BaseComponent> bc : totalbc)
 		{
@@ -1053,7 +1065,7 @@ public class LogHandler
 	}
 	
 	//TODO nicht richtig
-	public static void sendGetTotal(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, String path, ArrayList<ActionLogger> list,
+	public static void sendGetTotal(AdvancedEconomyPlus plugin, Player player, AEPUser eco, String path, ArrayList<ActionLogger> list,
 			String playername, int last, String searchword)
 	{
 		double positiv = 0.0;
@@ -1086,7 +1098,7 @@ public class LogHandler
 				.replace("%value%", AdvancedEconomyPlus.getVaultApi().format(total))));
 	}
 	
-	public static void sendTrendLogs(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<TrendLogger> list,
+	public static void sendTrendLogs(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<TrendLogger> list,
 			int page, int end, String playername, int last, String cmdstring)
 	{
 		boolean lastpage = false;
@@ -1134,7 +1146,7 @@ public class LogHandler
 		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.LOG.toString());
 	}
 	
-	public static void sendTrendDiagram(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<TrendLogger> list,
+	public static void sendTrendDiagram(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<TrendLogger> list,
 			int page, int end, String playername, int last, String cmdstring)
 	{
 		if(list.size()<2)
@@ -1233,7 +1245,7 @@ public class LogHandler
 		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.DIAGRAM.toString());
 	}
 	
-	public static void sendTrendGrafic(AdvancedEconomyPlus plugin, Player player, EcoPlayer eco, ArrayList<TrendLogger> list,
+	public static void sendTrendGrafic(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<TrendLogger> list,
 			int page, int end, String playername, int last, String cmdstring)
 	{
 		//ˉ

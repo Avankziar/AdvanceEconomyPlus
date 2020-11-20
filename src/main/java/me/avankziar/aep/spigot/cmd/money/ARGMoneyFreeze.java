@@ -12,8 +12,8 @@ import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class ARGMoneyFreeze extends ArgumentModule
@@ -37,7 +37,7 @@ public class ARGMoneyFreeze extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!

@@ -11,8 +11,8 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 
 public class PlayerListener implements Listener
 {
@@ -26,7 +26,7 @@ public class PlayerListener implements Listener
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event)
 	{
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(event.getPlayer().getUniqueId().toString());
+		AEPUser eco = AEPUserHandler.getEcoPlayer(event.getPlayer().getUniqueId().toString());
 		if(eco == null)
 		{
 			AdvancedEconomyPlus.getVaultApi().createPlayerAccount(event.getPlayer());
@@ -39,7 +39,7 @@ public class PlayerListener implements Listener
 				plugin.getMysqlHandler().updateData(Type.PLAYER, eco, "`id` = ?", eco.getId());
 			}
 		}
-		eco = EcoPlayerHandler.getEcoPlayer(event.getPlayer().getUniqueId());
+		eco = AEPUserHandler.getEcoPlayer(event.getPlayer().getUniqueId());
 		if(!plugin.getMysqlHandler().exist(Type.TREND,
 				"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(LocalDate.now()), event.getPlayer().getUniqueId().toString()))
 		{

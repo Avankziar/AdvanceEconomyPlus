@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 
 public class Utility
 {
@@ -83,7 +83,7 @@ public class Utility
 		String name = null;
 		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYER, "player_uuid = ?", uuid))
 		{
-			name = ((EcoPlayer) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYER,
+			name = ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYER,
 					"player_uuid = ?", uuid)).getName();
 			return name;
 		}
@@ -95,7 +95,7 @@ public class Utility
 		String uuid = "";
 		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYER, "`player_name` = ?", playername))
 		{
-			uuid = ((EcoPlayer) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYER, "`player_name` = ?", playername)).getUUID();
+			uuid = ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYER, "`player_name` = ?", playername)).getUUID();
 			return uuid;
 		}
 		return null;

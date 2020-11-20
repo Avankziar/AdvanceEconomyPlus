@@ -18,8 +18,8 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -87,7 +87,7 @@ public class ARGMoneyGive extends ArgumentModule
 				
 			}
 		}
-		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
+		AEPUser toplayer = AEPUserHandler.getEcoPlayer(toplayername);
 		if(toplayer == null)
 		{
 			//Der Spieler existiert nicht!
@@ -101,7 +101,7 @@ public class ARGMoneyGive extends ArgumentModule
 			sender.sendMessage(ChatApi.tl(deposit.errorMessage));
 			return;
 		}
-		toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
+		toplayer = AEPUserHandler.getEcoPlayer(toplayername);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(), customTo, toplayer.getUUID(), customTo, toplayer.getName(), 
 				customOrderer,

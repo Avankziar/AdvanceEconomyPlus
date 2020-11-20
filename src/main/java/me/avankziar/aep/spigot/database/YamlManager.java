@@ -7,16 +7,16 @@ import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import main.java.me.avankziar.aep.spigot.database.LanguageObject.LanguageType;
+import main.java.me.avankziar.aep.spigot.database.Language.ISO639_2B;
 
 public class YamlManager
 {
-	private LanguageType languageType = LanguageType.GERMAN;
-	private LanguageType defaultLanguageType = LanguageType.GERMAN;
-	private static LinkedHashMap<String, LanguageObject> configKeys = new LinkedHashMap<>();
-	private static LinkedHashMap<String, LanguageObject> commandsKeys = new LinkedHashMap<>();
-	private static LinkedHashMap<String, LanguageObject> languageKeys = new LinkedHashMap<>();
-	private static LinkedHashMap<String, LanguageObject> loggerSettingsKeys = new LinkedHashMap<>();
+	private ISO639_2B languageType = ISO639_2B.GER;
+	private ISO639_2B defaultLanguageType = ISO639_2B.GER;
+	private static LinkedHashMap<String, Language> configKeys = new LinkedHashMap<>();
+	private static LinkedHashMap<String, Language> commandsKeys = new LinkedHashMap<>();
+	private static LinkedHashMap<String, Language> languageKeys = new LinkedHashMap<>();
+	private static LinkedHashMap<String, Language> loggerSettingsKeys = new LinkedHashMap<>();
 	
 	public YamlManager()
 	{
@@ -26,42 +26,42 @@ public class YamlManager
 		initFilterSettings();
 	}
 	
-	public LanguageType getLanguageType()
+	public ISO639_2B getLanguageType()
 	{
 		return languageType;
 	}
 
-	public void setLanguageType(LanguageType languageType)
+	public void setLanguageType(ISO639_2B languageType)
 	{
 		this.languageType = languageType;
 	}
 	
-	public LanguageType getDefaultLanguageType()
+	public ISO639_2B getDefaultLanguageType()
 	{
 		return defaultLanguageType;
 	}
 	
-	public LinkedHashMap<String, LanguageObject> getConfigKey()
+	public LinkedHashMap<String, Language> getConfigKey()
 	{
 		return configKeys;
 	}
 	
-	public LinkedHashMap<String, LanguageObject> getCommandsKey()
+	public LinkedHashMap<String, Language> getCommandsKey()
 	{
 		return commandsKeys;
 	}
 	
-	public LinkedHashMap<String, LanguageObject> getLanguageKey()
+	public LinkedHashMap<String, Language> getLanguageKey()
 	{
 		return languageKeys;
 	}
 	
-	public LinkedHashMap<String, LanguageObject> getLoggerSettingsKey()
+	public LinkedHashMap<String, Language> getLoggerSettingsKey()
 	{
 		return loggerSettingsKeys;
 	}
 	
-	public void setFileInput(YamlConfiguration yml, LinkedHashMap<String, LanguageObject> keyMap, String key, LanguageType languageType)
+	public void setFileInput(YamlConfiguration yml, LinkedHashMap<String, Language> keyMap, String key, ISO639_2B languageType)
 	{
 		if(!keyMap.containsKey(key))
 		{
@@ -71,17 +71,9 @@ public class YamlManager
 		{
 			return;
 		}
-		if(keyMap
-				.get(key)
-				.languageValues
-				.get(languageType)
-				.length == 1)
+		if(keyMap.get(key).languageValues.get(languageType).length == 1)
 		{
-			yml.set(key,
-				keyMap
-				.get(key)
-				.languageValues
-				.get(languageType)[0]);
+			yml.set(key, keyMap.get(key).languageValues.get(languageType)[0]);
 		} else
 		{
 			List<Object> list = Arrays.asList(keyMap.get(key).languageValues.get(languageType));
@@ -109,145 +101,145 @@ public class YamlManager
 		Base:
 		{
 			configKeys.put("Language"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"English"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"ENG"}));
 			configKeys.put("Prefix"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"&7[&2AdvancedEconomyPlus&7] &r"}));
 			configKeys.put("Bungee"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					false}));
 		}
 		Mysql:
 		{
 			configKeys.put("Mysql.Status"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					false}));
 			configKeys.put("Mysql.Host"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"127.0.0.1"}));
 			configKeys.put("Mysql.Port"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					3306}));
 			configKeys.put("Mysql.DatabaseName"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"mydatabase"}));
 			configKeys.put("Mysql.SSLEnabled"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					false}));
 			configKeys.put("Mysql.AutoReconnect"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
 			configKeys.put("Mysql.VerifyServerCertificate"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					false}));
 			configKeys.put("Mysql.User"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"admin"}));
 			configKeys.put("Mysql.Password"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"not_0123456789"}));
 			configKeys.put("Mysql.TableNameI"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"economyPlayerData"}));
 			configKeys.put("Mysql.TableNameII"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"economyBankData"}));
 			configKeys.put("Mysql.TableNameIII"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"economyActionLogger"}));
 			configKeys.put("Mysql.TableNameIV"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"economyTrendLogger"}));
 			configKeys.put("Mysql.TableNameV"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"economyStandingOrder"}));
 			configKeys.put("Mysql.TableNameVI"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"economyLoan"}));
 			configKeys.put("Mysql.TableNameVII"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"economyLoggerSettingsPreset"}));
 		}
 		Generator:
 		{
 			configKeys.put("Identifier.Click"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"click"}));
 			configKeys.put("Identifier.Hover"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"hover"}));
 			configKeys.put("Seperator.BetweenFunction"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"~"}));
 			configKeys.put("Seperator.WhithinFuction"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"@"}));
 			configKeys.put("Seperator.Space"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"+"}));
 			configKeys.put("Seperator.HoverNewLine"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"~!~"}));
 		}
 		MechanicSettings:
 		{
 			configKeys.put("Use.PlayerAccount"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
 			configKeys.put("Use.Bank"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					false}));
 			configKeys.put("Use.StandingOrder"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					false}));
 			configKeys.put("Use.Loan"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					false}));
 		}
 		EconomySettings:
 		{
 			configKeys.put("StartMoney"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					0.0}));
 			configKeys.put("CurrencyNameSingular"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"Euro"}));
 			configKeys.put("CurrencyNamePlural"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"Euros"}));
 			configKeys.put("TrendLogger.ValueIsStabil"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1000.0}));
 			configKeys.put("GraficSpaceSymbol"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"ˉ"}));
 			configKeys.put("GraficPointSymbol"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"x"}));
 		}
 		JobsRebornHook:
 		{
 			configKeys.put("JobsRebornHookTaskTimer"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"0", "15", "30", "45"}));
 		}
 		BankSettings:
 		{
 			configKeys.put("ReservedNames"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"YourSever", "YourServerMk2"}));
 			configKeys.put("BankAccountFromat"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"FOUR_DIGITS_TIMES_THREE"}));
 		}
 		RepeatingTimes:
 		{
 			configKeys.put("StandingOrderRepeatTime"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					180}));
 			configKeys.put("LoanRepaymentRepeatTime"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					180}));
 		}
 	}
@@ -271,6 +263,7 @@ public class YamlManager
 					"&c/money &f| Shows your balance.",
 					"Display your balance");			
 			comMoney();
+			comMoneyLogs();
 			comMoneyLoggerSettings();
 			comMoneyLoan();
 			comMoneyStandingOrder();
@@ -282,23 +275,23 @@ public class YamlManager
 			String helpInfoGerman, String helpInfoEnglish, String explanation)
 	{
 		commandsKeys.put(path+".Name"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				name}));
 		commandsKeys.put(path+".Permission"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				basePermission}));
 		commandsKeys.put(path+".Suggestion"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				suggestion}));
 		commandsKeys.put(path+".CommandString"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				commandString}));
 		commandsKeys.put(path+".HelpInfo"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				helpInfoGerman,
 				helpInfoEnglish}));
 		commandsKeys.put(path+".Explanation"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				explanation}));
 	}
 	
@@ -307,23 +300,23 @@ public class YamlManager
 			String helpInfoGerman, String helpInfoEnglish, String explanation)
 	{
 		commandsKeys.put(path+".Argument"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				argument}));
 		commandsKeys.put(path+".Permission"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				basePermission+"."+argument}));
 		commandsKeys.put(path+".Suggestion"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				suggestion}));
 		commandsKeys.put(path+".CommandString"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				commandString}));
 		commandsKeys.put(path+".HelpInfo"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				helpInfoGerman,
 				helpInfoEnglish}));
 		commandsKeys.put(path+".Explanation"
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				explanation}));
 	}
 	
@@ -402,13 +395,28 @@ public class YamlManager
 				"Show the top balance players.");
 	}
 	
+	private void comMoneyLogs()
+	{
+		String basePermission = "eco.cmd.money";
+		argumentInput("money_actionlog", "actionlog", basePermission,
+				"/money actionlog [page] [playername]", "/money actionlog ",
+				"&c/money actionlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
+				"&c/money actionlog [page] [playername] &f| Shows direct the actionlog by the actual Settings.",
+				"Shows direct the actionlog by the actual Settings.");
+		argumentInput("money_trendlog", "trendlog", basePermission,
+				"/money trendlog [page] [playername]", "/money trendlog ",
+				"&c/money trendlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
+				"&c/money trendlog [page] [playername] &f| Shows direct the trendlog by the actual Settings.",
+				"Shows direct the trendlog by the actual Settings.");
+	}
+	
 	private void comMoneyLoggerSettings()
 	{
 		String basePermission = "eco.cmd.money";
 		argumentInput("money_loggersettings", "loggersettings", basePermission,
 				"/money loggersetting", "/money loggersetting ",
-				"&c/money loggersettings &f| ",
-				"&c/money loggersettings &f| ",
+				"&c/money loggersettings &f| Öffnet die Gui und mit angegebenen Argumenten gibt es die Daten in Form von Log, Diagram etc. aus.",
+				"&c/money loggersettings &f| Opens the gui and with given arguments it outputs the data in form of log, diagram etc.",
 				"Open the Gui for the loggersettings for Action- and trendlog");
 		
 		basePermission = "eco.cmd.money.loggersettings";
@@ -612,16 +620,872 @@ public class YamlManager
 				"Set the starttime in <dd.MM.yyyy-HH:mm> format. And Starts the standing order!");
 	}
 	
-	public void initLanguage()
+	public void initLanguage() //TODO:Languages
 	{
 		languageKeys.put("NoPermission"
-			, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-			"&cDu hast dafür keine Rechte!",
-			"&cYou have no rights!"}));
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast dafür keine Rechte!",
+				"&cYou have no rights!"}));
+		languageKeys.put("PlayerNotExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Spieler existiert nicht!",
+				"&cThe player does not exist!"}));
+		languageKeys.put("PlayerNotOnline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Spieler ist nicht online!",
+				"&cThe player is not online!"}));
+		languageKeys.put("IllegalArgument"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas angegebene Argument ist keine Zahl!",
+				"&cThe specified argument is not a number!"}));
+		languageKeys.put("InputIsWrong"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDeine Eingabe ist fehlerhaft, klicke hier auf den Text um weitere Infos zu bekommen!",
+				"&cYour input is incorrect, click here on the text to get more information!"}));
+		languageKeys.put("NoNumber"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas Argument §f%args% §cist keine Nummer!",
+				"&cThe argument &f%args% &cis no number!"}));
+		languageKeys.put("NumberIsNegativ"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDie Zahl &f%args% §cist Negativ! Benutze nur positive Zahlen!",
+				"&cThe number &f%args% &cis negative! Use only positive numbers!"}));
+		languageKeys.put("NoPlayerAccount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cSpielerkonten sind nicht aktiv!",
+				"&cPlayer accounts are not active!"}));
+		languageKeys.put("YourAccountIsFrozen"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDein Spielerkonto ist eingeforen! Du kannst nichts mehr überweisen!",
+				"&cYour player account has been frozen! You can not transfer money anymore!"}));
+		languageKeys.put("NoBank"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBankkonten sind nicht aktiv!",
+				"&cBank accounts are not active!"}));
+		languageKeys.put("NoLoan"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cKredite sind nicht aktiv!",
+				"&cDebts are not active!"}));
+		languageKeys.put("NoStandingOrder"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDaueraufträge sind nicht aktiv!",
+				"&cStandingOrder are not active!"}));
+		languageKeys.put("NoBankAccountFree"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEs existiert keine freie Banknummer!",
+				"&cThere is no free bank number!"}));
+		languageKeys.put("NoBankOrPlayerAccount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEntweder sind die Spielerkonten oder die Bankkonten deaktiviert!",
+				"&cEither the player accounts or the bank accounts are deactivated!"}));
+		languageKeys.put("TransactionSuccess"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&aTransaktion erfolgreich!",
+				"&aTransaction successful!"}));
+		languageKeys.put("SpecifyBankNumber"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Bankkontoname &f%name% &cexistiert mehrfach! Bitte spezifiziere die Angabe, durch die Eingabe der Banknummer!",
+				"&cThe bank account name &f%name% &cexistiert multiple! Please specify the information by entering the bank number!"}));
+		languageKeys.put("GeneralHover"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlick mich!",
+				"&eClick me!"}));
+		languageKeys.put("GeneralError"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEs passiert gerade ein genereller Fehler beim Befehl: &f%cmd% | %message%",
+				"&cThere is a general error in the command right now: &f%cmd% | %message%"}));
+		languageKeys.put("OtherCmd"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBitte nutze den Befehl, mit einem weiteren Argument aus der Tabliste!",
+				"&cPlease use the command with another argument from the tab list!"}));
+		languageKeys.put("InterestCantBeUnderMinus100"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eZinsen können nicht kleiner oder gleich -100 % sein!",
+				"&eInterest cannot be less than or equal to -100 %!"}));
+		
+		languageKeys.put("StandingOrder.Orderer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Dauerauftrag",
+				"StandingOrder"}));
+		languageKeys.put("StandingOrder.Comment"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDauerauftrag &f%name%",
+				"&eStandingOrder &f%name%"}));
+		
+		languageKeys.put("DebtRepayment.Orderer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Kreditrückzahlung",
+				"DebtRepayment"}));
+		languageKeys.put("DebtRepayment.Comment"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKredit &f%name%",
+				"&eDebt &f%name%"}));
+		
+		languageKeys.put("ChestShopHook.Sell"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eShop: &f%amount% &6x &b%item% &ean &f%player% &averkauft&e!",
+				"&eShop: &f%amount% &6x &b%item% &eto &f%player% &asold&e!"}));
+		languageKeys.put("ChestShopHook.Buy"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eShop: &f%amount% &6x &b%item% &evon &f%player% &cgekauft&e!",
+				"&eShop: &f%amount% &6x &b%item% &efrom &f%player% &cpurchased&e!"}));
+		
+		languageKeys.put("JobsRebornHook.UUID"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Jobs",
+				"Jobs"}));
+		languageKeys.put("JobsRebornHook.Name"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Jobs",
+				"Jobs"}));
+		languageKeys.put("JobsRebornHook.Orderer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Jobs",
+				"Jobs"}));
+		languageKeys.put("JobsRebornHook.Comment"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDein Gehalt vom Job &d%job%.",
+				"&eYour salary from the job &d%job%."}));
+		
+		languageKeys.put("HeadDatabase.UUID"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"HeadDB",
+				"HeadDB"}));
+		languageKeys.put("HeadDatabase.Name"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"HeadDB",
+				"HeadDB"}));
+		languageKeys.put("HeadDatabase.Orderer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"HeadDB",
+				"HeadDB"}));
+		languageKeys.put("HeadDatabase.Comment"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"%head% &egekauft!",
+				"%head% &epurchased!"}));
+		
+		languageKeys.put("QickShopHook.Sell"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eShop: &f%amount% &6x &b%item% &ean &f%player% &averkauft&e!",
+				"&eShop: &f%amount% &6x &b%item% &eto &f%player% &asold&e!"}));
+		languageKeys.put("QickShopHook.Buy"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eShop: &f%amount% &6x &b%item% &evon &f%player% &cgekauft&e!",
+				"&eShop: &f%amount% &6x &b%item% &efrom &f%player% &cpurchased&e!"}));
+		
+		langEco();
+		langMoney();
+		
 		/*languageKeys.put(""
-				, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"",
 				""}));*/
+	}
+	
+	private void langEco()
+	{
+		String base = "CmdEco.";
+		languageKeys.put(base+"BaseInfo.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2Economy &bInfo&7]&e=====",
+				"&e=====&7[&2Economy &bInfo&7]&e====="}));
+		languageKeys.put(base+"BaseInfo.Next"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e&nnächste Seite &e==>",
+				"&e&nnext page &e==>"}));
+		languageKeys.put(base+"BaseInfo.Past"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e<== &nvorherige Seite",
+				"&e<== &nprevious page"}));
+		
+		languageKeys.put(base+"DeleteLog.LogNotExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Log-Eintrag existiert nicht!",
+				"&cThe log entry does not exist!"}));
+		languageKeys.put(base+"DeleteLog.LogWasDeleted"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Log-Eintrag Nummer %id% wurde &cgelöscht&e!",
+				"&eThe log entry number %id% was &cdeleted&e!"}));
+		
+		languageKeys.put(base+"Player.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2Economy &b%player%&7]&e=====",
+				"&e=====&7[&2Economy &b%player%&7]&e====="}));
+		languageKeys.put(base+"Player.UUID"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eSpielerUUID: &f%uuid%",
+				"&ePlayerUUID: &f%uuid%"}));
+		languageKeys.put(base+"Player.Balance"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eGuthaben: &6%balance% &2%currency%",
+				"&eBalance: &6%balance% &2%currency%"}));
+		languageKeys.put(base+"Player.BankAccount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eZugehörige Bankkonten: &f%bankaccount%",
+				"&eRelated bank accounts: &f%bankaccount%"}));
+		
+		languageKeys.put(base+"ReComment.NoOrderer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu bist nicht der Auftraggeber des Logs!",
+				"&cYou are not order of the log!"}));
+		languageKeys.put(base+"ReComment.LogNotExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Log-Eintrag existiert nicht!",
+				"&cThe log entry does not exist!"}));
+		languageKeys.put(base+"ReComment.CommentWasChange"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDie Notiz vom Log &f#%id% &ewurde geändert in: &r%comment%",
+				"&eThe note from log &f#%id% &was changed to: &r%comment%"}));
+	}
+	
+	private void langMoney()
+	{
+		String base = "CmdMoney.";
+		languageKeys.put(base+"PlayerBalance"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[%time%] &eDein Guthaben: &6%balance% &2%currency%",
+				"&7[%time%] &eYour balance: &6%balance% &2%currency%"}));
+		languageKeys.put(base+"PlayerDeposit"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f%amount% &e%currency% wurden auf %name% überwiesen. Aktuelles Guthaben: &2%balance%",
+				"&f%amount% &e%currency% were transferred to %name%. Current balance: &2%balance%"}));
+		languageKeys.put(base+"PlayerWithDraw"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f%amount% &e%currency% wurden vom %name% abgezogen. Aktuelles Guthaben: &2%balance%",
+				"&f%amount% &e%currency% were deducted from the %name%. Current balance: &2%balance%"}));
+		languageKeys.put(base+"BankPay.DepositWithDraw"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&6%amount% &2%currency% &ewurden von &6%name1% &ean &6%number2%&f|&6%name2% &eüberwiesen. &eAktuelles Guthaben von &6%name%&e: &2%balance%",
+				"&6%amount% &2%currency% &ewere transferred from &6%name1% &eto &6%number2%&f|&6%name2% &e. &eCurrent balance of &6%name%&e: &2%balance%"}));
+		
+		base = "CmdMoney.BarChart.";
+		languageKeys.put(base+"Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=======&7[&2Economy &bBarChart: &f%player%&7 | Log-Anzahl: %amount%&7]&e=======",
+				"&e=======&7[&2Economy &bBarChart: &f%player%&7 | Log-Quantity: %amount%&7]&e======="}));
+		languageKeys.put(base+"Infoline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&aEinnahmen &7[in %-Anteil vom Jahr] &e| &cAusgaben &7[in %-Anteil vom Jahr]",
+				"&aIncome &7[in % share of year] &e| &cExpenditure &7[in % share of year]"}));
+		languageKeys.put(base+"HoverMessage"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&aEinnahmen in Monat = &f%positivvalue% %currency%~!~&aProzentualer Anteil der Einnahmen = &f%percentP% %~!~&cAusgaben im Monat = &f%negativvalue% %currency%~!~&cProzentualer Anteil der Ausgaben = &f%percentN% %~!~&eGesamtveränderung im Monat = &r%totalvalue% %currency%",
+				"&aIncome in month = &f%positivevalue% %currency%~!~&aPercentage share of income = &f%percentP% %~!~&cExpenditure in month = &f%negativevalue% %currency%~!~&cPercentage share of expenditure = &f%percentN% %~!~&eTotal change in month = &r%totalvalue% %currency%"}));
+		languageKeys.put(base+"HoverMessageII"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&aEinnahmen in letzten Jahr = &f%positivvalue% %currency%~!~&cAusgaben im letzten Jahr = &f%negativvalue% %currency%~!~&eGesamtveränderung im letzten Jahr = &r%totalvalue% %currency%",
+				"&aIncome in last year = &f%positivevalue% %currency%~!~&cExpenditure in last year = &f%negativevalue% %currency%~!~&eTotal change in last year = &r%totalvalue% %currency%"}));
+		languageKeys.put(base+"Month"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e -    %month%    - &r",
+				"&e -    %month%    - &r"}));
+		languageKeys.put(base+"LastYear"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e - Letztes Jahr - &r",
+				"&e -  Last Year  - &r"}));
+		
+		base = "CmdMoney.Loan.";
+		languageKeys.put(base+"AcceptCmd"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"/money loan accept bestätigen",
+				"/money loan accept confirm"}));
+		languageKeys.put(base+"InfoCmd"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"/money loan info",
+				"/money loan info"}));
+		languageKeys.put(base+"ForgiveCmd"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"/money loan forgive",
+				"/money loan forgive"}));
+		languageKeys.put(base+"RepayCmd"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"/money loan repay %id% %amount% bestätigen",
+				"/money loan repay %id% %amount% confirm"}));
+		languageKeys.put(base+"RejectCmd"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"/money loan reject",
+				"/money loan reject"}));
+		languageKeys.put(base+"ConfirmTerm"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"bestätigen",
+				"confirm"}));
+		languageKeys.put(base+"PleaseConfirm"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBitte+bestätige+mit+&f%cmd%&c,+oder+klicke+hier!~click@SUGGEST_COMMAND@%cmd%",
+				"&cPlease+confirm+with++&f%cmd%&c,+or+click+here!~click@SUGGEST_COMMAND@%cmd%"}));
+		languageKeys.put(base+"LoanDontExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Kredit existiert nicht!",
+				""}));
+		languageKeys.put(base+"NoToAcceptLoan"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDir hat niemand ein Kredit vorgeschlagen!",
+				""}));
+		languageKeys.put(base+"AlreadyHavingProposal"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cSpieler hat schon einen Kreditvorschlag bekommen. Dieser muss er zuerst ablehenen.",
+				""}));
+		languageKeys.put(base+"NoWaitingLoanProposal"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast keinen Kredit in Bearbeitung!",
+				""}));
+		languageKeys.put(base+"AlreadyWaitingLoanProposal"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast schon einen Kredit in Bearbeitung!",
+				""}));
+		languageKeys.put(base+"ThereAreNoPlayers"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDie angegebenen Spieler müssen auch existieren!",
+				""}));
+		languageKeys.put(base+"YouCantBeTheOwnerOfYourOwnLoan"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu kannst nicht der Krediteigentümer sein, wenn der Kredit an dich geht!",
+				""}));
+		languageKeys.put(base+"ContractAtTheExpenseOfThirdParties"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu darfst keine Kredite zu Lasten Dritter beschließen!",
+				""}));
+		languageKeys.put(base+"LoanAlreadyPaidOff"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cKredit ist schon abbezahlt!",
+				""}));
+		languageKeys.put(base+"LoanAlreadyForgiven"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cRestkredit ist schon vergeben worden!",
+				""}));
+		languageKeys.put(base+"HoverInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eID: &f%id%~!~&eName: &f%name%~!~&eKreditnehmer: &f%from%~!~&eKreditgeber: &f%to%~!~&eKrediteigentümer: &f%owner%~!~&eStartdatum: &f%st%~!~&eEnddatum: &f%et%~!~&eRatenzyklus: &f%rt%~!~&eBetrag: &r%apsf%&r/&3%ta%~!~&eRatenbetrag: &f%ar%~!~&eZinssatz: &f%in% %~!~&eIst Pausiert: &f%pa%~!~&eIst Vergeben: &e%fo%~!~&eIst Abbezahlt: &f%fi%",
+				""}));
+		languageKeys.put(base+"Accept.YouHaveAccepted"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast das Kreditangebot von &6%drowner% &f%name% &eangenommen!",
+				""}));
+		languageKeys.put(base+"Accept.PayerHasAccepted"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Spieler &f%player% &ehast das Kreditangebot &e%name% &evon &f%toplayer% &eangenommen.",
+				""}));
+		languageKeys.put(base+"Amount.SetsAmounts"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Kredit &f%name% &ewurde bearbeitet.",
+				""}));
+		languageKeys.put(base+"Amount.Hover"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eGesamtbetrag: &r%ta% %currency% (Zinsen schon mit eingerechnet)~!~&eRaten: &r%am% %currency%~!~&eZinsen: &r%in% %~!~Vorraussichtlich Anzahl an Zahlungen: &r%min%",
+				""}));
+		languageKeys.put(base+"Cancel.IsCancelled"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast die Krediterstellung abgebrochen!",
+				""}));
+		languageKeys.put(base+"Create.isCreate"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast einen Kredit erstellt. Bitte setzte zuerst die anderen Einstellungen, bevor du ihn abschickst.",
+				""}));
+		languageKeys.put(base+"Forgive.CanBeUndone"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDie Schulden des Kredit sind schon vergeben worden. Es kann nicht rückgängig gemacht werden!",
+				""}));
+		languageKeys.put(base+"Forgive.LoanIsForgiven"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer verbleibende Kreditbetrag von &r%dif% %currency%&e, welcher Spieler &f%from% %to% &eschuldet wurde von Spieler &f%player% &evergeben.",
+				""}));
+		languageKeys.put(base+"Info.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e===&7[&bKreditinfo &3%id%&f-&6%name%&7]&e===",
+				""}));
+		languageKeys.put(base+"Info.Participants"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c%form% &ehat geliehen von &a%to% &1| &2Eigentümer: &f%Loanowner%",
+				""}));
+		languageKeys.put(base+"Info.Amounts"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBeträge: &a%amountpaidsofar%&f/&4%totalamount% &r%currency%",
+				""}));
+		languageKeys.put(base+"Info.Interest"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cZinssatz: &f%interest% % &1| &cZinsen: &r%interestamount% %currency%",
+				""}));
+		languageKeys.put(base+"Info.Ratio"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cZeitzyklus: &r%repeatingtime% &1| &cRatebetrag: &r%amountratio%",
+				""}));
+		languageKeys.put(base+"Info.Times"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cStartzeit: &r%starttime% &1| &cEndzeit: &r%endtime%",
+				""}));
+		languageKeys.put(base+"Info.TheoreticalNumberOfRates"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cTheoretische Anzahl an noch benötigten Zahlungen: %r%theoreticalnumber%",
+				""}));
+		languageKeys.put(base+"Inherit.SomeoneInherit"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast dem Spieler &f%newplayer% &eden Kredit &f%id% %e| &f%name% &evon &f%oldplayer% &eerben lassen.",
+				""}));
+		languageKeys.put(base+"Inherit.YouInherit"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Spieler &f%player% &ehat dich den Kredit &f%id% &e| &f%name% &evon &f%oldplayer% &eerben lassen.",
+				""}));
+		languageKeys.put(base+"List.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2Kredite von &b%player%&7]&e=====",
+				""}));
+		languageKeys.put(base+"Pause.Unpaused"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Spieler &f%player% &ehat den Kredit &f%name% &ewieder aufgenommen. Zahlungen werden bald erfolgen!",
+				""}));
+		languageKeys.put(base+"Pause.Pause"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Spieler &f%player% &ehat den Kredit &f%name% &epausiert. Zahlungen werden ausbleiben solange pausiert wird!",
+				""}));
+		languageKeys.put(base+"Payback.IsAlreadyPaidOff"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Kredit kann nicht zurückgezahlt werden, da er schon vollständig beglichen ist!",
+				""}));
+		languageKeys.put(base+"Payback.IsPayedBack"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Kredit &f%id% %e| &f%name% &ewurde von &f%player% &ean &f%to% &ezurückgezahlt.",
+				""}));
+		languageKeys.put(base+"Reject.isRejecting"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f%player% &ehat das Kreditangebot &f%name% &evon &f%to% &eabgelehnt!",
+				""}));
+		languageKeys.put(base+"Reject.isCancelled"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cAngebot wegen Ablehnung abgebrochen!",
+				""}));
+		languageKeys.put(base+"Repay.IsNotYourLoan"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cAchtung! &eDu bist dabei einen Kredit abzuzahlen, welcher nicht deiner ist!",
+				""}));
+		languageKeys.put(base+"Repay.RepayMoreThanNeeded"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu wolltest mehr abbezahlen als noch ausstand. Bezahlt wurde nur &f%dif% &eanstatt &r%amount% %currency%&e. Damit ist die Kredit &f%name% &eabgezahlt.",
+				""}));
+		languageKeys.put(base+"Repay.RepayedAmount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast vom Kredit &f%name% %amount% &r%currency% abbezahlt.",
+				""}));
+		languageKeys.put(base+"Send.YourProposal"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast dem Spieler &f%player% &eeinen Kreditvorschlag gesendet. Hover mit der Maus über diese Nachricht um alle Einzelheiten angezeigt zu bekommen.",
+				""}));
+		languageKeys.put(base+"Send.AProposal"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Spieler &f%player% &ehat dir einen Kreditvorschlag gesendet. Hover mit der Maus über diese Nachricht um alle Einzelheiten angezeigt zu bekommen.",
+				""}));
+		languageKeys.put(base+"Send.AcceptReject"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&aAkzeptieren~click@SUGGEST_COMMAND@%cmdA% &f| &cAblehnen~click@SUGGEST_COMMAND@%cmdR%",
+				""}));
+		languageKeys.put(base+"Times.SetTimes"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Kredit &f%name% &ewurde bearbeitet.",
+				""}));
+		languageKeys.put(base+"Times.Hover"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eStartdatum: &f%st%~!~&eEnddatum: &f%et%~!~&eRatenzyklus: &f%rt%",
+				""}));
+		languageKeys.put(base+"Transfer.YouHasTransfered"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast dem Spieler &f%player% &eden Kredit &f%id% %e| &f%name% &eübertragen. &cEr ist nun der Krediteigentümer, welcher die Zahlungen erhält!",
+				""}));
+		languageKeys.put(base+"Transfer.YouHasBecomeLoanOwner"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Spieler &f%player% &ehat die den Kredit &f%id% %e| &f%name% &eübertragen. &aAb jetzt bekommst du die Begleichszahlungen!",
+				""}));
+		
+		languageKeys.put(base+"Give.DepositWithDraw"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&6%amount% &2%currency% &ewurden vom &6%name1% &ean &6%name2% &eüberwiesen.",
+				"&6%amount% &2%currency% &ewere transferred from &6%name1% &eto &6%name2%&e."}));
+		languageKeys.put(base+"Give.DepositWithDrawBalance"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eAktuelles Guthaben von &6%name%&e: &6%balance% &2%currency%",
+				"&eCurrent balance of &6%name%&e: &6%balance% &2%currency%"}));
+		
+		base = "CmdMoney.Log.";
+		languageKeys.put(base+"Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=======&7[&2Economy &bLog: &f%name%&7 | Log-Anzahl: %amount%&7]&e=======",
+				"&e=======&7[&2Economy &bLog: &f%name%&7 | Log-Quantity: %amount%&7]&e======="}));
+		languageKeys.put(base+"LoggerBToPPositivAll"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
+				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
+		languageKeys.put(base+"LoggerBToPPositivDelete"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
+				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
+		languageKeys.put(base+"LoggerBToPPositivRe"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment",
+				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment"}));
+		languageKeys.put(base+"LoggerBToPPositiv"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote",
+				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote"}));
+		languageKeys.put(base+"LoggerPToBNegativAll"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
+		languageKeys.put(base+"LoggerPToBNegativDelete"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
+		languageKeys.put(base+"LoggerPToBNegativRe"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment",
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment"}));
+		languageKeys.put(base+"LoggerPToBNegativ"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote",
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote"}));
+		languageKeys.put(base+"LoggerPToPNegativAll"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
+		languageKeys.put(base+"LoggerPToPNegativDelete"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
+		languageKeys.put(base+"LoggerPToPNegativRe"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment",
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment"}));
+		languageKeys.put(base+"LoggerPToPNegativ"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote",
+				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote"}));
+		languageKeys.put(base+"LoggerPToPPositivAll"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
+				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
+		languageKeys.put(base+"LoggerPToPPositivDelete"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
+				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
+		languageKeys.put(base+"LoggerPToPPositivRe"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment",
+				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment"}));
+		languageKeys.put(base+"LoggerPToPPositiv"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote",
+				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote"}));
+		languageKeys.put(base+"LoggerOrdererNote"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&bAuftraggeber: &f%orderer%~!~&bNotiz: &r%comment%",
+				"&bOrderer: &f%orderer%~!~&bComment: &r%comment%"}));
+		languageKeys.put(base+"HoverDelete"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlicke hier um dem den Log-Eintrag zu löschen!",
+				"&eClick here to delete the log entry!"}));
+		languageKeys.put(base+"HoverRecomment"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlicke hier um die Notiz des Log-Eintrages zu ändern.",
+				"&eClick here to change the note of the log entry."}));
+		languageKeys.put(base+"Next"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e&nnächste Seite &e==>",
+				"&e&nnext page &e==>"}));
+		languageKeys.put(base+"Past"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e<== &nvorherige Seite",
+				"&e<== &nprevious page"}));
+		languageKeys.put(base+"NoLoggerSettingsFound"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast keinen LoggerSetting ausgewählt!",
+				"&cYou have not selected a LoggerSetting!"}));
+		languageKeys.put(base+"NoOtherLoggerSettingsFound"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Spieler hat keinen LoggerSetting ausgewählt!",
+				"&cThe player has not selected a LoggerSetting!"}));
+		languageKeys.put(base+"LoggerSettingsTextSuggest"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlicke hier auf die Nachricht, um einen Befehlsvorschlag zu erhalten. Tippe dann dein Suchtext ein und drücke &b>Enter<",
+				"&eClick here on the message to get a command suggestion. Then type in your search text and press &b>Enter<"}));
+		
+		base = "CmdMoney.Freeze.";
+		languageKeys.put(base+"YouFrozenSomeone"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast das Spielerkonto von &f%player% &eeingefroren! &cAchtung! Externe Plugins können bei schlechter Abfrage zu Fehlern führen!",
+				"&eYou have frozen the player account of %player%! &cAttention! External plugins can lead to errors if the query is bad!"}));
+		languageKeys.put(base+"YourAccountWasFrozen"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDein Spielerkonto wurden von &f%player% &ceingefroren! Du kannst nun keine Geld-Transaktion ausführen!",
+				"&cYour player account has been frozen by %player%! You can now not perform any money related activities!"}));
+		languageKeys.put(base+"YouDefrozenSomeone"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast das Spielerkonto von &f%player% &ewieder freigegeben! Der Spieler kann nun wieder Geld-Transaktion ausführen!",
+				"&eYou have released the player account of %player% again! The player can now carry out money-related activities again!"}));
+		languageKeys.put(base+"YourAccountWasDefrozen"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&aDer Spieler &f%player% &ahat dein Spielerkonto wieder freigegeben! Dir ist es nun wieder erlaubt Geld-Transaktion durchführen!",
+				"'&aThe player &f%player% &has released your account again! You are now allowed to pursue activities concerning money again!"}));
+		languageKeys.put(base+"TheAccountIsFrozen"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDas Spielerkonto ist eingefroren!",
+				"&cThe player account is frozen! You can not transfer money to it!"}));
+		languageKeys.put(base+"YourAccountIsFrozen"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDein Spielerkonto ist eingefroren!",
+				"&cYour account is frozen! You can nott transfer money to anyone!"}));
+		
+		base = "CmdMoney.Pay.";
+		languageKeys.put(base+"NotEnoughBalance"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&f%amount% &e%currency% &cübersteigt dein Guthaben!",
+				"&f%amount% &e%currency% &cexceeds your balance!"}));
+		languageKeys.put(base+"SelfPay"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7Du steckst das Geld von der einen Tasche in die andere!",
+				"&7You put the money from one pocket in the other!"}));
+		languageKeys.put(base+"DepositWithDraw"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&6%amount% &2%currency% &ewurden von &6%name1% &ean &6%name2% &eüberwiesen.",
+				"&6%amount% &2%currency% &ewere transferred from &6%name1% &eto &6%name2%&e."}));
+		languageKeys.put(base+"DepositWithDrawBalance"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eAktuelles Guthaben von &6%name%&e: &6%balance% &2%currency%",
+				"&eCurrent balance of &6%name%&e: &6%balance% &2%currency%"}));
+		
+		languageKeys.put(base+"Set.BalanceIsSet"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eGuthaben von &f%name% &eauf %amount% &2%currency% &egesetzt.",
+				"&eBalance from &f%name% &to %amount% &2%currency% &set."}));
+		
+		base = "CmdMoney.StandingOrder.";
+		languageKeys.put(base+"InfoCmd"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"/money standingorder info",
+				""}));
+		languageKeys.put(base+"DeleteCmd"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"/money standingorder delete",
+				""}));
+		languageKeys.put(base+"BankNotImplemented"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBanken sind nicht implementiert! Wähle 2 Spieler aus.",
+				""}));
+		languageKeys.put(base+"ContractAtTheExpenseOfThirdParties"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu darfst keinen Dauerauftrag zu lasten Dritten erstellen!",
+				""}));
+		languageKeys.put(base+"ContractAtTheExpenseOfOthersInYourFavour"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu darfst keinen Dauerauftrag zu lasten Dritter und zu deiner Gunst erstellen!",
+				""}));
+		languageKeys.put(base+"AlreadyPendingOrder"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast schon einen noch wartenden Dauerauftrag erstellt. Bitte schließe diesen zuerst ab oder breche ihn ab.",
+				""}));
+		languageKeys.put(base+"NoPendingOrder"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast keine noch wartenden Dauerauftrag!",
+				""}));
+		languageKeys.put(base+"OrderDontExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer angegebende Dauerauftrag existiert nicht!",
+				""}));
+		languageKeys.put(base+"NotOrderer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu bist nicht der Auftraggeber!",
+				""}));
+		languageKeys.put(base+"Amount.SetAmount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eBetrag des noch wartenden Dauerauftrages &f%name% &eauf &f%amount% &r%currency% &egeändert.",
+				""}));
+		languageKeys.put(base+"Cancel.IsCancelled"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast deinen noch wartenden Dauerauftrag abgebrochen!",
+				""}));
+		languageKeys.put(base+"Create.OrderCreated"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDu hast einen Dauerauftrag erstellt. Bitte setzte nun alle weiteren Einstellungen. &7Klicke hier zum Einsehen aller Informationen.",
+				""}));
+		languageKeys.put(base+"Delete.IsDeleted"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDauerauftrag gelöscht!",
+				""}));
+		languageKeys.put(base+"Info.NoInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast nicht das Recht, die Informationen zu dem Dauerauftrag einzusehen!",
+				""}));
+		languageKeys.put(base+"Info.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e===&7[&bDauerauftrag &f%id% &c✖~click@RUN_COMMAND@/money+standingorder+cancel~hover@SHOW_TEXT@&eBricht+einen+noch+wartenden+Dauerauftrag+ab! &4✖~click@SUGGEST_COMMAND@/money+standingorder+delete+%id%~hover@SHOW_TEXT@&eLöscht+den+Dauerauftrag! &7]&e===",
+				""}));
+		languageKeys.put(base+"Info.Name"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cName: &f%name%",
+				""}));
+		languageKeys.put(base+"Info.From"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cAbsender: &f%from%",
+				""}));
+		languageKeys.put(base+"Info.To"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEmpfänger: &f%to%",
+				""}));
+		languageKeys.put(base+"Info.Amount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBetrag: &f%amount% &2✏~click@SUGGEST_COMMAND@/money+standingorder+amount~hover@SHOW_TEXT@&eNur+noch+wartende+Daueraufträge+können+verändert+werden!",
+				""}));
+		languageKeys.put(base+"Info.AmountPaidSoFar"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBisher gezahlter Betrag: &f%amountpaidsofar%",
+				""}));
+		languageKeys.put(base+"Info.StartTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cStartdatum: &f%starttime% &2✏~click@SUGGEST_COMMAND@/money+standingorder+starttime~hover@SHOW_TEXT@&eNur+noch+wartende+Daueraufträge+können+verändert+werden!",
+				""}));
+		languageKeys.put(base+"Info.RepeatingTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cWiederholungszyklus: &f%repeatingtime% &2✏~click@SUGGEST_COMMAND@/money+standingorder+repeatingtime~hover@SHOW_TEXT@&eNur+noch+wartende+Daueraufträge+können+verändert+werden!",
+				""}));
+		languageKeys.put(base+"Info.LastTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cZu letzt gezahlter Zeitpunkt: &f%lasttime%",
+				""}));
+		languageKeys.put(base+"Info.isCancelled"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cUnterbrochen: &f%cancelled%",
+				""}));
+		languageKeys.put(base+"Info.isPaused"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cPausierd: &f%paused%",
+				""}));
+		languageKeys.put(base+"List.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2Daueraufträge von &b%player%&7]&e=====",
+				""}));
+		languageKeys.put(base+"Pause.WasCancelled"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Dauerauftrag wurde abgebrochen! Falls du ihn pausieren möchtest führe den Befehl erneut aus!",
+				""}));
+		languageKeys.put(base+"Pause.IsUnpaused"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDauerauftrag &f%id% &eist wiederaufgenommen! Die erste Zahlung wird bald erfolgen! Folgende Zahlungen dann wieder nach dem Zyklus.",
+				""}));
+		languageKeys.put(base+"Pause.IsPaused"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDauerauftrag &f%id% &eist pausiert! Die Zahlungen erst weiter, wenn er wiederaufgenommen wird!",
+				""}));
+		languageKeys.put(base+"RepeatingTime.SetRepeatingTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDen Wiederholungszyklus auf &f%rt% &egesetzt.",
+				""}));
+		languageKeys.put(base+"StartTime.Amount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu+hast+noch+keinen+Betrag+festgesetzt! &f/money+standingorder+amount+<Betrag>+&ceingeben+oder+hier+klicken!~click@SUGGEST_COMMAND@/money+standingorder+amount+<Betrag>",
+				""}));
+		languageKeys.put(base+"StartTime.RepeatingTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu+hast+noch+keinen+Wiederholungszyklus+festgesetzt! &f/money+standingorder+repeatingtime+<dd-HH:mm+Wert>+&ceingeben+oder+hier+klicken!~click@SUGGEST_COMMAND@/money+standingorder+repeatingtime+<dd-HH:mm+Wert>",
+				""}));
+		languageKeys.put(base+"StartTime.SetStartTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eStartdatum &f%starttime% &egesetzt! Sobald der Zeitpunkt erreicht wird, beginnen die Zahlungen nach dem gesetzten Zyklus.",
+				""}));
+		
+		base = "CmdMoney.";
+		languageKeys.put(base+"Take.DepositWithDraw"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&6%amount% &2%currency% &ewurde von &6%name1% &ean das &6%name2% &eüberwiesen.",
+				"&6%amount% &2%currency% &ewas transferred from &6%name1% &eto the &6%name2%&e."}));
+		languageKeys.put(base+"Take.DepositWithDrawBalance"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eAktuelles Guthaben von &6%name%&e: &6%balance% &2%currency%",
+				"&eCurrent balance of &6%name%&e: &6%balance% &2%currency%"}));
+		languageKeys.put(base+"Take.NoFullAmount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cAchtung, der Spieler hatte nicht die erforderlichen &f%amount% &2%currency%! Die Transaktion wurde nicht durchgeführt!",
+				"&cAttention, the player did not have the required &f%amount% &2%currency%! The transaction was not completed!"}));
+		
+		languageKeys.put(base+"Toggle.SetOn"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eNachrichten die das Spielerkonto betreffen, werden nun &aangezeigt&e!",
+				"&eMessages concerning the player account are now &adisplayed&e!"}));
+		languageKeys.put(base+"Toggle.SetOff"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eNachrichten die das Spielerkonto betreffen, werden nun &causgeblendet&e!",
+				"&eMessages concerning the player account are now &chidden&e!"}));
+		
+		languageKeys.put(base+"Top.NotEnoughValues"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEs gibt nicht genügend Werte für diese Seitenzahl!",
+				"&cThere are not enough values for this page number!"}));
+		languageKeys.put(base+"Top.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=======&7[&2Economy &bTop &eSeite %page%&7]&e=======",
+				"&e=======&7[&2Economy &bTop &epage %page%&7]&e======="}));
+		languageKeys.put(base+"Top.TopLine"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e%place%. &b%player%: &6%balance% &2%currency%",
+				"&e%place%. &b%player%: &6%balance% &2%currency%"}));
+		
+		languageKeys.put(base+"TrendDiagram.NotEnoughValues"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEs gibt nicht genügend Werte für diese Seitenzahl!",
+				"&cThere are not enough values for this page number!"}));
+		languageKeys.put(base+"TrendDiagram.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2Economy &bTrenddiagramm: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
+				"&e=====&7[&2Economy &bTrenddiagram: &f%name%&7 | Log-Quantity: %amount%&7]&e====="}));
+		languageKeys.put(base+"TrendDiagram.HeadlineII"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2Economy &bAktiondiagramm: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
+				"&e=====&7[&2Economy &bActiondiagram: &f%player%&7 | Log-Quantity: %amount%&7]&e====="}));
+		languageKeys.put(base+"TrendDiagram.Infoline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cMin %min% &f)|( &aMax %max% &f>> &6Mittelwert/line: &e%median%",
+				"&cMin %min% &f)|( &aMax %max% &f>> &6average value/line: &e%median%"}));
+		languageKeys.put(base+"TrendDiagram.Positiv"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Relative Änderung: &a%relativ% &f| &a%percent% %",
+				"Relative change: &a%relativ% &f| &a%percent% %"}));
+		languageKeys.put(base+"TrendDiagram.Negativ"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Relative Änderung: &c%relativ% &f| &c%percent% %",
+				"Relative change: &c%relativ% &f| &c%percent% %"}));
+		
+		languageKeys.put(base+"TrendGrafic.NotEnoughValues"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEs gibt nicht genügend Werte für diese Seitenzahl!",
+				""}));
+		languageKeys.put(base+"TrendGrafic.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2Economy &bTrendgrafik: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
+				"&e=====&7[&2Economy &bTrendgrafic: &f%player%&7 | Log-Quantity: %amount%&7]&e====="}));
+		languageKeys.put(base+"TrendGrafic.HeadlineII"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2Economy &bAktiongrafik: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
+				"&e=====&7[&2Economy &bActiongrafic: &f%player%&7 | Log-Quantity: %amount%&7]&e====="}));
+		
+		languageKeys.put(base+"TrendLog.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2Economy &bTrendLog: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
+				"&e=====&7[&2Economy &bTrendLog: &f%player%&7 | Log-Quantity: %amount%&7]&e====="}));
+		languageKeys.put(base+"TrendLog.ChangeNegativ"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7] &a%first% &fbis &c%last%",
+				"&7[&e%date%&7] &a%first% &fto &c%last%"}));
+		languageKeys.put(base+"TrendLog.ChangeNeutral"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7] &b%first% &fbis &b%last%",
+				"&7[&e%date%&7] &b%first% &fto &b%last%"}));
+		languageKeys.put(base+"TrendLog.ChangePositiv"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7[&e%date%&7] &c%first% &fbis &a%last%",
+				"&7[&e%date%&7] &c%first% &fto &a%last%"}));
+		languageKeys.put(base+"TrendLog.Positiv"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Relative Änderung: &a%relativ%",
+				"Relative change: &a%relativ%"}));
+		languageKeys.put(base+"TrendLog.Negativ"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Relative Änderung: &c%relativ%",
+				"Relative change: &c%relativ%"}));
 	}
 	
 	@SuppressWarnings("unused") //TODO:FilterSettings
@@ -630,7 +1494,7 @@ public class YamlManager
 		ActualParameter:
 		{
 			loggerSettingsKeys.put("ActualParameter"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"      §7-------------------------",
 					"§eAktuelle Werte:",
 					"§bSpieler: §f%uuid%",
@@ -659,7 +1523,7 @@ public class YamlManager
 					}));
 			
 			loggerSettingsKeys.put("Preset"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§eAktuelle Werte:",
 					"§cKeine Voreinstellung vorhanden.",
 					"§eActual Values:",
@@ -669,54 +1533,54 @@ public class YamlManager
 		Output:
 		{
 			loggerSettingsKeys.put("40.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&4Ausgabe &6BarChart",
 					"&4Ausgabe &6BarChart"}));
 			loggerSettingsKeys.put("40.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"BIRCH_DOOR"}));
 			loggerSettingsKeys.put("40.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§9Klick §ezum Aufrufen des BarCharts des","§eAktionlogs nach den jetzigen Parametern.",
 					"§9Click §eto call the barchart of the","§eaction log according to the current parameters."}));
 			
 			loggerSettingsKeys.put("48.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&4Ausgabe &6Diagramm",
 					"&4Ausgabe &6Diagram"}));
 			loggerSettingsKeys.put("48.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"OAK_DOOR"}));
 			loggerSettingsKeys.put("48.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§9Linksklick §ezum Aufrufen des Diagramms des","§eAktionlogs nach den jetzigen Parametern.",
 					"§9Rechtsklick §ezum Aufrufen des Diagramms des","§eTrendlogs nach den jetzigen Parametern.",
 					"§9Left-click §eto call the diagram of the","§eaction log according to the current parameters.",
 					"§9Right-click §eto call the diagram of the","§etrend log according to the current parameters.",}));
 			
 			loggerSettingsKeys.put("49.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&4Ausgabe &6Log",
 					"&4Ausgabe &6Log"}));
 			loggerSettingsKeys.put("49.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"SPRUCE_DOOR"}));
 			loggerSettingsKeys.put("49.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§9Linksklick §ezum Aufrufen des Logs des","§eAktionlogs nach den jetzigen Parametern.",
 					"§9Rechtsklick §ezum Aufrufen des Logs des","§eTrendlogs nach den jetzigen Parametern.",
 					"§9Left-click §eto call the log of the","§eaction log according to the current parameters.",
 					"§9Right-click §eto call the log of the","§etrend log according to the current parameters."}));
 			
 			loggerSettingsKeys.put("50.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&4Ausgabe &6Grafik",
 					"&4Ausgabe &6Grafic"}));
 			loggerSettingsKeys.put("50.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"DARK_OAK_DOOR"}));
 			loggerSettingsKeys.put("50.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§9Linksklick §ezum Aufrufen der Grafik des","§eAktionlogs nach den jetzigen Parametern.",
 					"§9Rechtsklick §ezum Aufrufen der Grafik des","§eTrendlogs nach den jetzigen Parametern.",
 					"§9Left-click §eto call the grafic of the","§eaction log according to the current parameters.",
@@ -725,14 +1589,14 @@ public class YamlManager
 		PreSet:
 		{
 			loggerSettingsKeys.put("36.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&6Vor&beinstellung &f1",
 					"&6Pre&bSet &f1"}));
 			loggerSettingsKeys.put("36.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"BOOK"}));
 			loggerSettingsKeys.put("36.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§aLinksklick §ezum Laden des Voreinstellung.",
 					"§9Rechtsklick §ezum Speichern der Voreinstellung.",
 					"§4Shiftklick §ezum Löschen des Voreinstellung.",
@@ -740,14 +1604,14 @@ public class YamlManager
 					"§9Right-click §eto save the preset.",
 					"§4Shift-click §eto delete the preset."}));
 			loggerSettingsKeys.put("44.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&6Vor&beinstellung &f2",
 					"&6Pre&bSet &f2"}));
 			loggerSettingsKeys.put("44.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"BOOK"}));
 			loggerSettingsKeys.put("44.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§aLinksklick §ezum Laden des Voreinstellung.",
 					"§9Rechtsklick §ezum Speichern der Voreinstellung.",
 					"§4Shiftklick §ezum Löschen des Voreinstellung.",
@@ -755,14 +1619,14 @@ public class YamlManager
 					"§9Right-click §eto save the preset.",
 					"§4Shift-click §eto delete the preset."}));
 			loggerSettingsKeys.put("45.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&6Vor&beinstellung &f3",
 					"&6Pre&bSet &f3"}));
 			loggerSettingsKeys.put("45.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"BOOK"}));
 			loggerSettingsKeys.put("45.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§aLinksklick §ezum Laden des Voreinstellung.",
 					"§9Rechtsklick §ezum Speichern der Voreinstellung.",
 					"§4Shiftklick §ezum Löschen des Voreinstellung.",
@@ -770,14 +1634,14 @@ public class YamlManager
 					"§9Right-click §eto save the preset.",
 					"§4Shift-click §eto delete the preset."}));
 			loggerSettingsKeys.put("53.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&6Vor&beinstellung &f4",
 					"&6Pre&bSet &f4"}));
 			loggerSettingsKeys.put("53.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"BOOK"}));
 			loggerSettingsKeys.put("53.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§aLinksklick §ezum Laden des Voreinstellung.",
 					"§9Rechtsklick §ezum Speichern der Voreinstellung.",
 					"§4Shiftklick §ezum Löschen des Voreinstellung.",
@@ -789,490 +1653,376 @@ public class YamlManager
 		Min:
 		{
 			loggerSettingsKeys.put("0.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aMin +&f1&f | &a+&f50",
-					"&aMin +&f1&f | &a+&f50"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eMin &a+&c-&f1 | &a+&c-&f50",
+					"&eMin &a+&c-&f1 | &a+&c-&f50"}));
 			loggerSettingsKeys.put("0.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_WOOL"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"CYAN_WOOL"}));
 			loggerSettingsKeys.put("0.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>KleinerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>KleinerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1§e.",
-					"§9Rechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>LessThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>LessThanRelativeAmount<(Trend)",
-					"§9Left-click §eto increase the","§eMinimum-Parameters by §a1§e.",
-					"§9Right-click §eto increase the","§eMinimum-Parameters by §a50§e.",
-					"§9Shift-click §eto reset the parameter!"}));
-			loggerSettingsKeys.put("1.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cMin &c-&f1&f | &c-&f50",
-					"&cMin &c-&f1&f | &c-&f50"}));
-			loggerSettingsKeys.put("1.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_WOOL"}));
-			loggerSettingsKeys.put("1.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben ","§b>KleinerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>KleinerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMinimum-Parameters um §c1§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMinimum-Parameters um §c50§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>LessThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>LessThanRelativeAmount<(Trend)",
-					"§9Left-click §eto decrease the","§eMinimum-Parameters by §c1§e.",
-					"§9Right-click §eto decrease the","§eMinimum-Parameters by §c50§e.",
-					"§9Shift-click §eto reset the parameter!"}));
-			
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"§fParameter wird für die Angaben","§b>KleinerAlsBetrag< (Aktion)§f und §b>Zwischen<",
+					"§fsowie §b>KleinerAlsRevativerBetrag< (Trend)§f genutzt.",
+					"§aLinksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1§e.",
+					"§aRechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50§e.",
+					"§cShift+Links §ezum Verringern des","§eMinimum-Parameters um §c1§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMinimum-Parameters um §c50§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
+					"§fParameter is used for the specifications", "§b>LessThanAmount< (Action)§f and §b>Between<",
+					"§fand §b>LessThanRelativeAmount< (Trend)",
+					"§aLeftclick §eto increase the","§eMinimum-Parameters by §a1§e.",
+					"§aRightclick §eto increase the","§eMinimum-Parameters by §a50§e.",
+					"§cShift+Left §eto decrease the","§eMinimum-Parameters by §c1§e.",
+					"§cShift+Right §eto decrease the","§eMinimum-Parameters by §c50§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			loggerSettingsKeys.put("9.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aMin +&f1.000&f | &a+&f50.000",
-					"&aMin +&f1,000&f | &a+&f50,000"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eMin &a+&c-&f1k | &a+&c-&f50k",
+					"&eMin &a+&c-&f1k | &a+&c-&f50k"}));
 			loggerSettingsKeys.put("9.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_WOOL"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"CYAN_WOOL"}));
 			loggerSettingsKeys.put("9.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>KleinerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>KleinerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1.000§e.",
-					"§9Rechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>LessThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>LessThanRelativeAmount<(Trend)",
-					"§9Left-click §eto increase the","§eMinimum-Parameters by §a1,000§e.",
-					"§9Right-click §eto increase the","§eMinimum-Parameters by §a50,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			loggerSettingsKeys.put("10.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cMin &c-&f1.000&f | &c-&f50.000",
-					"&cMin &c-&f1,000&f | &c-&f50,000"}));
-			loggerSettingsKeys.put("10.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_WOOL"}));
-			loggerSettingsKeys.put("10.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>KleinerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>KleinerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMinimum-Parameters um §c1.000§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMinimum-Parameters um §c50.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>LessThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>LessThanRelativeAmount<(Trend)",
-					"§9Left-click §eto decrease the","§eMinimum-Parameters by §c50.000§e.",
-					"§9Right-click §eto decrease the","§eMinimum-Parameters by §c50,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"§fParameter wird für die Angaben","§b>KleinerAlsBetrag< (Aktion)§f und §b>Zwischen<",
+					"§fsowie §b>KleinerAlsRevativerBetrag< (Trend)§f genutzt.",
+					"§aLinksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1.000§e.",
+					"§aRechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50.000§e.",
+					"§cShift+Links §ezum Verringern des","§eMinimum-Parameters um §c1.000§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMinimum-Parameters um §c50.000§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §caller §eWerte!",
+					"§fParameter is used for the specifications", "§b>LessThanAmount< (Action)§f and §b>Between<",
+					"§fand §b>LessThanRelativeAmount< (Trend)",
+					"§aLeftclick §eto increase the","§eminimum-Parameters by §a1,000§e.",
+					"§aRightclick §eto increase the","§eminimum-Parameters by §a150,000§e.",
+					"§cShift+Left §eto decrease the","§eminimum-Parameters by §c1,000§e.",
+					"§cShift+Right §eto decrease the","§eminimum-Parameters by §c50,000§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			loggerSettingsKeys.put("18.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aMin +&f1.000.000&f | &a+&f50.000.000",
-					"&aMin +&f1,000,000&f | &a+&f50,000,000"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eMin &a+&c-&f1M | &a+&c-&f50M",
+					"&eMin &a+&c-&f1M | &a+&c-&f50M"}));
 			loggerSettingsKeys.put("18.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_WOOL"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"CYAN_WOOL"}));
 			loggerSettingsKeys.put("18.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>KleinerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>KleinerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1.000.000§e.",
-					"§9Rechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50.000.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>LessThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>LessThanRelativeAmount<(Trend)",
-					"§9Left-click §eto increase the","§eMinimum-Parameters by §a1,000,000§e.",
-					"§9Right-click §eto increase the","§eMinimum-Parameters by §a50,000,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			loggerSettingsKeys.put("19.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cMin &c-&f1.000.000&f | &c-&f50.000.000",
-					"&cMin &c-&f1,000,000&f | &c-&f50,000,000"}));
-			loggerSettingsKeys.put("19.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_WOOL"}));
-			loggerSettingsKeys.put("19.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>KleinerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>KleinerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMinimum-Parameters um §c1.000.000§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMinimum-Parameters um §c50.000.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>LessThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>LessThanRelativeAmount<(Trend)",
-					"§9Left-click §eto decrease the","§eMinimum-Parameters by §c1,000,000§e.",
-					"§9Right-click §eto decrease the","§eMinimum-Parameters by §c50,000,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"§fParameter wird für die Angaben","§b>KleinerAlsBetrag< (Aktion)§f und §b>Zwischen<",
+					"§fsowie §b>KleinerAlsRevativerBetrag< (Trend)§f genutzt.",
+					"§aLinksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1.000.000§e.",
+					"§aRechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50.000.000§e.",
+					"§cShift+Links §ezum Verringern des","§eMinimum-Parameters um §c1.000.000§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMinimum-Parameters um §c50.000.000§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
+					"§fParameter is used for the specifications", "§b>LessThanAmount< (Action)§f and §b>Between<",
+					"§fand §b>LessThanRelativeAmount< (Trend)",
+					"§aLeftclick §eto increase the","§eminimum-Parameters by §a1,000,000§e.",
+					"§aRightclick §eto increase the","§eminimum-Parameters by §a50,000,000§e.",
+					"§cShift+Left §eto decrease the","§eminimum-Parameters by §c1,000,000§e.",
+					"§cShift+Right §eto decrease the","§eminimum-Parameters by §c50,000,000§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 		}
 		
 		Max:
 		{
-			loggerSettingsKeys.put("7.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aMax +&f1&f | &a+&f50",
-					"&aMax +&f1&f | &a+&f50"}));
-			loggerSettingsKeys.put("7.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_WOOL"}));
-			loggerSettingsKeys.put("7.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>GrößerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>GrößerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Erhöhen des","§eMaximum-Parameters um §a1§e.",
-					"§9Rechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
+			loggerSettingsKeys.put("8.Name"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eMax &a+&c-&f1 | &a+&c-&f50",
+					"&eMax &a+&c-&f1 | &a+&c-&f50"}));
+			loggerSettingsKeys.put("8.Material"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"BLUE_WOOL"}));
+			loggerSettingsKeys.put("8.Lore"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"§fParameter wird für die Angaben","§b>GrößerAlsBetrag< (Aktion)§f und §b>Zwischen<",
+					"§fsowie §b>GrößerAlsRevativerBetrag< (Trend)§f genutzt.",
+					"§aLinksklick §ezum Erhöhen des","§eMaximum-Parameters um §a1§e.",
+					"§aRechtsklick §ezum Erhöhen des","§eMaximum-Parameters um §a50§e.",
+					"§cShift+Links §ezum Verringern des","§eMaximum-Parameters um §c1§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMaximum-Parameters um §c50§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §caller §eWerte!",
 					"§fParameter is used for the specifications", "§b>GreatherThanAmount<(Action)§f and §b>Between<",
 					"§fand §b>GreatherThanRelativeAmount<(Trend)",
-					"§9Left-click §eto increase the","§emaximum-parameter by §a1§e.",
-					"§9Right-click §eto increase the","§emaximum-parameter by §a50§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			loggerSettingsKeys.put("8..Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cMax &c-&f1&f | &c-&f50",
-					"&cMax &c-&f1&f | &c-&f50"}));
-			loggerSettingsKeys.put("8..Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_WOOL"}));
-			loggerSettingsKeys.put("8..Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>GrößerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>GrößerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMaximum-Parameters um §c1§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMaximum-Parameters um §c50§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>GreatherThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>GreatherThanRelativeAmount<(Trend)",
-					"§9Left-click §eto decrease the","§emaximum-parameter by §c1§e.",
-					"§9Right-click §eto decrease the","§emaximum-parameter by §c50§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			
-			loggerSettingsKeys.put("16.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aMax +&f1.000&f | &a+&f50.000",
-					"&aMax +&f1,000&f | &a+&f50,000"}));
-			loggerSettingsKeys.put("16.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_WOOL"}));
-			loggerSettingsKeys.put("16.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>GrößerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>GrößerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Erhöhen des","§eMaximum-Parameters um §a1.000§e.",
-					"§9Rechtsklick §ezum Erhöhen des","§eMaximum-Parameters um §a50.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>GreatherThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>GreatherThanRelativeAmount<(Trend)",
-					"§9Left-click §eto increase the","§emaximum-parameter by §a1.000§e.",
-					"§9Right-click §eto increase the","§emaximum-parameter by §a50,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§aLeftclick §eto increase the","§emaximum-parameter by §a1§e.",
+					"§aRightclick §eto increase the","§emaximum-parameter by §a50§e.",
+					"§cShift+Left §eto decrease the","§emaximum-parameter by §c1§e.",
+					"§cShift+Right §eto decrease the","§emaximum-parameter by §c50§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			loggerSettingsKeys.put("17.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cMax &c-&f1.000&f | &c-&f50.000",
-					"&cMax &c-&f1,000&f | &c-&f50,000"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eMax &a+&c-&f1k | &a+&c-&f50k",
+					"&eMax &a+&c-&f1k | &a+&c-&f50k"}));
 			loggerSettingsKeys.put("17.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_WOOL"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"BLUE_WOOL"}));
 			loggerSettingsKeys.put("17.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>GrößerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>GrößerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMaximum-Parameters um §c1.000§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMaximum-Parameters um §c50.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>GreatherThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>GreatherThanRelativeAmount<(Trend)",
-					"§9Left-click §eto decrease the","§emaximum-parameter by §c1,000§e.",
-					"§9Right-click §eto decrease the","§emaximum-parameter by §c50,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			
-			loggerSettingsKeys.put("25.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aMax +&f1.000.000&f | &a+&f50.000.000",
-					"&aMax +&f1.000,000&f | &a+&f50,000,000"}));
-			loggerSettingsKeys.put("25.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_WOOL"}));
-			loggerSettingsKeys.put("25.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>GrößerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>GrößerAlsRevativerBetrag<(Trend)§f genutzt.",
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"§fParameter wird für die Angaben","§b>GrößerAlsBetrag< (Aktion)§f und §b>Zwischen<",
+					"§fsowie §b>GrößerAlsRelativerBetrag< (Trend)§f genutzt.",
+					"§aLinksklick §ezum Erhöhen des","§eMaximum-Parameters um §a1.000§e.",
+					"§aRechtsklick §ezum Erhöhen des","§eMaximum-Parameters um §a50.000§e.",
+					"§cShift+Links §ezum Verringern des","§eMaximum-Parameters um §c1.000§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMaximum-Parameters um §c50.000§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §caller §eWerte!",
+					"§fParameter is used for the specifications", "§b>GreatherThanAmount< (Action)§f and §b>Between<",
+					"§fand §b>GreatherThanRelativeAmount< (Trend)",
+					"§aLeftclick §eto increase the","§emaximum-parameter by §a1,000§e.",
+					"§aRightclick §eto increase the","§emaximum-parameter by §a50,000§e.",
+					"§cShift+Left §eto decrease the","§emaximum-parameter by §c1,000§e.",
+					"§cShift+Right §eto decrease the","§emaximum-parameter by §c50,000§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
+			loggerSettingsKeys.put("26.Name"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eMax &a+&c-&f1M | &a+&c-&f50M",
+					"&eMax &a+&c-&f1M | &a+&c-&f50M"}));
+			loggerSettingsKeys.put("26.Material"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"BLUE_WOOL"}));
+			loggerSettingsKeys.put("26.Lore"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"§fParameter wird für die Angaben","§b>GrößerAlsBetrag< (Aktion)§f und §b>Zwischen<",
+					"§fsowie §b>GrößerAlsRelativerBetrag< (Trend)§f genutzt.",
 					"§9Linksklick §ezum Erhöhen des","§eMaximum-Parameters um §a1.000.000§e.",
 					"§9Rechtsklick §ezum Erhöhen des","§eMaximum-Parameters um §a50.000.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>GreatherThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>GreatherThanRelativeAmount<(Trend)",
-					"§9Left-click §eto increase the","§emaximum-parameter by §a1,000,000§e.",
-					"§9Right-click §eto increase the","§emaximum-parameter by §a50,000,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			loggerSettingsKeys.put("26.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cMax &c-&f1.000.000&f | &c-&f50.000.000",
-					"&cMax &c-&f1,000,000&f | &c-&f50,000,000"}));
-			loggerSettingsKeys.put("26.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_WOOL"}));
-			loggerSettingsKeys.put("26.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>GrößerAlsBetrag<(Aktion)§f und §b>Zwischen<",
-					"§fsowie §b>GrößerAlsRevativerBetrag<(Trend)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMaximum-Parameters um §c1.000.000§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMaximum-Parameters um §c50.000.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the specifications", "§b>GreatherThanAmount<(Action)§f and §b>Between<",
-					"§fand §b>GreatherThanRelativeAmount<(Trend)",
-					"§9Left-click §eto decrease the","§emaximum-parameter by §c1,000,000§e.",
-					"§9Right-click §eto decrease the","§emaximum-parameter by §c50,000,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§cShift+Links §ezum Verringern des","§eMaximum-Parameters um §c1.000.000§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMaximum-Parameters um §c50.000.000§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
+					"§fParameter is used for the specifications", "§b>GreatherThanAmount< (Action)§f and §b>Between<",
+					"§fand §b>GreatherThanRelativeAmount< (Trend)",
+					"§aLeftclick §eto increase the","§emaximum-parameter by §a1,000,000§e.",
+					"§aRightclick §eto increase the","§emaximum-parameter by §a50,000,000§e.",
+					"§cShift+Left §eto decrease the","§emaximum-parameter by §c1,000,000§e.",
+					"§cShift+Right §eto decrease the","§emaximum-parameter by §c50,000,000§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 		}
 		
 		FirstStand:
 		{
 			loggerSettingsKeys.put("29.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aAnfangsstand +&f1.000&f | &a+&f50.000",
-					"&aFirstStand +&f1,000&f | &a+&f50,000"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eAnfangsstand &a+&c-&f1k | &a+&c-&f50k",
+					"&eFirstStand &a+&c-&f1k | &a+&c-&f50k"}));
 			loggerSettingsKeys.put("29.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_TERRACOTTA"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"PURPLE_WOOL"}));
 			loggerSettingsKeys.put("29.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§fParameter wird für die Angaben","§b>Anfangsstand< (nur Trendlog)§f genutzt.",
-					"§9Linksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1.000§e.",
-					"§9Rechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
+					"§aLinksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1.000§e.",
+					"§aRechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50.000§e.",
+					"§cShift+Links §ezum Verringern des","§eMinimum-Parameters um §c1.000§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMinimum-Parameters um §c50.000§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
 					"§fParameter is used for the information","§b>FirstStand< (Only Trendlog)§f.",
-					"§9Left-click §eto increase the","§eMinimum-Parameters by §a1,000§e.",
-					"§9Right-click §eto increase the","§eMinimum-Parameters by §a50,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			loggerSettingsKeys.put("30.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cAnfangsstand &c-&f1.000&f | &c-&f50.000",
-					"&cFirstStand &c-&f1,000&f | &c-&f50,000"}));
-			loggerSettingsKeys.put("30.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_TERRACOTTA"}));
-			loggerSettingsKeys.put("30.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>Anfangsstand< (nur Trendlog)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMinimum-Parameters um §c1.000§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMinimum-Parameters um §c50.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the information","§b>FirstStand< (Only Trendlog)§f.",
-					"§9Left-click §eto decrease the","§eMinimum-Parameters by §c1,000§e.",
-					"§9Right-click §eto decrease the","§eMinimum-Parameters by §c50,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§aLeftclick §eto increase the","§eMinimum-Parameters by §a1,000§e.",
+					"§aRightclick §eto increase the","§eMinimum-Parameters by §a50,000§e.",
+					"§cShift+Left §eto decrease the","§eMinimum-Parameters by §c1,000§e.",
+					"§cShift+Right §eto decrease the","§eMinimum-Parameters by §c50,000§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			loggerSettingsKeys.put("38.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aAnfangsstand +&f1.000.000&f | &a+&f50.000.000",
-					"&aFirstStand +&f1,000,000&f | &a+&f50,000,000"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eAnfangsstand &a+&c-&f1M | &a+&c-&f50M",
+					"&eFirstStand &a+&c-&f1M | &a+&c-&f50M"}));
 			loggerSettingsKeys.put("38.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_TERRACOTTA"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"PURPLE_WOOL"}));
 			loggerSettingsKeys.put("38.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§fParameter wird für die Angaben","§b>Anfangsstand< (nur Trendlog)§f genutzt.",
-					"§9Linksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1.000.000§e.",
-					"§9Rechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50.000.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
+					"§aLinksklick §ezum Erhöhen des","§eMinimum-Parameters um §a1.000.000§e.",
+					"§aRechtsklick §ezum Erhöhen des","§eMinimum-Parameters um §a50.000.000§e.",
+					"§cShift+Links §ezum Verringern des","§eMinimum-Parameters um §c1.000.000§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMinimum-Parameters um §c50.000.000§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
 					"§fParameter is used for the information","§b>FirstStand< (Only Trendlog)§f.",
-					"§9Left-click §eto increase the","§eMinimum-Parameters by §a1,000,000§e.",
-					"§9Right-click §eto increase the","§eMinimum-Parameters by §a50,000,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			loggerSettingsKeys.put("39.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cAnfangsstand &c-&f1.000.000&f | &c-&f50.000.000",
-					"&cFirstStand &c-&f1,000,000&f | &c-&f50,000,000"}));
-			loggerSettingsKeys.put("39.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_TERRACOTTA"}));
-			loggerSettingsKeys.put("39.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>Anfangsstand< (nur Trendlog)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMinimum-Parameters um §a1.000.000§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMinimum-Parameters um §a50.000.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the information","§b>FirstStand< (Only Trendlog)§f.",
-					"§9Left-click §eto decrease the","§eMinimum-Parameters by §a1,000,000§e.",
-					"§9Right-click §eto decrease the","§eMinimum-Parameters by §a50,000,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§aLeftclick §eto increase the","§eminimum-Parameters by §a1,000,000§e.",
+					"§aRightclick §eto increase the","§eminimum-Parameters by §a50,000,000§e.",
+					"§cShift+Left §eto decrease the","§eminimum-Parameters by §c1,000,000§e.",
+					"§cShift+Right §eto decrease the","§eminimum-Parameters by §c50,000,000§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 		}
 		
 		LastStand:
 		{
-			loggerSettingsKeys.put("32.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aLetzterstand +&f1.000&f | &a+&f50.000",
-					"&aLastStand +&f1,000&f | &a+&f50,000"}));
-			loggerSettingsKeys.put("32.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_TERRACOTTA"}));
-			loggerSettingsKeys.put("32.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>Letzterstand< (nur Trendlog)§f genutzt.",
-					"§9Linksklick §ezum Erhöhen des","§eMaximum-Parameters um §a1.000§e.",
-					"§9Rechtsklick §ezum Erhöhen des","§eMaximum-Parameters um §a50.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the information","§b>LastStand< (Only Trendlog)§f.",
-					"§9Left-click §eto increase the","§emaximum-parameter by §a1,000§e.",
-					"§9Right-click §eto increase the","§emaximum-parameter by §a50,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
 			loggerSettingsKeys.put("33.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cLetzterstand &c-&f1.000&f | &c-&f50.000",
-					"&cFirstStand &c-&f1,000&f | &c-&f50,000"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eLetzterstand &a+&c-&f1k | &a+&c-&f50k",
+					"&eLastStand &a+&c-&f1k | &a+&c-&f50k"}));
 			loggerSettingsKeys.put("33.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_TERRACOTTA"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"MAGENTA_WOOL"}));
 			loggerSettingsKeys.put("33.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§fParameter wird für die Angaben","§b>Letzterstand< (nur Trendlog)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMaximum-Parameters um §c1.000§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMaximum-Parameters um §c50.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
+					"§aLinksklick §ezum Erhöhen des","§eMaximum-Parameters um §a1.000§e.",
+					"§aRechtsklick §ezum Erhöhen des","§eMaximum-Parameters um §a50.000§e.",
+					"§cShift+Links §ezum Verringern des","§eMaximum-Parameters um §c1.000§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMaximum-Parameters um §c50.000§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
 					"§fParameter is used for the information","§b>LastStand< (Only Trendlog)§f.",
-					"§9Left-click §eto decrease the","§emaximum-parameter by §c1,000§e.",
-					"§9Right-click §eto decrease the","§emaximum-parameter by §c50,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
-			loggerSettingsKeys.put("41.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&aLetzterstand +&f1.000.000&f | &a+&f50.000.000",
-					"&aFirstStand +&f1,000,000&f | &a+&f50,000,000"}));
-			loggerSettingsKeys.put("41.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"GREEN_TERRACOTTA"}));
-			loggerSettingsKeys.put("41.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>Letzterstand< (nur Trendlog)§f genutzt.",
-					"§9Linksklick §ezum Erhöhen des","§eMaximum-Parameters um §a1.000.000§e.",
-					"§9Rechtsklick §ezum Erhöhen des","§eMaximum-Parameters um §a50.000.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the information","§b>LastStand< (Only Trendlog)§f.",
-					"§9Left-click §eto increase the","§emaximum-parameter by §a1,000,000§e.",
-					"§9Right-click §eto increase the","§emaximum-parameter by §a50,000,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§aLeftclick §eto increase the","§emaximum-Parameters by §a1,000§e.",
+					"§aRightclick §eto increase the","§emaximum-Parameters by §a50,000§e.",
+					"§cShift+Left §eto decrease the","§emaximum-Parameters by §c1,000§e.",
+					"§cShift+Right §eto decrease the","§emaximum-Parameters by §c50,000§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			loggerSettingsKeys.put("42.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cLetzterstand &c-&f1.000.000&f | &c-&f50.000.000",
-					"&cFirstStand &c-&f1,000,000&f | &c-&f50,000,000"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eLetzterstand &a+&c-&f1M | &a+&c-&f50M",
+					"&eFirstStand &a+&c-&f1M | &a+&c-&f50M"}));
 			loggerSettingsKeys.put("42.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
-					"RED_TERRACOTTA"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					"MAGENTA_WOOL"}));
 			loggerSettingsKeys.put("42.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§fParameter wird für die Angaben","§b>Letzterstand< (nur Trendlog)§f genutzt.",
-					"§9Linksklick §ezum Verringern des","§eMaximum-Parameters um §c1.000.000§e.",
-					"§9Rechtsklick §ezum Verringern des","§eMaximum-Parameters um §c50.000.000§e.",
-					"§9Shiftklick §ezum Zurücksetzen des Wertes!",
+					"§aLinksklick §ezum Erhöhen des","§eMaximum-Parameters um §a1.000.000§e.",
+					"§aRechtsklick §ezum Erhöhen des","§eMaximum-Parameters um §a50.000.000§e.",
+					"§cShift+Links §ezum Verringern des","§eMaximum-Parameters um §c1.000.000§e.",
+					"§cShift+Rechts §ezum Verringern des","§eMaximum-Parameters um §c50.000.000§e.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
 					"§fParameter is used for the information","§b>LastStand< (Only Trendlog)§f.",
-					"§9Left-click §eto decrease the","§emaximum-parameter by §fc1,000,000§e.",
-					"§9Right-click §eto decrease the","§emaximum-parameter by §c50,000,000§e.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§aLeftclick §eto increase the","§emaximum-Parameters by §a1,000,000§e.",
+					"§aRightclick §eto increase the","§emaximum-Parameters by §a50,000,000§e.",
+					"§cShift+Left §eto decrease the","§emaximum-Parameters by §c1,000,000§e.",
+					"§cShift+Right §eto decrease the","§emaximum-Parameters by §c50,000,000§e.",
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 		}
 		
 		TARGETEditor:
 		{
 			loggerSettingsKeys.put("3.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cVon-Parameter",
-					"&cFrom-parameter"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&cAbsender-Parameter",
+					"&cSender-parameter"}));
 			loggerSettingsKeys.put("3.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"TARGET"}));
 			loggerSettingsKeys.put("3.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>Von<§f genutzt.",
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"§fParameter wird für die Angaben","§b>Absender<§f genutzt.",
 					"§aKlicke §ezur Eingabe eines Spielernamens","§eoder einer Bankkontonummer.",
-					"§4Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the","§einformation §b>From<§f.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
+					"§fParameter is used for the","§einformation §b>Sender<§f.",
 					"§eClicks to enter a player name","§eor bank account number.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			
 			loggerSettingsKeys.put("4.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&cAuftraggeber-Parameter",
 					"&cOrderer-parameter"}));
 			loggerSettingsKeys.put("4.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"TARGET"}));
 			loggerSettingsKeys.put("4.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§fParameter wird für die Angaben","§b>Auftraggeber<§f genutzt.",
 					"§aKlicke §ezur Eingabe eines Spielernamens","§eoder einer Bankkontonummer.",
-					"§4Shiftklick §ezum Zurücksetzen des Wertes!",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
 					"§fParameter is used for the","§einformation §b>Orderer<§f.",
 					"§eClicks to enter a player name","§eor bank account number.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			
 			loggerSettingsKeys.put("5.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"&cZu-Parameter",
-					"&cTo-parameter"}));
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&cEmpfänger-Parameter",
+					"&cReciver-parameter"}));
 			loggerSettingsKeys.put("5.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"TARGET"}));
 			loggerSettingsKeys.put("5.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
-					"§fParameter wird für die Angaben","§b>Zu<§f genutzt.",
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"§fParameter wird für die Angaben","§b>Empfänger<§f genutzt.",
 					"§aKlicke §ezur Eingabe eines Spielernamens","§eoder einer Bankkontonummer.",
-					"§4Shiftklick §ezum Zurücksetzen des Wertes!",
-					"§fParameter is used for the","§einformation §b>To<§f.",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
+					"§fParameter is used for the","§einformation §b>Reciver<§f.",
 					"§eClicks to enter a player name","§eor bank account number.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			
 			loggerSettingsKeys.put("13.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&cKommentar-Parameter",
 					"&cComment-parameter"}));
 			loggerSettingsKeys.put("13.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"TARGET"}));
 			loggerSettingsKeys.put("13.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§fParameter wird für die Angaben","§b>Kommentar< (nur Aktionlog)§f genutzt.",
 					"§aKlicke §ezur Eingabe eines Kommentars.",
-					"§4Shiftklick §ezum Zurücksetzen des Wertes!",
+					"§4Q §ezum Zurücksetzen des Wertes!",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
 					"§fParameter is used for the","§einformation §b>Comment< (only Actionlog)§f.",
 					"§eClicks to enter a comment.",
-					"§9Shift-click §to reset the parameter!"}));
+					"§4Q §eto reset the parameter!",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 		}
 		
 		Booleans:
 		{
 			loggerSettingsKeys.put("11.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&cAuf/Absteigend&f-Parameter",
 					"&cA/Descending&f-parameter"}));
 			loggerSettingsKeys.put("11.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"REDSTONE_TORCH"}));
 			loggerSettingsKeys.put("11.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§fParameter wird für die Angaben","§e§b>ID<§f oder §b>Betrag< §fgenutzt.",
 					"§9Linksklick §ewählt §b>Aufsteigend<§e aus.",
 					"§9Rechtsklick §ewählt §b>Absteigend<§e aus.",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
 					"§fParameter is used for the","§einformation §b>ID<§f or §b>Amount<.",
 					"§9Left-click §eto §b>Ascending<§e set.",
-					"§9Right-click §eto §b>Descending<§e set."}));
+					"§9Right-click §eto §b>Descending<§e set.",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 		}
 		
 		Enums:
 		{
 			loggerSettingsKeys.put("15.Name"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&cID oder Betrags&f-Parameter",
 					"&cID or Amount&f-parameter"}));
 			loggerSettingsKeys.put("15.Material"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"REDSTONE_TORCH"}));
 			loggerSettingsKeys.put("15.Lore"
-					, new LanguageObject(new LanguageType[] {LanguageType.GERMAN, LanguageType.ENGLISH}, new Object[] {
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"§fParameter stellt die zu nutzende Spalte ein.","§eEntweder §b>ID< §eoder §b>Betrag<§f.",
 					"§9Linksklick §ewählt §b>ID<§e aus.",
 					"§9Rechtsklick §ewählt §b>Betrag<§e aus.",
+					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
 					"§fParameter sets the column to be used.","§eEither §b>Id< §eor §b>Amount<§f.",
 					"§9Left-click §eto §b>ID<§e set.",
-					"§9Right-click §eto §b>Amount<§e set."}));
+					"§9Right-click §eto §b>Amount<§e set.",
+					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 		}
 	}
 }

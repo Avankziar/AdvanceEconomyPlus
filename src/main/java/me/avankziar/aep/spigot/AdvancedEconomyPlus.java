@@ -39,6 +39,7 @@ import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneySet;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTake;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyToggle;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTop;
+import main.java.me.avankziar.aep.spigot.cmd.money.action.ARGMoneyActionLog;
 import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoan;
 import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoan_Accept;
 import main.java.me.avankziar.aep.spigot.cmd.money.loan.ARGMoneyLoan_Amount;
@@ -71,6 +72,7 @@ import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandin
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Repeatingtime;
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrder_Starttime;
 import main.java.me.avankziar.aep.spigot.cmd.money.standingorder.ARGMoneyStandingOrders;
+import main.java.me.avankziar.aep.spigot.cmd.money.trend.ARGMoneyTrendLog;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
@@ -88,7 +90,7 @@ import main.java.me.avankziar.aep.spigot.hook.QuickShopHook;
 import main.java.me.avankziar.aep.spigot.listener.LoggerListener;
 import main.java.me.avankziar.aep.spigot.listener.PlayerListener;
 import main.java.me.avankziar.aep.spigot.listenerhandler.LoggerSettingsListenerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class AdvancedEconomyPlus extends JavaPlugin
@@ -266,107 +268,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		CommandConstructor eco = new CommandConstructor(plugin, baseCommandI, false,
 				deletelog, player, recomment);
 		
-		/*ArgumentConstructor action_barchart_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_barchart_log", 
-				2, 2, 4, false, null);
-		ArgumentConstructor action_barchart = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_barchart", 1, 1, 1, false, null,
-				action_barchart_log);
-		
-		ArgumentConstructor action_diagram_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_between", 
-				3, 5, 7, false, null);
-		ArgumentConstructor action_diagram_fl_c = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_comment", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_diagram_fl_casc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_commentascending", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_diagram_fl_cdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_commentdescending", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_diagram_fl_f = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_from", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_diagram_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_greaterthan", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_diagram_fl_lt = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_lessthan", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_diagram_fl_o = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_orderer", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_diagram_fl_sasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_sortascending", 
-				3, 3, 5, false, null);
-		ArgumentConstructor action_diagram_fl_sdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_sortdescending", 
-				3, 3, 5, false, null);
-		ArgumentConstructor action_diagram_fl_t = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog_to", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_diagram_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_filterlog", 
-				2, 2, 2, false, null,
-				action_diagram_fl_bw, action_diagram_fl_c, action_diagram_fl_casc, action_diagram_fl_cdesc,
-				action_diagram_fl_f, action_diagram_fl_gt, action_diagram_fl_lt, action_diagram_fl_o,
-				action_diagram_fl_sasc, action_diagram_fl_sdesc, action_diagram_fl_t);
-		ArgumentConstructor action_diagram_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram_log", 
-				2, 2, 4, false, null);
-		ArgumentConstructor action_diagram = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_diagram", 1, 1, 1, false, null,
-				action_diagram_log, action_diagram_fl);
-		
-		ArgumentConstructor action_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_log", 1, 1, 3, false, playerMapIII);
-		
-		ArgumentConstructor action_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_between",
-				2, 4, 6, false, playerMapV);
-		ArgumentConstructor action_fl_c = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_comment",
-				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_casc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_commentascending",
-				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_cdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_commentdescending",
-				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_f = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_from",
-				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_greaterthan",
-				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_lt = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_lessthan",
-				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_o = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_orderer",
-				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl_sasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_sortascending",
-				2, 2, 4, false, playerMapIII);
-		ArgumentConstructor action_fl_sdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_sortdescending",
-				2, 2, 4, false, playerMapIII);
-		ArgumentConstructor action_fl_t = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog_to",
-				2, 3, 5, false, playerMapIV);
-		ArgumentConstructor action_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_filterlog",
-				1, 1, 1, false, null,
-				action_fl_bw, action_fl_c, action_fl_casc, action_fl_cdesc,
-				action_fl_f, action_fl_gt, action_fl_lt,
-				action_fl_o, action_fl_sasc, action_fl_sdesc, action_fl_t);
-		
-		ArgumentConstructor action_grafic_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_between", 
-				3, 5, 7, false, null);
-		ArgumentConstructor action_grafic_fl_c = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_comment", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_grafic_fl_casc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_commentascending", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_grafic_fl_cdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_commentdescending", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_grafic_fl_f = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_from", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_grafic_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_greaterthan", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_grafic_fl_lt = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_lessthan", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_grafic_fl_o = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_orderer", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_grafic_fl_sasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_sortascending", 
-				3, 3, 5, false, null);
-		ArgumentConstructor action_grafic_fl_sdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_sortdescending", 
-				3, 3, 5, false, null);
-		ArgumentConstructor action_grafic_fl_t = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog_to", 
-				3, 4, 6, false, null);
-		ArgumentConstructor action_grafic_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_filterlog", 
-				2, 2, 2, false, null,
-				action_grafic_fl_bw, action_grafic_fl_c, action_grafic_fl_casc, action_grafic_fl_cdesc,
-				action_grafic_fl_f, action_grafic_fl_gt, action_grafic_fl_lt, action_grafic_fl_o,
-				action_grafic_fl_sasc, action_grafic_fl_sdesc, action_grafic_fl_t);
-		ArgumentConstructor action_grafic_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic_log", 
-				2, 2, 4, false, null);
-		ArgumentConstructor action_grafic = new ArgumentConstructor(yamlHandler, baseCommandII+"_action_grafic", 1, 1, 1, false, null,
-				action_grafic_log, action_grafic_fl);
-		
-		ArgumentConstructor action = new ArgumentConstructor(yamlHandler, baseCommandII+"_action", 0, 0, 0, false, null,
-				action_barchart, action_diagram, action_log, action_fl, action_grafic);*/
+		ArgumentConstructor actionlog = new ArgumentConstructor(yamlHandler, baseCommandII+"_actionlog", 0, 0, 2, false, playerMapII);
 		
 		ArgumentConstructor freeze = new ArgumentConstructor(yamlHandler, baseCommandII+"_freeze", 0, 1, 1, false, playerMapI);
 		ArgumentConstructor give = new ArgumentConstructor(yamlHandler, baseCommandII+"_give", 0, 4, 999, true, playerMapI);
@@ -421,92 +323,11 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		ArgumentConstructor toggle = new ArgumentConstructor(yamlHandler, baseCommandII+"_toggle", 0, 0, 0, false, null);
 		ArgumentConstructor top = new ArgumentConstructor(yamlHandler, baseCommandII+"_top", 0, 0, 1, false, null);
 		
-		
-		/*ArgumentConstructor trend_diagram_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_between",
-				3, 5, 7, false, null);
-		ArgumentConstructor trend_diagram_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_greaterthan",
-				3, 4, 6, false, null);
-		ArgumentConstructor trend_diagram_fl_lt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_lessthan",
-				3, 4, 6, false, null);
-		ArgumentConstructor trend_diagram_fl_soasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_sortascending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_diagram_fl_sodesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_sortdescending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_diagram_fl_fstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_firststandascending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_diagram_fl_fstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_firststanddescending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_diagram_fl_lstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_laststandascending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_diagram_fl_lstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog_laststanddescending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_diagram_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_filterlog",
-				2, 2, 2, false, null,
-				trend_diagram_fl_bw, trend_diagram_fl_gt, trend_diagram_fl_lt, trend_diagram_fl_soasc, trend_diagram_fl_sodesc,
-				trend_diagram_fl_fstasc, trend_diagram_fl_fstdesc, trend_diagram_fl_lstasc, trend_diagram_fl_lstdesc);
-		ArgumentConstructor trend_diagram_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram_log",
-				2, 2, 4, false, playerMapIV);
-		ArgumentConstructor trend_diagram = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_diagram",
-				1, 1, 1, false, null,
-				trend_diagram_log, trend_diagram_fl);
-		
-		ArgumentConstructor trend_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_between",
-				2, 4, 6, false, null);
-		ArgumentConstructor trend_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_greaterthan",
-				2, 3, 5, false, null);
-		ArgumentConstructor trend_fl_lt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_lessthan",
-				2, 3, 5, false, null);
-		ArgumentConstructor trend_fl_soasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_sortascending",
-				2, 2, 4, false, null);
-		ArgumentConstructor trend_fl_sodesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_sortdescending",
-				2, 2, 4, false, null);
-		ArgumentConstructor trend_fl_fstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_firststandascending",
-				2, 2, 4, false, null);
-		ArgumentConstructor trend_fl_fstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_friststanddescending",
-				2, 2, 4, false, null);
-		ArgumentConstructor trend_fl_lstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_laststandascending",
-				2, 2, 4, false, null);
-		ArgumentConstructor trend_fl_lstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog_laststanddescending",
-				2, 2, 4, false, null);
-		ArgumentConstructor trend_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_filterlog",
-				1, 1, 1, false, null,
-				trend_fl_bw, trend_fl_gt, trend_fl_lt, trend_fl_soasc, trend_fl_sodesc, trend_fl_fstasc, trend_fl_fstdesc,
-				trend_fl_lstasc, trend_fl_lstdesc);
-		
-		ArgumentConstructor trend_grafic_fl_bw = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_between",
-				3, 5, 7, false, null);
-		ArgumentConstructor trend_grafic_fl_gt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_greaterthan",
-				3, 4, 6, false, null);
-		ArgumentConstructor trend_grafic_fl_lt = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_lessthan",
-				3, 4, 6, false, null);
-		ArgumentConstructor trend_grafic_fl_soasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_sortascending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_grafic_fl_sodesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_sortdescending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_grafic_fl_fstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_firststandascending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_grafic_fl_fstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_firststanddescending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_grafic_fl_lstasc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_laststandascending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_grafic_fl_lstdesc = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog_laststanddescending",
-				3, 3, 5, false, null);
-		ArgumentConstructor trend_grafic_fl = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_filterlog",
-				2, 2, 2, false, null,
-				trend_grafic_fl_bw, trend_grafic_fl_gt, trend_grafic_fl_lt, trend_grafic_fl_soasc, trend_grafic_fl_sodesc,
-				trend_grafic_fl_fstasc, trend_grafic_fl_fstdesc, trend_grafic_fl_lstasc,trend_grafic_fl_lstdesc);
-		ArgumentConstructor trend_grafic_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic_log",
-				2, 2, 4, false, playerMapIV);
-		ArgumentConstructor trend_grafic = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_grafic",
-				1, 1, 1, false, null,
-				trend_grafic_log, trend_grafic_fl);
-		
-		ArgumentConstructor trend_log = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend_log", 1, 1, 3, false, playerMapIII);
-		ArgumentConstructor trend = new ArgumentConstructor(yamlHandler, baseCommandII+"_trend", 0, 0, 0, false, null,
-				trend_diagram, trend_fl, trend_grafic, trend_log);*/
+		ArgumentConstructor trendlog = new ArgumentConstructor(yamlHandler, baseCommandII+"_trendlog", 0, 0, 2, false, playerMapII);
 		
 		CommandConstructor money = new CommandConstructor(plugin, baseCommandII, false,
 				freeze, give, loggersettings, pay, set, take, toggle, top,
+				actionlog, trendlog,
 				loan, loans,
 				storder, storders);
 		
@@ -532,106 +353,31 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				eco, 
 					deletelog, player, recomment,
 				money,
-					/*action,
-						action_barchart, 
-							action_barchart_log,
-						action_diagram, 
-							action_diagram_log, 
-							action_diagram_fl, 
-								action_diagram_fl_bw, action_diagram_fl_c, action_diagram_fl_casc, action_diagram_fl_cdesc,
-								action_diagram_fl_f, action_diagram_fl_gt, action_diagram_fl_lt,
-								action_diagram_fl_o, action_diagram_fl_sasc, action_diagram_fl_sdesc, action_diagram_fl_t,
-						action_log, 
-						action_fl, 
-							action_fl_bw, action_fl_c, action_fl_casc, action_fl_cdesc, action_fl_f, action_fl_gt, action_fl_lt,
-							action_fl_o, action_fl_sasc, action_fl_sdesc, action_fl_t,
-						action_grafic, 
-							action_grafic_log, 
-							action_grafic_fl, 
-								action_grafic_fl_bw, action_grafic_fl_c, action_grafic_fl_casc, action_grafic_fl_cdesc,
-								action_grafic_fl_f, action_grafic_fl_gt, action_grafic_fl_lt,
-								action_grafic_fl_o, action_grafic_fl_sasc, action_grafic_fl_sdesc, action_grafic_fl_t,*/
+					actionlog, trendlog,
 					freeze, give, loggersettings, loggersettings_gui, loggersettings_other, loggersettings_text, pay, set,
-					loan, loan_accept, loan_amount, loan_cancel, loan_create, loan_forgive, loan_info, loan_inherit, loan_list,
-						loan_pause, loan_payback, loan_reject, loan_repay, loan_send, loan_time, loan_transfer,
-					loans,
-					storder, storder_amount, storder_cancel, storder_create, storder_delete, storder_info, storder_list,
-						storder_pause, storder_rt, storder_st,
-					storders,
 					take, toggle, top//,
-					/*trend, 
-						trend_diagram, 
-							trend_diagram_log,
-							trend_diagram_fl, 
-								trend_diagram_fl_bw, trend_diagram_fl_gt, trend_diagram_fl_lt,
-								trend_diagram_fl_soasc, trend_diagram_fl_sodesc, trend_diagram_fl_fstasc, trend_diagram_fl_fstdesc,
-								trend_diagram_fl_lstasc, trend_diagram_fl_lstdesc,
-						trend_fl, 
-							trend_fl_bw, trend_fl_gt, trend_fl_lt, trend_fl_soasc, trend_fl_sodesc, trend_fl_fstasc, trend_fl_fstdesc,
-							trend_fl_lstasc, trend_fl_lstdesc,
-						trend_grafic, 
-							trend_grafic_log,
-							trend_grafic_fl, 
-								trend_grafic_fl_bw, trend_grafic_fl_gt, trend_grafic_fl_lt,
-								trend_grafic_fl_soasc, trend_grafic_fl_sodesc, trend_grafic_fl_fstasc, trend_grafic_fl_fstdesc,
-								trend_grafic_fl_lstasc, trend_grafic_fl_lstdesc,
-						trend_log//,*/
 				//bank
 				);
+		if(EconomySettings.settings.isLoanRepayment())
+		{
+			addingHelps(
+				loan, loan_accept, loan_amount, loan_cancel, loan_create, loan_forgive, loan_info, loan_inherit, loan_list,
+					loan_pause, loan_payback, loan_reject, loan_repay, loan_send, loan_time, loan_transfer,
+				loans);
+		}
+		if(EconomySettings.settings.isStandingOrder())
+		{
+			addingHelps(
+				storder, storder_amount, storder_cancel, storder_create, storder_delete, storder_info, storder_list,
+					storder_pause, storder_rt, storder_st,
+				storders);
+		}
 		
 		new ARGEcoDeleteLog(plugin, deletelog);
 		new ARGEcoPlayer(plugin, player);
 		new ARGEcoReComment(plugin, recomment);
 		
-		/*new ARGMoneyAction(plugin, action);
-		
-		new ARGMoneyAction_BarChart(plugin, action_barchart);
-		new ARGMoneyAction_BarChart_Log(plugin, action_barchart_log);
-		
-		new ARGMoneyAction_Diagram(plugin, action_diagram);
-		new ARGMoneyAction_Diagram_FilterLog(plugin, action_diagram_fl);
-		new ARGMoneyAction_Diagram_FilterLog_Between(plugin, action_diagram_fl_bw);
-		new ARGMoneyAction_Diagram_FilterLog_Comment(plugin, action_diagram_fl_c);
-		new ARGMoneyAction_Diagram_FilterLog_CommentAscending(plugin, action_diagram_fl_casc);
-		new ARGMoneyAction_Diagram_FilterLog_CommentDescending(plugin, action_diagram_fl_cdesc);
-		new ARGMoneyAction_Diagram_FilterLog_From(plugin, action_diagram_fl_f);
-		new ARGMoneyAction_Diagram_FilterLog_GreaterThan(plugin, action_diagram_fl_gt);
-		new ARGMoneyAction_Diagram_FilterLog_LessThan(plugin, action_diagram_fl_lt);
-		new ARGMoneyAction_Diagram_FilterLog_Orderer(plugin, action_diagram_fl_o);
-		new ARGMoneyAction_Diagram_FilterLog_SortAscending(plugin, action_diagram_fl_sasc);
-		new ARGMoneyAction_Diagram_FilterLog_SortDescending(plugin, action_diagram_fl_sdesc);
-		new ARGMoneyAction_Diagram_FilterLog_To(plugin, action_diagram_fl_t);
-		new ARGMoneyAction_Diagram_Log(plugin, action_diagram_log);
-		
-		new ARGMoneyAction_FilterLog(plugin, action_fl);
-		new ARGMoneyAction_FilterLog_Between(plugin, action_fl_bw);
-		new ARGMoneyAction_FilterLog_Comment(plugin, action_fl_c);
-		new ARGMoneyAction_FilterLog_CommentAscending(plugin, action_fl_casc);
-		new ARGMoneyAction_FilterLog_CommentDescending(plugin, action_fl_cdesc);
-		new ARGMoneyAction_FilterLog_From(plugin, action_fl_f);
-		new ARGMoneyAction_FilterLog_GreaterThan(plugin, action_fl_gt);
-		new ARGMoneyAction_FilterLog_LessThan(plugin, action_fl_lt);
-		new ARGMoneyAction_FilterLog_Orderer(plugin, action_fl_o);
-		new ARGMoneyAction_FilterLog_SortAscending(plugin, action_fl_sasc);
-		new ARGMoneyAction_FilterLog_SortDescending(plugin, action_fl_sdesc);
-		new ARGMoneyAction_FilterLog_To(plugin, action_fl_t);
-		
-		new ARGMoneyAction_Grafic(plugin, action_grafic);
-		new ARGMoneyAction_Grafic_FilterLog(plugin, action_fl);
-		new ARGMoneyAction_Grafic_FilterLog_Between(plugin, action_grafic_fl_bw);
-		new ARGMoneyAction_Grafic_FilterLog_Comment(plugin, action_grafic_fl_c);
-		new ARGMoneyAction_Grafic_FilterLog_CommentAscending(plugin, action_grafic_fl_casc);
-		new ARGMoneyAction_Grafic_FilterLog_CommentDescending(plugin, action_grafic_fl_cdesc);
-		new ARGMoneyAction_Grafic_FilterLog_From(plugin, action_grafic_fl_f);
-		new ARGMoneyAction_Grafic_FilterLog_GreaterThan(plugin, action_grafic_fl_gt);
-		new ARGMoneyAction_Grafic_FilterLog_LessThan(plugin, action_grafic_fl_lt);
-		new ARGMoneyAction_Grafic_FilterLog_Orderer(plugin, action_grafic_fl_o);
-		new ARGMoneyAction_Grafic_FilterLog_SortAscending(plugin, action_grafic_fl_sasc);
-		new ARGMoneyAction_Grafic_FilterLog_SortDescending(plugin, action_grafic_fl_sdesc);
-		new ARGMoneyAction_Grafic_FilterLog_To(plugin, action_grafic_fl_t);
-		new ARGMoneyAction_Grafic_Log(plugin, action_grafic_log);
-		
-		new ARGMoneyAction_Log(plugin, action_log);*/
+		new ARGMoneyActionLog(plugin, actionlog);
 		
 		new ARGMoneyLoan(plugin, loan);
 		new ARGMoneyLoan_Accept(plugin, loan_accept);
@@ -681,46 +427,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGMoneyToggle(plugin, toggle);
 		new ARGMoneyTop(plugin, top);
 		
-		/*new ARGMoneyTrend(plugin, trend);
-		
-		new ARGMoneyTrend_Diagram(plugin, trend_diagram);
-		new ARGMoneyTrend_Diagram_Log(plugin, trend_diagram_log);
-		new ARGMoneyTrend_Diagram_FilterLog(plugin, trend_diagram_fl);
-		new ARGMoneyTrend_Diagram_FilterLog_Between(plugin, trend_diagram_fl_bw);
-		new ARGMoneyTrend_Diagram_FilterLog_GreaterThan(plugin, trend_diagram_fl_gt);
-		new ARGMoneyTrend_Diagram_FilterLog_LessThan(plugin, trend_diagram_fl_lt);
-		new ARGMoneyTrend_Diagram_FilterLog_SortAscending(plugin, trend_diagram_fl_soasc);
-		new ARGMoneyTrend_Diagram_FilterLog_SortDescending(plugin, trend_diagram_fl_sodesc);
-		new ARGMoneyTrend_Diagram_FilterLog_FirstStandAscending(plugin, trend_diagram_fl_fstasc);
-		new ARGMoneyTrend_Diagram_FilterLog_FirstStandDescending(plugin, trend_diagram_fl_fstdesc);
-		new ARGMoneyTrend_Diagram_FilterLog_LastStandAscending(plugin, trend_diagram_fl_lstasc);
-		new ARGMoneyTrend_Diagram_FilterLog_LastStandDescending(plugin, trend_diagram_fl_lstdesc);
-		
-		new ARGMoneyTrend_FilterLog(plugin, trend_fl);
-		new ARGMoneyTrend_FilterLog_Between(plugin, trend_fl_bw);
-		new ARGMoneyTrend_FilterLog_GreaterThan(plugin, trend_fl_gt);
-		new ARGMoneyTrend_FilterLog_LessThan(plugin, trend_fl_lt);
-		new ARGMoneyTrend_FilterLog_SortAscending(plugin, trend_fl_soasc);
-		new ARGMoneyTrend_FilterLog_SortDescending(plugin, trend_fl_sodesc);
-		new ARGMoneyTrend_FilterLog_FirstStandAscending(plugin, trend_fl_fstasc);
-		new ARGMoneyTrend_FilterLog_FirstStandDescending(plugin, trend_fl_fstdesc);
-		new ARGMoneyTrend_FilterLog_LastStandAscending(plugin, trend_fl_lstasc);
-		new ARGMoneyTrend_FilterLog_LastStandDescending(plugin, trend_fl_lstdesc);
-		
-		new ARGMoneyTrend_Grafic(plugin, trend_grafic);
-		new ARGMoneyTrend_Grafic_Log(plugin, trend_grafic_log);
-		new ARGMoneyTrend_Grafic_FilterLog(plugin, trend_grafic_fl);
-		new ARGMoneyTrend_Grafic_FilterLog_Between(plugin, trend_grafic_fl_bw);
-		new ARGMoneyTrend_Grafic_FilterLog_GreaterThan(plugin, trend_grafic_fl_gt);
-		new ARGMoneyTrend_Grafic_FilterLog_LessThan(plugin, trend_grafic_fl_lt);
-		new ARGMoneyTrend_Grafic_FilterLog_SortAscending(plugin, trend_grafic_fl_soasc);
-		new ARGMoneyTrend_Grafic_FilterLog_SortDescending(plugin, trend_grafic_fl_sodesc);
-		new ARGMoneyTrend_Grafic_FilterLog_FirstStandAscending(plugin, trend_grafic_fl_fstasc);
-		new ARGMoneyTrend_Grafic_FilterLog_FirstStandDescending(plugin, trend_grafic_fl_fstdesc);
-		new ARGMoneyTrend_Grafic_FilterLog_LastStandAscending(plugin, trend_grafic_fl_lstasc);
-		new ARGMoneyTrend_Grafic_FilterLog_LastStandDescending(plugin, trend_grafic_fl_lstdesc);
-		
-		new ARGMoneyTrend_Log(plugin, trend_log);*/
+		new ARGMoneyTrendLog(plugin, trendlog);
 	}
 	
 	public void ListenerSetup()
@@ -847,12 +554,12 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	public void setupPlayers()
 	{
-		ArrayList<EcoPlayer> cu = ConvertHandler.convertListI(
+		ArrayList<AEPUser> cu = ConvertHandler.convertListI(
 				plugin.getMysqlHandler().getTop(MysqlHandler.Type.PLAYER,
 						"`id`", 0,
 						plugin.getMysqlHandler().lastID(MysqlHandler.Type.PLAYER)));
 		ArrayList<String> cus = new ArrayList<>();
-		for(EcoPlayer chus : cu) 
+		for(AEPUser chus : cu) 
 		{
 			cus.add(chus.getName());	
 		}

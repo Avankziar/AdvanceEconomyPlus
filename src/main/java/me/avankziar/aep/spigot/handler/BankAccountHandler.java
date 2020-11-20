@@ -8,7 +8,7 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.BankAccount;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class BankAccountHandler
@@ -44,7 +44,7 @@ public class BankAccountHandler
 		return (BankAccount) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(MysqlHandler.Type.BANKACCOUNT, "`bank_name` = ?", name);
 	}
 	
-	public static boolean hasPlayerMoreBankAccountsWithTheSameName(EcoPlayer player)
+	public static boolean hasPlayerMoreBankAccountsWithTheSameName(AEPUser player)
 	{
 		for(String number : player.getBankAccountNumber())
 		{

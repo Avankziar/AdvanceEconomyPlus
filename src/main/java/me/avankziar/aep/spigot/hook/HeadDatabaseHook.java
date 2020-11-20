@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import me.arcaniax.hdb.api.PlayerClickHeadEvent;
 
 public class HeadDatabaseHook implements Listener
@@ -52,6 +52,6 @@ public class HeadDatabaseHook implements Listener
 				plugin.getYamlHandler().getL().getString("HeadDatabase.Comment")
 				.replace("%head%", itemname)));
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-				LocalDate.now(), playeruuid, amount, EcoPlayerHandler.getEcoPlayer(playeruuid).getBalance()));
+				LocalDate.now(), playeruuid, amount, AEPUserHandler.getEcoPlayer(playeruuid).getBalance()));
 	}
 }

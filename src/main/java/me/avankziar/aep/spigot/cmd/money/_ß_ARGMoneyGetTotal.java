@@ -11,10 +11,10 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogHandler;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class _ß_ARGMoneyGetTotal extends ArgumentModule
@@ -59,7 +59,7 @@ public class _ß_ARGMoneyGetTotal extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -83,7 +83,7 @@ public class _ß_ARGMoneyGetTotal extends ArgumentModule
 					eco.getUUID(), eco.getUUID(), eco.getUUID());
 		} else
 		{
-			EcoPlayer ep = EcoPlayerHandler.getEcoPlayer(searchword);
+			AEPUser ep = AEPUserHandler.getEcoPlayer(searchword);
 			if(ep != null)
 			{
 				player.sendMessage(ChatApi.tl(

@@ -2,6 +2,7 @@ package main.java.me.avankziar.aep.spigot.listenerhandler;
 
 import java.io.IOException;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -28,6 +29,8 @@ public class LoggerSettingsListenerHandler implements Listener
 		LoggerSettings fst = LoggerSettingsHandler.getLoggerSettings().get(event.getPlayer().getUniqueId());
 		if(fst == null)
 		{
+			Player player = (Player) event.getPlayer();
+			player.updateInventory();
 			return;
 		} else
 		{
@@ -36,6 +39,8 @@ public class LoggerSettingsListenerHandler implements Listener
 					|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_ORDERER
 					|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_TO)
 			{
+				Player player = (Player) event.getPlayer();
+				player.updateInventory();
 				return;
 			}
 			if(fst.getInventoryHandlerType() != InventoryHandlerType.NONE)
@@ -43,6 +48,8 @@ public class LoggerSettingsListenerHandler implements Listener
 				fst.setInventoryHandlerType(InventoryHandlerType.NONE);
 				LoggerSettingsHandler.getLoggerSettings().replace(event.getPlayer().getUniqueId(), fst);
 			}
+			Player player = (Player) event.getPlayer();
+			player.updateInventory();
 			return;
 		}
 	}

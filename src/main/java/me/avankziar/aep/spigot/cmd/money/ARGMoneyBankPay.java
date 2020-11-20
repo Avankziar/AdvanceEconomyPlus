@@ -17,9 +17,9 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.BankAccountHandler;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.BankAccount;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -78,7 +78,7 @@ public class ARGMoneyBankPay extends ArgumentModule
 				
 			}
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(player);
 		if(!AdvancedEconomyPlus.getVaultApi().has(player, amount))
 		{
 			//&f%amount% &cübersteigt dein Guthaben!
@@ -136,7 +136,7 @@ public class ARGMoneyBankPay extends ArgumentModule
 				.replace("%number2%", tobank.getaccountNumber()).replace("%name2%", tobank.getName()));
 		boolean bungee = EconomySettings.settings.isBungee();
 		player.sendMessage(frommessage);
-		EcoPlayer owner = EcoPlayerHandler.getEcoPlayer(tobank.getOwnerUUID());
+		AEPUser owner = AEPUserHandler.getEcoPlayer(tobank.getOwnerUUID());
 		if(owner != null)
 		{
 			if(owner.isMoneyBankFlow())
@@ -155,7 +155,7 @@ public class ARGMoneyBankPay extends ArgumentModule
 		}
 		for(String uuid : tobank.getViceUUID())
 		{
-			EcoPlayer ep = EcoPlayerHandler.getEcoPlayer(uuid);
+			AEPUser ep = AEPUserHandler.getEcoPlayer(uuid);
 			if(ep != null)
 			{
 				if(ep.isMoneyBankFlow())
@@ -175,7 +175,7 @@ public class ARGMoneyBankPay extends ArgumentModule
 		}
 		for(String uuid : tobank.getMemberUUID())
 		{
-			EcoPlayer ep = EcoPlayerHandler.getEcoPlayer(uuid);
+			AEPUser ep = AEPUserHandler.getEcoPlayer(uuid);
 			if(ep != null)
 			{
 				if(ep.isMoneyBankFlow())

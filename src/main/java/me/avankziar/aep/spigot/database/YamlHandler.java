@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.database.LanguageObject.LanguageType;
+import main.java.me.avankziar.aep.spigot.database.Language.ISO639_2B;
 
 public class YamlHandler
 {
@@ -124,9 +124,9 @@ public class YamlHandler
 	private boolean mkdirDynamicFiles() throws IOException
 	{
 		//Vergleich der Sprachen
-		List<LanguageObject.LanguageType> types = new ArrayList<LanguageObject.LanguageType>(EnumSet.allOf(LanguageObject.LanguageType.class));
-		LanguageType languageType = LanguageType.ENGLISH;
-		for(LanguageType type : types)
+		List<Language.ISO639_2B> types = new ArrayList<Language.ISO639_2B>(EnumSet.allOf(Language.ISO639_2B.class));
+		ISO639_2B languageType = ISO639_2B.ENG;
+		for(ISO639_2B type : types)
 		{
 			if(type.toString().equals(languages))
 			{
@@ -225,11 +225,11 @@ public class YamlHandler
 		return true;
 	}
 	
-	private boolean writeFile(File file, YamlConfiguration yml, LinkedHashMap<String, LanguageObject> keyMap) throws IOException
+	private boolean writeFile(File file, YamlConfiguration yml, LinkedHashMap<String, Language> keyMap) throws IOException
 	{
 		for(String key : keyMap.keySet())
 		{
-			LanguageObject languageObject = keyMap.get(key);
+			Language languageObject = keyMap.get(key);
 			if(languageObject.languageValues.containsKey(plugin.getYamlManager().getLanguageType()) == true)
 			{
 				plugin.getYamlManager().setFileInput(yml, keyMap, key, plugin.getYamlManager().getLanguageType());

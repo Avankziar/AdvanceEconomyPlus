@@ -17,10 +17,10 @@ import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.BankAccountHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.BankAccount;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -47,6 +47,48 @@ public class BackgroundTask
 			runStandingOrderPayment();
 		}
 		return true;
+	}
+	
+	public void runInsertMidnightTrendLog()
+	{
+		new BukkitRunnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				LocalTime lt = LocalTime.now();
+				if(lt.getMinute() == 0 && lt.getHour() == 0 && (lt.getSecond() <= 5 || lt.getSecond() > 0))
+				{
+					for(Player player : Bukkit.getOnlinePlayers())
+					{
+						AEPUser eco = AEPUserHandler.getEcoPlayer(player.getUniqueId().toString());
+						if(eco == null)
+						{
+							AdvancedEconomyPlus.getVaultApi().createPlayerAccount(player);
+						}
+						Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
+								LocalDate.now(), eco.getUUID(), 0, eco.getBalance()));
+					}
+					if(EconomySettings.settings.isBank())
+					{
+						int end = plugin.getMysqlHandler().lastID(MysqlHandler.Type.BANKACCOUNT);
+						for(int i = 1; i <= end; i++)
+						{
+							if(plugin.getMysqlHandler().exist(MysqlHandler.Type.BANKACCOUNT, "`id` = ?", i))
+							{
+								BankAccount ba = BankAccountHandler.getBankAccount(i);
+								if(ba != null)
+								{
+									Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
+											LocalDate.now(), ba.getaccountNumber(), 0, ba.getBalance()));
+								}
+							}
+						}
+					}
+				}
+			}
+		}.runTaskTimer(plugin, 0L, 20L*5);
 	}
 	
 	public void runDebtRepayment()
@@ -81,8 +123,8 @@ public class BackgroundTask
 					}
 					String from = "";
 					String to = "";
-					EcoPlayer ecofrom = EcoPlayerHandler.getEcoPlayer(dr.getFrom());
-					EcoPlayer ecoto = EcoPlayerHandler.getEcoPlayer(dr.getTo());
+					AEPUser ecofrom = AEPUserHandler.getEcoPlayer(dr.getFrom());
+					AEPUser ecoto = AEPUserHandler.getEcoPlayer(dr.getTo());
 					try
 					{
 						from = Utility.convertUUIDToName(dr.getFrom());
@@ -157,8 +199,8 @@ public class BackgroundTask
 					}
 					String from = "";
 					String to = "";
-					EcoPlayer ecofrom = EcoPlayerHandler.getEcoPlayer(so.getFrom());
-					EcoPlayer ecoto = EcoPlayerHandler.getEcoPlayer(so.getTo());
+					AEPUser ecofrom = AEPUserHandler.getEcoPlayer(so.getFrom());
+					AEPUser ecoto = AEPUserHandler.getEcoPlayer(so.getTo());
 					try
 					{
 						from = Utility.convertUUIDToName(so.getFrom());
@@ -207,44 +249,5 @@ public class BackgroundTask
 				}
 			}
 		}.runTaskTimer(plugin, 5L, 20L*repeat);
-	}
-	
-	public void runInsertMidnightTrendLog()
-	{
-		new BukkitRunnable()
-		{
-			
-			@Override
-			public void run()
-			{
-				LocalTime lt = LocalTime.now();
-				if(lt.getMinute() == 0 && lt.getHour() == 0 && (lt.getSecond() <= 5 || lt.getSecond() > 0))
-				{
-					for(Player player : Bukkit.getOnlinePlayers())
-					{
-						EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player.getUniqueId().toString());
-						if(eco == null)
-						{
-							AdvancedEconomyPlus.getVaultApi().createPlayerAccount(player);
-						}
-						Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-								LocalDate.now(), eco.getUUID(), 0, eco.getBalance()));
-					}
-					int end = plugin.getMysqlHandler().lastID(MysqlHandler.Type.BANKACCOUNT);
-					for(int i = 1; i <= end; i++)
-					{
-						if(plugin.getMysqlHandler().exist(MysqlHandler.Type.BANKACCOUNT, "`id` = ?", i))
-						{
-							BankAccount ba = BankAccountHandler.getBankAccount(i);
-							if(ba != null)
-							{
-								Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-										LocalDate.now(), ba.getaccountNumber(), 0, ba.getBalance()));
-							}
-						}
-					}
-				}
-			}
-		}.runTaskTimer(plugin, 0L, 20L*5);
 	}
 }

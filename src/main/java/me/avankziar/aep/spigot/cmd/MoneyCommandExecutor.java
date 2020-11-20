@@ -15,8 +15,8 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import net.md_5.bungee.api.chat.ClickEvent;
 
 public class MoneyCommandExecutor implements CommandExecutor
@@ -160,7 +160,7 @@ public class MoneyCommandExecutor implements CommandExecutor
 	
 	public void money(Player player)
 	{
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(player);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(player);
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.PlayerBalance")
 				.replace("%time%", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
 				.replace("%balance%", AdvancedEconomyPlus.getVaultApi().format(eco.getBalance()))

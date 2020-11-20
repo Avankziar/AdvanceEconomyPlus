@@ -31,8 +31,8 @@ Build 3 ========================================================================
 - +Beim Trendlog Farbe verbessern, so soll pro Tag der höchste wert grün sein, der andere rot. Beide gleich, dann aqua
 - +TimeHandler fixen, siehe ASH
 - +GraficSpaceSymbol in config.yml zum einstellen von symbolen in Grafiken.
-- Stats befehl (Balkendiagram) einführen für alle. Bspw. /money action barchart
-  - Beim actionlog werden alle einträge pro letzten 2 Jahre (bspw. von 10.2020 bis 10.2018) aufgelistet und die anzahl zusammengerechnet.
+- +Stats befehl (Balkendiagram) einführen für alle. Bspw. /money action barchart
+  - +Beim actionlog werden alle einträge pro letzten 1 Jahre (bspw. von 10.2020 bis 10.2018) aufgelistet und die anzahl zusammengerechnet.
     Dabei wird per balken die Prozentuale Betragsanzahl vom jeweiligen Monat angegeben. Per Hover kommt die Prozente von den Beträgen pro Monat/Jahr
     sowie die Gesamteanzahl pro Monat/Jahr.
     Dahinter kommt der gesamtbetrag verrechnet, dann die maximale positive und danach die maximal negative zahlen. Eventuell in eine Gleichung
@@ -41,11 +41,12 @@ Build 3 ========================================================================
     Die Startpunkte sind immer die ersten Tage der Monate.
     Das barchart soll von unten nach oben wie die Grafik verlaufen. 25 Einträge haben (pro Monat einen).
     #Note: Die Schwierigkeit bedarf, dass jedes Zeichen einer von unten noch oben verlaufenden barchart eine Hover beinhalten soll.
-- LoggerSettings Befehl mit GUI /money loggersettings [SpielerName] [Seitenzahl] [Log, Diagram, Grafik, BarChart]
-- Ein Befehl um andere Settings zu sehen /money loggersettingsother <Spielername>
-- Mysql für Preset LoggerSettings insgesamt 4 Stück (Im Inventar unten links und rechts) (Linksklick ist zum Laden,
+- +LoggerSettings Befehl mit GUI /money loggersettings [SpielerName] [Seitenzahl] [Log, Diagram, Grafik, BarChart]
+- +Ein Befehl um andere Settings zu sehen /money loggersettingsother <Spielername>
+- +Mysql für Preset LoggerSettings insgesamt 4 Stück (Im Inventar unten links und rechts) (Linksklick ist zum Laden,
 	 Rechtsklick zum Speicher (nicht überschreiben), Shiftklick zum löschen). Ist Preset nicht vorhanden, linksklick passiert nichts.
-- /money log, Shortcut für die Ausgabe des Logs
+- +/money log, Shortcut für die Ausgabe des Logs
+- LoadBefore Essential
 
 Build 2 ============================================================================================================================
 - +Update auf 1.16.1

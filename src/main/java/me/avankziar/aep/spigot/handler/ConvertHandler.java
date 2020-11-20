@@ -7,21 +7,21 @@ import java.util.ArrayList;
 
 import main.java.me.avankziar.aep.spigot.object.BankAccount;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 
 public class ConvertHandler
 {
-	public static ArrayList<EcoPlayer> convertListI(ArrayList<?> list)
+	public static ArrayList<AEPUser> convertListI(ArrayList<?> list)
 	{
-		ArrayList<EcoPlayer> el = new ArrayList<>();
+		ArrayList<AEPUser> el = new ArrayList<>();
 		for(Object o : list)
 		{
-			if(o instanceof EcoPlayer)
+			if(o instanceof AEPUser)
 			{
-				el.add((EcoPlayer) o);
+				el.add((AEPUser) o);
 			} else
 			{
 				return null;

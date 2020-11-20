@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 
 public interface TableI
 {
@@ -65,11 +65,11 @@ public interface TableI
 	
 	default boolean createI(AdvancedEconomyPlus plugin, Object object) 
 	{
-		if(!(object instanceof EcoPlayer))
+		if(!(object instanceof AEPUser))
 		{
 			return false;
 		}
-		EcoPlayer ep = (EcoPlayer) object;
+		AEPUser ep = (AEPUser) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) {
@@ -115,7 +115,7 @@ public interface TableI
 	
 	default boolean updateDataI(AdvancedEconomyPlus plugin, Object object, String whereColumn, Object... whereObject) 
 	{
-		if(!(object instanceof EcoPlayer))
+		if(!(object instanceof AEPUser))
 		{
 			return false;
 		}
@@ -123,7 +123,7 @@ public interface TableI
 		{
 			return false;
 		}
-		EcoPlayer ep = (EcoPlayer) object;
+		AEPUser ep = (AEPUser) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
@@ -199,7 +199,7 @@ public interface TableI
 		        	{
 		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
 		        	}
-		        	return new EcoPlayer(result.getInt("id"),
+		        	return new AEPUser(result.getInt("id"),
 		        			result.getString("player_uuid"),
 		        			result.getString("player_name"),
 		        			result.getDouble("balance"),
@@ -360,7 +360,7 @@ public interface TableI
 		return 0;
 	}
 	
-	default ArrayList<EcoPlayer> getListI(AdvancedEconomyPlus plugin, String orderByColumn,
+	default ArrayList<AEPUser> getListI(AdvancedEconomyPlus plugin, String orderByColumn,
 			int start, int end, String whereColumn, Object...whereObject)
 	{
 		PreparedStatement preparedStatement = null;
@@ -380,7 +380,7 @@ public interface TableI
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<EcoPlayer> list = new ArrayList<EcoPlayer>();
+		        ArrayList<AEPUser> list = new ArrayList<AEPUser>();
 		        while (result.next()) 
 		        {
 		        	String bankacc = result.getString("bankaccountlist");
@@ -389,7 +389,7 @@ public interface TableI
 		        	{
 		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
 		        	}
-		        	EcoPlayer ep = new EcoPlayer(result.getInt("id"),
+		        	AEPUser ep = new AEPUser(result.getInt("id"),
 		        			result.getString("player_uuid"),
 		        			result.getString("player_name"),
 		        			result.getDouble("balance"),
@@ -426,7 +426,7 @@ public interface TableI
 		return null;
 	}
 	
-	default ArrayList<EcoPlayer> getTopI(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
+	default ArrayList<AEPUser> getTopI(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -440,7 +440,7 @@ public interface TableI
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();
-		        ArrayList<EcoPlayer> list = new ArrayList<EcoPlayer>();
+		        ArrayList<AEPUser> list = new ArrayList<AEPUser>();
 		        while (result.next()) 
 		        {
 		        	String bankacc = result.getString("bankaccountlist");
@@ -449,7 +449,7 @@ public interface TableI
 		        	{
 		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
 		        	}
-		        	EcoPlayer ep = new EcoPlayer(result.getInt("id"),
+		        	AEPUser ep = new AEPUser(result.getInt("id"),
 		        			result.getString("player_uuid"),
 		        			result.getString("player_name"),
 		        			result.getDouble("balance"),
@@ -486,7 +486,7 @@ public interface TableI
 		return null;
 	}
 	
-	default ArrayList<EcoPlayer> getAllListAtI(AdvancedEconomyPlus plugin, String orderByColumn,
+	default ArrayList<AEPUser> getAllListAtI(AdvancedEconomyPlus plugin, String orderByColumn,
 			String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
@@ -506,7 +506,7 @@ public interface TableI
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<EcoPlayer> list = new ArrayList<EcoPlayer>();
+		        ArrayList<AEPUser> list = new ArrayList<AEPUser>();
 		        while (result.next()) 
 		        {
 		        	String bankacc = result.getString("bankaccountlist");
@@ -515,7 +515,7 @@ public interface TableI
 		        	{
 		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
 		        	}
-		        	EcoPlayer ep = new EcoPlayer(result.getInt("id"),
+		        	AEPUser ep = new AEPUser(result.getInt("id"),
 		        			result.getString("player_uuid"),
 		        			result.getString("player_name"),
 		        			result.getDouble("balance"),

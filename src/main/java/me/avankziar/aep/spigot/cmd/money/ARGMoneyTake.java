@@ -18,8 +18,8 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -87,7 +87,7 @@ public class ARGMoneyTake extends ArgumentModule
 				
 			}
 		}
-		EcoPlayer fromplayer = EcoPlayerHandler.getEcoPlayer(fromplayername);
+		AEPUser fromplayer = AEPUserHandler.getEcoPlayer(fromplayername);
 		if(fromplayer == null)
 		{
 			//Der Spieler existiert nicht!
@@ -109,7 +109,7 @@ public class ARGMoneyTake extends ArgumentModule
 			sender.sendMessage(ChatApi.tl(withdraw.errorMessage));
 			return;
 		}
-		fromplayer = EcoPlayerHandler.getEcoPlayer(fromplayername);
+		fromplayer = AEPUserHandler.getEcoPlayer(fromplayername);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(), fromplayer.getUUID(), customTo, fromplayer.getName(), customTo, customOrderer,
 				amount, ActionLoggerEvent.Type.TAKEN, comment));		

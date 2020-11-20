@@ -14,9 +14,9 @@ import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class ARGMoneyLoan_Pause extends ArgumentModule
@@ -79,7 +79,7 @@ public class ARGMoneyLoan_Pause extends ArgumentModule
 					.replace("%name%", dr.getName())
 					.replace("%player%", player.getName()));
 			player.sendMessage(msg);
-			EcoPlayer fromplayer = EcoPlayerHandler.getEcoPlayer(dr.getFrom());
+			AEPUser fromplayer = AEPUserHandler.getEcoPlayer(dr.getFrom());
 			boolean bungee = EconomySettings.settings.isBungee();
 			if(fromplayer.isMoneyPlayerFlow())
 			{
@@ -102,7 +102,7 @@ public class ARGMoneyLoan_Pause extends ArgumentModule
 					.replace("%name%", dr.getName())
 					.replace("%player%", player.getName()));
 			player.sendMessage(msg);
-			EcoPlayer fromplayer = EcoPlayerHandler.getEcoPlayer(dr.getFrom());
+			AEPUser fromplayer = AEPUserHandler.getEcoPlayer(dr.getFrom());
 			boolean bungee = EconomySettings.settings.isBungee();
 			if(fromplayer.isMoneyPlayerFlow())
 			{

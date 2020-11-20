@@ -9,9 +9,9 @@ import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 
 public class ARGMoneyLoggerSettings extends ArgumentModule
 {
@@ -28,7 +28,7 @@ public class ARGMoneyLoggerSettings extends ArgumentModule
 	{
 		Player player = (Player) sender;
 		String otherplayername = player.getName();
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(otherplayername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(otherplayername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!

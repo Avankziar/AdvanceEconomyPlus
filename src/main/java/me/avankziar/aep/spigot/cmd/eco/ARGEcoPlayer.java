@@ -7,8 +7,8 @@ import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class ARGEcoPlayer extends ArgumentModule
@@ -32,7 +32,7 @@ public class ARGEcoPlayer extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!

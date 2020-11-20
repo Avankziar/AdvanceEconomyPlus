@@ -553,7 +553,10 @@ public interface TableIII
 				} else
 				{
 					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+					/*
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";*/
 				}
 				
 		        preparedStatement = conn.prepareStatement(sql);

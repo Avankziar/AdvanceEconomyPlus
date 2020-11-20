@@ -2,7 +2,7 @@ package main.java.me.avankziar.aep.spigot.object;
 
 import java.util.List;
 
-public class EcoPlayer
+public class AEPUser
 {
 	private int id;
 	private String uuid;
@@ -15,7 +15,7 @@ public class EcoPlayer
 	private boolean frozen; //To Freeze a Playeraccount
 	private List<String> bankAccountNumber;
 	
-	public EcoPlayer(int id, String uuid, String name,
+	public AEPUser(int id, String uuid, String name,
 			double balance, List<String> bankAccountNumber,
 			boolean moneyPlayerFlow, boolean moneyBankFlow, boolean generalMessage,
 			String pendingInvite, boolean frozen)

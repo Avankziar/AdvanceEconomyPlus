@@ -19,8 +19,8 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -87,7 +87,7 @@ public class ARGMoneySet extends ArgumentModule
 				
 			}
 		}
-		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
+		AEPUser toplayer = AEPUserHandler.getEcoPlayer(toplayername);
 		if(toplayer == null)
 		{
 			//Der Spieler existiert nicht!
@@ -95,7 +95,7 @@ public class ARGMoneySet extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
 			return;
 		}
-		toplayer = EcoPlayerHandler.getEcoPlayer(toplayername);
+		toplayer = AEPUserHandler.getEcoPlayer(toplayername);
 		toplayer.setBalance(amount);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(), "System", toplayer.getUUID(), customTo, toplayer.getName(),

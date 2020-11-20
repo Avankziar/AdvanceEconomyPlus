@@ -20,7 +20,7 @@ import com.gamingmesh.jobs.api.JobsPrePaymentEvent;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 
 public class JobsHook implements Listener
 {
@@ -110,7 +110,7 @@ public class JobsHook implements Listener
 							plugin.getYamlHandler().getL().getString("JobsRebornHook.Comment")
 							.replace("%job%", job)));
 					Bukkit.getPluginManager().callEvent(
-							new TrendLoggerEvent(LocalDate.now(), playeruuid, value, EcoPlayerHandler.getEcoPlayer(op).getBalance()));
+							new TrendLoggerEvent(LocalDate.now(), playeruuid, value, AEPUserHandler.getEcoPlayer(op).getBalance()));
 					playerlist.replace(playeruuid, 0.0);
 				}
 			}
@@ -143,7 +143,7 @@ public class JobsHook implements Listener
 								plugin.getYamlHandler().getL().getString("JobsRebornHook.Comment")
 								.replace("%job%", job)));
 						Bukkit.getPluginManager().callEvent(
-								new TrendLoggerEvent(LocalDate.now(), playeruuid, value, EcoPlayerHandler.getEcoPlayer(op).getBalance()));
+								new TrendLoggerEvent(LocalDate.now(), playeruuid, value, AEPUserHandler.getEcoPlayer(op).getBalance()));
 						playerlist.replace(playeruuid, 0.0);
 					}
 				}

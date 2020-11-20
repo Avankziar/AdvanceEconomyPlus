@@ -10,7 +10,7 @@ import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 
@@ -33,7 +33,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -124,7 +124,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -170,7 +170,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -216,7 +216,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -261,7 +261,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -307,7 +307,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -353,7 +353,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -399,7 +399,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -445,7 +445,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -490,7 +490,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -536,7 +536,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -580,7 +580,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -626,7 +626,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -673,7 +673,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -720,7 +720,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
@@ -766,7 +766,7 @@ public class LogMethodeHandler
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
 			return;
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(playername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!

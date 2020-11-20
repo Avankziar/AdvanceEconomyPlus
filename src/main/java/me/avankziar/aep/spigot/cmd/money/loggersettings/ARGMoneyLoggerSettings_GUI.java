@@ -12,10 +12,10 @@ import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 
 public class ARGMoneyLoggerSettings_GUI extends ArgumentModule
@@ -66,7 +66,7 @@ public class ARGMoneyLoggerSettings_GUI extends ArgumentModule
 				methode = Methode.valueOf(args[4]);
 			} catch(EnumConstantNotPresentException e) {}
 		}
-		EcoPlayer eco = EcoPlayerHandler.getEcoPlayer(otherplayername);
+		AEPUser eco = AEPUserHandler.getEcoPlayer(otherplayername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!

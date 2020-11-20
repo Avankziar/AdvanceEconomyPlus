@@ -18,6 +18,7 @@ GeneralHover: '§eKlick mich!'
 GeneralError: '§cEs passiert gerade ein genereller Fehler beim Befehl: &f%cmd% | %message%'
 OtherCmd: '&cBitte nutze den Befehl, mit einem weiteren Argument aus der Tabliste!'
 InterestCantBeUnderMinus100: '&eZinsen können nicht kleiner oder gleich -100 % sein!'
+
 StandingOrder:
   Orderer: 'Dauerauftrag'
   Comment: '&eDauerauftrag &f%name%'
@@ -40,6 +41,7 @@ HeadDatabase:
 QickShopHook:
   Sell: '&eShop: &f%amount% &6x &b%item% &ean &f%player% &averkauft&e!'
   Buy: '&eShop: &f%amount% &6x &b%item% &evon &f%player% &cgekauft&e!'
+  
 CmdEco:
   BaseInfo:
     Headline: '&e=====&7[&2Economy &bInfo&7]&e====='
@@ -217,7 +219,7 @@ CmdMoney:
     AlreadyWaitingLoanProposal: '&cDu hast schon einen Kredit in Bearbeitung!'
     ThereAreNoPlayers: '&cDie angegebenen Spieler müssen auch existieren!'
     YouCantBeTheOwnerOfYourOwnLoan: '&cDu kannst nicht der Krediteigentümer sein, wenn der Kredit an dich geht!'
-    ContractAtTheExpenseOfThirdParties: '&cDu darfst kei'
+    ContractAtTheExpenseOfThirdParties: '&cDu darfst keine Kredite zu Lasten Dritter beschließen!'
     LoanAlreadyPaidOff: '&cKredit ist schon abbezahlt!'
     LoanAlreadyForgiven: '&cRestkredit ist schon vergeben worden!'
     HoverInfo: '&eID: &f%id%~!~&eName: &f%name%~!~&eKreditnehmer: &f%from%~!~&eKreditgeber: &f%to%~!~&eKrediteigentümer: &f%owner%~!~&eStartdatum: &f%st%~!~&eEnddatum: &f%et%~!~&eRatenzyklus: &f%rt%~!~&eBetrag: &r%apsf%&r/&3%ta%~!~&eRatenbetrag: &f%ar%~!~&eZinssatz: &f%in% %~!~&eIst Pausiert: &f%pa%~!~&eIst Vergeben: &e%fo%~!~&eIst Abbezahlt: &f%fi%'

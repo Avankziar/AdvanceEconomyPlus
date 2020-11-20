@@ -18,6 +18,7 @@ GeneralHover: '&eClick me!'
 GeneralError: '&cThere is a general error in the command right now: &f%cmd% | %message%'
 OtherCmd: '&cPlease use the command with another argument from the tab list!'
 InterestCantBeUnderMinus100: '&eInterest cannot be less than or equal to -100 %!'
+
 StandingOrder:
   Orderer: 'StandingOrder'
   Comment: '&eStandingOrder &f%name%'

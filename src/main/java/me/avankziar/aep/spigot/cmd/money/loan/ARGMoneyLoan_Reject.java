@@ -11,10 +11,10 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
-import main.java.me.avankziar.aep.spigot.handler.EcoPlayerHandler;
+import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EcoPlayer;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.EconomySettings;
 
 public class ARGMoneyLoan_Reject extends ArgumentModule
@@ -44,7 +44,7 @@ public class ARGMoneyLoan_Reject extends ArgumentModule
 			return;
 		}
 		LoanRepayment dr = PendingHandler.loanToAccept.get(player.getUniqueId().toString());
-		EcoPlayer toplayer = EcoPlayerHandler.getEcoPlayer(dr.getLoanOwner());
+		AEPUser toplayer = AEPUserHandler.getEcoPlayer(dr.getLoanOwner());
 		String tomsg = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Reject.isRejecting")
 				.replace("%toplayer%", toplayer.getName())
 				.replace("%name%", dr.getName())
