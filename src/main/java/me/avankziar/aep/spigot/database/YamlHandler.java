@@ -90,7 +90,7 @@ public class YamlHandler
 			}
 		}
 		//Laden der config.yml
-		if(!loadYamlTask(config, cfg, "config.yml"))
+		if(!loadYamlTask(config, cfg))
 		{
 			return false;
 		}
@@ -113,7 +113,9 @@ public class YamlHandler
 				e.printStackTrace();
 			}
 		}
-		if(!loadYamlTask(commands, com, "commands.yml"))
+		
+		//TODO
+		if(!loadYamlTask(commands, com))
 		{
 			return false;
 		}
@@ -142,7 +144,7 @@ public class YamlHandler
 			return false;
 		}
 		
-		if(!mkdirFilterSettings())
+		if(!mkdirLoggerSettings())
 		{
 			return false;
 		}
@@ -170,7 +172,7 @@ public class YamlHandler
 			}
 		}
 		//Laden der Datei
-		if(!loadYamlTask(language, lang, languageString+".yml"))
+		if(!loadYamlTask(language, lang))
 		{
 			return false;
 		}
@@ -179,7 +181,7 @@ public class YamlHandler
 		return true;
 	}
 	
-	private boolean mkdirFilterSettings() throws IOException
+	private boolean mkdirLoggerSettings() throws IOException
 	{
 		String languageString = plugin.getYamlManager().getLanguageType().toString().toLowerCase();
 		File directory = new File(plugin.getDataFolder()+"/LoggerSettings/");
@@ -187,10 +189,10 @@ public class YamlHandler
 		{
 			directory.mkdir();
 		}
-		loggersettings = new File(directory.getPath(), languageString+"loggersettings.yml");
+		loggersettings = new File(directory.getPath(), languageString+"_ls.yml");
 		if(!loggersettings.exists()) 
 		{
-			AdvancedEconomyPlus.log.info("Create %lang%loggersettings.yml...".replace("%lang%", languageString));
+			AdvancedEconomyPlus.log.info("Create %lang%_ls.yml...".replace("%lang%", languageString));
 			try
 			{
 				FileUtils.copyToFile(plugin.getResource("default.yml"), loggersettings);
@@ -200,7 +202,7 @@ public class YamlHandler
 			}
 		}
 		//Laden der Datei
-		if(!loadYamlTask(loggersettings, ls, languageString+"loggersettings.yml"))
+		if(!loadYamlTask(loggersettings, ls))
 		{
 			return false;
 		}
@@ -209,7 +211,7 @@ public class YamlHandler
 		return true;
 	}
 	
-	private boolean loadYamlTask(File file, YamlConfiguration yaml, String filename)
+	private boolean loadYamlTask(File file, YamlConfiguration yaml)
 	{
 		try 
 		{
@@ -217,7 +219,7 @@ public class YamlHandler
 		} catch (IOException | InvalidConfigurationException e) 
 		{
 			AdvancedEconomyPlus.log.severe(
-					"Could not load the %file% file! You need to regenerate the %file%! Error: ".replace("%file%", filename)
+					"Could not load the %file% file! You need to regenerate the %file%! Error: ".replace("%file%", file.getName())
 					+ e.getMessage());
 			e.printStackTrace();
 			return false;
@@ -227,6 +229,7 @@ public class YamlHandler
 	
 	private boolean writeFile(File file, YamlConfiguration yml, LinkedHashMap<String, Language> keyMap) throws IOException
 	{
+		yml.options().header("For more explanation see \n https://www.spigotmc.org/resources/advanced-economy-plus.79828/");
 		for(String key : keyMap.keySet())
 		{
 			Language languageObject = keyMap.get(key);

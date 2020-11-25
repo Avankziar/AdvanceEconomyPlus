@@ -62,6 +62,7 @@ public class ARGMoneyActionLog extends ArgumentModule
 		if(fst == null)
 		{
 			fst = new LoggerSettings(player.getUniqueId(), null, page);
+			fst.setAction(true);
 		}
 		if(playername != null)
 		{
@@ -71,6 +72,13 @@ public class ARGMoneyActionLog extends ArgumentModule
 				fst.getActionFilter().setFrom(eco.getUUID());
 				fst.getActionFilter().setTo(eco.getUUID());
 			}
+		}
+		if(LoggerSettingsHandler.getLoggerSettings().containsKey(player.getUniqueId()))
+		{
+			LoggerSettingsHandler.getLoggerSettings().replace(player.getUniqueId(), fst);
+		} else
+		{
+			LoggerSettingsHandler.getLoggerSettings().put(player.getUniqueId(), fst);
 		}
 		fsth.forwardingToOutput(player, fst, true, Methode.LOG, page);
 		return;

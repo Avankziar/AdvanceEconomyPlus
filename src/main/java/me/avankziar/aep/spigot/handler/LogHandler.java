@@ -17,6 +17,7 @@ import main.java.me.avankziar.aep.spigot.assistance.ChatApiSmall;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
+import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -115,17 +116,41 @@ public class LogHandler
 		player.spigot().sendMessage(MSG);
 	}
 	
-	public static void sendActionLogs(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<ActionLogger> list,
+	public static void sendActionLogs(AdvancedEconomyPlus plugin, Player player, AEPUser eco,
+			LoggerSettings fst, ArrayList<ActionLogger> list,
 			int page, int end, String playername, int last,  String cmdstring)
 	{
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Log.Headline")
-				.replace("%name%", eco.getName())
-				.replace("%amount%", String.valueOf(last))));
 		boolean lastpage = false;
 		if(end > last)
 		{
 			lastpage = true;
 		}
+		String name = eco.getName();
+		if(fst.getActionFilter().getFrom() != null && fst.getActionFilter().getTo() != null)
+		{
+			if(fst.getActionFilter().getFrom().equals(fst.getActionFilter().getTo())
+					&& !MatchApi.isBankAccountNumber(fst.getActionFilter().getFrom()))
+			{
+				UUID uuid = UUID.fromString(fst.getActionFilter().getFrom());
+				if(uuid != null)
+				{
+					AEPUser user = AEPUserHandler.getEcoPlayer(uuid);
+					if(user != null)
+					{
+						name = user.getName();
+					}
+				} else
+				{
+					name = fst.getActionFilter().getFrom();
+				}
+			} /*else
+			{
+				//TODO BANK
+			}*/
+		}
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Log.Headline")
+				.replace("%name%", name)
+				.replace("%amount%", String.valueOf(last))));
 		for(ActionLogger el : list)
 		{
 			String orderer = "";
@@ -156,10 +181,21 @@ public class LogHandler
 			HashMap<String,String> map = new HashMap<String,String>();
 			map.put("%orderer%", orderer);
 			map.put("%comment%", comment);
+			
+			String sender = player.getUniqueId().toString();
+			String reciver = player.getUniqueId().toString();
+			if(fst.getActionFilter().getFrom() != null)
+			{
+				sender = fst.getActionFilter().getFrom();
+			}
+			if(fst.getActionFilter().getTo() != null)
+			{
+				reciver = fst.getActionFilter().getTo();
+			}
 			if(MatchApi.isBankAccountNumber(el.getFromUUIDOrNumber()))
 			{
 				if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG) && 
-						(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
+						(el.getOrdereruuid().equals(reciver) 
 								|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT)))
 				{
 					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
@@ -182,7 +218,7 @@ public class LogHandler
 							.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
 							.replace("%id%", String.valueOf(el.getId())),
 							map));
-				} else if(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
+				} else if(el.getOrdereruuid().equals(reciver) 
 						|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))
 				{
 					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
@@ -211,7 +247,7 @@ public class LogHandler
 				if(MatchApi.isBankAccountNumber(el.getToUUIDOrNumber()))
 				{
 					if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG) && 
-							(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
+							(el.getOrdereruuid().equals(sender) 
 									|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT)))
 					{
 						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
@@ -234,7 +270,7 @@ public class LogHandler
 								.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
 								.replace("%id%", String.valueOf(el.getId())),
 								map));
-					} else if(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
+					} else if(el.getOrdereruuid().equals(sender) 
 							|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))
 					{
 						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
@@ -260,10 +296,10 @@ public class LogHandler
 					}
 				} else //isUUID
 				{
-					if(el.getFromUUIDOrNumber().equals(eco.getUUID()))
+					if(el.getFromUUIDOrNumber().equals(sender))
 					{
 						if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG) && 
-								(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
+								(el.getOrdereruuid().equals(reciver) 
 										|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT)))
 						{
 							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
@@ -286,7 +322,7 @@ public class LogHandler
 									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
-						} else if(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
+						} else if(el.getOrdereruuid().equals(reciver) 
 								|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))
 						{
 							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
@@ -313,7 +349,7 @@ public class LogHandler
 					} else
 					{
 						if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG) && 
-								(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
+								(el.getOrdereruuid().equals(sender) 
 										|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT)))
 						{
 							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
@@ -336,7 +372,7 @@ public class LogHandler
 									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
-						} else if(el.getOrdereruuid().equals(player.getUniqueId().toString()) 
+						} else if(el.getOrdereruuid().equals(sender) 
 								|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))
 						{
 							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
@@ -1098,7 +1134,8 @@ public class LogHandler
 				.replace("%value%", AdvancedEconomyPlus.getVaultApi().format(total))));
 	}
 	
-	public static void sendTrendLogs(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<TrendLogger> list,
+	public static void sendTrendLogs(AdvancedEconomyPlus plugin, Player player, AEPUser eco,
+			LoggerSettings fst, ArrayList<TrendLogger> list,
 			int page, int end, String playername, int last, String cmdstring)
 	{
 		boolean lastpage = false;
@@ -1106,8 +1143,31 @@ public class LogHandler
 		{
 			lastpage = true;
 		}
+		String name = eco.getName();
+		if(fst.getActionFilter().getFrom() != null && fst.getActionFilter().getTo() != null)
+		{
+			if(fst.getActionFilter().getFrom().equals(fst.getActionFilter().getTo())
+					&& !MatchApi.isBankAccountNumber(fst.getActionFilter().getFrom()))
+			{
+				UUID uuid = UUID.fromString(fst.getActionFilter().getFrom());
+				if(uuid != null)
+				{
+					AEPUser user = AEPUserHandler.getEcoPlayer(uuid);
+					if(user != null)
+					{
+						name = user.getName();
+					}
+				} else
+				{
+					name = fst.getActionFilter().getFrom();
+				}
+			} /*else
+			{
+				//TODO BANK
+			}*/
+		}
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.Headline")
-				.replace("%player%", eco.getName())
+				.replace("%player%", name)
 				.replace("%amount%", String.valueOf(last))));
 		for(TrendLogger tl : list)
 		{

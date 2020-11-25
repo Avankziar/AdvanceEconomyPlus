@@ -81,7 +81,7 @@ public class ARGMoneyLoggerSettings_GUI extends ArgumentModule
 		{
 			if(!LoggerSettingsHandler.getLoggerSettings().containsKey(player.getUniqueId()))
 			{
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getConfig().getString("CmdMoney.Log.NoLoggerSettingsFound")));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Log.NoLoggerSettingsFound")));
 				return;
 			}
 			LoggerSettings fst = LoggerSettingsHandler.getLoggerSettings().get(player.getUniqueId());

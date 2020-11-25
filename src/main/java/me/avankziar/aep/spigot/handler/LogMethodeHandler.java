@@ -1,19 +1,5 @@
 package main.java.me.avankziar.aep.spigot.handler;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import org.bukkit.entity.Player;
-
-import main.java.me.avankziar.aep.general.ChatApi;
-import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
-import main.java.me.avankziar.aep.spigot.object.TrendLogger;
-
 public class LogMethodeHandler
 {
 	public enum Methode
@@ -21,7 +7,7 @@ public class LogMethodeHandler
 		BARCHART, DIAGRAM, GRAFIC, LOG;
 	}
 	
-	public static void actionLog(AdvancedEconomyPlus plugin,
+	/*public static void actionLog(AdvancedEconomyPlus plugin,
 			Methode methode,
 			Player player, String playername,
 			int page,
@@ -807,5 +793,5 @@ public class LogMethodeHandler
 			return;
 		}
 		return;
-	}
+	}*/
 }

@@ -64,11 +64,19 @@ public class ARGMoneyTrendLog extends ArgumentModule
 		if(fst == null)
 		{
 			fst = new LoggerSettings(player.getUniqueId(), null, page);
+			fst.setAction(false);
 		}
 		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
 		if(eco != null)
 		{
 			fst.setUuid(UUID.fromString(eco.getUUID()));
+		}
+		if(LoggerSettingsHandler.getLoggerSettings().containsKey(player.getUniqueId()))
+		{
+			LoggerSettingsHandler.getLoggerSettings().replace(player.getUniqueId(), fst);
+		} else
+		{
+			LoggerSettingsHandler.getLoggerSettings().put(player.getUniqueId(), fst);
 		}
 		fsth.forwardingToOutput(player, fst, false, Methode.LOG, page);
 		return;

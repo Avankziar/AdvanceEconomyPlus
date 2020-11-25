@@ -73,7 +73,13 @@ public class YamlManager
 		}
 		if(keyMap.get(key).languageValues.get(languageType).length == 1)
 		{
-			yml.set(key, keyMap.get(key).languageValues.get(languageType)[0]);
+			if(keyMap.get(key).languageValues.get(languageType)[0] instanceof String)
+			{
+				yml.set(key, ((String) keyMap.get(key).languageValues.get(languageType)[0]).replace("\r\n", ""));
+			} else
+			{
+				yml.set(key, keyMap.get(key).languageValues.get(languageType)[0]);
+			}
 		} else
 		{
 			List<Object> list = Arrays.asList(keyMap.get(key).languageValues.get(languageType));
@@ -84,10 +90,10 @@ public class YamlManager
 				{
 					if(o instanceof String)
 					{
-						stringList.add((String) o);
+						stringList.add(((String) o).replace("\r\n", ""));
 					} else
 					{
-						stringList.add(o.toString());
+						stringList.add(o.toString().replace("\r\n", ""));
 					}
 				}
 			}
@@ -421,21 +427,21 @@ public class YamlManager
 		
 		basePermission = "eco.cmd.money.loggersettings";
 		argumentInput("money_loggersettings_gui", "gui", basePermission,
-				"/money loggersetting gui [playername] [page] [methode]", "/money loggersetting gui ",
-				"&c/money loggersetting gui [Spielername] [Seitenzahl] [Methode] &f| Öffnet die Gui und mit angegebenen Argumenten gibt es die Daten in Form von Log, Diagram etc. aus.",
-				"&c/money loggersetting gui [playername] [page] [methode] &f| Opens the gui and with given arguments it outputs the data in form of log, diagram etc.",
+				"/money loggersettings gui [playername] [page] [methode]", "/money loggersettings gui ",
+				"&c/money loggersettings gui [Spielername] [Seitenzahl] [Methode] &f| Öffnet die Gui und mit angegebenen Argumenten gibt es die Daten in Form von Log, Diagram etc. aus.",
+				"&c/money loggersettings gui [playername] [page] [methode] &f| Opens the gui and with given arguments it outputs the data in form of log, diagram etc.",
 				"Open the Gui for the loggersettings for Action- and trendlog. And display choosen settings as log, diagram etc.");
 		
 		argumentInput("money_loggersettings_other", "other", basePermission,
-				"/money loggersetting other [playername]", "/money loggersetting other ",
-				"&c/money loggersetting other [Spielername] &f| Öffnet die Gui eines anderen Spielers.",
-				"&c/money loggersetting other [playername] &f| Opens the gui of another player.",
+				"/money loggersetting other [playername]", "/money loggersettings other ",
+				"&c/money loggersettings other [Spielername] &f| Öffnet die Gui eines anderen Spielers.",
+				"&c/money loggersettings other [playername] &f| Opens the gui of another player.",
 				"Open the Gui for the loggersettings of a other player for Action- and trendlog");
 		
 		argumentInput("money_loggersettings_text", "text", basePermission,
-				"/money loggersetting text <Text...>", "/money loggersetting text ",
-				"&c/money loggersetting text <Text...> &f| Texteditor für bestimmte Parameter der Gui.",
-				"&c/money loggersetting text <Text...> &f| Text editor for certain parameters of the Gui.",
+				"/money loggersettings text <Text...>", "/money loggersettings text ",
+				"&c/money loggersettings text <Text...> &f| Texteditor für bestimmte Parameter der Gui.",
+				"&c/money loggersettings text <Text...> &f| Text editor for certain parameters of the Gui.",
 				"Set a Searchtext for the comment, from, to or orderer value. (Always gui first!)");
 	}
 	
@@ -782,7 +788,7 @@ public class YamlManager
 				""}));*/
 	}
 	
-	private void langEco()
+	private void langEco() //TODO:LangEco
 	{
 		String base = "CmdEco.";
 		languageKeys.put(base+"BaseInfo.Headline"
@@ -838,7 +844,7 @@ public class YamlManager
 				"&eThe note from log &f#%id% &was changed to: &r%comment%"}));
 	}
 	
-	private void langMoney()
+	private void langMoney() //TODO:LangMoney
 	{
 		String base = "CmdMoney.";
 		languageKeys.put(base+"PlayerBalance"
@@ -916,123 +922,123 @@ public class YamlManager
 		languageKeys.put(base+"LoanDontExist"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDer Kredit existiert nicht!",
-				""}));
+				"&cThe loan does not exist!"}));
 		languageKeys.put(base+"NoToAcceptLoan"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDir hat niemand ein Kredit vorgeschlagen!",
-				""}));
+				"&cNo one has suggested a loan to you!"}));
 		languageKeys.put(base+"AlreadyHavingProposal"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cSpieler hat schon einen Kreditvorschlag bekommen. Dieser muss er zuerst ablehenen.",
-				""}));
+				"&cSpieler has already received a loan proposal. He has to reject it first."}));
 		languageKeys.put(base+"NoWaitingLoanProposal"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu hast keinen Kredit in Bearbeitung!",
-				""}));
+				"&cYou have no loan in process!"}));
 		languageKeys.put(base+"AlreadyWaitingLoanProposal"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu hast schon einen Kredit in Bearbeitung!",
-				""}));
+				"&cYou already have a loan in process!"}));
 		languageKeys.put(base+"ThereAreNoPlayers"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDie angegebenen Spieler müssen auch existieren!",
-				""}));
+				"&cThe specified players must also exist!"}));
 		languageKeys.put(base+"YouCantBeTheOwnerOfYourOwnLoan"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu kannst nicht der Krediteigentümer sein, wenn der Kredit an dich geht!",
-				""}));
+				"&cYou cannot be the loan owner if the loan goes to you!"}));
 		languageKeys.put(base+"ContractAtTheExpenseOfThirdParties"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu darfst keine Kredite zu Lasten Dritter beschließen!",
-				""}));
+				"&cYou may not decide on loans at the expense of third parties!"}));
 		languageKeys.put(base+"LoanAlreadyPaidOff"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cKredit ist schon abbezahlt!",
-				""}));
+				"&cCredit is already paid off!"}));
 		languageKeys.put(base+"LoanAlreadyForgiven"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cRestkredit ist schon vergeben worden!",
-				""}));
+				"&cRestloan has already been forgiven!"}));
 		languageKeys.put(base+"HoverInfo"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eID: &f%id%~!~&eName: &f%name%~!~&eKreditnehmer: &f%from%~!~&eKreditgeber: &f%to%~!~&eKrediteigentümer: &f%owner%~!~&eStartdatum: &f%st%~!~&eEnddatum: &f%et%~!~&eRatenzyklus: &f%rt%~!~&eBetrag: &r%apsf%&r/&3%ta%~!~&eRatenbetrag: &f%ar%~!~&eZinssatz: &f%in% %~!~&eIst Pausiert: &f%pa%~!~&eIst Vergeben: &e%fo%~!~&eIst Abbezahlt: &f%fi%",
-				""}));
+				"&eID: &f%id%~!~&eName: &f%name%~!~&eBorrower: &f%from%~!~&eLenders: &f%to%~!~&eLoanOwner: &f%owner%~!~&eStartdate: &f%st%~!~&eEnddate: &f%et%~!~&eRatecycle: &f%rt%~!~&eAmount: &r%apsf%&r/&3%ta%~!~&eInstalmentamount: &f%ar%~!~&eInterestrate: &f%in% %~!~&eIs Paused: &f%pa%~!~&eIs forgiven: &e%fo%~!~&eIs paid off: &f%fi%"}));
 		languageKeys.put(base+"Accept.YouHaveAccepted"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast das Kreditangebot von &6%drowner% &f%name% &eangenommen!",
-				""}));
+				"&You have accepted the credit offer of &6%drowner% &f%name%."}));
 		languageKeys.put(base+"Accept.PayerHasAccepted"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDer Spieler &f%player% &ehast das Kreditangebot &e%name% &evon &f%toplayer% &eangenommen.",
-				""}));
+				"&eThe player &f%player% &ehas accepted the credit offer &e%name% &f%toplayer%."}));
 		languageKeys.put(base+"Amount.SetsAmounts"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDer Kredit &f%name% &ewurde bearbeitet.",
-				""}));
+				"&eThe loan &f%name% &ewas processed."}));
 		languageKeys.put(base+"Amount.Hover"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eGesamtbetrag: &r%ta% %currency% (Zinsen schon mit eingerechnet)~!~&eRaten: &r%am% %currency%~!~&eZinsen: &r%in% %~!~Vorraussichtlich Anzahl an Zahlungen: &r%min%",
-				""}));
+				"&ETotal amount: &r%ta% %currency% (interest already included)~!~&eRates: &r%am% %currency%~! &eInterest: &r%in% %~! &r%min%"}));
 		languageKeys.put(base+"Cancel.IsCancelled"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast die Krediterstellung abgebrochen!",
-				""}));
+				"&eYou have cancelled the credit creation!"}));
 		languageKeys.put(base+"Create.isCreate"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast einen Kredit erstellt. Bitte setzte zuerst die anderen Einstellungen, bevor du ihn abschickst.",
-				""}));
+				"&eYou have created a loan. Please set the other settings first before you send it."}));
 		languageKeys.put(base+"Forgive.CanBeUndone"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDie Schulden des Kredit sind schon vergeben worden. Es kann nicht rückgängig gemacht werden!",
-				""}));
+				"&cThe debts of the loan have already been forgiven. It cannot be reversed!"}));
 		languageKeys.put(base+"Forgive.LoanIsForgiven"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDer verbleibende Kreditbetrag von &r%dif% %currency%&e, welcher Spieler &f%from% %to% &eschuldet wurde von Spieler &f%player% &evergeben.",
-				""}));
+				"&eThe remaining credit amount of &r%dif% %currency%&e, which player &f%from% %to% &eowed by player &f%player% &was &credited by player"}));
 		languageKeys.put(base+"Info.Headline"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&e===&7[&bKreditinfo &3%id%&f-&6%name%&7]&e===",
-				""}));
+				"&e===&7[&bLoaninfo &3%id%&f-&6%name%&7]&e==="}));
 		languageKeys.put(base+"Info.Participants"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c%form% &ehat geliehen von &a%to% &1| &2Eigentümer: &f%Loanowner%",
-				""}));
+				"&c%form% &has borrowed from &a%to% &1| &2Owner: &f%Loanowner%"}));
 		languageKeys.put(base+"Info.Amounts"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cBeträge: &a%amountpaidsofar%&f/&4%totalamount% &r%currency%",
-				""}));
+				"&cAmounts: &a%amountpaidsofar%&f/&4%totalamount% &r%currency%"}));
 		languageKeys.put(base+"Info.Interest"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cZinssatz: &f%interest% % &1| &cZinsen: &r%interestamount% %currency%",
-				""}));
+				"&cInterest rate: &f%interest% % &1| &cInterest: &r%interestamount% %currency%"}));
 		languageKeys.put(base+"Info.Ratio"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cZeitzyklus: &r%repeatingtime% &1| &cRatebetrag: &r%amountratio%",
-				""}));
+				"&cTime cycle: &r%repeatingtime% &1| &cRate amount: &r%amountratio%"}));
 		languageKeys.put(base+"Info.Times"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cStartzeit: &r%starttime% &1| &cEndzeit: &r%endtime%",
-				""}));
+				"&cStart time: &r%starttime% &1| &cEnd Time: &r%endtime%"}));
 		languageKeys.put(base+"Info.TheoreticalNumberOfRates"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cTheoretische Anzahl an noch benötigten Zahlungen: %r%theoreticalnumber%",
-				""}));
+				"&cTheoretical number of payments still needed: %r%theoreticalnumber%"}));
 		languageKeys.put(base+"Inherit.SomeoneInherit"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast dem Spieler &f%newplayer% &eden Kredit &f%id% %e| &f%name% &evon &f%oldplayer% &eerben lassen.",
-				""}));
+				"&eYou have herited the player &f%newplayer% &the loan &f%id% %e| &f%name% &eof &f%oldplayer%."}));
 		languageKeys.put(base+"Inherit.YouInherit"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDer Spieler &f%player% &ehat dich den Kredit &f%id% &e| &f%name% &evon &f%oldplayer% &eerben lassen.",
-				""}));
+				"&eThe player &f%player% &ehas left you the loan &f%id% &e| &f%name% &eof &f%oldplayer% &leave you an inheritance"}));
 		languageKeys.put(base+"List.Headline"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&e=====&7[&2Kredite von &b%player%&7]&e=====",
-				""}));
+				"&e=====&7[&2Loans von &b%player%&7]&e====="}));
 		languageKeys.put(base+"Pause.Unpaused"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDer Spieler &f%player% &ehat den Kredit &f%name% &ewieder aufgenommen. Zahlungen werden bald erfolgen!",
-				""}));
+				"&EThe player &f%player% &ehas taken out the loan &f%name% &eresumed. Payments will be made soon!"}));
 		languageKeys.put(base+"Pause.Pause"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDer Spieler &f%player% &ehat den Kredit &f%name% &epausiert. Zahlungen werden ausbleiben solange pausiert wird!",
@@ -1204,6 +1210,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eKlicke hier auf die Nachricht, um einen Befehlsvorschlag zu erhalten. Tippe dann dein Suchtext ein und drücke &b>Enter<",
 				"&eClick here on the message to get a command suggestion. Then type in your search text and press &b>Enter<"}));
+		languageKeys.put(base+"LoggerSettingsTextOnlyThroughGUI"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBitte den Befehl nur nutzten, wenn man durch die GUI aufgefordert wird!",
+				"&cPlease use this command only when prompted by the GUI!"}));
 		
 		base = "CmdMoney.Freeze.";
 		languageKeys.put(base+"YouFrozenSomeone"

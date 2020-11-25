@@ -137,22 +137,22 @@ public class MoneyCommandExecutor implements CommandExecutor
 				}
 			}
 		}
-		String arg = "";
+		/*String arg = "";
 		for(String s : args)
 		{
 			arg += s;
-		}
+		}*/
 		if(player != null)
 		{
 			///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 			player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getL().getString("InputIsWrong"),
 					ClickEvent.Action.RUN_COMMAND, AdvancedEconomyPlus.infoCommand));
-			AdvancedEconomyPlus.log.info(sender.getName() + " send command: " + cmd.getName() + arg);
+			//AdvancedEconomyPlus.log.info(sender.getName() + " send command: " + cmd.getName() + arg);
 		} else
 		{
 			sender.sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getL().getString("InputIsWrong"),
 					ClickEvent.Action.RUN_COMMAND, AdvancedEconomyPlus.infoCommand).toLegacyText());
-			AdvancedEconomyPlus.log.info(sender.getName() + " send command: " + cmd.getName() + arg);
+			//AdvancedEconomyPlus.log.info(sender.getName() + " send command: " + cmd.getName() + arg);
 		}
 		
 		return false;

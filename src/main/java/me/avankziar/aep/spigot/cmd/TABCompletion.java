@@ -24,6 +24,15 @@ public class TABCompletion implements TabCompleter
 		this.plugin = plugin;
 	}
 	
+	private void debug(Player player, String s)
+	{
+		boolean bo = false;
+		if(bo)
+		{
+			player.spigot().sendMessage(ChatApi.tctl(s));
+		}
+	}
+	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd,
 			 String lable, String[] args)
@@ -33,18 +42,21 @@ public class TABCompletion implements TabCompleter
 			return null;
 		}
 		Player player = (Player) sender;
+		debug(player, "====================================");
+		debug(player, "CMD: "+cmd.getName());
 		CommandConstructor cc = plugin.getCommandFromPath(cmd.getName());
 		if(cc == null)
 		{
-			cc = plugin.getCommandFromPath(cmd.getName());
+			debug(player, "CC frist time null");
+			cc = plugin.getCommandFromCommandString(cmd.getName());
 		}
 		if(cc == null)
 		{
+			debug(player, "CC second time null");
 			return null;
 		}
 		int length = args.length-1;
 		ArrayList<ArgumentConstructor> aclist = cc.subcommands;
-		debug(player, "====================================");
 		debug(player, "CC: "+cc.getName()+" "+cc.getPath()+" | "+Arrays.toString(args)+" "+length);
 		ArrayList<String> OneArgumentBeforeList = new ArrayList<>();
 		ArgumentConstructor lastAc = null;
@@ -184,15 +196,6 @@ public class TABCompletion implements TabCompleter
 		Collections.sort(returnlist);
 		debug(player, returnlist.toString());
 		return returnlist;
-	}
-	
-	private void debug(Player player, String s)
-	{
-		boolean bo = false;
-		if(bo)
-		{
-			player.spigot().sendMessage(ChatApi.tctl(s));
-		}
 	}
 	
 	public String[] AddToStringArray(String[] oldArray, String newString)

@@ -831,6 +831,10 @@ public class LoggerSettingsHandler
 			{
 				fst.getActionFilter().setOrderer(eco.getUUID().toString());
 			}
+		} else
+		{
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsTextOnlyThroughGUI")));
+			return;
 		}
 		getLoggerSettings().put(player.getUniqueId(), fst);
 		generateGUI(player, player.getUniqueId(), null, null, null, fst.getPage());
@@ -1186,10 +1190,47 @@ public class LoggerSettingsHandler
 			{
 				order = "`amount`";
 			}
-			if(fst.getActionFilter().getFrom() != null)
+			if(fst.getActionFilter().getFrom() != null
+					&& fst.getActionFilter().getTo() != null
+					&& fst.getActionFilter().getFrom().equals(fst.getActionFilter().getTo()))
 			{
 				query += "(`from_uuidornumber` = ? OR ";
 				whereObjects.add(fst.getActionFilter().getFrom());
+				query += "`to_uuidornumber` = ?) AND ";
+				whereObjects.add(fst.getActionFilter().getTo());
+			} else if(fst.getActionFilter().getFrom() != null
+					|| fst.getActionFilter().getTo() != null)
+			{
+				if(fst.getActionFilter().getFrom() != null)
+				{
+					query += "(`from_uuidornumber` = ? AND ";
+					whereObjects.add(fst.getActionFilter().getFrom());
+				} else
+				{
+					query += "(`from_uuidornumber` = ? AND ";
+					if(fst.getUuid() != null)
+					{
+						whereObjects.add(fst.getUuid().toString());
+					} else
+					{
+						whereObjects.add(fst.getBankNumber());
+					}
+				}
+				if(fst.getActionFilter().getTo() != null)
+				{
+					query += "`to_uuidornumber` = ?) AND ";
+					whereObjects.add(fst.getActionFilter().getTo());
+				} else
+				{
+					query += "`to_uuidornumber` = ?) AND ";
+					if(fst.getUuid() != null)
+					{
+						whereObjects.add(fst.getUuid().toString());
+					} else
+					{
+						whereObjects.add(fst.getBankNumber());
+					}
+				}
 			} else
 			{
 				query += "(`from_uuidornumber` = ? OR ";
@@ -1200,13 +1241,6 @@ public class LoggerSettingsHandler
 				{
 					whereObjects.add(fst.getBankNumber());
 				}
-			}
-			if(fst.getActionFilter().getTo() != null)
-			{
-				query += "`to_uuidornumber` = ?) AND ";
-				whereObjects.add(fst.getActionFilter().getTo());
-			} else
-			{
 				query += "`to_uuidornumber` = ?) AND ";
 				if(fst.getUuid() != null)
 				{
@@ -1365,7 +1399,7 @@ public class LoggerSettingsHandler
 						plugin.getMysqlHandler().getList(Type.ACTION, order, fst.isDescending(), start, end,
 								query, whereObject));
 				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
-				LogHandler.sendActionLogs(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
+				LogHandler.sendActionLogs(plugin, player, eco, fst, list, page, end, player.getName(), last, loggerSettingsCommandString);
 				return;
 			} else
 			{
@@ -1375,7 +1409,7 @@ public class LoggerSettingsHandler
 						plugin.getMysqlHandler().getList(Type.TREND, order, fst.isDescending(), start, end,
 								query, whereObject));
 				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
-				LogHandler.sendTrendLogs(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
+				LogHandler.sendTrendLogs(plugin, player, eco, fst, list, page, end, player.getName(), last, loggerSettingsCommandString);
 				return;
 			}
 		}
