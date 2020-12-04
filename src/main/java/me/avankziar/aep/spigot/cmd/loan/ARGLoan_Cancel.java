@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.loan;
+package main.java.me.avankziar.aep.spigot.cmd.loan;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,13 +8,13 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
-public class ARGMoneyLoan_Cancel extends ArgumentModule
+public class ARGLoan_Cancel extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyLoan_Cancel(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGLoan_Cancel(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -24,7 +24,7 @@ public class ARGMoneyLoan_Cancel extends ArgumentModule
 	public void run(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isLoanRepayment())
+		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoLoan")));
@@ -33,12 +33,12 @@ public class ARGMoneyLoan_Cancel extends ArgumentModule
 		if(!PendingHandler.loanRepayment.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Loan.NoWaitingLoanProposal")));
+					plugin.getYamlHandler().getL().getString("CmdLoan.NoWaitingLoanProposal")));
 			return;
 		}
 		PendingHandler.loanRepayment.remove(player.getUniqueId().toString());
 		player.sendMessage(ChatApi.tl(
-				plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Cancel.IsCancelled")));
+				plugin.getYamlHandler().getL().getString("CmdLoan.Cancel.IsCancelled")));
 		return;
 	}
 }

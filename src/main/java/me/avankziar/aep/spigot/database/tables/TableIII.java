@@ -4,11 +4,18 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.simple.JSONValue;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger.Type;
@@ -584,6 +591,100 @@ public interface TableIII
 		        	}
 		        }
 		        return list;
+		    } catch (SQLException e) 
+			{
+				  AdvancedEconomyPlus.log.warning("Error: " + e.getMessage());
+				  e.printStackTrace();
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedStatement != null) 
+		    		  {
+		    			  preparedStatement.close();
+		    		  }
+		    	  } catch (Exception e) {
+		    		  e.printStackTrace();
+		    	  }
+		      }
+		}
+		return null;
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	default String getJSONOutputIII(AdvancedEconomyPlus plugin, String playerName, String orderByColumn,
+			boolean desc, String whereColumn, Object...whereObject) 
+	{
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
+		{
+			try 
+			{
+				String sql = "";
+				if(desc)
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+				} else
+				{
+					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
+							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
+				}
+				
+		        preparedStatement = conn.prepareStatement(sql);
+		        int i = 1;
+		        for(Object o : whereObject)
+		        {
+		        	preparedStatement.setObject(i, o);
+		        	i++;
+		        }
+		        result = preparedStatement.executeQuery();
+			    List list = new ArrayList();
+			    if(result!=null)
+			    {
+			        try {
+			            ResultSetMetaData metaData = result.getMetaData();
+			            while(result.next())
+			            {
+			                Map<String,Object> columnMap = new HashMap<String, Object>();
+			                for(int columnIndex = 1; columnIndex <= metaData.getColumnCount(); columnIndex++)
+			                {
+			                    String val = result.getString(metaData.getColumnName(columnIndex));
+			                    String key = metaData.getColumnLabel(columnIndex);
+			                    if(val == null)
+			                    {
+			                    	columnMap.put(key, "");
+			                    }
+			                    if(val.isEmpty())
+			                    {
+			                    	columnMap.put(key, "");
+			                    }
+			                    else if (MatchApi.isLong(val))
+			                    {
+			                    	columnMap.put(key, Long.parseLong(val));
+			                    }
+			                    else if (MatchApi.isDouble(val))
+			                    {
+			                    	columnMap.put(key, Double.parseDouble(val));
+			                    }
+			                    else
+			                    {
+			                    	columnMap.put(key,  val);
+			                    }
+			                }
+			                list.add(columnMap);
+			            }
+			        } catch (SQLException e) {
+			            e.printStackTrace();
+			        }
+			     }
+			     return JSONValue.toJSONString(list);
 		    } catch (SQLException e) 
 			{
 				  AdvancedEconomyPlus.log.warning("Error: " + e.getMessage());

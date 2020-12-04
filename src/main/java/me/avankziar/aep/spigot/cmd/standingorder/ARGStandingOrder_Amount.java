@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.standingorder;
+package main.java.me.avankziar.aep.spigot.cmd.standingorder;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,14 +9,14 @@ import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 
-public class ARGMoneyStandingOrder_Amount extends ArgumentModule
+public class ARGStandingOrder_Amount extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyStandingOrder_Amount(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGStandingOrder_Amount(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -26,13 +26,13 @@ public class ARGMoneyStandingOrder_Amount extends ArgumentModule
 	public void run(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isStandingOrder())
+		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
 			return;
 		}
-		String amounts = args[2];
+		String amounts = args[1];
 		double amount = 0;
 		if(!MatchApi.isDouble(amounts))
 		{
@@ -52,17 +52,17 @@ public class ARGMoneyStandingOrder_Amount extends ArgumentModule
 		if(!PendingHandler.standingOrder.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.StandingOrder.NoPendingOrder")));
+					plugin.getYamlHandler().getL().getString("CmdStandingOrder.NoPendingOrder")));
 			return;
 		}
 		StandingOrder so = PendingHandler.standingOrder.get(player.getUniqueId().toString());
 		so.setAmount(amount);
 		PendingHandler.standingOrder.replace(player.getUniqueId().toString(), so);
 		player.sendMessage(ChatApi.tl(
-				plugin.getYamlHandler().getL().getString("CmdMoney.StandingOrder.Amount.SetAmount")
+				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Amount.SetAmount")
 				.replace("%name%", so.getName())
 				.replace("%amount%", amounts)
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())));
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())));
 		return;
 	}
 

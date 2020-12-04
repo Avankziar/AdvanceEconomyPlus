@@ -9,7 +9,7 @@ import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.BankAccount;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class BankAccountHandler
 {
@@ -72,7 +72,7 @@ public class BankAccountHandler
 	
 	public static String getFreeBankAccountNumber()
 	{
-		Type type = EconomySettings.settings.getNumberType();
+		Type type = AEPSettings.settings.getNumberType();
 		switch(type)
 		{
 		case TWO_DIGITS_TIMES_ONE:

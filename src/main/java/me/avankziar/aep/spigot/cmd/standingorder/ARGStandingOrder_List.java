@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.standingorder;
+package main.java.me.avankziar.aep.spigot.cmd.standingorder;
 
 import java.util.ArrayList;
 
@@ -13,19 +13,20 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogHandler;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.handler.KeyHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class ARGMoneyStandingOrder_List extends ArgumentModule
+public class ARGStandingOrder_List extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public ARGMoneyStandingOrder_List(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGStandingOrder_List(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -36,16 +37,16 @@ public class ARGMoneyStandingOrder_List extends ArgumentModule
 	public void run(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isStandingOrder())
+		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
 			return;
 		}
 		int page = 0;
-		if(args.length >= 3)
+		if(args.length >= 2)
 		{
-			String pagenumber = args[2];
+			String pagenumber = args[1];
 			if(MatchApi.isInteger(pagenumber))
 			{
 				page = Integer.parseInt(pagenumber);
@@ -66,20 +67,20 @@ public class ARGMoneyStandingOrder_List extends ArgumentModule
 		{
 			bc.add(ChatApi.tctl("&3"+so.getId()+"&f:&6"+so.getName()+"&f:"));
 			bc.add(ChatApi.apiChat("&eⓘ", 
-					ClickEvent.Action.RUN_COMMAND, plugin.getYamlHandler().getL().getString("CmdMoney.StandingOrder.InfoCmd")+" "+so.getId(),
+					ClickEvent.Action.RUN_COMMAND, AEPSettings.settings.getCommands(KeyHandler.SO_INFO)+" "+so.getId(),
 					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
 			bc.add(ChatApi.apiChat("&c✖", 
-					ClickEvent.Action.SUGGEST_COMMAND, plugin.getYamlHandler().getL().getString("CmdMoney.StandingOrder.DeleteCmd")+" "+so.getId(),
+					ClickEvent.Action.SUGGEST_COMMAND, AEPSettings.settings.getCommands(KeyHandler.SO_DELETE)+" "+so.getId(),
 					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
 			bc.add(ChatApi.tctl(" &1| "));
 		}
 		TextComponent tx = ChatApi.tc("");
 		tx.setExtra(bc);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.StandingOrder.List.Headline")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.List.Headline")
 				.replace("%name%", player.getName())));
 		player.spigot().sendMessage(tx);
 		String cmdstring = plugin.getYamlHandler().getCom().getString(ac.getPath()+".CommandString");
-		LogHandler.pastNextPage(plugin, player, "CmdMoney.", "", page, lastpage, cmdstring);
+		LogHandler.pastNextPage(plugin, player, "Cmd", "", page, lastpage, cmdstring);
 		return;
 	}
 }

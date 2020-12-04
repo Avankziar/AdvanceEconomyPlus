@@ -22,19 +22,24 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.database.Language.ISO639_2B;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.InventoryHandlerType;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.OrderType;
+import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import main.java.me.avankziar.aep.spigot.object.subs.ActionFilterSettings;
 import main.java.me.avankziar.aep.spigot.object.subs.TrendFilterSettings;
-import main.java.me.avankziar.aep.spigot.object.TrendLogger;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
 
 public class LoggerSettingsHandler
 {
+	public enum Methode
+	{
+		BARCHART, DIAGRAM, GRAFIC, LOG, JSON;
+	}
+	
 	public AdvancedEconomyPlus plugin;
 	private static LinkedHashMap<UUID, LoggerSettings> filterSettings = new LinkedHashMap<>();
 	public static String loggerSettingsCommandString = "";
@@ -69,6 +74,7 @@ public class LoggerSettingsHandler
 			switch(i)
 			{
 			//Fall-Through
+			case 31: //Json
 			case 40: //Barchart Befehl ausführen
 			case 48: //Diagram Befehl ausführen. Linksklick: Action | Rechtsklick: Trend
 			case 49: //Log Befehl ausführen.
@@ -162,7 +168,19 @@ public class LoggerSettingsHandler
 		{
 		default:
 			break;
-			
+		case 31:
+			if(event.isLeftClick())
+			{
+				fst.setAction(true);
+				getLoggerSettings().replace(uuid, fst);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, true, Methode.JSON, 0);
+			} else if(event.isRightClick())
+			{
+				fst.setAction(false);
+				getLoggerSettings().replace(uuid, fst);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.JSON, 0);
+			}
+			break;
 		case 40: //Barchart Befehl ausführen
 			fst.setAction(true);
 			getLoggerSettings().replace(uuid, fst);
@@ -908,84 +926,87 @@ public class LoggerSettingsHandler
 						lore.add(s);
 						continue;
 					}
-					if((s.contains("%from%") || s.contains("%to%"))
-							&& (ls.getActionFilter().getFrom() != null || ls.getActionFilter().getTo() != null))
+					if(fst.getActionFilter() != null)
 					{
-						AEPUser eco = null;
-						if(ls.getActionFilter().getFrom() != null)
+						if((s.contains("%from%") || s.contains("%to%"))
+								&& (ls.getActionFilter().getFrom() != null || ls.getActionFilter().getTo() != null))
 						{
-							try
+							AEPUser eco = null;
+							if(ls.getActionFilter().getFrom() != null)
 							{
-								eco = AEPUserHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getFrom()));
-							} catch(IllegalArgumentException e) {}
-						}
-						if(eco != null)
-						{
-							s = s.replace("%from%", eco.getName());
-						} else if(ls.getActionFilter().getFrom() != null)
-						{
-							s = s.replace("%from%", ls.getActionFilter().getFrom());
-						} else
-						{
-							s = s.replace("%from%", "/");
-						}
-						AEPUser ecoII = null;
-						if(ls.getActionFilter().getTo() != null)
-						{
-							try
+								try
+								{
+									eco = AEPUserHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getFrom()));
+								} catch(IllegalArgumentException e) {}
+							}
+							if(eco != null)
 							{
-								ecoII = AEPUserHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getTo()));
-							} catch(IllegalArgumentException e) {}
+								s = s.replace("%from%", eco.getName());
+							} else if(ls.getActionFilter().getFrom() != null)
+							{
+								s = s.replace("%from%", ls.getActionFilter().getFrom());
+							} else
+							{
+								s = s.replace("%from%", "/");
+							}
+							AEPUser ecoII = null;
+							if(ls.getActionFilter().getTo() != null)
+							{
+								try
+								{
+									ecoII = AEPUserHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getTo()));
+								} catch(IllegalArgumentException e) {}
+							}
+							if(ecoII != null)
+							{
+								s = s.replace("%to%", ecoII.getName());
+							} else if(ls.getActionFilter().getTo() != null)
+							{
+								s = s.replace("%to%", ls.getActionFilter().getTo());
+							} else
+							{
+								s = s.replace("%to%", "/");
+							}
+							lore.add(s);
+							continue;
 						}
-						if(ecoII != null)
+						if(s.contains("%orderer%") && ls.getActionFilter().getOrderer() != null)
 						{
-							s = s.replace("%to%", ecoII.getName());
-						} else if(ls.getActionFilter().getTo() != null)
-						{
-							s = s.replace("%to%", ls.getActionFilter().getFrom());
-						} else
-						{
-							s = s.replace("%to%", "/");
-						}
-						lore.add(s);
-						continue;
-					}
-					if(s.contains("%orderer%") && ls.getActionFilter().getOrderer() != null)
-					{
-						AEPUser eco = AEPUserHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getOrderer()));
-						if(eco != null)
-						{
-							s = s.replace("%orderer%", eco.getName());
-						} else if(ls.getActionFilter().getOrderer() != null)
-						{
+							AEPUser eco = AEPUserHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getOrderer()));
+							if(eco != null)
+							{
+								s = s.replace("%orderer%", eco.getName());
+							} else if(ls.getActionFilter().getOrderer() != null)
+							{
+								s = s.replace("%orderer%", ls.getActionFilter().getOrderer());
+							} else
+							{
+								s = s.replace("%orderer%", "/");
+							}
 							s = s.replace("%orderer%", ls.getActionFilter().getOrderer());
-						} else
-						{
-							s = s.replace("%orderer%", "/");
+							lore.add(s);
+							continue;
 						}
-						s = s.replace("%orderer%", ls.getActionFilter().getOrderer());
-						lore.add(s);
-						continue;
-					}
-					if(s.contains("%comment%") && ls.getActionFilter().getComment() != null)
-					{
-						s = s.replace("%comment%", ChatApi.tl(ls.getActionFilter().getComment()));
-						lore.add(s);
-						continue;
+						if(s.contains("%comment%") && ls.getActionFilter().getComment() != null)
+						{
+							s = s.replace("%comment%", ChatApi.tl(ls.getActionFilter().getComment()));
+							lore.add(s);
+							continue;
+						}
 					}
 					if((s.contains("%min%") || s.contains("%max%"))
 							&& (ls.getMin() != null || ls.getMax() != null))
 					{
 						if(ls.getMin() != null)
 						{
-							s = s.replace("%min%", AdvancedEconomyPlus.getVaultApi().format(ls.getMin()));
+							s = s.replace("%min%", AdvancedEconomyPlus.getVault().format(ls.getMin()));
 						} else
 						{
 							s = s.replace("%min%", "/");
 						}
 						if(ls.getMax() != null)
 						{
-							s = s.replace("%max%", AdvancedEconomyPlus.getVaultApi().format(ls.getMax()));
+							s = s.replace("%max%", AdvancedEconomyPlus.getVault().format(ls.getMax()));
 						} else
 						{
 							s = s.replace("%max%", "/");
@@ -995,13 +1016,13 @@ public class LoggerSettingsHandler
 					}
 					if(s.contains("%firststand%") && ls.getTrendfFilter().getFirstStand() != null)
 					{
-						s = s.replace("%firststand%", AdvancedEconomyPlus.getVaultApi().format(ls.getTrendfFilter().getFirstStand()));
+						s = s.replace("%firststand%", AdvancedEconomyPlus.getVault().format(ls.getTrendfFilter().getFirstStand()));
 						lore.add(s);
 						continue;
 					}
 					if(s.contains("%laststand%") && ls.getTrendfFilter().getLastStand() != null)
 					{
-						s = s.replace("%laststand%", AdvancedEconomyPlus.getVaultApi().format(ls.getTrendfFilter().getLastStand()));
+						s = s.replace("%laststand%", AdvancedEconomyPlus.getVault().format(ls.getTrendfFilter().getLastStand()));
 						lore.add(s);
 						continue;
 					}
@@ -1090,7 +1111,7 @@ public class LoggerSettingsHandler
 							s = s.replace("%to%", ecoII.getName());
 						} else if(fst.getActionFilter().getTo() != null)
 						{
-							s = s.replace("%to%", fst.getActionFilter().getFrom());
+							s = s.replace("%to%", fst.getActionFilter().getTo());
 						} else
 						{
 							s = s.replace("%to%", "/");
@@ -1132,14 +1153,14 @@ public class LoggerSettingsHandler
 				{
 					if(fst.getMin() != null)
 					{
-						s = s.replace("%min%", AdvancedEconomyPlus.getVaultApi().format(fst.getMin()));
+						s = s.replace("%min%", AdvancedEconomyPlus.getVault().format(fst.getMin()));
 					} else
 					{
 						s = s.replace("%min%", "/");
 					}
 					if(fst.getMax() != null)
 					{
-						s = s.replace("%max%", AdvancedEconomyPlus.getVaultApi().format(fst.getMax()));
+						s = s.replace("%max%", AdvancedEconomyPlus.getVault().format(fst.getMax()));
 					} else
 					{
 						s = s.replace("%max%", "/");
@@ -1149,13 +1170,13 @@ public class LoggerSettingsHandler
 				}
 				if(s.contains("%firststand%") && fst.getTrendfFilter().getFirstStand() != null)
 				{
-					s = s.replace("%firststand%", AdvancedEconomyPlus.getVaultApi().format(fst.getTrendfFilter().getFirstStand()));
+					s = s.replace("%firststand%", AdvancedEconomyPlus.getVault().format(fst.getTrendfFilter().getFirstStand()));
 					lore.add(s);
 					continue;
 				}
 				if(s.contains("%laststand%") && fst.getTrendfFilter().getLastStand() != null)
 				{
-					s = s.replace("%laststand%", AdvancedEconomyPlus.getVaultApi().format(fst.getTrendfFilter().getLastStand()));
+					s = s.replace("%laststand%", AdvancedEconomyPlus.getVault().format(fst.getTrendfFilter().getLastStand()));
 					lore.add(s);
 					continue;
 				}
@@ -1167,7 +1188,7 @@ public class LoggerSettingsHandler
 		return is;
 	}
 	
-	public void forwardingToOutput(Player player, LoggerSettings fst, boolean isAction, LogMethodeHandler.Methode methode, int page) throws IOException
+	public void forwardingToOutput(Player player, LoggerSettings fst, boolean isAction, Methode methode, int page) throws IOException
 	{
 		if(fst.getActionFilter().getFrom() != null
 				&& fst.getActionFilter().getTo() != null
@@ -1412,6 +1433,32 @@ public class LoggerSettingsHandler
 				LogHandler.sendTrendLogs(plugin, player, eco, fst, list, page, end, player.getName(), last, loggerSettingsCommandString);
 				return;
 			}
+		} else if(Methode.JSON == methode)
+		{
+			if(isAction)
+			{
+				String json = plugin.getMysqlHandler().getJSONOutputIII(plugin, player.getName(), order, fst.isDescending(), query, whereObject);
+				player.spigot().sendMessage(ChatApi.clickEvent(
+						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONOutput"),
+						ClickEvent.Action.COPY_TO_CLIPBOARD,
+						json));
+				player.spigot().sendMessage(ChatApi.clickEvent(
+						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONWebsiteText"),
+						ClickEvent.Action.OPEN_URL,
+						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONWebsite")));
+			} else
+			{
+				String json = plugin.getMysqlHandler().getJSONOutputIV(plugin, player.getName(), order, fst.isDescending(), query, whereObject);
+				player.spigot().sendMessage(ChatApi.clickEvent(
+						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONOutput"),
+						ClickEvent.Action.COPY_TO_CLIPBOARD,
+						json));
+				player.spigot().sendMessage(ChatApi.clickEvent(
+						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONWebsiteText"),
+						ClickEvent.Action.OPEN_URL,
+						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONWebsite")));
+			}
+			return;
 		}
 	}
 	

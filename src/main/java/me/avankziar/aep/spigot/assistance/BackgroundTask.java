@@ -21,7 +21,7 @@ import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.BankAccount;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -38,12 +38,14 @@ public class BackgroundTask
 	public boolean initBackgroundTask()
 	{
 		runInsertMidnightTrendLog();
-		if(EconomySettings.settings.isLoanRepayment())
+		if(AEPSettings.settings.isLoanRepayment() && AEPSettings.settings.isExecuteLoanPayment())
 		{
+			plugin.getLogger().info("Loan Task Timer activate...");
 			runDebtRepayment();
 		}
-		if(EconomySettings.settings.isStandingOrder())
+		if(AEPSettings.settings.isStandingOrder() && AEPSettings.settings.isExecuteStandingOrderPayment())
 		{
+			plugin.getLogger().info("StandingOrder Task Timer activate...");
 			runStandingOrderPayment();
 		}
 		return true;
@@ -65,12 +67,12 @@ public class BackgroundTask
 						AEPUser eco = AEPUserHandler.getEcoPlayer(player.getUniqueId().toString());
 						if(eco == null)
 						{
-							AdvancedEconomyPlus.getVaultApi().createPlayerAccount(player);
+							AdvancedEconomyPlus.getVault().createPlayerAccount(player);
 						}
 						Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
 								LocalDate.now(), eco.getUUID(), 0, eco.getBalance()));
 					}
-					if(EconomySettings.settings.isBank())
+					if(AEPSettings.settings.isBank())
 					{
 						int end = plugin.getMysqlHandler().lastID(MysqlHandler.Type.BANKACCOUNT);
 						for(int i = 1; i <= end; i++)
@@ -123,8 +125,7 @@ public class BackgroundTask
 					}
 					String from = "";
 					String to = "";
-					AEPUser ecofrom = AEPUserHandler.getEcoPlayer(dr.getFrom());
-					AEPUser ecoto = AEPUserHandler.getEcoPlayer(dr.getTo());
+					
 					try
 					{
 						from = Utility.convertUUIDToName(dr.getFrom());
@@ -133,21 +134,23 @@ public class BackgroundTask
 					{
 						continue;
 					}
+					AEPUser ecofrom = AEPUserHandler.getEcoPlayer(from);
+					AEPUser ecoto = AEPUserHandler.getEcoPlayer(to);
 					if(from == null || to == null)
 					{
 						continue;
 					}
-					EconomyResponse er = AdvancedEconomyPlus.getVaultApi().withdrawPlayer(
+					EconomyResponse er = AdvancedEconomyPlus.getVault().withdrawPlayer(
 							Bukkit.getOfflinePlayer(UUID.fromString(dr.getFrom())), dr.getAmountRatio());
 					if(!er.transactionSuccess())
 					{
 						continue;
 					}
-					EconomyResponse err = AdvancedEconomyPlus.getVaultApi().depositPlayer(
+					EconomyResponse err = AdvancedEconomyPlus.getVault().depositPlayer(
 							Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), dr.getAmountRatio());	
 					if(!err.transactionSuccess())
 					{
-						AdvancedEconomyPlus.getVaultApi().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getFrom())), dr.getAmountRatio());
+						AdvancedEconomyPlus.getVault().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getFrom())), dr.getAmountRatio());
 						continue;
 					}
 					dr.setLastTime(now);
@@ -162,7 +165,12 @@ public class BackgroundTask
 							LocalDateTime.now(), dr.getFrom(), dr.getTo(),
 							from, to, plugin.getYamlHandler().getL().getString("LoanRepayment.Orderer"), dr.getAmountRatio(), 
 							ActionLoggerEvent.Type.DEPOSIT_WITHDRAW, 
-							plugin.getYamlHandler().getL().getString("LoanRepayment.Comment").replace("%name%", dr.getName())));
+							plugin.getYamlHandler().getL().getString("LoanRepayment.Comment")
+							.replace("%name%", dr.getName())
+							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+							.replace("%totalpaid%", String.valueOf(dr.getAmountPaidSoFar()))
+							.replace("%waitingamount%", String.valueOf(dr.getTotalAmount()-dr.getAmountPaidSoFar()))
+							));
 					Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
 							LocalDate.now(), dr.getFrom(), -dr.getAmountRatio(), ecofrom.getBalance()));
 					Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), dr.getTo(), dr.getAmountRatio(), ecoto.getBalance()));
@@ -174,79 +182,99 @@ public class BackgroundTask
 	public void runStandingOrderPayment()
 	{
 		int repeat = plugin.getYamlHandler().getConfig().getInt("StandingOrderRepeatTime", 60);
+		AEPSettings.debug(plugin, "INIT METHODE : RunStandingOrderPayment | Repeattime [s] = "+repeat);
 		new BukkitRunnable()
 		{
 			@Override
 			public void run()
 			{
+				AEPSettings.debug(plugin, "> START RUN : StandingOrderPayment");
 				ArrayList<StandingOrder> list = new ArrayList<>();
 				try
 				{
 					list = ConvertHandler.convertListV(
 							plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.STANDINGORDER, "`id`", false,
 									"`cancelled` = ? AND `paused` = ?", false, false));
+					AEPSettings.debug(plugin, "> TRY : StandingOrderPayment");
 				} catch (IOException e)
 				{
+					AEPSettings.debug(plugin, "> CATCH : StandingOrderPayment IOException: "+e.toString());
 					return;
 				}
+				AEPSettings.debug(plugin, "> FOR-LOOP : StandingOrderPayment");
 				for(StandingOrder so : list)
 				{
+					AEPSettings.debug(plugin, ">> NULLCHECK : StandingOrder == null == "+(so == null));
 					long now = System.currentTimeMillis();
 					long sum = so.getLastTime()+so.getRepeatingTime();
-					if(sum>=now)
+					if(sum >= now)
 					{
+						AEPSettings.debug(plugin, ">> CONTINUE : LastTime + RepeatingTime >= System.currentTimeMillis");
 						continue;
 					}
 					String from = "";
 					String to = "";
-					AEPUser ecofrom = AEPUserHandler.getEcoPlayer(so.getFrom());
-					AEPUser ecoto = AEPUserHandler.getEcoPlayer(so.getTo());
 					try
 					{
+						AEPSettings.debug(plugin, ">> TRY : Convert UUID to Name");
 						from = Utility.convertUUIDToName(so.getFrom());
 						to = Utility.convertUUIDToName(so.getTo());
 					} catch (IOException e)
 					{
+						AEPSettings.debug(plugin, ">> CATCH : Convert UUID to Name failed");
 						continue;
 					}
+					AEPUser ecofrom = AEPUserHandler.getEcoPlayer(from);
+					AEPUser ecoto = AEPUserHandler.getEcoPlayer(to);
 					if(from == null || to == null)
 					{
+						AEPSettings.debug(plugin, ">> CONTINUE : One is a Bank, Bank not implemented yet.");
 						continue;
 						//TODO Einer von Beiden ist ne bank.
 					}
 					if(ecofrom == null || ecoto == null)
 					{
-						continue;
-						//Spieler existieren nicht
+						AEPSettings.debug(plugin, ">> CONTINUE : One dont exist");
+						continue; //Spieler existieren nicht
 					}
-					EconomyResponse er = AdvancedEconomyPlus.getVaultApi().withdrawPlayer(
+					EconomyResponse er = AdvancedEconomyPlus.getVault().withdrawPlayer(
 							Bukkit.getOfflinePlayer(UUID.fromString(so.getFrom())), so.getAmount());
 					if(!er.transactionSuccess())
 					{
 						so.setCancelled(true);
 						plugin.getMysqlHandler().updateData(MysqlHandler.Type.STANDINGORDER, so, "`id` = ?", so.getId());
+						AEPSettings.debug(plugin, ">> CONTINUE : Transaction WITHDRAW failed : "+er.errorMessage);
 						continue;
 					}
-					EconomyResponse err = AdvancedEconomyPlus.getVaultApi().depositPlayer(
+					EconomyResponse err = AdvancedEconomyPlus.getVault().depositPlayer(
 							Bukkit.getOfflinePlayer(UUID.fromString(so.getTo())), so.getAmount());	
 					if(!err.transactionSuccess())
 					{
-						AdvancedEconomyPlus.getVaultApi().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(so.getFrom())), so.getAmount());
+						AdvancedEconomyPlus.getVault().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(so.getFrom())), so.getAmount());
+						AEPSettings.debug(plugin, ">> CONTINUE : Transaction DEPOSIT failed : "+err.errorMessage);
 						continue;
 					}
 					so.setLastTime(now);
-					double totalamount = so.getAmountPaidSoFar()+so.getAmount();
+					double totalamount = so.getAmountPaidSoFar() + so.getAmount();
 					so.setAmountPaidSoFar(totalamount);
 					plugin.getMysqlHandler().updateData(MysqlHandler.Type.STANDINGORDER, so, "`id` = ?", so.getId());
 					Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
-							LocalDateTime.now(), so.getFrom(), so.getTo(),
-							from, to, plugin.getYamlHandler().getL().getString("StandingOrder.Orderer"), so.getAmount(), 
+							LocalDateTime.now(),
+							so.getFrom(), so.getTo(),
+							from, to,
+							plugin.getYamlHandler().getL().getString("StandingOrder.Orderer"),
+							so.getAmount(), 
 							ActionLoggerEvent.Type.DEPOSIT_WITHDRAW, 
-							plugin.getYamlHandler().getL().getString("StandingOrder.Comment").replace("%name%", so.getName())));
+							plugin.getYamlHandler().getL().getString("StandingOrder.Comment")
+								.replace("%name%", so.getName())
+								.replace("%totalpaid%", String.valueOf(so.getAmountPaidSoFar()))
+								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())));
 					Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
 							LocalDate.now(), so.getFrom(), -so.getAmount(), ecofrom.getBalance()));
 					Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), so.getTo(), so.getAmount(), ecoto.getBalance()));
+					AEPSettings.debug(plugin, ">> FOR-LOOP END | START AT BEGIN");
 				}
+				AEPSettings.debug(plugin, "> LOOP-END");
 			}
 		}.runTaskTimer(plugin, 5L, 20L*repeat);
 	}

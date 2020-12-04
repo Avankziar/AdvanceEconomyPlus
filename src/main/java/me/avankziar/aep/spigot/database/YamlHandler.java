@@ -2,6 +2,8 @@ package main.java.me.avankziar.aep.spigot.database;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
@@ -9,7 +11,6 @@ import java.util.List;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.Language.ISO639_2B;
@@ -80,10 +81,10 @@ public class YamlHandler
 		if(!config.exists()) 
 		{
 			AdvancedEconomyPlus.log.info("Create config.yml...");
-			try
+			try(InputStream in = plugin.getResource("default.yml"))
 			{
 				//Erstellung einer "leere" config.yml
-				FileUtils.copyToFile(plugin.getResource("default.yml"), config);
+				Files.copy(in, config.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -104,10 +105,10 @@ public class YamlHandler
 		if(!commands.exists()) 
 		{
 			AdvancedEconomyPlus.log.info("Create commands.yml...");
-			try
+			try(InputStream in = plugin.getResource("default.yml"))
 			{
 				//Erstellung einer "leere" config.yml
-				FileUtils.copyToFile(plugin.getResource("default.yml"), commands);
+				Files.copy(in, commands.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -163,9 +164,10 @@ public class YamlHandler
 		if(!language.exists()) 
 		{
 			AdvancedEconomyPlus.log.info("Create %lang%.yml...".replace("%lang%", languageString));
-			try
+			try(InputStream in = plugin.getResource("default.yml"))
 			{
-				FileUtils.copyToFile(plugin.getResource("default.yml"), language);
+				//Erstellung einer "leere" config.yml
+				Files.copy(in, language.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -193,9 +195,10 @@ public class YamlHandler
 		if(!loggersettings.exists()) 
 		{
 			AdvancedEconomyPlus.log.info("Create %lang%_ls.yml...".replace("%lang%", languageString));
-			try
+			try(InputStream in = plugin.getResource("default.yml"))
 			{
-				FileUtils.copyToFile(plugin.getResource("default.yml"), loggersettings);
+				//Erstellung einer "leere" config.yml
+				Files.copy(in, loggersettings.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();

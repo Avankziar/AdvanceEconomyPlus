@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.loan;
+package main.java.me.avankziar.aep.spigot.cmd.loan;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -16,14 +16,14 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.milkbowl.vault.economy.EconomyResponse;
 
-public class ARGMoneyLoan_Payback extends ArgumentModule
+public class ARGLoan_Payback extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyLoan_Payback(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGLoan_Payback(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -33,12 +33,12 @@ public class ARGMoneyLoan_Payback extends ArgumentModule
 	public void run(CommandSender sender, String[] args) throws IOException
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isLoanRepayment())
+		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("NoLoan")));
 			return;
 		}
-		String ids = args[2];
+		String ids = args[1];
 		int id = 0;
 		if(!MatchApi.isInteger(ids))
 		{
@@ -49,29 +49,29 @@ public class ARGMoneyLoan_Payback extends ArgumentModule
 		id = Integer.parseInt(ids);
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.LoanDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanDontExist")));
 			return;
 		}
 		LoanRepayment dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
 		if(dr.isForgiven())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.LoanAlreadyForgiven")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanAlreadyForgiven")));
 			return;
 		}
 		if(dr.isFinished())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.LoanAlreadyPaidOff")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanAlreadyPaidOff")));
 			return;
 		}
 		double payback = dr.getTotalAmount() - dr.getAmountPaidSoFar();
 		if(payback <= 0)
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Payback.IsAlreadyPaidOff")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Payback.IsAlreadyPaidOff")));
 			return;
 		}
 		dr.setAmountPaidSoFar(dr.getTotalAmount());
 		dr.setFinished(true);
-		EconomyResponse er = AdvancedEconomyPlus.getVaultApi().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), payback);
+		EconomyResponse er = AdvancedEconomyPlus.getVault().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), payback);
 		if(!er.transactionSuccess())
 		{
 			player.sendMessage(ChatApi.tl(er.errorMessage));
@@ -82,13 +82,13 @@ public class ARGMoneyLoan_Payback extends ArgumentModule
 		{
 			othername = "/";
 		}
-		String message = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Payback.IsPayedBack")
+		String message = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Payback.IsPayedBack")
 				.replace("%player%", player.getName())
 				.replace("%to%", othername)
 				.replace("%name%", dr.getName())
 				.replace("%id%", String.valueOf(id)));
 		player.sendMessage(message);
-		if(EconomySettings.settings.isBungee())
+		if(AEPSettings.settings.isBungee())
 		{
 			BungeeBridge.sendBungeeMessage(player, dr.getTo(), message, false, "");
 		} else

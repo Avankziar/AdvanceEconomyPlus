@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.loan;
+package main.java.me.avankziar.aep.spigot.cmd.loan;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -16,13 +16,13 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
-public class ARGMoneyLoan_Transfer extends ArgumentModule
+public class ARGLoan_Inherit extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyLoan_Transfer(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGLoan_Inherit(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -32,7 +32,7 @@ public class ARGMoneyLoan_Transfer extends ArgumentModule
 	public void run(CommandSender sender, String[] args) throws IOException
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isLoanRepayment())
+		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoLoan")));
@@ -50,44 +50,45 @@ public class ARGMoneyLoan_Transfer extends ArgumentModule
 		id = Integer.parseInt(ids);
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.LoanDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanDontExist")));
 			return;
 		}
 		LoanRepayment dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
 		if(dr.isForgiven())
 		{
-			player.sendMessage(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.LoanAlreadyForgiven"));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanAlreadyForgiven")));
 			return;
 		}
 		if(dr.isFinished())
 		{
-			player.sendMessage(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.LoanAlreadyPaidOff"));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanAlreadyPaidOff")));
 			return;
 		}
-		if(!dr.getLoanOwner().equals(player.getUniqueId().toString())
-				&& !player.hasPermission(Utility.PERM_BYPASS_LOAN_TRANSFER))
-		{
-			player.sendMessage(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.NotLoanOwner"));
-			return;
-		}
-		String othername = args[3];
+		String othername = args[2];
 		String otheruuid = Utility.convertNameToUUID(othername);
 		if(otheruuid == null)
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("PlayerNotExist")));
 			return;
 		}
-		dr.setTo(otheruuid);
-		dr.setLoanOwner(otheruuid);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Transfer.YouHasTransfered")
-				.replace("%player%", othername)
+		String olduuid = dr.getFrom();
+		String oldname = Utility.convertUUIDToName(olduuid);
+		if(oldname == null)
+		{
+			oldname = "/";
+		}
+		dr.setFrom(otheruuid);
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Inherit.SomeoneInherit")
+				.replace("%newplayer%", othername)
+				.replace("%oldplayer%", oldname)
 				.replace("%name%", dr.getName())
 				.replace("%id%", String.valueOf(id))));
-		String toomessage = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Transfer.YouHasBecomeLoanOwner")
+		String toomessage = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Inherit.YouInherit")
 				.replace("%player%", player.getName())
+				.replace("%oldplayer%", oldname)
 				.replace("%name%", dr.getName())
 				.replace("%id%", String.valueOf(id)));
-		if(EconomySettings.settings.isBungee())
+		if(AEPSettings.settings.isBungee())
 		{
 			BungeeBridge.sendBungeeMessage(player, otheruuid, toomessage, false, "");
 		} else

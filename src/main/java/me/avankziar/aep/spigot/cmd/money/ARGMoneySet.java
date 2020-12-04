@@ -21,7 +21,7 @@ import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -50,7 +50,7 @@ public class ARGMoneySet extends ArgumentModule
 			Player player = (Player) sender;
 			customOrderer = player.getUniqueId().toString();
 		}
-		if(!EconomySettings.settings.isPlayerAccount())
+		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			sender.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
@@ -104,15 +104,15 @@ public class ARGMoneySet extends ArgumentModule
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), toplayer.getUUID(), amount, toplayer.getBalance()));
 		List<BaseComponent> list = new ArrayList<>();
 		TextComponent message = ChatApi.apiChat(plugin.getYamlHandler().getL().getString("CmdMoney.Set.BalanceIsSet")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
-				.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(amount))
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+				.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
 				.replace("%name%", toplayer.getName()), null, "", 
 				HoverEvent.Action.SHOW_TEXT, 
 				plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerOrdererNote")
 				.replace("%orderer%", customOrderer)
 				.replace("%comment%", comment));
 		list.add(message);
-		boolean bungee = EconomySettings.settings.isBungee();
+		boolean bungee = AEPSettings.settings.isBungee();
 		sender.spigot().sendMessage(message);
 		if(toplayer != null)
 		{

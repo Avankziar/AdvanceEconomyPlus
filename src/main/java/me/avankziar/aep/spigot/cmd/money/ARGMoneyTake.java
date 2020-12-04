@@ -20,7 +20,7 @@ import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -50,7 +50,7 @@ public class ARGMoneyTake extends ArgumentModule
 			Player player = (Player) sender;
 			customOrderer = player.getUniqueId().toString();
 		}
-		if(!EconomySettings.settings.isPlayerAccount())
+		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			sender.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
@@ -95,15 +95,15 @@ public class ARGMoneyTake extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
 			return;
 		}
-		boolean has = AdvancedEconomyPlus.getVaultApi().has(Bukkit.getOfflinePlayer(UUID.fromString(fromplayer.getUUID())), amount);
+		boolean has = AdvancedEconomyPlus.getVault().has(Bukkit.getOfflinePlayer(UUID.fromString(fromplayer.getUUID())), amount);
 		if(has == false)
 		{
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Take.NoFullAmount")
-					.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(amount))
-					.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())));
+					.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
+					.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())));
 			return;
 		}
-		EconomyResponse withdraw = AdvancedEconomyPlus.getVaultApi().withdrawPlayer(fromplayer.getName(), amount);
+		EconomyResponse withdraw = AdvancedEconomyPlus.getVault().withdrawPlayer(fromplayer.getName(), amount);
 		if(!withdraw.transactionSuccess())
 		{
 			sender.sendMessage(ChatApi.tl(withdraw.errorMessage));
@@ -118,8 +118,8 @@ public class ARGMoneyTake extends ArgumentModule
 		List<BaseComponent> list = new ArrayList<>();
 		TextComponent message = ChatApi.apiChat(
 				plugin.getYamlHandler().getL().getString("CmdMoney.Take.DepositWithDraw")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
-				.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(amount))
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+				.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
 				.replace("%name1%", fromplayer.getName())
 				.replace("%name2%", customTo), null, "",
 				HoverEvent.Action.SHOW_TEXT,
@@ -128,10 +128,10 @@ public class ARGMoneyTake extends ArgumentModule
 				.replace("%comment%", comment));
 		list.add(message);
 		String messageII = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Take.DepositWithDrawBalance")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%name%", fromplayer.getName())
-				.replace("%balance%", AdvancedEconomyPlus.getVaultApi().format(fromplayer.getBalance())));
-		boolean bungee = EconomySettings.settings.isBungee();
+				.replace("%balance%", AdvancedEconomyPlus.getVault().format(fromplayer.getBalance())));
+		boolean bungee = AEPSettings.settings.isBungee();
 		sender.spigot().sendMessage(message);
 		sender.sendMessage(messageII);
 		if(fromplayer != null)

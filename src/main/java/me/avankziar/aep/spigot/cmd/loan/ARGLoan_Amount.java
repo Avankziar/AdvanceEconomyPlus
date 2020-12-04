@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.loan;
+package main.java.me.avankziar.aep.spigot.cmd.loan;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,14 +10,14 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.md_5.bungee.api.chat.HoverEvent;
 
-public class ARGMoneyLoan_Amount extends ArgumentModule
+public class ARGLoan_Amount extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyLoan_Amount(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGLoan_Amount(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -27,7 +27,7 @@ public class ARGMoneyLoan_Amount extends ArgumentModule
 	public void run(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isLoanRepayment())
+		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoLoan")));
@@ -36,12 +36,12 @@ public class ARGMoneyLoan_Amount extends ArgumentModule
 		if(!PendingHandler.loanRepayment.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Loan.NoWaitingLoanProposal")));
+					plugin.getYamlHandler().getL().getString("CmdLoan.NoWaitingLoanProposal")));
 			return;
 		}
-		String ta = args[2]; //totalamount
-		String ar = args[3]; //amountration
-		String it = args[4]; //interest
+		String ta = args[1]; //totalamount
+		String ar = args[2]; //amountration
+		String it = args[3]; //interest
 		if(!MatchApi.isDouble(ta))
 		{
 			player.sendMessage(ChatApi.tl(
@@ -94,13 +94,13 @@ public class ARGMoneyLoan_Amount extends ArgumentModule
 		dr.setAmountRatio(amra);
 		dr.setInterest(inst);
 		PendingHandler.loanRepayment.replace(player.getUniqueId().toString(), dr);
-		player.spigot().sendMessage(ChatApi.hoverEvent(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Amount.SetsAmounts"),
+		player.spigot().sendMessage(ChatApi.hoverEvent(plugin.getYamlHandler().getL().getString("CmdLoan.Amount.SetsAmounts"),
 				HoverEvent.Action.SHOW_TEXT,
-				plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Amount.Hover")
-				.replace("%ta%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(toam)))
-				.replace("%ar%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(amra)))
-				.replace("%in%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(inst)))
-				.replace("%min%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(minimumpayment)))));
+				plugin.getYamlHandler().getL().getString("CmdLoan.Amount.Hover")
+				.replace("%ta%", String.valueOf(AdvancedEconomyPlus.getVault().format(toam)))
+				.replace("%ar%", String.valueOf(AdvancedEconomyPlus.getVault().format(amra)))
+				.replace("%in%", String.valueOf(AdvancedEconomyPlus.getVault().format(inst)))
+				.replace("%min%", String.valueOf(AdvancedEconomyPlus.getVault().format(minimumpayment)))));
 		return;
 	}
 }

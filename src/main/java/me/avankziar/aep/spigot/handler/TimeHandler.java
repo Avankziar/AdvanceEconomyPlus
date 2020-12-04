@@ -23,8 +23,15 @@ public class TimeHandler
 	
 	public static long getTime(String l)
 	{
-		return LocalDateTime.parse(l, DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))
+		try
+		{
+			return LocalDateTime.parse(l, DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"))
 				.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		} catch(Exception e)
+		{
+			return 0;
+		}
+				
 	}
 	
 	public static String getRepeatingTime(long l) // dd-HH:mm
@@ -66,12 +73,20 @@ public class TimeHandler
 	public static long getRepeatingTime(String l) //dd-HH:mm
 	{
 		String[] a = l.split("-");
+		if(a.length != 2)
+		{
+			return 0;
+		}
 		if(!MatchApi.isInteger(a[0]))
 		{
 			return 0;
 		}
 		int d = Integer.parseInt(a[0]);
 		String[] b = a[1].split(":");
+		if(b.length != 2)
+		{
+			return 0;
+		}
 		if(!MatchApi.isInteger(b[0]))
 		{
 			return 0;

@@ -29,7 +29,7 @@ public class PlayerListener implements Listener
 		AEPUser eco = AEPUserHandler.getEcoPlayer(event.getPlayer().getUniqueId().toString());
 		if(eco == null)
 		{
-			AdvancedEconomyPlus.getVaultApi().createPlayerAccount(event.getPlayer());
+			AdvancedEconomyPlus.getVault().createPlayerAccount(event.getPlayer());
 		} else
 		{
 			String newname = event.getPlayer().getName();

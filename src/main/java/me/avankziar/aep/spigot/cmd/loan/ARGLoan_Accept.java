@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.loan;
+package main.java.me.avankziar.aep.spigot.cmd.loan;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -15,17 +15,18 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler.KeyHandler;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
-import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 import net.milkbowl.vault.economy.EconomyResponse;
 
-public class ARGMoneyLoan_Accept extends ArgumentModule
+public class ARGLoan_Accept extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyLoan_Accept(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGLoan_Accept(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -35,7 +36,7 @@ public class ARGMoneyLoan_Accept extends ArgumentModule
 	public void run(CommandSender sender, String[] args) throws IOException
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isLoanRepayment())
+		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoLoan")));
@@ -44,25 +45,26 @@ public class ARGMoneyLoan_Accept extends ArgumentModule
 		if(!PendingHandler.loanToAccept.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Loan.NoToAcceptLoan")));
+					plugin.getYamlHandler().getL().getString("CmdLoan.NoToAcceptLoan")));
 			return;
 		}
 		String confirm = "";
-		if(args.length >= 3)
+		if(args.length >= 2)
 		{
-			confirm = args[2];
+			confirm = args[1];
 		}
-		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.ConfirmTerm")))
+		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm")))
 		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Loan.PleaseConfirm")
-					.replace("%cmd%", plugin.getYamlHandler().getL().getString("CmdMoney.Loan.AcceptCmd"))));
+			player.spigot().sendMessage(ChatApi.generateTextComponent(
+					plugin.getYamlHandler().getL().getString("CmdLoan.PleaseConfirm")
+					.replace("%cmd%", AEPSettings.settings.getCommands(KeyHandler.L_ACCEPT).replace(" ", "+")
+							+"+"+plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm"))));
 			return;
 		}
 		LoanRepayment dr = PendingHandler.loanToAccept.get(player.getUniqueId().toString());
 		AEPUser toplayer = AEPUserHandler.getEcoPlayer(dr.getTo());
 		
-		EconomyResponse withdraw = AdvancedEconomyPlus.getVaultApi().withdrawPlayer(
+		EconomyResponse withdraw = AdvancedEconomyPlus.getVault().withdrawPlayer(
 				Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), dr.getTotalAmount());
 		
 		if(!withdraw.transactionSuccess())
@@ -70,10 +72,10 @@ public class ARGMoneyLoan_Accept extends ArgumentModule
 			player.sendMessage(ChatApi.tl(withdraw.errorMessage));
 			return;
 		}
-		EconomyResponse deposit = AdvancedEconomyPlus.getVaultApi().depositPlayer(player, dr.getTotalAmount());
+		EconomyResponse deposit = AdvancedEconomyPlus.getVault().depositPlayer(player, dr.getTotalAmount());
 		if(!deposit.transactionSuccess())
 		{
-			AdvancedEconomyPlus.getVaultApi().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), dr.getTotalAmount());
+			AdvancedEconomyPlus.getVault().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), dr.getTotalAmount());
 			player.sendMessage(ChatApi.tl(deposit.errorMessage));
 			return;
 		}
@@ -85,15 +87,15 @@ public class ARGMoneyLoan_Accept extends ArgumentModule
 		{
 			drowner = "/";
 		}
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Accept.YouHaveAccepted")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Accept.YouHaveAccepted")
 				.replace("%drowner%", drowner)
 				.replace("%name%", dr.getName())));
 		
-		String tomsg = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Accept.PayerHasAccepted")
+		String tomsg = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Accept.PayerHasAccepted")
 				.replace("%toplayer%", toplayer.getName())
 				.replace("%name%", dr.getName())
 				.replace("%player%", player.getName()));
-		boolean bungee = EconomySettings.settings.isBungee();
+		boolean bungee = AEPSettings.settings.isBungee();
 		if(toplayer.isMoneyPlayerFlow())
 		{
 			if(bungee)

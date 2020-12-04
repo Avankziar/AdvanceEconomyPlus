@@ -13,7 +13,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class ARGMoneyTop extends ArgumentModule
 {
@@ -38,7 +38,7 @@ public class ARGMoneyTop extends ArgumentModule
 				page = Integer.parseInt(pagenumber);
 			}
 		}
-		if(!EconomySettings.settings.isPlayerAccount())
+		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
@@ -64,8 +64,8 @@ public class ARGMoneyTop extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("CmdMoney.Top.TopLine")
 					.replace("%place%", String.valueOf(start+1))
 					.replace("%player%", eco.getName())
-					.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
-					.replace("%balance%", AdvancedEconomyPlus.getVaultApi().format(eco.getBalance()))));
+					.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+					.replace("%balance%", AdvancedEconomyPlus.getVault().format(eco.getBalance()))));
 			start++;
 		}
 		return;

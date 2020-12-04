@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.loan;
+package main.java.me.avankziar.aep.spigot.cmd.loan;
 
 import java.io.IOException;
 
@@ -15,13 +15,13 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
 import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
-public class ARGMoneyLoan_Info extends ArgumentModule
+public class ARGLoan_Info extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyLoan_Info(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGLoan_Info(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -31,16 +31,16 @@ public class ARGMoneyLoan_Info extends ArgumentModule
 	public void run(CommandSender sender, String[] args) throws IOException
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isLoanRepayment())
+		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoLoan")));
 			return;
 		}
-		String ids = args[2];
+		String ids = args[1];
 		int id = 0;
 		LoanRepayment dr = null;
-		if(args.length >= 3)
+		if(args.length >= 2)
 		{
 			if(!MatchApi.isInteger(ids))
 			{
@@ -52,7 +52,7 @@ public class ARGMoneyLoan_Info extends ArgumentModule
 			id = Integer.parseInt(ids);
 			if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 			{
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.LoanDontExist")));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanDontExist")));
 				return;
 			}
 			dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
@@ -61,7 +61,7 @@ public class ARGMoneyLoan_Info extends ArgumentModule
 					&& !dr.getTo().equals(player.getUniqueId().toString())
 					&& !player.hasPermission(Utility.PERM_BYPASS_LOAN_INFO))
 			{
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.NotLoanOwner")));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.NotLoanOwner")));
 				return;
 			}
 		} else
@@ -69,7 +69,7 @@ public class ARGMoneyLoan_Info extends ArgumentModule
 			if(!PendingHandler.loanRepayment.containsKey(player.getUniqueId().toString()))
 			{
 				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getL().getString("CmdMoney.Loan.NoWaitingLoanProposal")));
+						plugin.getYamlHandler().getL().getString("CmdLoan.NoWaitingLoanProposal")));
 				return;
 			}
 			dr = PendingHandler.loanRepayment.get(player.getUniqueId().toString());
@@ -91,30 +91,30 @@ public class ARGMoneyLoan_Info extends ArgumentModule
 		}
 		double interestLoan = dr.getTotalAmount()-(1+(dr.getInterest()/100));
 		double tnor = (dr.getTotalAmount()-dr.getAmountPaidSoFar())/dr.getAmountRatio();
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Info.Headline")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Info.Headline")
 				.replace("%id%", ids)
 				.replace("%name%", dr.getName())));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Info.Participants")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Info.Participants")
 				.replace("%from%", from)
 				.replace("%to%", to)
 				.replace("%Loanowner%", Loano)));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Info.Amounts")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
-				.replace("%amountpaidsofar%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(dr.getAmountPaidSoFar())))
-				.replace("%totalamount%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(dr.getTotalAmount())))));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Info.Interest")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
-				.replace("%interestamount%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(interestLoan)))
-				.replace("%interest%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(dr.getInterest())))));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Info.Ratio")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Info.Amounts")
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+				.replace("%amountpaidsofar%", String.valueOf(AdvancedEconomyPlus.getVault().format(dr.getAmountPaidSoFar())))
+				.replace("%totalamount%", String.valueOf(AdvancedEconomyPlus.getVault().format(dr.getTotalAmount())))));
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Info.Interest")
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+				.replace("%interestamount%", String.valueOf(AdvancedEconomyPlus.getVault().format(interestLoan)))
+				.replace("%interest%", String.valueOf(AdvancedEconomyPlus.getVault().format(dr.getInterest())))));
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Info.Ratio")
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%repeatingtime%", TimeHandler.getRepeatingTime(dr.getRepeatingTime()))
-				.replace("%amountratio%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(dr.getAmountRatio())))));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Info.Times")
+				.replace("%amountratio%", String.valueOf(AdvancedEconomyPlus.getVault().format(dr.getAmountRatio())))));
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Info.Times")
 				.replace("%starttime%", TimeHandler.getTime(dr.getStartTime()))
 				.replace("%endtime%", TimeHandler.getTime(dr.getEndTime()))));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.Info.TheoreticalNumberOfRates")
-				.replace("%theoreticalnumber%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(tnor)))));
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Info.TheoreticalNumberOfRates")
+				.replace("%theoreticalnumber%", String.valueOf(AdvancedEconomyPlus.getVault().format(tnor)))));
 		return;
 	}
 }

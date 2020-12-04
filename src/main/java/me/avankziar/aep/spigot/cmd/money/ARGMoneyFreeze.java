@@ -14,7 +14,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class ARGMoneyFreeze extends ArgumentModule
 {
@@ -31,7 +31,7 @@ public class ARGMoneyFreeze extends ArgumentModule
 	{
 		Player player = (Player) sender;
 		String playername = args[1];
-		if(!EconomySettings.settings.isPlayerAccount())
+		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
@@ -67,7 +67,7 @@ public class ARGMoneyFreeze extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.YourAccountWasFrozen")
 					.replace("%player%", player.getName()));
 		}
-		boolean bungee = EconomySettings.settings.isBungee();
+		boolean bungee = AEPSettings.settings.isBungee();
 		if(eco.isMoneyPlayerFlow())
 		{
 			if(bungee)

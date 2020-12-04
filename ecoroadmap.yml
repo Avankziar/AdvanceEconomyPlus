@@ -21,6 +21,8 @@ Future =========================================================================
 Build 3 ============================================================================================================================
 - +CommandTree eingebungen und dahingehend umgeschrieben
 - +commands.yml nun vorhanden und innen veränderbar
+- +ASCII-Art mit plugin.yml in Console sehbar.
+- +Mechaniken, die abgeschaltet sind, werden ingame nicht mehr angezeigt.
 - +FilterLog & Trend befehle wurden auseinander gezogen für bessere Übersicht
 - +Filterlog wurde in FilterActionLog umbenannt, bezieht sich auf Ingame Cmd und commands.yml
 - +FilterBefehle für den trend in Logs, Diagram und Grafik umgesetzt.

@@ -1,17 +1,20 @@
 package main.java.me.avankziar.aep.spigot.object;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.YamlHandler;
 import main.java.me.avankziar.aep.spigot.handler.BankAccountHandler;
+import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 
-public class EconomySettings
+public class AEPSettings
 {
 	private ArrayList<String> reservedNames;
 	private BankAccountHandler.Type numberType;
 	private boolean bungee;
 	private boolean mysql;
+	private boolean debug;
 	private boolean bank;
 	private boolean playerAccount;
 	private boolean standingOrder;
@@ -20,18 +23,32 @@ public class EconomySettings
 	private String currencyPlural;
 	private int moneyFormat;
 	private String prefix;
+	private boolean executeStandingOrderPayment;
+	private boolean executeLoanPayment;
+	private long standingOrderSpamProtection;
+	private double standingOrderValueProtection;
+	private LinkedHashMap<String, String> commands = new LinkedHashMap<>(); //To save commandstrings
 	
-	public static EconomySettings settings;
+	public static AEPSettings settings;
 	
-	public EconomySettings(String prefix,
-			boolean bungee, boolean mysql, boolean playerAccount, boolean bank,
+	public AEPSettings()
+	{
+		
+	}
+	
+	public AEPSettings(String prefix,
+			boolean bungee, boolean mysql, boolean debug,
+			boolean playerAccount, boolean bank,
 			boolean standingorder, boolean loanrepayment,
 			String currencySingular, String currencyPlural, int moneyFormat,
-			ArrayList<String> reservedNames, BankAccountHandler.Type numberType)
+			ArrayList<String> reservedNames, BankAccountHandler.Type numberType,
+			boolean executeStandingOrderPayment, boolean executeLoanPayment,
+			long standingOrderSpamProtection, double standingOrderValueProtection)
 	{
 		setPrefix(prefix);
 		setBungee(bungee);
 		setMysql(mysql);
+		setDebug(debug);
 		setPlayerAccount(playerAccount);
 		setBank(bank);
 		setStandingOrder(standingorder);
@@ -41,36 +58,33 @@ public class EconomySettings
 		setMoneyFormat(moneyFormat);
 		setReservedNames(reservedNames);
 		setNumberType(numberType);
+		setExecuteStandingOrderPayment(executeStandingOrderPayment);
+		setExecuteLoanPayment(executeLoanPayment);
+		setStandingOrderSpamProtection(standingOrderSpamProtection);
+		setStandingOrderValueProtection(standingOrderValueProtection);
 	}
 	
 	public static void initSettings(AdvancedEconomyPlus plugin)
 	{
-		if(settings != null)
-		{
-			settings = null;
-		}
 		YamlHandler yh = plugin.getYamlHandler();
-		String prefix = "&7[&2Economy&7] ";
-		if(yh.getConfig().getString("Prefix") != null)
-		{
-			prefix = yh.getConfig().getString("Prefix");
-		}
-		boolean bungee = false;
-		if(plugin.getYamlHandler().getConfig().get("Bungee") != null)
-		{
-			bungee = plugin.getYamlHandler().getConfig().getBoolean("Bungee");
-		}
+		String prefix = yh.getConfig().getString("Prefix", "&7[&2AdvancedEconomyPlus&7] &r");
+		boolean bungee = plugin.getYamlHandler().getConfig().getBoolean("Bungee", false);
 		boolean mysql = false;
 		if(plugin.getMysqlSetup().getConnection() != null)
 		{
 			mysql = true;
 		}
+		boolean debug = yh.getConfig().getBoolean("Use.DebuggingMode", false);
 		boolean playerAccount = yh.getConfig().getBoolean("Use.PlayerAccount", false);
-		boolean bank = yh.getConfig().getBoolean("Use.Bank", false);
+		boolean bank = false; //yh.getConfig().getBoolean("Use.Bank", false);
 		boolean standingorder = yh.getConfig().getBoolean("Use.StandingOrder", false);
 		boolean loanrepayment = yh.getConfig().getBoolean("Use.LoanRepayment", false);
+		boolean executeStandingOrderPayment = yh.getConfig().getBoolean("Exceute.StandingOrderPayments", false);
+		boolean executeLoanPayment = yh.getConfig().getBoolean("Exceute.LoanPayments", false);
 		String currencySingular = yh.getConfig().getString("CurrencyNameSingular","Euro");
 		String currencyPlural = yh.getConfig().getString("CurrencyNamePlural","Euros");
+		long standingOrderSpamProtection = TimeHandler.getRepeatingTime(yh.getConfig().getString("StandingOrderTimeSpamProtection", "00-00:15")); 
+		double standingOrderValueProtection = yh.getConfig().getDouble("StandingOrderValueSpamProtection", 1000.0);
 		int format = yh.getConfig().getInt("MoneyFormat", 0);
 		ArrayList<String> reservedNames = new ArrayList<String>();
 		if(yh.getConfig().getStringList("ReservedNames") != null)
@@ -85,11 +99,26 @@ public class EconomySettings
 				numberType = BankAccountHandler.Type.valueOf(plugin.getYamlHandler().getConfig().getString("TrendLogger.ValueIsStabil"));
 			} catch (Exception e) {}
 		}
-		settings = new EconomySettings(prefix,
-				bungee, mysql, playerAccount, bank,
+		settings = new AEPSettings(prefix,
+				bungee, mysql, debug,
+				playerAccount, bank,
 				standingorder, loanrepayment,
 				currencySingular, currencyPlural, format,
-				reservedNames, numberType);
+				reservedNames, numberType,
+				executeStandingOrderPayment, executeLoanPayment,
+				standingOrderSpamProtection, standingOrderValueProtection);
+		plugin.getLogger().info("Economy Settings init...");
+	}
+	
+	public static void debug(AdvancedEconomyPlus plugin, String s)
+	{
+		if(AEPSettings.settings != null && AEPSettings.settings.isDebug())
+		{
+			if(plugin != null)
+			{
+				plugin.getLogger().info(s);
+			}
+		}
 	}
 
 	public ArrayList<String> getReservedNames()
@@ -222,4 +251,74 @@ public class EconomySettings
 		this.loanRepayment = loanRepayment;
 	}
 
+	public boolean isExecuteStandingOrderPayment()
+	{
+		return executeStandingOrderPayment;
+	}
+
+	public void setExecuteStandingOrderPayment(boolean executeStandingOrderPayment)
+	{
+		this.executeStandingOrderPayment = executeStandingOrderPayment;
+	}
+
+	public boolean isExecuteLoanPayment()
+	{
+		return executeLoanPayment;
+	}
+
+	public void setExecuteLoanPayment(boolean executeLoanPayment)
+	{
+		this.executeLoanPayment = executeLoanPayment;
+	}
+
+	public boolean isDebug()
+	{
+		return debug;
+	}
+
+	public void setDebug(boolean debug)
+	{
+		this.debug = debug;
+	}
+
+	public String getCommands(String key)
+	{
+		return commands.get(key);
+	}
+
+	public void setCommands(LinkedHashMap<String, String> commands)
+	{
+		this.commands = commands;
+	}
+	
+	public void addCommands(String key, String commandString)
+	{
+		if(commands.containsKey(key))
+		{
+			commands.replace(key, commandString);
+		} else
+		{
+			commands.put(key, commandString);
+		}
+	}
+
+	public long getStandingOrderSpamProtection()
+	{
+		return standingOrderSpamProtection;
+	}
+
+	public void setStandingOrderSpamProtection(long standingOrderSpamProtection)
+	{
+		this.standingOrderSpamProtection = standingOrderSpamProtection;
+	}
+
+	public double getStandingOrderValueProtection()
+	{
+		return standingOrderValueProtection;
+	}
+
+	public void setStandingOrderValueProtection(double standingOrderValueProtection)
+	{
+		this.standingOrderValueProtection = standingOrderValueProtection;
+	}
 }

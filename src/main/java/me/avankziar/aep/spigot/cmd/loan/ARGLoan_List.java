@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.loan;
+package main.java.me.avankziar.aep.spigot.cmd.loan;
 
 import java.util.ArrayList;
 
@@ -15,18 +15,18 @@ import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogHandler;
 import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class ARGMoneyLoan_List extends ArgumentModule
+public class ARGLoan_List extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public ARGMoneyLoan_List(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGLoan_List(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -37,16 +37,16 @@ public class ARGMoneyLoan_List extends ArgumentModule
 	public void run(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isLoanRepayment())
+		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoLoan")));
 			return;
 		}
 		int page = 0;
-		if(args.length >= 3)
+		if(args.length >= 2)
 		{
-			String pagenumber = args[2];
+			String pagenumber = args[1];
 			if(MatchApi.isInteger(pagenumber))
 			{
 				page = Integer.parseInt(pagenumber);
@@ -87,7 +87,7 @@ public class ARGMoneyLoan_List extends ArgumentModule
 				color = "&2";
 			}
 			bc.add(ChatApi.hoverEvent("&3"+dr.getId()+"&f:&6"+dr.getName()+"&f:",
-					HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getL().getString("CmdMoney.Loan.HoverInfo")
+					HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getL().getString("CmdLoan.HoverInfo")
 					.replace("%id%", String.valueOf(dr.getId()))
 					.replace("%name%", dr.getName())
 					.replace("%from%", dr.getFrom())
@@ -96,29 +96,29 @@ public class ARGMoneyLoan_List extends ArgumentModule
 					.replace("%st%", TimeHandler.getTime(dr.getStartTime()))
 					.replace("%et%", TimeHandler.getTime(dr.getEndTime()))
 					.replace("%rt%", TimeHandler.getRepeatingTime(dr.getRepeatingTime()))
-					.replace("%apsf%", color+String.valueOf(AdvancedEconomyPlus.getVaultApi().format(dr.getAmountPaidSoFar())))
-					.replace("%ta%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(dr.getTotalAmount())))
-					.replace("%ar%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(dr.getAmountRatio())))
-					.replace("%in%", String.valueOf(AdvancedEconomyPlus.getVaultApi().format(dr.getInterest())))
+					.replace("%apsf%", color+String.valueOf(AdvancedEconomyPlus.getVault().format(dr.getAmountPaidSoFar())))
+					.replace("%ta%", String.valueOf(AdvancedEconomyPlus.getVault().format(dr.getTotalAmount())))
+					.replace("%ar%", String.valueOf(AdvancedEconomyPlus.getVault().format(dr.getAmountRatio())))
+					.replace("%in%", String.valueOf(AdvancedEconomyPlus.getVault().format(dr.getInterest())))
 					.replace("%pa%", String.valueOf(dr.isPaused()))
 					.replace("%fo%", String.valueOf(dr.isForgiven()))
 					.replace("%fi%", String.valueOf(dr.isFinished()))
 					));
 			bc.add(ChatApi.apiChat("&eⓘ", 
-					ClickEvent.Action.RUN_COMMAND, plugin.getYamlHandler().getL().getString("CmdMoney.Loan.InfoCmd")+" "+dr.getId(),
+					ClickEvent.Action.RUN_COMMAND, plugin.getYamlHandler().getL().getString("CmdLoan.InfoCmd")+" "+dr.getId(),
 					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
 			bc.add(ChatApi.apiChat("&a✔", 
-					ClickEvent.Action.SUGGEST_COMMAND, plugin.getYamlHandler().getL().getString("CmdMoney.Loan.ForgiveCmd")+" "+dr.getId(),
+					ClickEvent.Action.SUGGEST_COMMAND, plugin.getYamlHandler().getL().getString("CmdLoan.ForgiveCmd")+" "+dr.getId(),
 					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
 			bc.add(ChatApi.tctl(" &1| "));
 		}
 		TextComponent tx = ChatApi.tc("");
 		tx.setExtra(bc);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.List.Headline")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.List.Headline")
 				.replace("%name%", player.getName())));
 		player.spigot().sendMessage(tx);
 		String cmdstring = plugin.getYamlHandler().getCom().getString(ac.getPath()+".CommandString");
-		LogHandler.pastNextPage(plugin, player, "CmdMoney.", null, page, lastpage, cmdstring);
+		LogHandler.pastNextPage(plugin, player, "Cmd", null, page, lastpage, cmdstring);
 		return;
 	}
 }

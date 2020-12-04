@@ -2,7 +2,7 @@ package main.java.me.avankziar.aep.spigot.api;
 
 import java.util.UUID;
 
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class MatchApi
 {
@@ -13,7 +13,7 @@ public class MatchApi
 		{
 			return false;
 		}
-		switch(EconomySettings.settings.getNumberType())
+		switch(AEPSettings.settings.getNumberType())
 		{
 		case TWO_DIGITS_TIMES_ONE:
 			if(numberstring.matches("^[0-9]{2}$")) {return true;}

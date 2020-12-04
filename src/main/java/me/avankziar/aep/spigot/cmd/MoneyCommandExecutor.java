@@ -163,8 +163,8 @@ public class MoneyCommandExecutor implements CommandExecutor
 		AEPUser eco = AEPUserHandler.getEcoPlayer(player);
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.PlayerBalance")
 				.replace("%time%", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
-				.replace("%balance%", AdvancedEconomyPlus.getVaultApi().format(eco.getBalance()))
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())));
+				.replace("%balance%", AdvancedEconomyPlus.getVault().format(eco.getBalance()))
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())));
 		return;
 	}
 }

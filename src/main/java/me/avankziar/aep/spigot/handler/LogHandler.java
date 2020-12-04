@@ -15,10 +15,10 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.ChatApiSmall;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
-import main.java.me.avankziar.aep.spigot.handler.LogMethodeHandler.Methode;
+import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler.Methode;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -203,8 +203,8 @@ public class LogHandler
 							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
 							.replace("%toname%", el.getToName())
-							.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-							.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+							.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 							.replace("%id%", String.valueOf(el.getId())),
 							map));
 				} else if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG))
@@ -214,8 +214,8 @@ public class LogHandler
 							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
 							.replace("%toname%", el.getToName())
-							.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-							.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+							.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 							.replace("%id%", String.valueOf(el.getId())),
 							map));
 				} else if(el.getOrdereruuid().equals(reciver) 
@@ -226,8 +226,8 @@ public class LogHandler
 							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
 							.replace("%toname%", el.getToName())
-							.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-							.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+							.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 							.replace("%id%", String.valueOf(el.getId())),
 							map));
 				} else
@@ -237,8 +237,8 @@ public class LogHandler
 							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
 							.replace("%toname%", el.getToName())
-							.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-							.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+							.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 							.replace("%id%", String.valueOf(el.getId())),
 							map));
 				}
@@ -255,8 +255,8 @@ public class LogHandler
 								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 								.replace("%fromname%", el.getFromName())
 								.replace("%tonumber%", el.getToName()).replace("%toname%", el.getToName())
-								.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-								.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+								.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 								.replace("%id%", String.valueOf(el.getId())),
 								map));
 					} else if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG))
@@ -266,8 +266,8 @@ public class LogHandler
 								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 								.replace("%fromname%", el.getFromName())
 								.replace("%tonumber%", el.getToName()).replace("%toname%", el.getToName())
-								.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-								.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+								.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 								.replace("%id%", String.valueOf(el.getId())),
 								map));
 					} else if(el.getOrdereruuid().equals(sender) 
@@ -278,8 +278,8 @@ public class LogHandler
 								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 								.replace("%fromname%", el.getFromName())
 								.replace("%tonumber%", el.getToName()).replace("%toname%", el.getToName())
-								.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-								.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+								.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 								.replace("%id%", String.valueOf(el.getId())),
 								map));
 					} else
@@ -289,8 +289,8 @@ public class LogHandler
 								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 								.replace("%fromname%", el.getFromName())
 								.replace("%tonumber%", el.getToName()).replace("%toname%", el.getToName())
-								.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-								.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+								.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 								.replace("%id%", String.valueOf(el.getId())),
 								map));
 					}
@@ -307,8 +307,8 @@ public class LogHandler
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
 									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
 						} else if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG))
@@ -318,8 +318,8 @@ public class LogHandler
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
 									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
 						} else if(el.getOrdereruuid().equals(reciver) 
@@ -330,8 +330,8 @@ public class LogHandler
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
 									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
 						} else
@@ -341,8 +341,8 @@ public class LogHandler
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
 									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
 						}
@@ -357,8 +357,8 @@ public class LogHandler
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
 									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
 						} else if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG))
@@ -368,8 +368,8 @@ public class LogHandler
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
 									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
 						} else if(el.getOrdereruuid().equals(sender) 
@@ -380,8 +380,8 @@ public class LogHandler
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
 									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
 						} else
@@ -391,8 +391,8 @@ public class LogHandler
 									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
 									.replace("%fromname%", el.getFromName())
 									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
+									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 									.replace("%id%", String.valueOf(el.getId())),
 									map));
 						}
@@ -451,9 +451,9 @@ public class LogHandler
 				.replace("%player%", eco.getName())
 				.replace("%amount%", String.valueOf(last))));
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Infoline")
-				.replace("%max%", AdvancedEconomyPlus.getVaultApi().format(maxamount))
-				.replace("%min%", AdvancedEconomyPlus.getVaultApi().format(minamount))
-				.replace("%median%", AdvancedEconomyPlus.getVaultApi().format(median))));
+				.replace("%max%", AdvancedEconomyPlus.getVault().format(maxamount))
+				.replace("%min%", AdvancedEconomyPlus.getVault().format(minamount))
+				.replace("%median%", AdvancedEconomyPlus.getVault().format(median))));
 		while(i<=list.size()-1)
 		{
 			ActionLogger tl = list.get(i);
@@ -504,14 +504,14 @@ public class LogHandler
 			{
 				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Positiv")
-						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(amount))
-						.replace("%percent%", AdvancedEconomyPlus.getVaultApi().format(percent))));
+						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(amount))
+						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
 			} else
 			{
 				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Negativ")
-						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(amount))
-						.replace("%percent%", AdvancedEconomyPlus.getVaultApi().format(percent))));
+						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(amount))
+						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
 			}
 			i++;
 		}
@@ -576,7 +576,7 @@ public class LogHandler
 		double hpercent = (maxamount-minamount);
 		String wim = plugin.getYamlHandler().getConfig().getString("GraficSpaceSymbol", "ˉ");
 		String x = plugin.getYamlHandler().getConfig().getString("GraficPointSymbol", "x");
-		String headmessage = "&a▼"+AdvancedEconomyPlus.getVaultApi().format(maxamount);
+		String headmessage = "&a▼"+AdvancedEconomyPlus.getVault().format(maxamount);
 		String messageI = "|";
 		String messageII = "|";
 		String messageIII = "|";
@@ -589,7 +589,7 @@ public class LogHandler
 		String messageIX = "|";
 		String messageX = "|";
 		String messageXI = wim;
-		String bottommessage = "&c▲"+AdvancedEconomyPlus.getVaultApi().format(minamount);
+		String bottommessage = "&c▲"+AdvancedEconomyPlus.getVault().format(minamount);
 		String lastline = "&6▲"+list.get(list.size()-1).getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
 		i = list.size()-1;
 		while(i>=0)
@@ -1038,40 +1038,40 @@ public class LogHandler
 			{
 				totalbc.get(k).add(ChatApi.hoverEvent(bars, Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessageII")
-						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVaultApi().format(smaxTotal))
-						.replace("%positivvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxPositiv))
-						.replace("%negativvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxNegativ))
-						.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
+						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
+						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
+						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 						));
 				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.LastYear")));
 				totalbc.get(k).add(ChatApi.hoverEvent(barsII, Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessageII")
-						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVaultApi().format(smaxTotal))
-						.replace("%positivvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxPositiv))
-						.replace("%negativvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxNegativ))
-						.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
+						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
+						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
+						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 						));
 			} else
 			{
 				totalbc.get(k).add(ChatApi.hoverEvent(bars, Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessage")
-						.replace("%percentP%", AdvancedEconomyPlus.getVaultApi().format(hpercentP))
-						.replace("%percentN%", AdvancedEconomyPlus.getVaultApi().format(hpercentN))
-						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVaultApi().format(smaxTotal))
-						.replace("%positivvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxPositiv))
-						.replace("%negativvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxNegativ))
-						.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+						.replace("%percentP%", AdvancedEconomyPlus.getVault().format(hpercentP))
+						.replace("%percentN%", AdvancedEconomyPlus.getVault().format(hpercentN))
+						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
+						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
+						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
+						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 						));
 				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.Month")
 						.replace("%month%", month.format(DateTimeFormatter.ofPattern("MM.yyyy")))));
 				totalbc.get(k).add(ChatApi.hoverEvent(barsII, Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessage")
-						.replace("%percentP%", AdvancedEconomyPlus.getVaultApi().format(hpercentP))
-						.replace("%percentN%", AdvancedEconomyPlus.getVaultApi().format(hpercentN))
-						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVaultApi().format(smaxTotal))
-						.replace("%positivvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxPositiv))
-						.replace("%negativvalue%", AdvancedEconomyPlus.getVaultApi().format(smaxNegativ))
-						.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+						.replace("%percentP%", AdvancedEconomyPlus.getVault().format(hpercentP))
+						.replace("%percentN%", AdvancedEconomyPlus.getVault().format(hpercentN))
+						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
+						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
+						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
+						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 						));
 			}
 			k++;
@@ -1127,11 +1127,11 @@ public class LogHandler
 				.replace("%amount%", String.valueOf(last))
 				.replace("%searchword%", searchword)));
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString(path+"GetTotal.PositivValues")
-				.replace("%value%", AdvancedEconomyPlus.getVaultApi().format(positiv))));
+				.replace("%value%", AdvancedEconomyPlus.getVault().format(positiv))));
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString(path+"GetTotal.NegativValues")
-				.replace("%value%", AdvancedEconomyPlus.getVaultApi().format(negativ))));
+				.replace("%value%", AdvancedEconomyPlus.getVault().format(negativ))));
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString(path+"GetTotal.TotalValues")
-				.replace("%value%", AdvancedEconomyPlus.getVaultApi().format(total))));
+				.replace("%value%", AdvancedEconomyPlus.getVault().format(total))));
 	}
 	
 	public static void sendTrendLogs(AdvancedEconomyPlus plugin, Player player, AEPUser eco,
@@ -1176,31 +1176,31 @@ public class LogHandler
 				player.spigot().sendMessage(ChatApi.hoverEvent(
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.ChangePositiv")
 						.replace("%date%", tl.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-						.replace("%first%", AdvancedEconomyPlus.getVaultApi().format(tl.getFirstValue()))
-						.replace("%last%", AdvancedEconomyPlus.getVaultApi().format(tl.getLastValue())),
+						.replace("%first%", AdvancedEconomyPlus.getVault().format(tl.getFirstValue()))
+						.replace("%last%", AdvancedEconomyPlus.getVault().format(tl.getLastValue())),
 						HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.Positiv")
-						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(tl.getRelativeAmountChange()))));
+						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))));
 			} else if(tl.getRelativeAmountChange() == 0) 
 			{
 				player.spigot().sendMessage(ChatApi.hoverEvent(
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.ChangeNeutral")
 						.replace("%date%", tl.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-						.replace("%first%", AdvancedEconomyPlus.getVaultApi().format(tl.getFirstValue()))
-						.replace("%last%", AdvancedEconomyPlus.getVaultApi().format(tl.getLastValue())),
+						.replace("%first%", AdvancedEconomyPlus.getVault().format(tl.getFirstValue()))
+						.replace("%last%", AdvancedEconomyPlus.getVault().format(tl.getLastValue())),
 						HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.Positiv")
-						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(tl.getRelativeAmountChange()))));
+						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))));
 			} else
 			{
 				player.spigot().sendMessage(ChatApi.hoverEvent(
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.ChangeNegativ")
 						.replace("%date%", tl.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-						.replace("%first%", AdvancedEconomyPlus.getVaultApi().format(tl.getFirstValue()))
-						.replace("%last%", AdvancedEconomyPlus.getVaultApi().format(tl.getLastValue())),
+						.replace("%first%", AdvancedEconomyPlus.getVault().format(tl.getFirstValue()))
+						.replace("%last%", AdvancedEconomyPlus.getVault().format(tl.getLastValue())),
 						HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.Negativ")
-						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(tl.getRelativeAmountChange()))));
+						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))));
 			}
 		}
 		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.LOG.toString());
@@ -1258,9 +1258,9 @@ public class LogHandler
 				.replace("%player%", eco.getName())
 				.replace("%amount%", String.valueOf(last))));
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Infoline")
-				.replace("%max%", AdvancedEconomyPlus.getVaultApi().format(maxamount))
-				.replace("%min%", AdvancedEconomyPlus.getVaultApi().format(minamount))
-				.replace("%median%", AdvancedEconomyPlus.getVaultApi().format(median))));
+				.replace("%max%", AdvancedEconomyPlus.getVault().format(maxamount))
+				.replace("%min%", AdvancedEconomyPlus.getVault().format(minamount))
+				.replace("%median%", AdvancedEconomyPlus.getVault().format(median))));
 		while(i < list.size())
 		{
 			TrendLogger tl = list.get(i);
@@ -1291,14 +1291,14 @@ public class LogHandler
 			{
 				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Positiv")
-						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(tl.getRelativeAmountChange()))
-						.replace("%percent%", AdvancedEconomyPlus.getVaultApi().format(percent))));
+						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))
+						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
 			} else
 			{
 				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Negativ")
-						.replace("%relativ%", AdvancedEconomyPlus.getVaultApi().format(tl.getRelativeAmountChange()))
-						.replace("%percent%", AdvancedEconomyPlus.getVaultApi().format(percent))));
+						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))
+						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
 			}
 			i++;
 		}
@@ -1359,7 +1359,7 @@ public class LogHandler
 		double hpercent = (maxamount-minamount);
 		String wim = plugin.getYamlHandler().getConfig().getString("GraficSpaceSymbol", "ˉ");
 		String x = plugin.getYamlHandler().getConfig().getString("GraficPointSymbol", "x");
-		String headmessage = "&a▼"+AdvancedEconomyPlus.getVaultApi().format(maxamount);
+		String headmessage = "&a▼"+AdvancedEconomyPlus.getVault().format(maxamount);
 		String messageI = "|";
 		String messageII = "|";
 		String messageIII = "|";
@@ -1372,7 +1372,7 @@ public class LogHandler
 		String messageIX = "|";
 		String messageX = "|";
 		String messageXI = wim;
-		String bottommessage = "&c▲"+AdvancedEconomyPlus.getVaultApi().format(minamount);
+		String bottommessage = "&c▲"+AdvancedEconomyPlus.getVault().format(minamount);
 		String lastline = "&6▲"+list.get(list.size()-1).getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 		i = list.size()-1;
 		while(i>=0)

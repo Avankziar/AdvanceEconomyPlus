@@ -20,7 +20,7 @@ import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -50,7 +50,7 @@ public class ARGMoneyGive extends ArgumentModule
 			customOrderer = player.getUniqueId().toString();
 		}
 		String comment = "";
-		if(!EconomySettings.settings.isPlayerAccount())
+		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			sender.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
@@ -95,7 +95,7 @@ public class ARGMoneyGive extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
 			return;
 		}
-		EconomyResponse deposit = AdvancedEconomyPlus.getVaultApi().depositPlayer(toplayer.getName(), amount);
+		EconomyResponse deposit = AdvancedEconomyPlus.getVault().depositPlayer(toplayer.getName(), amount);
 		if(!deposit.transactionSuccess())
 		{
 			sender.sendMessage(ChatApi.tl(deposit.errorMessage));
@@ -109,8 +109,8 @@ public class ARGMoneyGive extends ArgumentModule
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), toplayer.getUUID(), amount, toplayer.getBalance()));
 		List<BaseComponent> list = new ArrayList<>();
 		TextComponent message = ChatApi.apiChat(plugin.getYamlHandler().getL().getString("CmdMoney.Give.DepositWithDraw")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
-				.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(amount))
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+				.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
 				.replace("%name1%", customTo)
 				.replace("%name2%", toplayer.getName()), null, "", 
 				HoverEvent.Action.SHOW_TEXT, 
@@ -119,10 +119,10 @@ public class ARGMoneyGive extends ArgumentModule
 				.replace("%comment%", comment));
 		list.add(message);
 		String messageII = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Give.DepositWithDrawBalance")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%name%", toplayer.getName())
-				.replace("%balance%", AdvancedEconomyPlus.getVaultApi().format(toplayer.getBalance())));
-		boolean bungee = EconomySettings.settings.isBungee();
+				.replace("%balance%", AdvancedEconomyPlus.getVault().format(toplayer.getBalance())));
+		boolean bungee = AEPSettings.settings.isBungee();
 		sender.spigot().sendMessage(message);
 		sender.sendMessage(messageII);
 		if(toplayer != null)

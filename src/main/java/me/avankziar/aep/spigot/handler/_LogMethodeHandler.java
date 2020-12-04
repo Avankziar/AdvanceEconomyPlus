@@ -1,11 +1,8 @@
 package main.java.me.avankziar.aep.spigot.handler;
 
-public class LogMethodeHandler
+public class _LogMethodeHandler
 {
-	public enum Methode
-	{
-		BARCHART, DIAGRAM, GRAFIC, LOG;
-	}
+	
 	
 	/*public static void actionLog(AdvancedEconomyPlus plugin,
 			Methode methode,

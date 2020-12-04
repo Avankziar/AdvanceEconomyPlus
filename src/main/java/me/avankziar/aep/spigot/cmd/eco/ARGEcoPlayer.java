@@ -9,7 +9,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class ARGEcoPlayer extends ArgumentModule
 {
@@ -26,7 +26,7 @@ public class ARGEcoPlayer extends ArgumentModule
 	{
 		Player player = (Player) sender;
 		String playername = args[1];
-		if(!EconomySettings.settings.isPlayerAccount())
+		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
@@ -45,9 +45,9 @@ public class ARGEcoPlayer extends ArgumentModule
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.Player.UUID")
 				.replace("%uuid%", eco.getUUID())));
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.Player.Balance")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
-				.replace("%balance%", AdvancedEconomyPlus.getVaultApi().format(eco.getBalance()))));
-		if(EconomySettings.settings.isBank())
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+				.replace("%balance%", AdvancedEconomyPlus.getVault().format(eco.getBalance()))));
+		if(AEPSettings.settings.isBank())
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.Player.BankAccount")
 					.replace("%bankaccount%", eco.getBankAccountNumber().toString())));

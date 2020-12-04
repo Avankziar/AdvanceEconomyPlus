@@ -20,7 +20,7 @@ import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -44,7 +44,7 @@ public class ARGMoneyPay extends ArgumentModule
 		String amountstring = args[2];
 		double amount = 0.0;
 		String comment = "";
-		if(!EconomySettings.settings.isPlayerAccount())
+		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
@@ -88,12 +88,12 @@ public class ARGMoneyPay extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.YourAccountIsFrozen")));
 			return;
 		}
-		if(!AdvancedEconomyPlus.getVaultApi().has(player, amount))
+		if(!AdvancedEconomyPlus.getVault().has(player, amount))
 		{
 			//&f%amount% &cübersteigt dein Guthaben!
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("CmdMoney.Pay.NotEnoughBalance")
-					.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+					.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 					.replace("%amount%", amountstring)));
 			return;
 		}
@@ -119,16 +119,16 @@ public class ARGMoneyPay extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.TheAccountIsFrozen")));
 			return;
 		}
-		EconomyResponse withdraw = AdvancedEconomyPlus.getVaultApi().withdrawPlayer(player, amount);
+		EconomyResponse withdraw = AdvancedEconomyPlus.getVault().withdrawPlayer(player, amount);
 		if(!withdraw.transactionSuccess())
 		{
 			player.sendMessage(withdraw.errorMessage);
 			return;
 		}
-		EconomyResponse deposit = AdvancedEconomyPlus.getVaultApi().depositPlayer(toplayer.getName(), amount);
+		EconomyResponse deposit = AdvancedEconomyPlus.getVault().depositPlayer(toplayer.getName(), amount);
 		if(!deposit.transactionSuccess())
 		{
-			AdvancedEconomyPlus.getVaultApi().depositPlayer(player, amount);
+			AdvancedEconomyPlus.getVault().depositPlayer(player, amount);
 			player.sendMessage(deposit.errorMessage);
 			return;
 		}
@@ -142,8 +142,8 @@ public class ARGMoneyPay extends ArgumentModule
 				LocalDate.now(), eco.getUUID(), -amount, eco.getBalance()));
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), toplayer.getUUID(), amount, toplayer.getBalance()));
 		TextComponent frommessage = ChatApi.tctl(plugin.getYamlHandler().getL().getString("CmdMoney.Pay.DepositWithDraw")
-				.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(amount))
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+				.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%name1%", player.getName())
 				.replace("%name2%", toplayer.getName()));
 		ChatApi.hoverEvent(frommessage, HoverEvent.Action.SHOW_TEXT, 
@@ -151,13 +151,13 @@ public class ARGMoneyPay extends ArgumentModule
 				.replace("%orderer%", player.getName())
 				.replace("%comment%", comment));
 		String frommessageII = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Pay.DepositWithDrawBalance")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%name%", player.getName())
-				.replace("%balance%", AdvancedEconomyPlus.getVaultApi().format(eco.getBalance())));
+				.replace("%balance%", AdvancedEconomyPlus.getVault().format(eco.getBalance())));
 		List<BaseComponent> list = new ArrayList<>();
 		TextComponent toomessage = ChatApi.apiChat(plugin.getYamlHandler().getL().getString("CmdMoney.Pay.DepositWithDraw")
-				.replace("%amount%", AdvancedEconomyPlus.getVaultApi().format(amount))
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+				.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%name1%", player.getName())
 				.replace("%name2%", toplayer.getName()), null, "",
 				HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerOrdererNote")
@@ -165,10 +165,10 @@ public class ARGMoneyPay extends ArgumentModule
 				.replace("%comment%", comment));
 		list.add(toomessage);
 		String toomessageII = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Pay.DepositWithDrawBalance")
-				.replace("%currency%", AdvancedEconomyPlus.getVaultApi().currencyNamePlural())
+				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%name%", toplayer.getName())
-				.replace("%balance%", AdvancedEconomyPlus.getVaultApi().format(toplayer.getBalance())));
-		boolean bungee = EconomySettings.settings.isBungee();
+				.replace("%balance%", AdvancedEconomyPlus.getVault().format(toplayer.getBalance())));
+		boolean bungee = AEPSettings.settings.isBungee();
 		player.spigot().sendMessage(frommessage);
 		player.sendMessage(frommessageII);
 		if(toplayer.isMoneyPlayerFlow())

@@ -27,7 +27,7 @@ import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.object.BankAccount;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -42,17 +42,17 @@ public class VaultApi implements Economy
 	
 	private boolean isMysql()
 	{
-		return EconomySettings.settings.isMysql();
+		return AEPSettings.settings.isMysql();
 	}
 	
 	private boolean usePlayerAccount()
 	{
-		return EconomySettings.settings.usePlayerAccount();
+		return AEPSettings.settings.usePlayerAccount();
 	}
 	
 	private boolean useBank()
 	{
-		return EconomySettings.settings.useBank();
+		return AEPSettings.settings.useBank();
 	}
 	
 	@Override
@@ -81,13 +81,13 @@ public class VaultApi implements Economy
 	@Override
 	public String currencyNamePlural()
 	{
-		return EconomySettings.settings.getCurrencyPlural();
+		return AEPSettings.settings.getCurrencyPlural();
 	}
 
 	@Override
 	public String currencyNameSingular()
 	{
-		return EconomySettings.settings.getCurrencySingular();
+		return AEPSettings.settings.getCurrencySingular();
 	}
 	
 	@Override
@@ -104,7 +104,7 @@ public class VaultApi implements Economy
 	@Override
 	public int fractionalDigits()
 	{
-		return EconomySettings.settings.getMoneyFormat();
+		return AEPSettings.settings.getMoneyFormat();
 	}
 	
 	@Override
@@ -508,7 +508,7 @@ public class VaultApi implements Economy
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
 					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.TheAccountIsFrozen"));
 		}
-		if(EconomySettings.settings.isLoanRepayment())
+		if(AEPSettings.settings.isLoanRepayment())
 		{
 			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN,
 					"`from_player` = ? AND `forgiven` = ? AND `paused` = ? AND `finished` = ? AND `endtime` < ?",
@@ -708,17 +708,17 @@ public class VaultApi implements Economy
 		{
 			return;
 		}
-		EconomyResponse er = AdvancedEconomyPlus.getVaultApi().withdrawPlayer(
+		EconomyResponse er = AdvancedEconomyPlus.getVault().withdrawPlayer(
 				Bukkit.getOfflinePlayer(UUID.fromString(dr.getFrom())), sum);
 		if(!er.transactionSuccess())
 		{
 			return;
 		}
-		EconomyResponse err = AdvancedEconomyPlus.getVaultApi().depositPlayer(
+		EconomyResponse err = AdvancedEconomyPlus.getVault().depositPlayer(
 				Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), sum);	
 		if(!err.transactionSuccess())
 		{
-			AdvancedEconomyPlus.getVaultApi().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getFrom())), sum);
+			AdvancedEconomyPlus.getVault().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getFrom())), sum);
 			return;
 		}
 		double totalamountPaidSoFar = dr.getAmountPaidSoFar()+sum;

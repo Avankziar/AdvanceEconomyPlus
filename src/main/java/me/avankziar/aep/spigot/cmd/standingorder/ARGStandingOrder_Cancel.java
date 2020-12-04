@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.cmd.money.standingorder;
+package main.java.me.avankziar.aep.spigot.cmd.standingorder;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,13 +8,13 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
-import main.java.me.avankziar.aep.spigot.object.EconomySettings;
+import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
-public class ARGMoneyStandingOrder_Cancel extends ArgumentModule
+public class ARGStandingOrder_Cancel extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyStandingOrder_Cancel(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGStandingOrder_Cancel(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -24,7 +24,7 @@ public class ARGMoneyStandingOrder_Cancel extends ArgumentModule
 	public void run(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;
-		if(!EconomySettings.settings.isStandingOrder())
+		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
@@ -33,12 +33,12 @@ public class ARGMoneyStandingOrder_Cancel extends ArgumentModule
 		if(!PendingHandler.standingOrder.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.StandingOrder.NoPendingOrder")));
+					plugin.getYamlHandler().getL().getString("CmdStandingOrder.NoPendingOrder")));
 			return;
 		}
 		PendingHandler.standingOrder.remove(player.getUniqueId().toString());
 		player.sendMessage(ChatApi.tl(
-				plugin.getYamlHandler().getL().getString("CmdMoney.StandingOrder.Cancel.IsCancelled")));
+				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Cancel.IsCancelled")));
 		return;
 	}
 }
