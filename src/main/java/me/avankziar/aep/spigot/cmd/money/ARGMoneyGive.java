@@ -42,11 +42,12 @@ public class ARGMoneyGive extends ArgumentModule
 		String toplayername = args[1];
 		String amountstring = args[2];
 		double amount = 0.0;
-		String customTo = args[3];
-		String customOrderer = args[4];
+		String customTo = "Console";
+		String customOrderer = "Console";
 		if(sender instanceof Player)
 		{
 			Player player = (Player) sender;
+			customTo = player.getName();
 			customOrderer = player.getUniqueId().toString();
 		}
 		String comment = "";
@@ -72,6 +73,16 @@ public class ARGMoneyGive extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
 					.replace("%args%", amountstring)));
 			return;
+		}
+		if(args.length >= 4)
+		{
+			customTo = args[3];
+		}
+		
+		if(args.length >= 5)
+		{
+			
+			customOrderer = args[4];
 		}
 		if(args.length >= 6)
 		{

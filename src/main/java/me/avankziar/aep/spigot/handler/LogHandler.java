@@ -853,9 +853,6 @@ public class LogHandler
 			while(j <= 13)
 			{
 				sdClone = sdClone.plusMonths(1);
-				AdvancedEconomyPlus.log.info(tldt.toString()+" | "+sdClone.toString());
-				AdvancedEconomyPlus.log.info((tldt.getMonthValue()==sdClone.getMonthValue())
-				+" | "+(tldt.getYear() == sdClone.getYear()));
 				if(tldt.getMonthValue() == sdClone.getMonthValue() && tldt.getYear() == sdClone.getYear())
 				{
 					switch(j)
@@ -900,7 +897,6 @@ public class LogHandler
 						thirteenthMonth.add(tl);
 						break;
 					}
-					AdvancedEconomyPlus.log.info("tldt break");
 					break;
 				}
 				j++;

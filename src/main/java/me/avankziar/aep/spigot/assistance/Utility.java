@@ -20,12 +20,8 @@ public class Utility
 		setPermissions();
 	}
 	
-	public static String 
-	PERM_CMD_MONEY_LOG_OTHER = "",
-	PERM_CMD_MONEY_FILTERLOGOTHER = "",
-	PERM_CMD_MONEY_TRENDDIAGRAM_OTHER = "",
-	PERM_CMD_MONEY_TRENDGRAFIC_OTHER = "",
-	PERM_CMD_MONEY_TRENDLOG_OTHER = "",
+	public static String
+	PERM_CMD_MONEY_LOGGERSETTINGSLOGOTHER = "",
 	PERM_BYPASS_RECOMMENT = "",
 	PERM_CMD_ECO_DELETELOG = "",
 	PERM_BYPASS_LOGOTHER = "",
@@ -43,14 +39,10 @@ public class Utility
 	
 	public void setPermissions()
 	{
-		PERM_CMD_MONEY_LOG_OTHER = plugin.getYamlHandler().getCom().getString("Bypass.LogOther", "eco.cmd.money.logother");
-		PERM_CMD_MONEY_FILTERLOGOTHER = plugin.getYamlHandler().getCom().getString("Bypass.FilterLogOther", "eco.cmd.money.filterlogother");
-		PERM_CMD_MONEY_TRENDDIAGRAM_OTHER = plugin.getYamlHandler().getCom().getString("Bypass.TrendDiagramOther", "eco.cmd.money.trenddiagramother");
-		PERM_CMD_MONEY_TRENDGRAFIC_OTHER = plugin.getYamlHandler().getCom().getString("Bypass.TrendGraficOther", "eco.cmd.money.trendgraficother");
-		PERM_CMD_MONEY_TRENDLOG_OTHER = plugin.getYamlHandler().getCom().getString("Bypass.TrendLogOther", "eco.cmd.money.trendlogother");
+		PERM_CMD_MONEY_LOGGERSETTINGSLOGOTHER = plugin.getYamlHandler().getCom().getString("Bypass.LoggerSettingsLogOther", "eco.cmd.money.filterlogother");
 		PERM_BYPASS_RECOMMENT = plugin.getYamlHandler().getCom().getString("Bypass.Recomment", "eco.cmd.bypass.recomment");
 		PERM_CMD_ECO_DELETELOG = plugin.getYamlHandler().getCom().getString("eco_deletelog.Permission", "eco.cmd.eco.deletelog");
-		PERM_BYPASS_LOGOTHER = plugin.getYamlHandler().getCom().getString("Bypass.FilterSettingsLogOther", "eco.bypass.logother");
+		PERM_BYPASS_LOGOTHER = plugin.getYamlHandler().getCom().getString("Bypass.LogOther", "eco.bypass.logother");
 		PERM_BYPASS_STANDINGORDER_CREATE = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderCreate", "eco.cmd.bypass.standingorder.create");
 		PERM_BYPASS_STANDINGORDER_INFO = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderInfo", "eco.cmd.bypass.standingorder.info");
 		PERM_BYPASS_STANDINGORDER_DELETE = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderDelete", "eco.cmd.bypass.standingorder.delete");

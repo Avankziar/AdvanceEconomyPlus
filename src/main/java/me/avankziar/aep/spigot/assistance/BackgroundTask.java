@@ -64,7 +64,7 @@ public class BackgroundTask
 				{
 					for(Player player : Bukkit.getOnlinePlayers())
 					{
-						AEPUser eco = AEPUserHandler.getEcoPlayer(player.getUniqueId().toString());
+						AEPUser eco = AEPUserHandler.getEcoPlayer(player.getUniqueId());
 						if(eco == null)
 						{
 							AdvancedEconomyPlus.getVault().createPlayerAccount(player);

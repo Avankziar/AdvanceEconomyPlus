@@ -2,6 +2,7 @@ package main.java.me.avankziar.aep.spigot.hook;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -44,8 +45,8 @@ public class ChestShopHook implements Listener
 		String itemId = "";
         int itemQuantities = 0;
         Material itemType = null;
-        AEPUser owner = AEPUserHandler.getEcoPlayer(owneruuid);
-        AEPUser client = AEPUserHandler.getEcoPlayer(clientuuid);
+        AEPUser owner = AEPUserHandler.getEcoPlayer(UUID.fromString(owneruuid));
+        AEPUser client = AEPUserHandler.getEcoPlayer(UUID.fromString(clientuuid));
         Double balanceowner = 0.0; //TODO bank
         Double balanceclient = 0.0;
         
@@ -89,7 +90,7 @@ public class ChestShopHook implements Listener
 					owneruuid, 
 					amount, 
 					AEPUserHandler.getEcoPlayer(
-							owneruuid)
+							UUID.fromString(owneruuid))
 					.getBalance()));
 			Bukkit.getPluginManager().callEvent(
 					new TrendLoggerEvent(
@@ -97,7 +98,7 @@ public class ChestShopHook implements Listener
 					clientuuid,
 					-amount,
 					AEPUserHandler.getEcoPlayer(
-							clientuuid)
+							UUID.fromString(clientuuid))
 					.getBalance()));
 		} else 
 		{

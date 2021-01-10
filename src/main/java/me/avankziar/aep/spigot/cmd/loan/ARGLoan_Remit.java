@@ -20,11 +20,11 @@ import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 
-public class ARGLoan_Forgive extends ArgumentModule
+public class ARGLoan_Remit extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGLoan_Forgive(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGLoan_Remit(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -76,7 +76,7 @@ public class ARGLoan_Forgive extends ArgumentModule
 		{
 			player.spigot().sendMessage(ChatApi.generateTextComponent(
 					plugin.getYamlHandler().getL().getString("CmdLoan.Accept.PleaseConfirm")
-					.replace("%cmd%", AEPSettings.settings.getCommands(KeyHandler.L_FORGIVE)
+					.replace("%cmd%", AEPSettings.settings.getCommands(KeyHandler.L_REMIT)
 							.replace(" ", "+")+"+"+plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm"))));
 			return;
 		}

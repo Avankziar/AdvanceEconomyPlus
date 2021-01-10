@@ -88,7 +88,7 @@ public class MoneyCommandExecutor implements CommandExecutor
 								return false;
 							}
 							return false;
-						} else if(!ac.canConsoleAccess() && player != null)
+						} else if(player != null)
 						{
 							if(player.hasPermission(ac.getPermission()))
 							{

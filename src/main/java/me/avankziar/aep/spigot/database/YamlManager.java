@@ -266,49 +266,6 @@ public class YamlManager
 		}
 	}
 	
-	@SuppressWarnings("unused") //TODO:Commands
-	public void initCommands()
-	{
-		String path = "";
-		Econ:
-		{
-			commandsInput("eco", "econ", "eco.cmd.eco", "/econ [pagenumber]", "/econ ",
-					"&c/econ &f| Infoseite für alle Befehle.",
-					"&c/econ &f| Info page for all commands.",
-					"Base and Info Command");
-			comEcon();
-		}
-		
-		Money:
-		{
-			commandsInput("money", "money", "eco.cmd.money", "/money", "/money",
-					"&c/money &f| Zeigt dein Guthaben an.",
-					"&c/money &f| Shows your balance.",
-					"Display your balance");			
-			comMoney();
-			comMoneyLogs();
-			comMoneyLoggerSettings();
-		}
-		
-		Loan:
-		{
-			commandsInput("loan", "loan", "eco.cmd.loan", "/loan", "/loan ",
-					"&c/loan [Seitenzahl] [Spielername] &f| Zeigt die Kredite an.",
-					"&c/loan [page] [playername] &f| Shows your loans.",
-					"Display all of yours loans.");
-			comLoan();
-		}
-		
-		StandingOrder:
-		{
-			commandsInput("standingorder", "standingorder", "eco.cmd.standingorder", "/standingorder", "/standingorder ",
-					"&c/standingorder [Seitenzahl] [Spielername] &f| Zeigt die Daueraufträge an.",
-					"&c/standingorder [page] [playername] &f| Shows your standing orders.",
-					"Display all of yours standing orders.");
-			comStandingOrder();
-		}
-	}
-	
 	private void commandsInput(String path, String name, String basePermission, 
 			String suggestion, String commandString,
 			String helpInfoGerman, String helpInfoEnglish, String explanation)
@@ -359,8 +316,85 @@ public class YamlManager
 				explanation}));
 	}
 	
+	@SuppressWarnings("unused") //TODO:Commands
+	public void initCommands()
+	{
+		comBypass();
+		Econ:
+		{
+			comEcon();
+		}
+		
+		Money:
+		{			
+			comMoney();
+			comMoneyLogs();
+			comMoneyLoggerSettings();
+		}
+		
+		Loan:
+		{
+			comLoan();
+		}
+		
+		StandingOrder:
+		{
+			comStandingOrder();
+		}
+	}
+	
+	private void comBypass()
+	{
+		commandsKeys.put("Bypass.LoggerSettingsLogOther"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.money.loggersettingslogother"}));
+		commandsKeys.put("Bypass.Recomment"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.recomment"}));
+		commandsKeys.put("Bypass.LogOther"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.bypass.logother"}));
+		commandsKeys.put("Bypass.StandingOrderCreate"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.standingorder.create"}));
+		commandsKeys.put("Bypass.StandingOrderInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.standingorder.info"}));
+		commandsKeys.put("Bypass.StandingOrderDelete"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.standingorder.delete"}));
+		commandsKeys.put("Bypass.StandingOrderPause"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.standingorder.pause"}));
+		commandsKeys.put("Bypass.StandingOrderList"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.standingorder.list"}));
+		commandsKeys.put("Bypass.LoanCreate"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.loan.create"}));
+		commandsKeys.put("Bypass.LoanForgive"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.loan.forgive"}));
+		commandsKeys.put("Bypass.LoanInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.loan.info"}));
+		commandsKeys.put("Bypass.LoanList"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.loan.list"}));
+		commandsKeys.put("Bypass.LoanPause"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.loan.pause"}));
+		commandsKeys.put("Bypass.LoanTransfer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"eco.cmd.bypass.loan.transfer"}));
+	}
+	
 	private void comEcon()
 	{
+		commandsInput("eco", "econ", "eco.cmd.eco", "/econ [pagenumber]", "/econ ",
+				"&c/econ &f| Infoseite für alle Befehle.",
+				"&c/econ &f| Info page for all commands.",
+				"Base and Info Command");
 		String basePermission = "eco.cmd.eco";
 		argumentInput("eco_deletelog", "deletelog", basePermission,
 				"/econ deletelog <id>", "/econ deletelog ",
@@ -383,6 +417,10 @@ public class YamlManager
 	
 	private void comMoney()
 	{
+		commandsInput("money", "money", "eco.cmd.money", "/money", "/money",
+				"&c/money &f| Zeigt dein Guthaben an.",
+				"&c/money &f| Shows your balance.",
+				"Display your balance");
 		String basePermission = "eco.cmd.money";
 		argumentInput("money_freeze", "freeze", basePermission,
 				"/money freete <player>", "/money freeze ",
@@ -480,6 +518,10 @@ public class YamlManager
 	
 	private void comLoan() //TODO:ComLoan
 	{		
+		commandsInput("loan", "loan", "eco.cmd.loan", "/loan", "/loan ",
+				"&c/loan [Seitenzahl] [Spielername] &f| Zeigt deine Kredite an.",
+				"&c/loan [page] [playername] &f| Shows yours loans.",
+				"Display all of yours loans.");
 		String basePermission = "eco.cmd.loan";
 		argumentInput("loan_accept", "accept", basePermission,
 				"/loan accept [confirm]", "/loan accept",
@@ -500,16 +542,10 @@ public class YamlManager
 				"Cancel the loan work in progress.");
 		
 		argumentInput("loan_create", "create", basePermission,
-				"/loan create <name> <from> <to>", "/loan create ",
-				"&c/loan create <Name> <Von> <Zu> &f| Erstellt einen Kreditvorschlag.",
-				"&c/loan create <name> <from> <to> &f| Create a loanproposal.",
+				"/loan create <name> <sender> <reciver>", "/loan create ",
+				"&c/loan create <Name> <Sender> <Empfänger> &f| Erstellt einen Kreditvorschlag.",
+				"&c/loan create <name> <sender> <reciver> &f| Create a loanproposal.",
 				"Create a work in progress loanproposal");
-		
-		argumentInput("loan_forgive", "forgive", basePermission,
-				"/loan forgive <id> [confirm]", "/loan forgive",
-				"&c/loan forgive <id> &f| Der Restbetrag des Kredits wird vergeben.",
-				"&c/loan forgive <id> &f| The remaining amount of the loan will be forgiven.",
-				"Forgive the restamount of the loan.");
 		
 		argumentInput("loan_info", "info", basePermission,
 				"/loan info [id]", "/loan info ",
@@ -535,7 +571,6 @@ public class YamlManager
 				"&c/loan pause <id> &f| Pauses or resumes payments on the loan. Only possible for the loan owner!",
 				"Pause or unpause a loanrepayment");
 		
-		
 		argumentInput("loan_payback", "payback", basePermission,
 				"/loan payback <id>", "/loan payback",
 				"&c/loan payback <id> &f| Zahlt dem Spieler den Rest des Kredites zurück als Admin.",
@@ -547,6 +582,12 @@ public class YamlManager
 				"&c/loan reject &f| Lehnt einen Kreditvorschlag ab.",
 				"&c/loan reject &f| Rejects a loan proposal.",
 				"Reject a loan proposal");
+		
+		argumentInput("loan_remit", "remit", basePermission,
+				"/loan forgive <id> [confirm]", "/loan remit",
+				"&c/loan remit <id> &f| Der Restbetrag des Kredits wird erlassen.",
+				"&c/loan remit <id> &f| The remaining amount of the loan will be remitted.",
+				"Remit the restamount of the loan.");
 		
 		argumentInput("loan_repay", "repay", basePermission,
 				"/loan repay <id> <amount>", "/loan repay",
@@ -575,6 +616,10 @@ public class YamlManager
 	
 	private void comStandingOrder() //TODO:ComStandingOrder
 	{
+		commandsInput("standingorder", "standingorder", "eco.cmd.standingorder", "/standingorder", "/standingorder ",
+				"&c/standingorder [Seitenzahl] [Spielername] &f| Zeigt deine Daueraufträge an.",
+				"&c/standingorder [page] [playername] &f| Shows yours standing orders.",
+				"Display all of yours standing orders.");
 		String basePermission = "eco.cmd.standingorder";
 		argumentInput("standingorder_amount", "amount", basePermission,
 				"/standingorder amount <amount>", "/standingorder amount",
@@ -1079,8 +1124,8 @@ public class YamlManager
 		base = "CmdMoney.";
 		languageKeys.put(base+"Take.DepositWithDraw"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&6%amount% &2%currency% &ewurde von &6%name1% &ean das &6%name2% &eüberwiesen.",
-				"&6%amount% &2%currency% &ewas transferred from &6%name1% &eto the &6%name2%&e."}));
+				"&6%amount% &2%currency% &ewurde von &6%name1% &ean &6%name2% &eüberwiesen.",
+				"&6%amount% &2%currency% &ewas transferred from &6%name1% &eto &6%name2%&e."}));
 		languageKeys.put(base+"Take.DepositWithDrawBalance"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eAktuelles Guthaben von &6%name%&e: &6%balance% &2%currency%",

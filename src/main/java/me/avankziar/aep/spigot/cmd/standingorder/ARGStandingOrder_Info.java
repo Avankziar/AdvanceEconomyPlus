@@ -84,8 +84,8 @@ public class ARGStandingOrder_Info extends ArgumentModule
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
 				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.Headline")
 				.replace("%id%", String.valueOf(so.getId()))
-				.replace("%cancelcmd%", KeyHandler.SO_CANCEL.replace(" ", "+"))
-				.replace("%deletecmd%", KeyHandler.SO_DELETE.replace(" ", "+"))));
+				.replace("%cancelcmd%", AEPSettings.settings.getCommands(KeyHandler.SO_CANCEL).replace(" ", "+"))
+				.replace("%deletecmd%", AEPSettings.settings.getCommands(KeyHandler.SO_DELETE).replace(" ", "+"))));
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
 				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.Name")
 				.replace("%name%", so.getName())));

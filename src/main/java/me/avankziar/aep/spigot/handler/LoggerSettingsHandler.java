@@ -74,7 +74,7 @@ public class LoggerSettingsHandler
 			switch(i)
 			{
 			//Fall-Through
-			case 31: //Json
+			//case 31: //Json
 			case 40: //Barchart Befehl ausführen
 			case 48: //Diagram Befehl ausführen. Linksklick: Action | Rechtsklick: Trend
 			case 49: //Log Befehl ausführen.
@@ -166,9 +166,7 @@ public class LoggerSettingsHandler
 		event.setCancelled(true);
 		switch(event.getSlot())
 		{
-		default:
-			break;
-		case 31:
+		/*case 31:
 			if(event.isLeftClick())
 			{
 				fst.setAction(true);
@@ -180,7 +178,7 @@ public class LoggerSettingsHandler
 				getLoggerSettings().replace(uuid, fst);
 				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.JSON, 0);
 			}
-			break;
+			break;*/
 		case 40: //Barchart Befehl ausführen
 			fst.setAction(true);
 			getLoggerSettings().replace(uuid, fst);
@@ -225,7 +223,6 @@ public class LoggerSettingsHandler
 				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.LOG, 0);
 			}
 			break;
-		
 		case 36: //PreSet 1
 			int slotid = 1;
 			if(event.isShiftClick())
@@ -350,7 +347,6 @@ public class LoggerSettingsHandler
 			}
 			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
 			break;
-			
 		case 3: //Sender Set Befehl ausführen
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
 			{
@@ -370,6 +366,7 @@ public class LoggerSettingsHandler
 				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
 				break;
 			}
+			break;
 		case 4: //Orderer Befehl ausführen. Wird auf für den Trend genutzt.
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
 			{
@@ -389,6 +386,7 @@ public class LoggerSettingsHandler
 				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
 				break;
 			}
+			break;
 		case 5: //to Set Befehl ausführen
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
 			{
@@ -408,6 +406,7 @@ public class LoggerSettingsHandler
 				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
 				break;
 			}
+			break;
 		case 13: //Comment Set
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
 			{
@@ -427,7 +426,7 @@ public class LoggerSettingsHandler
 				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
 				break;
 			}
-			
+			break;
 		//Min ist für LessThan, Between
 		case 0:
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q : Alles Löschen
@@ -519,7 +518,7 @@ public class LoggerSettingsHandler
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.SHIFT_RIGHT) // Shift + Rechts : -5_000_000
 			{
-				Double d = addingDoubles(fst.getMin(), -5_000_000);
+				Double d = addingDoubles(fst.getMin(), -50_000_000);
 				fst.setMin(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
@@ -537,22 +536,22 @@ public class LoggerSettingsHandler
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.LEFT) // Links : +1
 			{
-				Double d = addingDoubles(fst.getMin(), 1);
+				Double d = addingDoubles(fst.getMax(), 1);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.RIGHT) // Rechts : +50
 			{
-				Double d = addingDoubles(fst.getMin(), 50);
+				Double d = addingDoubles(fst.getMax(), 50);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.SHIFT_LEFT) // Shift + Links : -1
 			{
-				Double d = addingDoubles(fst.getMin(), -1);
+				Double d = addingDoubles(fst.getMax(), -1);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.SHIFT_RIGHT) // Shift + Rechts : -50
 			{
-				Double d = addingDoubles(fst.getMin(), -50);
+				Double d = addingDoubles(fst.getMax(), -50);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
@@ -569,25 +568,27 @@ public class LoggerSettingsHandler
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.LEFT) // Links : +50_000
 			{
-				Double d = addingDoubles(fst.getMin(), 1_000);
+				Double d = addingDoubles(fst.getMax(), 1_000);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.RIGHT) // Rechts : +1_000_000
 			{
-				Double d = addingDoubles(fst.getMin(), 50_000);
+				Double d = addingDoubles(fst.getMax(), 50_000);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.SHIFT_LEFT) // Shift + Links : -50_000
 			{
-				Double d = addingDoubles(fst.getMin(), -1_000);
+				Double d = addingDoubles(fst.getMax(), -1_000);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.SHIFT_RIGHT) // Shift + Rechts : -1_000_000
 			{
-				Double d = addingDoubles(fst.getMin(), -50_000);
+				Double d = addingDoubles(fst.getMax(), -50_000);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			break;
 		case 26:
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q : Alles Löschen
 			{
@@ -599,25 +600,27 @@ public class LoggerSettingsHandler
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.LEFT) // Links : +1_000_000
 			{
-				Double d = addingDoubles(fst.getMin(), 1_000_000);
+				Double d = addingDoubles(fst.getMax(), 1_000_000);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.RIGHT) // Rechts : +5_000_000
 			{
-				Double d = addingDoubles(fst.getMin(), 5_000_000);
+				Double d = addingDoubles(fst.getMax(), 50_000_000);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.SHIFT_LEFT) // Shift + Links : -1_000_000
 			{
-				Double d = addingDoubles(fst.getMin(), -1_000_000);
+				Double d = addingDoubles(fst.getMax(), -1_000_000);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.SHIFT_RIGHT) // Shift + Rechts : -50_000_000
 			{
-				Double d = addingDoubles(fst.getMin(), -50_000_000);
+				Double d = addingDoubles(fst.getMax(), -50_000_000);
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			break;
 		//Firststand
 		case 29:
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
@@ -781,6 +784,8 @@ public class LoggerSettingsHandler
 				getLoggerSettings().replace(uuid, fst);
 			}
 			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			break;
+		default:
 			break;
 		}
 	}
@@ -1192,7 +1197,9 @@ public class LoggerSettingsHandler
 	{
 		if(fst.getActionFilter().getFrom() != null
 				&& fst.getActionFilter().getTo() != null
-				&& fst.getActionFilter().getFrom().equals(fst.getActionFilter().getTo())
+				&& (fst.getActionFilter().getFrom().equals(fst.getActionFilter().getTo())
+						|| (!fst.getActionFilter().getFrom().equals(player.getName())
+								&& !fst.getActionFilter().getTo().equals(player.getName())))
 				&& !player.hasPermission(Utility.PERM_BYPASS_LOGOTHER))
 		{
 			fst.setInventoryHandlerType(InventoryHandlerType.NONE);

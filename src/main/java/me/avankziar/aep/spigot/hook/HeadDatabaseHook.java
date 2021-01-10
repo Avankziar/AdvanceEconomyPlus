@@ -2,6 +2,7 @@ package main.java.me.avankziar.aep.spigot.hook;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -52,6 +53,6 @@ public class HeadDatabaseHook implements Listener
 				plugin.getYamlHandler().getL().getString("HeadDatabase.Comment")
 				.replace("%head%", itemname)));
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-				LocalDate.now(), playeruuid, amount, AEPUserHandler.getEcoPlayer(playeruuid).getBalance()));
+				LocalDate.now(), playeruuid, amount, AEPUserHandler.getEcoPlayer(UUID.fromString(playeruuid)).getBalance()));
 	}
 }

@@ -49,7 +49,7 @@ public class ARGMoneyTrendLog extends ArgumentModule
 				playername = args[2];
 			} else
 			{
-				if(!player.hasPermission(Utility.PERM_CMD_MONEY_LOG_OTHER)
+				if(!player.hasPermission(Utility.PERM_BYPASS_LOGOTHER)
 						&& !args[2].equals(playername))
 				{
 					player.sendMessage(ChatApi.tl(
@@ -64,6 +64,9 @@ public class ARGMoneyTrendLog extends ArgumentModule
 		if(fst == null)
 		{
 			fst = new LoggerSettings(player.getUniqueId(), null, page);
+			fst.setAction(false);
+		} else
+		{
 			fst.setAction(false);
 		}
 		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);

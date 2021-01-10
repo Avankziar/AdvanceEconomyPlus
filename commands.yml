@@ -1,11 +1,7 @@
 Bypass:
-  LogOther: 'eco.cmd.money.logother'
   FilterLogOther: 'eco.cmd.money.filterlogother'
-  TrendDiagramOther: 'eco.cmd.money.trenddiagramother'
-  TrendGraficOther: 'eco.cmd.money.trendgraficother'
-  TrendLogOther: 'eco.cmd.money.trendlogother'
   Recomment: 'eco.cmd.bypass.recomment'
-  Bypass.FilterSettingsLogOther: 'eco.bypass.logother'
+  LogOther: 'eco.bypass.logother'
   StandingOrderCreate: 'eco.cmd.bypass.standingorder.create'
   StandingOrderInfo: 'eco.cmd.bypass.standingorder.info'
   StandingOrderDelete: 'eco.cmd.bypass.standingorder.delete'

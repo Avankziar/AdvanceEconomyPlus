@@ -76,6 +76,12 @@ public class YamlHandler
 		//Erstellen aller Werte FÜR die Config.yml
 		plugin.setYamlManager(new YamlManager());
 		
+		File directory = new File(plugin.getDataFolder()+"");
+		if(!directory.exists())
+		{
+			directory.mkdir();
+		}
+		
 		//Initialisierung der config.yml
 		config = new File(plugin.getDataFolder(), "config.yml");
 		if(!config.exists()) 

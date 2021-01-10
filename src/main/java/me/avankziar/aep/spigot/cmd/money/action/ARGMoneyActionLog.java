@@ -48,7 +48,7 @@ public class ARGMoneyActionLog extends ArgumentModule
 				playername = args[2];
 			} else
 			{
-				if(!player.hasPermission(Utility.PERM_CMD_MONEY_LOG_OTHER))
+				if(!player.hasPermission(Utility.PERM_BYPASS_LOGOTHER))
 				{
 					player.sendMessage(ChatApi.tl(
 							plugin.getYamlHandler().getL().getString("NoPermission")));
@@ -62,6 +62,9 @@ public class ARGMoneyActionLog extends ArgumentModule
 		if(fst == null)
 		{
 			fst = new LoggerSettings(player.getUniqueId(), null, page);
+			fst.setAction(true);
+		} else
+		{
 			fst.setAction(true);
 		}
 		if(playername != null)

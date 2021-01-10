@@ -18,6 +18,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.handler.KeyHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
@@ -189,10 +190,10 @@ public class StandingOrderCommandExecutor implements CommandExecutor
 		{
 			bc.add(ChatApi.tctl("&3"+so.getId()+"&f:&6"+so.getName()+"&f:"));
 			bc.add(ChatApi.apiChat("&eⓘ", 
-					ClickEvent.Action.RUN_COMMAND, plugin.getYamlHandler().getL().getString("CmdStandingOrder.InfoCmd")+" "+so.getId(),
+					ClickEvent.Action.RUN_COMMAND, AEPSettings.settings.getCommands(KeyHandler.SO_INFO)+" "+so.getId(),
 					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
 			bc.add(ChatApi.apiChat("&c✖", 
-					ClickEvent.Action.SUGGEST_COMMAND, plugin.getYamlHandler().getL().getString("CmdStandingOrder.DeleteCmd")+" "+so.getId(),
+					ClickEvent.Action.SUGGEST_COMMAND, AEPSettings.settings.getCommands(KeyHandler.SO_DELETE)+" "+so.getId(),
 					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
 			bc.add(ChatApi.tctl(" &1| "));
 		}

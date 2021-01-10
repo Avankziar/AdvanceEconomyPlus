@@ -122,14 +122,14 @@ public class ARGMoneyPay extends ArgumentModule
 		EconomyResponse withdraw = AdvancedEconomyPlus.getVault().withdrawPlayer(player, amount);
 		if(!withdraw.transactionSuccess())
 		{
-			player.sendMessage(withdraw.errorMessage);
+			player.sendMessage(ChatApi.tl(withdraw.errorMessage));
 			return;
 		}
 		EconomyResponse deposit = AdvancedEconomyPlus.getVault().depositPlayer(toplayer.getName(), amount);
 		if(!deposit.transactionSuccess())
 		{
 			AdvancedEconomyPlus.getVault().depositPlayer(player, amount);
-			player.sendMessage(deposit.errorMessage);
+			player.sendMessage(ChatApi.tl(deposit.errorMessage));
 			return;
 		}
 		eco = AEPUserHandler.getEcoPlayer(player);

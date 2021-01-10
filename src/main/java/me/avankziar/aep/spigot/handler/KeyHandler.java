@@ -4,8 +4,8 @@ public class KeyHandler
 {
 	public static String L_ACCEPT = "L_ACCEPT";
 	public static String L_INFO = "L_INFO";
-	public static String L_FORGIVE = "L_FORGIVE";
 	public static String L_REPAY = "L_REPAY";
+	public static String L_REMIT = "L_REMIT";
 	public static String L_REJECT = "L_REJECT";
 	
 	public static String SO_AMOUNT = "SO_AMOUNT";

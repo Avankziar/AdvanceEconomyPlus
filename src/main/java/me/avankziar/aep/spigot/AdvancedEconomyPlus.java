@@ -38,7 +38,7 @@ import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Accept;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Amount;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Cancel;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Create;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Forgive;
+import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Remit;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Info;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Inherit;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_List;
@@ -116,12 +116,6 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	public static String baseCommandIII = "bank";
 	public static String baseCommandIV = "loan";
 	public static String baseCommandV = "standingorder";
-	
-	public static String baseCommandIName = ""; //CustomCommand name
-	public static String baseCommandIIName = "";
-	public static String baseCommandIIIName = "";
-	public static String baseCommandIVName = "";
-	public static String baseCommandVName = "";
 	
 	public static String infoCommandPath = "CmdEco";
 	public static String infoCommand = "/"; //InfoComamnd
@@ -238,16 +232,9 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	}
 	
 	private void setupStrings()
-	{
-		//Hier baseCommands
-		baseCommandIName = plugin.getYamlHandler().getCom().getString(baseCommandI+".Name");
-		baseCommandIIName = plugin.getYamlHandler().getCom().getString(baseCommandII+".Name");
-		baseCommandIIIName = plugin.getYamlHandler().getCom().getString(baseCommandIII+".Name");
-		baseCommandIVName = plugin.getYamlHandler().getCom().getString(baseCommandIV+".Name");
-		baseCommandVName = plugin.getYamlHandler().getCom().getString(baseCommandV+".Name");
-		
+	{	
 		//Zuletzt infoCommand deklarieren
-		infoCommand += baseCommandIName;
+		infoCommand += plugin.getYamlHandler().getCom().getString(baseCommandI+".Name");
 	}
 	
 	private void setupCommandTree()
@@ -309,7 +296,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 					loggersettings_gui, loggersettings_other, loggersettings_text);
 			
 			ArgumentConstructor pay = new ArgumentConstructor(yamlHandler, baseCommandII+"_pay", 0, 2, 999, false, playerMapI);
-			ArgumentConstructor set = new ArgumentConstructor(yamlHandler, baseCommandII+"_set", 0, 2, 999, true, playerMapI);
+			ArgumentConstructor set = new ArgumentConstructor(yamlHandler, baseCommandII+"_set", 0, 4, 999, true, playerMapI);
 			
 			ArgumentConstructor take = new ArgumentConstructor(yamlHandler, baseCommandII+"_take", 0, 4, 999, true, playerMapI);
 			ArgumentConstructor toggle = new ArgumentConstructor(yamlHandler, baseCommandII+"_toggle", 0, 0, 0, false, null);
@@ -370,47 +357,47 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			ArgumentConstructor loan_amount = new ArgumentConstructor(yamlHandler, baseCommandIV+"_amount", 0, 3, 3, false, null);
 			ArgumentConstructor loan_cancel = new ArgumentConstructor(yamlHandler, baseCommandIV+"_cancel", 0, 0, 0, false, null);
 			ArgumentConstructor loan_create = new ArgumentConstructor(yamlHandler, baseCommandIV+"_create", 0, 3, 3, false, playerMapIII);
-			ArgumentConstructor loan_forgive = new ArgumentConstructor(yamlHandler, baseCommandIV+"_forgive", 0, 1, 2, false, null);
 			ArgumentConstructor loan_info = new ArgumentConstructor(yamlHandler, baseCommandIV+"_info", 0, 1, 1, false, null);
 			ArgumentConstructor loan_inherit = new ArgumentConstructor(yamlHandler, baseCommandIV+"_inherit", 0, 3, 3, false, playerMapIII);
 			ArgumentConstructor loan_list = new ArgumentConstructor(yamlHandler, baseCommandIV+"_list", 0, 0, 1, false, null);
 			ArgumentConstructor loan_pause = new ArgumentConstructor(yamlHandler, baseCommandIV+"_pause", 0, 1, 1, false, null);
 			ArgumentConstructor loan_payback = new ArgumentConstructor(yamlHandler, baseCommandIV+"_payback", 0, 1, 1, false, null);
 			ArgumentConstructor loan_reject = new ArgumentConstructor(yamlHandler, baseCommandIV+"_reject", 0, 0, 0, false, null);
+			ArgumentConstructor loan_remit = new ArgumentConstructor(yamlHandler, baseCommandIV+"_remit", 0, 1, 2, false, null);
 			ArgumentConstructor loan_repay = new ArgumentConstructor(yamlHandler, baseCommandIV+"_repay", 0, 2, 3, false, null);
 			ArgumentConstructor loan_send = new ArgumentConstructor(yamlHandler, baseCommandIV+"_send", 0, 1, 1, false, null);
 			ArgumentConstructor loan_time = new ArgumentConstructor(yamlHandler, baseCommandIV+"_time", 0, 3, 3, false, null);
 			ArgumentConstructor loan_transfer = new ArgumentConstructor(yamlHandler, baseCommandIV+"_transfer", 0, 3, 3, false, playerMapIII);
 					
 			CommandConstructor loan = new CommandConstructor(plugin, baseCommandIV, false,
-					loan_accept, loan_amount, loan_cancel, loan_create, loan_forgive, loan_info, loan_inherit, 
-					loan_list, loan_pause, loan_payback, loan_reject, loan_repay, loan_send, loan_time, loan_transfer);	
+					loan_accept, loan_amount, loan_cancel, loan_create, loan_info, loan_inherit, 
+					loan_list, loan_pause, loan_payback, loan_reject, loan_remit, loan_repay, loan_send, loan_time, loan_transfer);	
 			
 			registerCommand(loan.getPath(), loan.getName());
 			getCommand(loan.getName()).setExecutor(new LoanCommandExecutor(plugin, loan));
 			getCommand(loan.getName()).setTabCompleter(new TABCompletion(plugin));
 			
 			addingHelps(
-				loan, loan_accept, loan_amount, loan_cancel, loan_create, loan_forgive, loan_info, loan_inherit, loan_list,
-					loan_pause, loan_payback, loan_reject, loan_repay, loan_send, loan_time, loan_transfer);
+				loan, loan_accept, loan_amount, loan_cancel, loan_create, loan_info, loan_inherit, loan_list,
+					loan_pause, loan_payback, loan_reject, loan_remit, loan_repay, loan_send, loan_time, loan_transfer);
 			
 			AEPSettings.settings.addCommands(KeyHandler.L_ACCEPT, loan_accept.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.L_FORGIVE, loan_forgive.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.L_INFO, loan_forgive.getCommandString());
+			AEPSettings.settings.addCommands(KeyHandler.L_INFO, loan_info.getCommandString());
 			AEPSettings.settings.addCommands(KeyHandler.L_REJECT, loan_reject.getCommandString());
+			AEPSettings.settings.addCommands(KeyHandler.L_REMIT, loan_remit.getCommandString());
 			AEPSettings.settings.addCommands(KeyHandler.L_REPAY, loan_repay.getCommandString());
 			
 			new ARGLoan_Accept(plugin, loan_accept);
 			new ARGLoan_Amount(plugin, loan_amount);
 			new ARGLoan_Cancel(plugin, loan_cancel);
 			new ARGLoan_Create(plugin, loan_create);
-			new ARGLoan_Forgive(plugin, loan_forgive);
 			new ARGLoan_Info(plugin, loan_info);
 			new ARGLoan_Inherit(plugin, loan_inherit);
 			new ARGLoan_List(plugin, loan_list);
 			new ARGLoan_Pause(plugin, loan_pause);
 			new ARGLoan_Payback(plugin, loan_payback);
 			new ARGLoan_Reject(plugin, loan_reject);
+			new ARGLoan_Remit(plugin, loan_remit);
 			new ARGLoan_Repay(plugin, loan_repay);
 			new ARGLoan_Send(plugin, loan_send);
 			new ARGLoan_Time(plugin, loan_time);
@@ -420,12 +407,16 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		if(AEPSettings.settings.isStandingOrder())
 		{
 			log.info("Activate StandingOrder...");
+			LinkedHashMap<Integer, ArrayList<String>> playerMapII_III = new LinkedHashMap<>();			
+			playerMapII_III.put(2, playerarray);
+			playerMapII_III.put(3, playerarray);
+			
 			ArgumentConstructor standingorder_amount = new ArgumentConstructor(yamlHandler, baseCommandV+"_amount", 0, 1, 1, false, null);
 			ArgumentConstructor standingorder_cancel = new ArgumentConstructor(yamlHandler, baseCommandV+"_cancel", 0, 0, 0, false, null);
-			ArgumentConstructor standingorder_create = new ArgumentConstructor(yamlHandler, baseCommandV+"_create", 0, 3, 3, false, null);
+			ArgumentConstructor standingorder_create = new ArgumentConstructor(yamlHandler, baseCommandV+"_create", 0, 3, 3, false, playerMapII_III);
 			ArgumentConstructor standingorder_delete = new ArgumentConstructor(yamlHandler, baseCommandV+"_delete", 0, 1, 1, false, null);
 			ArgumentConstructor standingorder_info = new ArgumentConstructor(yamlHandler, baseCommandV+"_info", 0, 0, 1, false, null);
-			ArgumentConstructor standingorder_list = new ArgumentConstructor(yamlHandler, baseCommandV+"_list", 0, 0, 2, false, null);
+			ArgumentConstructor standingorder_list = new ArgumentConstructor(yamlHandler, baseCommandV+"_list", 0, 0, 2, false, playerMapII);
 			ArgumentConstructor standingorder_pause = new ArgumentConstructor(yamlHandler, baseCommandV+"_pause", 0, 1, 1, false, null);
 			ArgumentConstructor standingorder_rt = new ArgumentConstructor(yamlHandler, baseCommandV+"_repeatingtime", 0, 1, 1, false, null);
 			ArgumentConstructor standingorder_st = new ArgumentConstructor(yamlHandler, baseCommandV+"_starttime", 0, 1, 1, false, null);

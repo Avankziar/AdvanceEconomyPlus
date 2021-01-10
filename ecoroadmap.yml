@@ -14,41 +14,41 @@ Future =========================================================================
   - Playerkonto- & Bankkontosteuer. Einstellbar Zeiteinheit und Betrag, sowie wenn Prozentual dann die Prozente.
 - Neue Mysql mit Tagensdaten, wieviel Geld ins und aus dem System gegangen ist. Mit Grafik oder ähnlich arbeiten.
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
+- LoadBefore Essential
+- mysql struktur änderung bezüglich Orderby und DESC
   
 - BungeeCord Geldunterstützung anbieten.
 - XIDEE: Umleitung für Verdientes geld einrichtbar machen. Warte auf DC-Meinungsumfrage.
 
 Build 3 ============================================================================================================================
-- +CommandTree eingebungen und dahingehend umgeschrieben
-- +commands.yml nun vorhanden und innen veränderbar
+- +CommandTree eingebungen und dahingehend umgeschrieben. Bedeutet Befehle und Permission sind änderbar.
+- +commands.yml nun vorhanden und innen veränderbar. Siehe CommandTree.
+- +YamlManager hinzugefügt
+- Sowie Json ausschaltbar machen.
 - +ASCII-Art mit plugin.yml in Console sehbar.
-- +Mechaniken, die abgeschaltet sind, werden ingame nicht mehr angezeigt.
-- +FilterLog & Trend befehle wurden auseinander gezogen für bessere Übersicht
-- +Filterlog wurde in FilterActionLog umbenannt, bezieht sich auf Ingame Cmd und commands.yml
-- +FilterBefehle für den trend in Logs, Diagram und Grafik umgesetzt.
-- +Grafik und Diagram für den action log und filterlogs umgesetzt.
-- +/money log, wurde in /money action log, umbenannt.
-- +/money take <playername> <amount> <CustomPlayerishReciever> <CustomOrderer> [Note], wurde mit 2 neuen Argument erweitert. Consolen fähig.
+- +Mechaniken, die abgeschaltet sind, werden ingame nicht mehr angezeigt und nicht mehr geladen.
+- +/money take/give/set <playername> <amount> <CustomPlayerishReciever> <CustomOrderer> [Note], wurde mit 2 neuen Argument erweitert. Consolen fähig.
 - +Kredite und Dauerauftragsmechanik hinzugefügt.
 - +Beim Trendlog Farbe verbessern, so soll pro Tag der höchste wert grün sein, der andere rot. Beide gleich, dann aqua
-- +TimeHandler fixen, siehe ASH
 - +GraficSpaceSymbol in config.yml zum einstellen von symbolen in Grafiken.
-- +Stats befehl (Balkendiagram) einführen für alle. Bspw. /money action barchart
-  - +Beim actionlog werden alle einträge pro letzten 1 Jahre (bspw. von 10.2020 bis 10.2018) aufgelistet und die anzahl zusammengerechnet.
+- +Stats befehl (Balkendiagram) einführen für alle.
+  - +Beim actionlog (Only) werden alle einträge pro letzten 1 Jahre (bspw. von 10.2020 bis 10.2018) aufgelistet und die anzahl zusammengerechnet.
     Dabei wird per balken die Prozentuale Betragsanzahl vom jeweiligen Monat angegeben. Per Hover kommt die Prozente von den Beträgen pro Monat/Jahr
     sowie die Gesamteanzahl pro Monat/Jahr.
     Dahinter kommt der gesamtbetrag verrechnet, dann die maximale positive und danach die maximal negative zahlen. Eventuell in eine Gleichung
     aufgezeigt.
     Aka Zuerst die Monate (Start Monat des letzten Jahres) bis zum jetztigen Monat. Dann das letzte Jahr mit den gleichen Startpunkte.
     Die Startpunkte sind immer die ersten Tage der Monate.
-    Das barchart soll von unten nach oben wie die Grafik verlaufen. 25 Einträge haben (pro Monat einen).
-    #Note: Die Schwierigkeit bedarf, dass jedes Zeichen einer von unten noch oben verlaufenden barchart eine Hover beinhalten soll.
-- +LoggerSettings Befehl mit GUI /money loggersettings [SpielerName] [Seitenzahl] [Log, Diagram, Grafik, BarChart]
+    Das barchart soll von unten nach oben wie die Grafik verlaufen. 13 Einträge haben (pro Monat einen).
+- +LoggerSettings Befehl mit GUI 
+  - +/money loggersettings | für die gui direkt aufzurufen.
+  - +/money loggersettings gui [SpielerName] [Seitenzahl] [Log, Diagram, Grafik, BarChart]
+  - +/money actionlog, Shortcut für die Ausgabe des Logs, gleiches für /money trendlog
+  - +Action wie Trendlog haben nun zugriff auf Filtereinstellungen, sowie auf Log, Diagramm und Grafik. Barchart ist Actionlog Only.
 - +Ein Befehl um andere Settings zu sehen /money loggersettingsother <Spielername>
 - +Mysql für Preset LoggerSettings insgesamt 4 Stück (Im Inventar unten links und rechts) (Linksklick ist zum Laden,
 	 Rechtsklick zum Speicher (nicht überschreiben), Shiftklick zum löschen). Ist Preset nicht vorhanden, linksklick passiert nichts.
-- +/money log, Shortcut für die Ausgabe des Logs
-- LoadBefore Essential
+- +/money actionlog/trendlog, sind erhaltengeblieben als Shortcut zum log.
 
 Build 2 ============================================================================================================================
 - +Update auf 1.16.1

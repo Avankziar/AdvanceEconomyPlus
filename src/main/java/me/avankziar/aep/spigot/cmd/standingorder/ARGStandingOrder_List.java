@@ -69,7 +69,7 @@ public class ARGStandingOrder_List extends ArgumentModule
 			bc.add(ChatApi.apiChat("&eⓘ", 
 					ClickEvent.Action.RUN_COMMAND, AEPSettings.settings.getCommands(KeyHandler.SO_INFO)+" "+so.getId(),
 					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
-			bc.add(ChatApi.apiChat("&c✖", 
+			bc.add(ChatApi.apiChat("&4✖", 
 					ClickEvent.Action.SUGGEST_COMMAND, AEPSettings.settings.getCommands(KeyHandler.SO_DELETE)+" "+so.getId(),
 					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
 			bc.add(ChatApi.tctl(" &1| "));
@@ -77,7 +77,7 @@ public class ARGStandingOrder_List extends ArgumentModule
 		TextComponent tx = ChatApi.tc("");
 		tx.setExtra(bc);
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.List.Headline")
-				.replace("%name%", player.getName())));
+				.replace("%player%", player.getName())));
 		player.spigot().sendMessage(tx);
 		String cmdstring = plugin.getYamlHandler().getCom().getString(ac.getPath()+".CommandString");
 		LogHandler.pastNextPage(plugin, player, "Cmd", "", page, lastpage, cmdstring);
