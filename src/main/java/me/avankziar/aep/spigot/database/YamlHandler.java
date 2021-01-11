@@ -121,7 +121,6 @@ public class YamlHandler
 			}
 		}
 		
-		//TODO
 		if(!loadYamlTask(commands, com))
 		{
 			return false;
