@@ -78,7 +78,7 @@ public class AEPSettings
 		boolean playerAccount = yh.getConfig().getBoolean("Use.PlayerAccount", false);
 		boolean bank = false; //yh.getConfig().getBoolean("Use.Bank", false);
 		boolean standingorder = yh.getConfig().getBoolean("Use.StandingOrder", false);
-		boolean loanrepayment = false;//FIXME yh.getConfig().getBoolean("Use.LoanRepayment", false);
+		boolean loanrepayment = yh.getConfig().getBoolean("Use.LoanRepayment", false);
 		boolean executeStandingOrderPayment = yh.getConfig().getBoolean("Exceute.StandingOrderPayments", false);
 		boolean executeLoanPayment = yh.getConfig().getBoolean("Exceute.LoanPayments", false);
 		String currencySingular = yh.getConfig().getString("CurrencyNameSingular","Euro");

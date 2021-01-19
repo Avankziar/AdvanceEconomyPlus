@@ -26,7 +26,7 @@ public class PlayerListener implements Listener
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event)
 	{
-		AEPUser eco = AEPUserHandler.getEcoPlayer(event.getPlayer().getUniqueId().toString());
+		AEPUser eco = AEPUserHandler.getEcoPlayer(event.getPlayer().getUniqueId());
 		if(eco == null)
 		{
 			AdvancedEconomyPlus.getVault().createPlayerAccount(event.getPlayer());

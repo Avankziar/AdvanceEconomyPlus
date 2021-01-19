@@ -241,7 +241,23 @@ public class ChatApi
     {
         if (supportsHex()) 
         {
-            return ChatColor.of((String)hex).toString();
+        	if(hex.matches("[#][0-9a-fA-F]+"))
+        	{
+        		return ChatColor.of((String)hex).toString();
+        	} else
+        	{
+        		String newhex = "#";
+        		for(int i = 1; i < hex.length(); i++)
+        		{
+        			String s = String.valueOf(hex.charAt(i));
+        			if(!s.matches("[0-9a-fA-F]"))
+        			{
+        				s = "0";
+        			}
+        			newhex += s;
+        		}
+        		return ChatColor.of(newhex).toString();
+        	}
         }
         Color awtColor = Color.decode(hex);
         ChatColor nearestColor = ChatColor.WHITE;
