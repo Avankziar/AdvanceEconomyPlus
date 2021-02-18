@@ -38,13 +38,13 @@ import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Accept;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Amount;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Cancel;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Create;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Remit;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Info;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Inherit;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_List;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Pause;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Payback;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Reject;
+import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Remit;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Repay;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Send;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Time;
@@ -672,7 +672,8 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	public boolean existHook(String externPluginName)
 	{
-		if(plugin.getServer().getPluginManager().getPlugin(externPluginName) == null)
+		if(plugin.getServer().getPluginManager().getPlugin(externPluginName) == null
+				|| !plugin.getServer().getPluginManager().getPlugin(externPluginName).isEnabled())
 		{
 			return false;
 		}
@@ -683,5 +684,18 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	{
 		int pluginId = 7665;
         new Metrics(this, pluginId);
+	}
+	
+	public LinkedHashMap<String, String> getWebTables()
+	{
+		LinkedHashMap<String, String> map = new LinkedHashMap<>();
+		map.put("playeraccount", getMysqlHandler().tableNameI);
+		//map.put("bankaccount", getMysqlHandler().tableNameII);
+		map.put("actionlog", getMysqlHandler().tableNameIII);
+		map.put("trendlog", getMysqlHandler().tableNameIV);
+		map.put("standingorder", getMysqlHandler().tableNameV);
+		map.put("loan", getMysqlHandler().tableNameVI);
+		map.put("loggersettingspreset", getMysqlHandler().tableNameVII);
+		return map;
 	}
 }

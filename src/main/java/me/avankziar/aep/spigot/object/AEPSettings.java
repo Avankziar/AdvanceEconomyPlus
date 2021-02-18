@@ -80,7 +80,7 @@ public class AEPSettings
 		boolean standingorder = yh.getConfig().getBoolean("Use.StandingOrder", false);
 		boolean loanrepayment = yh.getConfig().getBoolean("Use.LoanRepayment", false);
 		boolean executeStandingOrderPayment = yh.getConfig().getBoolean("Exceute.StandingOrderPayments", false);
-		boolean executeLoanPayment = yh.getConfig().getBoolean("Exceute.LoanPayments", false);
+		boolean executeLoanPayment = false; //FIXME yh.getConfig().getBoolean("Exceute.LoanPayments", false);
 		String currencySingular = yh.getConfig().getString("CurrencyNameSingular","Euro");
 		String currencyPlural = yh.getConfig().getString("CurrencyNamePlural","Euros");
 		long standingOrderSpamProtection = TimeHandler.getRepeatingTime(yh.getConfig().getString("StandingOrderTimeSpamProtection", "00-00:15")); 
