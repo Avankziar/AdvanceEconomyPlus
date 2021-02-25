@@ -39,17 +39,11 @@ public class ARGMoneyGive extends ArgumentModule
 	@Override
 	public void run(CommandSender sender, String[] args)
 	{
+		Player player = (Player) sender;
 		String toplayername = args[1];
 		String amountstring = args[2];
 		double amount = 0.0;
-		String customTo = "Console";
-		String customOrderer = "Console";
-		if(sender instanceof Player)
-		{
-			Player player = (Player) sender;
-			customTo = player.getName();
-			customOrderer = player.getUniqueId().toString();
-		}
+		String orderer = player.getUniqueId().toString();
 		String comment = "";
 		if(!AEPSettings.settings.isPlayerAccount())
 		{
@@ -76,17 +70,7 @@ public class ARGMoneyGive extends ArgumentModule
 		}
 		if(args.length >= 4)
 		{
-			customTo = args[3];
-		}
-		
-		if(args.length >= 5)
-		{
-			
-			customOrderer = args[4];
-		}
-		if(args.length >= 6)
-		{
-			for(int i = 5; i < args.length; i++)
+			for(int i = 3; i < args.length; i++)
 			{
 				if(i == args.length-1)
 				{
@@ -95,7 +79,6 @@ public class ARGMoneyGive extends ArgumentModule
 				{
 					comment += args[i]+" ";
 				}
-				
 			}
 		}
 		AEPUser toplayer = AEPUserHandler.getEcoPlayer(toplayername);
@@ -114,19 +97,19 @@ public class ARGMoneyGive extends ArgumentModule
 		}
 		toplayer = AEPUserHandler.getEcoPlayer(toplayername);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
-				LocalDateTime.now(), customTo, toplayer.getUUID(), customTo, toplayer.getName(), 
-				customOrderer,
+				LocalDateTime.now(), player.getUniqueId().toString(), toplayer.getUUID(), player.getName(), toplayer.getName(), 
+				orderer,
 				amount, ActionLoggerEvent.Type.GIVEN, comment));
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), toplayer.getUUID(), amount, toplayer.getBalance()));
 		List<BaseComponent> list = new ArrayList<>();
 		TextComponent message = ChatApi.apiChat(plugin.getYamlHandler().getL().getString("CmdMoney.Give.DepositWithDraw")
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
-				.replace("%name1%", customTo)
+				.replace("%name1%", player.getName())
 				.replace("%name2%", toplayer.getName()), null, "", 
 				HoverEvent.Action.SHOW_TEXT, 
 				plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerOrdererNote")
-				.replace("%orderer%", customOrderer)
+				.replace("%orderer%", orderer)
 				.replace("%comment%", comment));
 		list.add(message);
 		String messageII = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Give.DepositWithDrawBalance")
@@ -144,7 +127,6 @@ public class ARGMoneyGive extends ArgumentModule
 				{
 					if(bungee)
 					{
-						Player player = (Player) sender;
 						BungeeBridge.sendBungeeTextComponent(player, toplayer.getUUID(), BungeeBridge.generateMessage(list), false, "");
 						BungeeBridge.sendBungeeMessage(player, toplayer.getUUID(), messageII, false, "");
 					} else

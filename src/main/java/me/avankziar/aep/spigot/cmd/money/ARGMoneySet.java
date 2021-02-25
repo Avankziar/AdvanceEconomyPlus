@@ -20,8 +20,8 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -39,17 +39,12 @@ public class ARGMoneySet extends ArgumentModule
 	@Override
 	public void run(CommandSender sender, String[] args)
 	{
+		Player player = (Player) sender;
 		String toplayername = args[1];
 		String amountstring = args[2];
 		double amount = 0.0;
-		String customTo = args[3];
-		String customOrderer = args[4];
+		String orderer = player.getUniqueId().toString();
 		String comment = "";
-		if(sender instanceof Player)
-		{
-			Player player = (Player) sender;
-			customOrderer = player.getUniqueId().toString();
-		}
 		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			sender.sendMessage(ChatApi.tl(
@@ -73,9 +68,9 @@ public class ARGMoneySet extends ArgumentModule
 					.replace("%args%", amountstring)));
 			return;
 		}
-		if(args.length >= 6)
+		if(args.length >= 4)
 		{
-			for(int i = 5; i < args.length; i++)
+			for(int i = 3; i < args.length; i++)
 			{
 				if(i == args.length-1)
 				{
@@ -95,11 +90,12 @@ public class ARGMoneySet extends ArgumentModule
 					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
 			return;
 		}
+		
 		toplayer = AEPUserHandler.getEcoPlayer(toplayername);
 		toplayer.setBalance(amount);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
-				LocalDateTime.now(), "System", toplayer.getUUID(), customTo, toplayer.getName(),
-				customOrderer,
+				LocalDateTime.now(), "System", toplayer.getUUID(), toplayer.getUUID(), toplayer.getName(),
+				orderer,
 				amount, ActionLoggerEvent.Type.GIVEN, comment));
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), toplayer.getUUID(), amount, toplayer.getBalance()));
 		List<BaseComponent> list = new ArrayList<>();
@@ -109,7 +105,7 @@ public class ARGMoneySet extends ArgumentModule
 				.replace("%name%", toplayer.getName()), null, "", 
 				HoverEvent.Action.SHOW_TEXT, 
 				plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerOrdererNote")
-				.replace("%orderer%", customOrderer)
+				.replace("%orderer%", orderer)
 				.replace("%comment%", comment));
 		list.add(message);
 		boolean bungee = AEPSettings.settings.isBungee();
@@ -122,7 +118,6 @@ public class ARGMoneySet extends ArgumentModule
 				{
 					if(bungee)
 					{
-						Player player = (Player) sender;
 						BungeeBridge.sendBungeeTextComponent(player, toplayer.getUUID(), BungeeBridge.generateMessage(list), false, "");
 					} else
 					{

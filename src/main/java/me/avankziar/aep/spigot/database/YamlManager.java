@@ -429,9 +429,15 @@ public class YamlManager
 				"Freeze the playeraccount");
 		
 		argumentInput("money_give", "give", basePermission,
-				"/money give <player> <value> <customFrom> <customOrderer> [note]", "/money give ",
-				"&c/money give <Spielername> <Betrag> <CustomSender> <CustomAuftraggeber> [Notiz] &f| Überweist den Betrag auf das Spielerkonto.",
-				"&c/money give <player name> <amount> customFrom> <customOrderer> [note] &f| Transfers the amount to the players balance.",
+				"/money give <player> <value> [note]", "/money give ",
+				"&c/money give <Spielername> <Betrag> [Notiz] &f| Überweist den Betrag auf das Spielerkonto.",
+				"&c/money give <player name> <amount>  [note] &f| Transfers the amount to the players balance.",
+				"Give the player from the void money");
+		
+		argumentInput("money_giveconsole", "giveconsole", basePermission,
+				"/money giveconsole <player> <value> <customFrom> <customOrderer> [note]", "/money giveconsole ",
+				"&c/money giveconsole <Spielername> <Betrag> <CustomSender> <CustomAuftraggeber> [Notiz] &f| Überweist den Betrag auf das Spielerkonto.",
+				"&c/money giveconsole <player name> <amount> customFrom> <customOrderer> [note] &f| Transfers the amount to the players balance.",
 				"Give the player from the void money" + 
 				" customFrom = The fake Player/Npc/whatever from the money may comes. (It comes always from the void btw.^^)" + 
 				" customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.");
@@ -443,18 +449,30 @@ public class YamlManager
 				"Player to player paying.");
 		
 		argumentInput("money_set", "set", basePermission,
-				"/money set <player> <value> <customTo> <customOrderer> [note]", "/money set ",
-				"&c/money set <Spielername> <Betrag> <customEmpfänger> <customAuftraggeber> [Notiz] &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.",
-				"&c/money set <playername> <amount> <customTo> <customOrderer> [note] &f| Sets the players balance to the desired amount.",
+				"/money set <player> <value> [note]", "/money set ",
+				"&c/money set <Spielername> <Betrag> [Notiz] &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.",
+				"&c/money set <playername> <amount> [note] &f| Sets the players balance to the desired amount.",
+				"Set the balance of the player.");
+		
+		argumentInput("money_setconsole", "setconsole", basePermission,
+				"/money setconsole <player> <value> <customTo> <customOrderer> [note]", "/money setconsole ",
+				"&c/money setconsole <Spielername> <Betrag> <customEmpfänger> <customAuftraggeber> [Notiz] &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.",
+				"&c/money setconsole <playername> <amount> <customTo> <customOrderer> [note] &f| Sets the players balance to the desired amount.",
 				"Set the balance of the player." + 
 				" customTo = The fake Player/Npc/whatever where the money may go/comes." +
 				" (It goes/comes always in the void btw.^^)" + 
 				" customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.");
 		
 		argumentInput("money_take", "take", basePermission,
-				"/money take <player> <value> <customTo> <customOrderer> [note]", "/money take ",
-				"&c/money take <Spielername> <Betrag> <customEmpfänger> <customAuftraggeber> [Notiz] &f| Zieht den Betrag vom Spielerkonto ab.",
-				"&c/money take <playername> <amount> <customTo> <customOrderer> [note] &f| Deduct the amount from the player balance.",
+				"/money take <player> <value> [note]", "/money take ",
+				"&c/money take <Spielername> <Betrag> [Notiz] &f| Zieht den Betrag vom Spielerkonto ab.",
+				"&c/money take <playername> <amount> [note] &f| Deduct the amount from the player balance.",
+				"Take the money from a player in the void");
+		
+		argumentInput("money_takeconsole", "takeconsole", basePermission,
+				"/money takeconsole <player> <value> <customTo> <customOrderer> [note]", "/money takeconsole ",
+				"&c/money takeconsole <Spielername> <Betrag> <customEmpfänger> <customAuftraggeber> [Notiz] &f| Zieht den Betrag vom Spielerkonto ab.",
+				"&c/money takeconsole <playername> <amount> <customTo> <customOrderer> [note] &f| Deduct the amount from the player balance.",
 				"Take the money from a player in the void" + 
 				" customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)" + 
 				" customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.");

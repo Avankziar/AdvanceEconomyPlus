@@ -51,9 +51,12 @@ import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Time;
 import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Transfer;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyFreeze;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyGive;
+import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyGiveConsole;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyPay;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneySet;
+import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneySetConsole;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTake;
+import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTakeConsole;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyToggle;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTop;
 import main.java.me.avankziar.aep.spigot.cmd.money.action.ARGMoneyActionLog;
@@ -286,8 +289,8 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			ArgumentConstructor actionlog = new ArgumentConstructor(yamlHandler, baseCommandII+"_actionlog", 0, 0, 2, false, playerMapII);
 			
 			ArgumentConstructor freeze = new ArgumentConstructor(yamlHandler, baseCommandII+"_freeze", 0, 1, 1, false, playerMapI);
-			ArgumentConstructor give = new ArgumentConstructor(yamlHandler, baseCommandII+"_give", 0, 4, 999, true, playerMapI);
-			
+			ArgumentConstructor give = new ArgumentConstructor(yamlHandler, baseCommandII+"_give", 0, 2, 999, false, playerMapI);
+			ArgumentConstructor giveconsole = new ArgumentConstructor(yamlHandler, baseCommandII+"_giveconsole", 0, 4, 999, true, playerMapI);
 			
 			ArgumentConstructor loggersettings_gui = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings_gui", 1, 1, 4, false, null);
 			ArgumentConstructor loggersettings_other = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings_other", 1, 2, 2, false, null);
@@ -296,16 +299,18 @@ public class AdvancedEconomyPlus extends JavaPlugin
 					loggersettings_gui, loggersettings_other, loggersettings_text);
 			
 			ArgumentConstructor pay = new ArgumentConstructor(yamlHandler, baseCommandII+"_pay", 0, 2, 999, false, playerMapI);
-			ArgumentConstructor set = new ArgumentConstructor(yamlHandler, baseCommandII+"_set", 0, 4, 999, true, playerMapI);
+			ArgumentConstructor set = new ArgumentConstructor(yamlHandler, baseCommandII+"_set", 0, 2, 999, false, playerMapI);
+			ArgumentConstructor setconsole = new ArgumentConstructor(yamlHandler, baseCommandII+"_setconsole", 0, 4, 999, true, playerMapI);
 			
-			ArgumentConstructor take = new ArgumentConstructor(yamlHandler, baseCommandII+"_take", 0, 4, 999, true, playerMapI);
+			ArgumentConstructor take = new ArgumentConstructor(yamlHandler, baseCommandII+"_take", 0, 2, 999, true, playerMapI);
+			ArgumentConstructor takeconsole = new ArgumentConstructor(yamlHandler, baseCommandII+"_takeconsole", 0, 4, 999, true, playerMapI);
 			ArgumentConstructor toggle = new ArgumentConstructor(yamlHandler, baseCommandII+"_toggle", 0, 0, 0, false, null);
 			ArgumentConstructor top = new ArgumentConstructor(yamlHandler, baseCommandII+"_top", 0, 0, 1, false, null);
 			
 			ArgumentConstructor trendlog = new ArgumentConstructor(yamlHandler, baseCommandII+"_trendlog", 0, 0, 2, false, playerMapII);
 			
 			CommandConstructor money = new CommandConstructor(plugin, baseCommandII, false,
-					freeze, give, loggersettings, pay, set, take, toggle, top,
+					freeze, give, giveconsole, loggersettings, pay, set, setconsole, take, takeconsole, toggle, top,
 					actionlog, trendlog);
 			
 			LoggerSettingsHandler.loggerSettingsCommandString = loggersettings_gui.getCommandString();
@@ -319,13 +324,14 @@ public class AdvancedEconomyPlus extends JavaPlugin
 					money,
 						actionlog, trendlog,
 						loggersettings, loggersettings_gui, loggersettings_other, loggersettings_text,
-						freeze, give, pay, set,	take, toggle, top);
+						freeze, give, giveconsole, pay, set, setconsole, take, takeconsole, toggle, top);
 			
 			new ARGMoneyActionLog(plugin, actionlog);		
 			
 			new ARGMoneyFreeze(plugin, freeze);
 			//new ARGMoneyGetTotal(plugin);
 			new ARGMoneyGive(plugin, give);
+			new ARGMoneyGiveConsole(plugin, giveconsole);
 			
 			new ARGMoneyLoggerSettings(plugin, loggersettings);
 			new ARGMoneyLoggerSettings_GUI(plugin, loggersettings_gui);
@@ -334,7 +340,9 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			
 			new ARGMoneyPay(plugin, pay);
 			new ARGMoneySet(plugin, set);
+			new ARGMoneySetConsole(plugin, setconsole);
 			new ARGMoneyTake(plugin, take);
+			new ARGMoneyTakeConsole(plugin, takeconsole);
 			new ARGMoneyToggle(plugin, toggle);
 			new ARGMoneyTop(plugin, top);
 			new ARGMoneyTrendLog(plugin, trendlog);

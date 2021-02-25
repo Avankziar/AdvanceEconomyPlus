@@ -19,18 +19,18 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.EconomyResponse;
 
-public class ARGMoneyTake extends ArgumentModule
+public class ARGMoneyTakeConsole extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	
-	public ARGMoneyTake(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+	public ARGMoneyTakeConsole(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
 	{
 		super(plugin, argumentConstructor);
 		this.plugin = plugin;
@@ -39,12 +39,17 @@ public class ARGMoneyTake extends ArgumentModule
 	@Override
 	public void run(CommandSender sender, String[] args)
 	{
-		Player player = (Player) sender;
 		String fromplayername = args[1];
 		String amountstring = args[2];
 		double amount = 0.0;
-		String orderer = player.getUniqueId().toString();
+		String customTo = args[3];
+		String customOrderer = args[4];
 		String comment = "";
+		if(sender instanceof Player)
+		{
+			Player player = (Player) sender;
+			customOrderer = player.getUniqueId().toString();
+		}
 		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			sender.sendMessage(ChatApi.tl(
@@ -68,9 +73,9 @@ public class ARGMoneyTake extends ArgumentModule
 					.replace("%args%", amountstring)));
 			return;
 		}
-		if(args.length >= 4)
+		if(args.length >= 6)
 		{
-			for(int i = 3; i < args.length; i++)
+			for(int i = 5; i < args.length; i++)
 			{
 				if(i == args.length-1)
 				{
@@ -106,7 +111,7 @@ public class ARGMoneyTake extends ArgumentModule
 		}
 		fromplayer = AEPUserHandler.getEcoPlayer(fromplayername);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
-				LocalDateTime.now(), fromplayer.getUUID(), player.getUniqueId().toString(), fromplayer.getName(), player.getName(), orderer,
+				LocalDateTime.now(), fromplayer.getUUID(), customTo, fromplayer.getName(), customTo, customOrderer,
 				amount, ActionLoggerEvent.Type.TAKEN, comment));		
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), fromplayer.getUUID(),
 				-amount, fromplayer.getBalance()));
@@ -116,10 +121,10 @@ public class ARGMoneyTake extends ArgumentModule
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
 				.replace("%name1%", fromplayer.getName())
-				.replace("%name2%", player.getName()), null, "",
+				.replace("%name2%", customTo), null, "",
 				HoverEvent.Action.SHOW_TEXT,
 				plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerOrdererNote")
-				.replace("%orderer%", orderer)
+				.replace("%orderer%", customOrderer)
 				.replace("%comment%", comment));
 		list.add(message);
 		String messageII = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Take.DepositWithDrawBalance")
@@ -137,6 +142,7 @@ public class ARGMoneyTake extends ArgumentModule
 				{
 					if(bungee)
 					{
+						Player player = (Player) sender;
 						BungeeBridge.sendBungeeTextComponent(player, fromplayer.getUUID(), BungeeBridge.generateMessage(list), false, "");
 						BungeeBridge.sendBungeeMessage(player, fromplayer.getUUID(), messageII, false, "");
 					} else
