@@ -208,10 +208,10 @@ public class YamlManager
 		}
 		EconomySettings:
 		{
-			configKeys.put("Exceute.StandingOrderPayments"
+			configKeys.put("Execute.StandingOrderPayments"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
-			configKeys.put("Exceute.LoanPayments"
+			configKeys.put("Execute.LoanPayments"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
 			configKeys.put("StartMoney"
@@ -423,7 +423,7 @@ public class YamlManager
 				"Display your balance");
 		String basePermission = "eco.cmd.money";
 		argumentInput("money_freeze", "freeze", basePermission,
-				"/money freete <player>", "/money freeze ",
+				"/money freeze <player>", "/money freeze ",
 				"&c/money freeze <Spielername> &f| Friert das Spielerkonto ein oder gibt es frei.",
 				"&c/money freeze <player name> &f| Freezes or releases the player account.",
 				"Freeze the playeraccount");

@@ -977,7 +977,16 @@ public class LoggerSettingsHandler
 						}
 						if(s.contains("%orderer%") && ls.getActionFilter().getOrderer() != null)
 						{
-							AEPUser eco = AEPUserHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getOrderer()));
+							AEPUser eco = null;
+							UUID ecouuid = null;
+							try
+							{
+								ecouuid = UUID.fromString(ls.getActionFilter().getOrderer());
+								if(ecouuid != null)
+								{
+									eco = AEPUserHandler.getEcoPlayer(ecouuid);
+								}
+							} catch(IllegalArgumentException e){}
 							if(eco != null)
 							{
 								s = s.replace("%orderer%", eco.getName());

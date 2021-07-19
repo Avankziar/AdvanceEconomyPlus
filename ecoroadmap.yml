@@ -16,9 +16,9 @@ Future =========================================================================
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
 - LoadBefore Essential
 - mysql struktur änderung bezüglich Orderby und DESC
+- Cleanup system für user und loggersystem einbauen.
   
 - BungeeCord Geldunterstützung anbieten.
-- XIDEE: Umleitung für Verdientes geld einrichtbar machen. Warte auf DC-Meinungsumfrage.
 
 Build 3 ============================================================================================================================
 - +CommandTree eingebungen und dahingehend umgeschrieben. Bedeutet Befehle und Permission sind änderbar.
