@@ -1,5 +1,27 @@
 Future ==============================================================================================================================
 - Banksystem
+- PersonAktien:
+  - Jeder Spieler hat x-Anzahl Aktien(Perm). Jede unverkaufte Aktie hat eine Rendite von y-%. Jede Verkaufte(n) Aktien haben ein festgelegte
+    Rendite, die zum Verkauf bestanden haben.
+  - Jeder Aktiewert eines Spielers wird anhand mehrere Faktoren (Spielzeit des Spielers, LogIn-Effizenz[Wielange man pro Tag on war], Geld des Spielers)
+    berechnet oder statisch per Permisson (Jeden LogIn-erneuert) festgelegt.
+  - Der Spieler kann eine beliebige Anzahl seiner Aktien zum Verkaufen aktiv anbieten. 
+    Sollten diese Verkauft werden, so kann ein Zeitdauer festgelegt werden, um innerhalb dieser Zeit es zurückzuzahlen. 
+    (mit Config maximaldauer). Sollte keine angegeben werden, so wird eine Config-Default Zeitdauer genommen.
+  - Sollte die Zeitdauer überschritten werden, so werden entweder statische Strafbeträge für den Rückzahler erhoben ODER
+    die Rendite erhöht sich. (Beides mit einer Config-Zeitdauer multipliziert.)
+    d.h. pro Tag 500€ oder 0.05% mehr => Mehr als 1s über Zeitdatum: +500€/0.05%; mehr als 1 Tag +1000€/0.1% etc.
+  - Mysql:
+    - OwnStockShare: MaxGesamtAnzahl (int), Momentane Anzahl (int, auch negativ),
+      Kosten pro Anteil[Für Faktoren](double), Kosten pro Anteil[Werterhöhung](double), Rendite pro anteil(float),
+      
+- Kredit:
+  - Man sollte sein geld freiwillig in einen Kreditfond stecken können. Dann können Spieler aus dem globalen Fond sich was leihen.
+    Der Maximale Leihbetrag ist per Config einstellbar. Einmal für "neue" Spieler. und der Absolute maximale Leihbetrag.
+  - der eigene maximale Leihbetrag kann sich pro abgezahlten Kredit um x erhöhen.
+  - Der maximale Zinssatz kann sich pro abgezahlten Krefit um x verringern bis zum absoluten minimum maximalen Leihbetrag.
+  - Man kann per Config festlegen, Ob und wieviel Geld man überweisen kann, falls man einen laufenden Kredit hat.
+  - Man kann per Config festlegen, ob und wiehoch man neue StandingsOrder erstellen kann. 
 - Tresorsystem (vaults). Dabei wird in ersten GUI jeweils die eigentlichen Vaults angezeigt, bei klick auf die Vaults
   öffnet sich dann die eigentliche Vault. Spieler haben eine mindestanzahl von freien Vaults, sowie haben vaults einen
   vordefinierten Anzahl an freien slots- Vaults können bis zu 54 Slots haben, welche kaufbar sein sollen.
