@@ -680,8 +680,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	public boolean existHook(String externPluginName)
 	{
-		if(plugin.getServer().getPluginManager().getPlugin(externPluginName) == null
-				|| !plugin.getServer().getPluginManager().getPlugin(externPluginName).isEnabled())
+		if(plugin.getServer().getPluginManager().getPlugin(externPluginName) == null)
 		{
 			return false;
 		}

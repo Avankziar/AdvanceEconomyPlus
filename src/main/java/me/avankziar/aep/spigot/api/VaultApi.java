@@ -110,7 +110,7 @@ public class VaultApi implements Economy
 	@Override
 	public String getName()
 	{
-		return "AdvanceEconomyPlus";
+		return "AdvancedEconomyPlus";
 	}
 	
 	@Override

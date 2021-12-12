@@ -2,7 +2,7 @@ main: main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus
 name: AdvancedEconomyPlus
 version: 3
 load: STARTUP
-api-version: 1.16
+api-version: 1.18
 description: a Economy-Plugin
 author: Avankziar
 depend: [Vault]

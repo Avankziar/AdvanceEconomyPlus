@@ -41,6 +41,12 @@ Future =========================================================================
 - Cleanup system für user und loggersystem einbauen.
   
 - BungeeCord Geldunterstützung anbieten.
+- Waren in der ger.yml Rechtschreibfeher beim Loggersetting drin
+  => LoggerSettingsTextOnlyThroughGUI: '&cBitte den Befehl nur nutzen, wenn man durch
+      die GUI aufgefordert wird!'
+	 LoggerSettingsTextSuggest: '&eKlicke hier auf die Nachricht, um einen Befehlsvorschlag
+      zu erhalten. Tippe dann deinen Suchtext ein und drücke &b>Enter<'
+- Bungee wie Spigot MysqlSetup connection und Reconnection treiber updaten, siehe Scc
 
 Build 3 ============================================================================================================================
 - +CommandTree eingebungen und dahingehend umgeschrieben. Bedeutet Befehle und Permission sind änderbar.
