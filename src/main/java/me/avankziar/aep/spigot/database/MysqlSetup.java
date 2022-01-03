@@ -19,6 +19,10 @@ public class MysqlSetup
 		loadMysqlSetup();
 	}
 	
+	/*
+	 * Convert für EconomyPlus 
+	 * INSERT INTO `economyPlayerData`(`player_uuid`, `player_name`, `balance`) SELECT `player`, 'default', `moneys` FROM `economy`;
+	 */
 	
 	public boolean loadMysqlSetup()
 	{
