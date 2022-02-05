@@ -27,18 +27,18 @@ public class ARGLoan_Cancel extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		if(!PendingHandler.loanRepayment.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdLoan.NoWaitingLoanProposal")));
+					plugin.getYamlHandler().getLang().getString("CmdLoan.NoWaitingLoanProposal")));
 			return;
 		}
 		PendingHandler.loanRepayment.remove(player.getUniqueId().toString());
 		player.sendMessage(ChatApi.tl(
-				plugin.getYamlHandler().getL().getString("CmdLoan.Cancel.IsCancelled")));
+				plugin.getYamlHandler().getLang().getString("CmdLoan.Cancel.IsCancelled")));
 		return;
 	}
 }

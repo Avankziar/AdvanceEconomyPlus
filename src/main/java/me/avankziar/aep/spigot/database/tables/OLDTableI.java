@@ -10,72 +10,24 @@ import java.util.Arrays;
 import java.util.List;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 
-public interface TableI
-{
-	
-	default boolean existI(AdvancedEconomyPlus plugin, String whereColumn, Object... object) 
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameI 
-						+ "` WHERE "+whereColumn+" LIMIT 1";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : object)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        
-		        result = preparedStatement.executeQuery();
-		        while (result.next()) 
-		        {
-		        	return true;
-		        }
-		    } catch (SQLException e) 
-			{
-				  AdvancedEconomyPlus.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return false;
-	}
-	
+public interface OLDTableI
+{	
 	default boolean createI(AdvancedEconomyPlus plugin, Object object) 
 	{
-		if(!(object instanceof AEPUser))
+		if(!(object instanceof OLD_AEPUser))
 		{
 			return false;
 		}
-		AEPUser ep = (AEPUser) object;
+		OLD_AEPUser ep = (OLD_AEPUser) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) {
 			try 
 			{
-				String sql = "INSERT INTO `" + plugin.getMysqlHandler().tableNameI 
+				String sql = "INSERT INTO `" + MysqlHandler.Type.PLAYER.getValue()
 						+ "`(`player_uuid`, `player_name`, `balance`, `bankaccountlist`,"
 						+ " `moneyplayerflow`, `moneybankflow`, `generalmessage`, `pendinginvite`, `frozen`) " 
 						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -115,7 +67,7 @@ public interface TableI
 	
 	default boolean updateDataI(AdvancedEconomyPlus plugin, Object object, String whereColumn, Object... whereObject) 
 	{
-		if(!(object instanceof AEPUser))
+		if(!(object instanceof OLD_AEPUser))
 		{
 			return false;
 		}
@@ -123,14 +75,14 @@ public interface TableI
 		{
 			return false;
 		}
-		AEPUser ep = (AEPUser) object;
+		OLD_AEPUser ep = (OLD_AEPUser) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
 			{
-				String data = "UPDATE `" + plugin.getMysqlHandler().tableNameI
+				String data = "UPDATE `" + MysqlHandler.Type.PLAYER.getValue()
 						+ "` SET `player_uuid` = ?, `player_name` = ?, `balance` = ?,"
 						+ " `bankaccountlist` = ?, `moneyplayerflow` = ?, `moneybankflow` = ?, `generalmessage` = ?,"
 						+ " `pendinginvite` = ?, `frozen` = ?" 
@@ -180,7 +132,7 @@ public interface TableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYER.getValue() 
 						+ "` WHERE "+whereColumn+" LIMIT 1";
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -199,7 +151,7 @@ public interface TableI
 		        	{
 		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
 		        	}
-		        	return new AEPUser(result.getInt("id"),
+		        	return new OLD_AEPUser(result.getInt("id"),
 		        			result.getString("player_uuid"),
 		        			result.getString("player_name"),
 		        			result.getDouble("balance"),
@@ -234,133 +186,7 @@ public interface TableI
 		return null;
 	}
 	
-	default boolean deleteDataI(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		try 
-		{
-			String sql = "DELETE FROM `" + plugin.getMysqlHandler().tableNameI + "` WHERE "+whereColumn;
-			preparedStatement = conn.prepareStatement(sql);
-			int i = 1;
-	        for(Object o : whereObject)
-	        {
-	        	preparedStatement.setObject(i, o);
-	        	i++;
-	        }
-			preparedStatement.execute();
-			return true;
-		} catch (Exception e) 
-		{
-			e.printStackTrace();
-		} finally 
-		{
-			try {
-				if (preparedStatement != null) 
-				{
-					preparedStatement.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
-	
-	default int lastIDI(AdvancedEconomyPlus plugin)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameI + "` ORDER BY `id` DESC LIMIT 1";
-		        preparedStatement = conn.prepareStatement(sql);
-		        
-		        result = preparedStatement.executeQuery();
-		        while(result.next())
-		        {
-		        	return result.getInt("id");
-		        }
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
-	default int countWhereIDI(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameI
-						+ "` WHERE "+whereColumn
-						+ " ORDER BY `id` DESC";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : whereObject)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        result = preparedStatement.executeQuery();
-		        int count = 0;
-		        while(result.next())
-		        {
-		        	count++;
-		        }
-		        return count;
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
-	default ArrayList<AEPUser> getListI(AdvancedEconomyPlus plugin, String orderByColumn,
+	default ArrayList<OLD_AEPUser> getListI(AdvancedEconomyPlus plugin, String orderByColumn,
 			int start, int end, String whereColumn, Object...whereObject)
 	{
 		PreparedStatement preparedStatement = null;
@@ -370,7 +196,7 @@ public interface TableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYER.getValue()
 						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -380,7 +206,7 @@ public interface TableI
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<AEPUser> list = new ArrayList<AEPUser>();
+		        ArrayList<OLD_AEPUser> list = new ArrayList<OLD_AEPUser>();
 		        while (result.next()) 
 		        {
 		        	String bankacc = result.getString("bankaccountlist");
@@ -389,7 +215,7 @@ public interface TableI
 		        	{
 		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
 		        	}
-		        	AEPUser ep = new AEPUser(result.getInt("id"),
+		        	OLD_AEPUser ep = new OLD_AEPUser(result.getInt("id"),
 		        			result.getString("player_uuid"),
 		        			result.getString("player_name"),
 		        			result.getDouble("balance"),
@@ -426,7 +252,7 @@ public interface TableI
 		return null;
 	}
 	
-	default ArrayList<AEPUser> getTopI(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
+	default ArrayList<OLD_AEPUser> getTopI(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -435,12 +261,12 @@ public interface TableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYER.getValue() 
 						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();
-		        ArrayList<AEPUser> list = new ArrayList<AEPUser>();
+		        ArrayList<OLD_AEPUser> list = new ArrayList<OLD_AEPUser>();
 		        while (result.next()) 
 		        {
 		        	String bankacc = result.getString("bankaccountlist");
@@ -449,7 +275,7 @@ public interface TableI
 		        	{
 		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
 		        	}
-		        	AEPUser ep = new AEPUser(result.getInt("id"),
+		        	OLD_AEPUser ep = new OLD_AEPUser(result.getInt("id"),
 		        			result.getString("player_uuid"),
 		        			result.getString("player_name"),
 		        			result.getDouble("balance"),
@@ -486,7 +312,7 @@ public interface TableI
 		return null;
 	}
 	
-	default ArrayList<AEPUser> getAllListAtI(AdvancedEconomyPlus plugin, String orderByColumn,
+	default ArrayList<OLD_AEPUser> getAllListAtI(AdvancedEconomyPlus plugin, String orderByColumn,
 			String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
@@ -496,8 +322,8 @@ public interface TableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameI
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYER.getValue()
+						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -506,7 +332,7 @@ public interface TableI
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<AEPUser> list = new ArrayList<AEPUser>();
+		        ArrayList<OLD_AEPUser> list = new ArrayList<OLD_AEPUser>();
 		        while (result.next()) 
 		        {
 		        	String bankacc = result.getString("bankaccountlist");
@@ -515,7 +341,7 @@ public interface TableI
 		        	{
 		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
 		        	}
-		        	AEPUser ep = new AEPUser(result.getInt("id"),
+		        	OLD_AEPUser ep = new OLD_AEPUser(result.getInt("id"),
 		        			result.getString("player_uuid"),
 		        			result.getString("player_name"),
 		        			result.getDouble("balance"),

@@ -1,7 +1,5 @@
 package main.java.me.avankziar.aep.spigot.object;
 
-import java.util.UUID;
-
 import main.java.me.avankziar.aep.spigot.object.subs.ActionFilterSettings;
 import main.java.me.avankziar.aep.spigot.object.subs.TrendFilterSettings;
 
@@ -14,11 +12,10 @@ public class LoggerSettings
 	
 	public enum InventoryHandlerType
 	{
-		NONE, NORMAL, ANVILEDITOR_FROM, ANVILEDITOR_TO, ANVILEDITOR_ORDERER, ANVILEDITOR_COMMENT;
+		NONE, NORMAL, ANVILEDITOR_ACCOUNT_ID, ANVILEDITOR_ORDERER, ANVILEDITOR_CATEGORY, ANVILEDITOR_COMMENT;
 	}
 	
-	private UUID uuid;
-	private String bankNumber;
+	private int accountID;
 	private int slotid;
 	private int page;
 	private boolean descending;
@@ -30,10 +27,9 @@ public class LoggerSettings
 	private ActionFilterSettings actionFilter;
 	private TrendFilterSettings trendfFilter;
 	
-	public LoggerSettings(UUID uuid, String bankNumber, int page)
+	public LoggerSettings(int accountID, int page)
 	{
-		setUuid(uuid);
-		setBankNumber(bankNumber);
+		setAccountID(accountID);
 		setSlotid(1);
 		setPage(page);
 		setActionFilter(new ActionFilterSettings());
@@ -116,24 +112,20 @@ public class LoggerSettings
 		this.inventoryHandlerType = inventoryHandlerType;
 	}
 
-	public UUID getUuid()
+	/**
+	 * @return the accountID
+	 */
+	public int getAccountID()
 	{
-		return uuid;
+		return accountID;
 	}
 
-	public void setUuid(UUID uuid)
+	/**
+	 * @param accountID the accountID to set
+	 */
+	public void setAccountID(int accountID)
 	{
-		this.uuid = uuid;
-	}
-
-	public String getBankNumber()
-	{
-		return bankNumber;
-	}
-
-	public void setBankNumber(String bankNumber)
-	{
-		this.bankNumber = bankNumber;
+		this.accountID = accountID;
 	}
 
 	public int getPage()

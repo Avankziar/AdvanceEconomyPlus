@@ -30,7 +30,7 @@ public class ARGStandingOrder_Repeatingtime extends ArgumentModule
 		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
+					plugin.getYamlHandler().getLang().getString("NoStandingOrder")));
 			return;
 		}
 		String rt = args[1];
@@ -39,19 +39,19 @@ public class ARGStandingOrder_Repeatingtime extends ArgumentModule
 		if(repeatingtime == 0)
 		{
 			player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-					plugin.getYamlHandler().getL().getString("CmdStandingOrder.RepeatingTime.WrongSyntax")));
+					plugin.getYamlHandler().getLang().getString("CmdStandingOrder.RepeatingTime.WrongSyntax")));
 			return;
 		}
 		if(!PendingHandler.standingOrder.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdStandingOrder.NoPendingOrder")));
+					plugin.getYamlHandler().getLang().getString("CmdStandingOrder.NoPendingOrder")));
 			return;
 		}
 		StandingOrder so = PendingHandler.standingOrder.get(player.getUniqueId().toString());
 		so.setRepeatingTime(repeatingtime);
 		PendingHandler.standingOrder.replace(player.getUniqueId().toString(), so);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.RepeatingTime.SetRepeatingTime")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.RepeatingTime.SetRepeatingTime")
 				.replace("%rt%", rt)));
 		return;
 	}

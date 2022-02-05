@@ -12,7 +12,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class ARGMoneyTop extends ArgumentModule
@@ -41,27 +41,27 @@ public class ARGMoneyTop extends ArgumentModule
 		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
+					plugin.getYamlHandler().getLang().getString("NoPlayerAccount")));
 			return;
 		}
 		int start = page*10;
 		int end = 10;
-		ArrayList<AEPUser> top = ConvertHandler.convertListI(
+		ArrayList<OLD_AEPUser> top = ConvertHandler.convertListIOLD(
 				plugin.getMysqlHandler().getTop(Type.PLAYER, "`balance`", start, end));
 
 		if(top.size()<10)
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Top.NotEnoughValues")));
+					plugin.getYamlHandler().getLang().getString("CmdMoney.Top.NotEnoughValues")));
 			return;
 		}
 		player.sendMessage(ChatApi.tl(
-				plugin.getYamlHandler().getL().getString("CmdMoney.Top.Headline")
+				plugin.getYamlHandler().getLang().getString("CmdMoney.Top.Headline")
 				.replace("%page%", String.valueOf(page))));
-		for(AEPUser eco : top)
+		for(OLD_AEPUser eco : top)
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Top.TopLine")
+					plugin.getYamlHandler().getLang().getString("CmdMoney.Top.TopLine")
 					.replace("%place%", String.valueOf(start+1))
 					.replace("%player%", eco.getName())
 					.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())

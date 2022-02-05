@@ -18,8 +18,9 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
 
 public class QuickShopHook implements Listener
 {
@@ -38,13 +39,13 @@ public class QuickShopHook implements Listener
 		String clientuuid = player.getUniqueId().toString();
 		String clientname = player.getName();
 		String owneruuid = shop.getOwner().toString();
-		String ownername = Utility.convertUUIDToName(owneruuid);
+		String ownername = Utility.convertUUIDToName(owneruuid, EconomyType.PLAYER);
 		if(owneruuid == null)
 		{
 			ownername = "none";
 		}
-		AEPUser owner = AEPUserHandler.getEcoPlayer(owneruuid);
-        AEPUser client = AEPUserHandler.getEcoPlayer(clientuuid);
+		OLD_AEPUser owner = _AEPUserHandler_OLD.getEcoPlayer(owneruuid);
+        OLD_AEPUser client = _AEPUserHandler_OLD.getEcoPlayer(clientuuid);
         
         Double balanceowner = 0.0; //TODO bank
         Double balanceclient = 0.0;
@@ -86,7 +87,7 @@ public class QuickShopHook implements Listener
 					clientuuid, 
 					amount, 
 					ActionLoggerEvent.Type.DEPOSIT_WITHDRAW,
-					plugin.getYamlHandler().getL().getString("QuickShopHook.Buy")
+					plugin.getYamlHandler().getLang().getString("QuickShopHook.Buy")
 					.replace("%amount%", String.valueOf(quantity))
 					.replace("%item%", isname)
 					.replace("%player%", clientname)));
@@ -95,7 +96,7 @@ public class QuickShopHook implements Listener
 					LocalDate.now(), 
 					owneruuid, 
 					amount, 
-					AEPUserHandler.getEcoPlayer(
+					_AEPUserHandler_OLD.getEcoPlayer(
 							owneruuid)
 					.getBalance()));
 			Bukkit.getPluginManager().callEvent(
@@ -103,7 +104,7 @@ public class QuickShopHook implements Listener
 					LocalDate.now(), 
 					clientuuid,
 					-amount,
-					AEPUserHandler.getEcoPlayer(
+					_AEPUserHandler_OLD.getEcoPlayer(
 							clientuuid)
 					.getBalance()));
 		} else 
@@ -118,7 +119,7 @@ public class QuickShopHook implements Listener
 					clientuuid, 
 					amount, 
 					ActionLoggerEvent.Type.DEPOSIT_WITHDRAW,
-					plugin.getYamlHandler().getL().getString("QuickShopHook.Sell")
+					plugin.getYamlHandler().getLang().getString("QuickShopHook.Sell")
 					.replace("%amount%", String.valueOf(quantity))
 					.replace("%item%", isname)
 					.replace("%player%", ownername)));

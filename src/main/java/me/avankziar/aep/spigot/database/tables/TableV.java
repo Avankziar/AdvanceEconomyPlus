@@ -8,59 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 
 public interface TableV
 {
-	
-	default boolean existV(AdvancedEconomyPlus plugin, String whereColumn, Object... object) 
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameV 
-						+ "` WHERE "+whereColumn+" LIMIT 1";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : object)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        
-		        result = preparedStatement.executeQuery();
-		        while (result.next()) 
-		        {
-		        	return true;
-		        }
-		    } catch (SQLException e) 
-			{
-				  AdvancedEconomyPlus.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return false;
-	}
-	
 	default boolean createV(AdvancedEconomyPlus plugin, Object object) 
 	{
 		if(!(object instanceof StandingOrder))
@@ -73,7 +25,7 @@ public interface TableV
 		if (conn != null) {
 			try 
 			{
-				String sql = "INSERT INTO `" + plugin.getMysqlHandler().tableNameV 
+				String sql = "INSERT INTO `" + MysqlHandler.Type.STANDINGORDER.getValue() 
 						+ "`(`standing_order_name`, `from_player`, `to_player`, `amount`, `amountpaidsofar`,"
 						+ " `starttime`, `repeatingtime`, `lasttime`, `cancelled`, `paused`) " 
 						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -129,7 +81,7 @@ public interface TableV
 		{
 			try 
 			{
-				String data = "UPDATE `" + plugin.getMysqlHandler().tableNameV
+				String data = "UPDATE `" + MysqlHandler.Type.STANDINGORDER.getValue() 
 						+ "` SET `standing_order_name` = ?, `from_player` = ?, `to_player` = ?, `amount` = ?, `amountpaidsofar` = ?," 
 						+ " `starttime` = ?, `repeatingtime` = ?, `lasttime` = ?, `cancelled` = ?, `paused` = ?" 
 						+ " WHERE "+whereColumn;
@@ -179,7 +131,7 @@ public interface TableV
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameV 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue()  
 						+ "` WHERE "+whereColumn+" LIMIT 1";
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -229,132 +181,6 @@ public interface TableV
 		return null;
 	}
 	
-	default boolean deleteDataV(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		try 
-		{
-			String sql = "DELETE FROM `" + plugin.getMysqlHandler().tableNameV + "` WHERE "+whereColumn;
-			preparedStatement = conn.prepareStatement(sql);
-			int i = 1;
-	        for(Object o : whereObject)
-	        {
-	        	preparedStatement.setObject(i, o);
-	        	i++;
-	        }
-			preparedStatement.execute();
-			return true;
-		} catch (Exception e) 
-		{
-			e.printStackTrace();
-		} finally 
-		{
-			try {
-				if (preparedStatement != null) 
-				{
-					preparedStatement.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
-	
-	default int lastIDV(AdvancedEconomyPlus plugin)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameV + "` ORDER BY `id` DESC LIMIT 1";
-		        preparedStatement = conn.prepareStatement(sql);
-		        
-		        result = preparedStatement.executeQuery();
-		        while(result.next())
-		        {
-		        	return result.getInt("id");
-		        }
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
-	default int countWhereIDV(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameV
-						+ "` WHERE "+whereColumn
-						+ " ORDER BY `id` DESC";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : whereObject)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        result = preparedStatement.executeQuery();
-		        int count = 0;
-		        while(result.next())
-		        {
-		        	count++;
-		        }
-		        return count;
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
 	default ArrayList<StandingOrder> getListV(AdvancedEconomyPlus plugin, String orderByColumn,
 			int start, int end, String whereColumn, Object...whereObject)
 	{
@@ -365,7 +191,7 @@ public interface TableV
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameV
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue() 
 						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -426,7 +252,7 @@ public interface TableV
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameV 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue()  
 						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
@@ -483,8 +309,8 @@ public interface TableV
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameV
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue() 
+						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)

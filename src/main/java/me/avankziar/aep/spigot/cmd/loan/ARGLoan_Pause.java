@@ -14,9 +14,9 @@ import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class ARGLoan_Pause extends ArgumentModule
@@ -36,7 +36,7 @@ public class ARGLoan_Pause extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		String ids = args[1];
@@ -44,42 +44,42 @@ public class ARGLoan_Pause extends ArgumentModule
 		if(!MatchApi.isInteger(ids))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", ids)));
 			return;
 		}
 		id = Integer.parseInt(ids);
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanDontExist")));
 			return;
 		}
 		LoanRepayment dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
 		if(!dr.getLoanOwner().equals(player.getUniqueId().toString())
 				&& !player.hasPermission(Utility.PERM_BYPASS_LOAN_PAUSE))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.NotLoanOwner")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.NotLoanOwner")));
 			return;
 		}
 		if(dr.isForgiven())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanAlreadyForgiven")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyForgiven")));
 			return;
 		}
 		if(dr.isFinished())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanAlreadyPaidOff")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyPaidOff")));
 			return;
 		}
 		if(dr.isPaused())
 		{
 			dr.setPaused(false);
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-			String msg = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Pause.Unpaused")
+			String msg = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Pause.Unpaused")
 					.replace("%name%", dr.getName())
 					.replace("%player%", player.getName()));
 			player.sendMessage(msg);
-			AEPUser fromplayer = AEPUserHandler.getEcoPlayer(dr.getFrom());
+			OLD_AEPUser fromplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getFrom());
 			boolean bungee = AEPSettings.settings.isBungee();
 			if(fromplayer.isMoneyPlayerFlow())
 			{
@@ -98,11 +98,11 @@ public class ARGLoan_Pause extends ArgumentModule
 		{
 			dr.setPaused(true);
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-			String msg = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Pause.Paused")
+			String msg = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Pause.Paused")
 					.replace("%name%", dr.getName())
 					.replace("%player%", player.getName()));
 			player.sendMessage(msg);
-			AEPUser fromplayer = AEPUserHandler.getEcoPlayer(dr.getFrom());
+			OLD_AEPUser fromplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getFrom());
 			boolean bungee = AEPSettings.settings.isBungee();
 			if(fromplayer.isMoneyPlayerFlow())
 			{

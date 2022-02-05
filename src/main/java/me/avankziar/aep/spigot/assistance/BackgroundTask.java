@@ -3,26 +3,23 @@ package main.java.me.avankziar.aep.spigot.assistance;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.BankAccountHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.BankAccount;
-import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
+import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public class BackgroundTask
@@ -37,7 +34,6 @@ public class BackgroundTask
 	
 	public boolean initBackgroundTask()
 	{
-		runInsertMidnightTrendLog();
 		if(AEPSettings.settings.isLoanRepayment() && AEPSettings.settings.isExecuteLoanPayment())
 		{
 			plugin.getLogger().info("Loan Task Timer activate...");
@@ -51,48 +47,6 @@ public class BackgroundTask
 		return true;
 	}
 	
-	public void runInsertMidnightTrendLog()
-	{
-		new BukkitRunnable()
-		{
-			
-			@Override
-			public void run()
-			{
-				LocalTime lt = LocalTime.now();
-				if(lt.getMinute() == 0 && lt.getHour() == 0 && (lt.getSecond() <= 5 || lt.getSecond() > 0))
-				{
-					for(Player player : Bukkit.getOnlinePlayers())
-					{
-						AEPUser eco = AEPUserHandler.getEcoPlayer(player.getUniqueId());
-						if(eco == null)
-						{
-							AdvancedEconomyPlus.getVault().createPlayerAccount(player);
-						}
-						Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-								LocalDate.now(), eco.getUUID(), 0, eco.getBalance()));
-					}
-					if(AEPSettings.settings.isBank())
-					{
-						int end = plugin.getMysqlHandler().lastID(MysqlHandler.Type.BANKACCOUNT);
-						for(int i = 1; i <= end; i++)
-						{
-							if(plugin.getMysqlHandler().exist(MysqlHandler.Type.BANKACCOUNT, "`id` = ?", i))
-							{
-								BankAccount ba = BankAccountHandler.getBankAccount(i);
-								if(ba != null)
-								{
-									Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-											LocalDate.now(), ba.getaccountNumber(), 0, ba.getBalance()));
-								}
-							}
-						}
-					}
-				}
-			}
-		}.runTaskTimer(plugin, 0L, 20L*5);
-	}
-	
 	public void runDebtRepayment()
 	{
 		int repeat = plugin.getYamlHandler().getConfig().getInt("LoanRepaymentRepeatTime", 60);
@@ -104,7 +58,7 @@ public class BackgroundTask
 				ArrayList<LoanRepayment> list = new ArrayList<>();
 				try
 				{
-					list = ConvertHandler.convertListVI(plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.LOAN, "`id`", false,
+					list = ConvertHandler.convertListVI(plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.LOAN, "`id` ASC",
 										"`forgiven` = ? AND `paused` = ? AND `finished` = ? AND `endtime` > ?",
 										false, false, false, System.currentTimeMillis()+1000*60*60*30));
 				} catch (IOException e)
@@ -123,19 +77,10 @@ public class BackgroundTask
 					{
 						continue;
 					}
-					String from = "";
-					String to = "";
-					
-					try
-					{
-						from = Utility.convertUUIDToName(dr.getFrom());
-						to = Utility.convertUUIDToName(dr.getTo());
-					} catch (IOException e)
-					{
-						continue;
-					}
-					AEPUser ecofrom = AEPUserHandler.getEcoPlayer(from);
-					AEPUser ecoto = AEPUserHandler.getEcoPlayer(to);
+					String from = Utility.convertUUIDToName(dr.getFrom(), EconomyType.PLAYER);
+					String to = Utility.convertUUIDToName(dr.getTo(), EconomyType.PLAYER);
+					OLD_AEPUser ecofrom = _AEPUserHandler_OLD.getEcoPlayer(from);
+					OLD_AEPUser ecoto = _AEPUserHandler_OLD.getEcoPlayer(to);
 					if(from == null || to == null)
 					{
 						continue;
@@ -163,9 +108,9 @@ public class BackgroundTask
 					plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
 					Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 							LocalDateTime.now(), dr.getFrom(), dr.getTo(),
-							from, to, plugin.getYamlHandler().getL().getString("LoanRepayment.Orderer"), dr.getAmountRatio(), 
+							from, to, plugin.getYamlHandler().getLang().getString("LoanRepayment.Orderer"), dr.getAmountRatio(), 
 							ActionLoggerEvent.Type.DEPOSIT_WITHDRAW, 
-							plugin.getYamlHandler().getL().getString("LoanRepayment.Comment")
+							plugin.getYamlHandler().getLang().getString("LoanRepayment.Comment")
 							.replace("%name%", dr.getName())
 							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 							.replace("%totalpaid%", String.valueOf(dr.getAmountPaidSoFar()))
@@ -193,7 +138,7 @@ public class BackgroundTask
 				try
 				{
 					list = ConvertHandler.convertListV(
-							plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.STANDINGORDER, "`id`", false,
+							plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.STANDINGORDER, "`id` ASC",
 									"`cancelled` = ? AND `paused` = ?", false, false));
 					AEPSettings.debug(plugin, "> TRY : StandingOrderPayment");
 				} catch (IOException e)
@@ -212,20 +157,16 @@ public class BackgroundTask
 						AEPSettings.debug(plugin, ">> CONTINUE : LastTime + RepeatingTime >= System.currentTimeMillis");
 						continue;
 					}
-					String from = "";
-					String to = "";
-					try
-					{
-						AEPSettings.debug(plugin, ">> TRY : Convert UUID to Name");
-						from = Utility.convertUUIDToName(so.getFrom());
-						to = Utility.convertUUIDToName(so.getTo());
-					} catch (IOException e)
+					AEPSettings.debug(plugin, ">> TRY : Convert UUID to Name");
+					String from = Utility.convertUUIDToName(so.getFrom(), EconomyType.PLAYER);
+					String to = Utility.convertUUIDToName(so.getTo(), EconomyType.PLAYER);
+					if(from == null || to == null)
 					{
 						AEPSettings.debug(plugin, ">> CATCH : Convert UUID to Name failed");
 						continue;
 					}
-					AEPUser ecofrom = AEPUserHandler.getEcoPlayer(from);
-					AEPUser ecoto = AEPUserHandler.getEcoPlayer(to);
+					OLD_AEPUser ecofrom = _AEPUserHandler_OLD.getEcoPlayer(from);
+					OLD_AEPUser ecoto = _AEPUserHandler_OLD.getEcoPlayer(to);
 					if(from == null || to == null)
 					{
 						AEPSettings.debug(plugin, ">> CONTINUE : One is a Bank, Bank not implemented yet.");
@@ -262,10 +203,10 @@ public class BackgroundTask
 							LocalDateTime.now(),
 							so.getFrom(), so.getTo(),
 							from, to,
-							plugin.getYamlHandler().getL().getString("StandingOrder.Orderer"),
+							plugin.getYamlHandler().getLang().getString("StandingOrder.Orderer"),
 							so.getAmount(), 
 							ActionLoggerEvent.Type.DEPOSIT_WITHDRAW, 
-							plugin.getYamlHandler().getL().getString("StandingOrder.Comment")
+							plugin.getYamlHandler().getLang().getString("StandingOrder.Comment")
 								.replace("%name%", so.getName())
 								.replace("%totalpaid%", String.valueOf(so.getAmountPaidSoFar()))
 								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())));

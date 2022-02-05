@@ -40,7 +40,7 @@ public class ARGLoan_List extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		int page = 0;
@@ -87,7 +87,7 @@ public class ARGLoan_List extends ArgumentModule
 				color = "&2";
 			}
 			bc.add(ChatApi.hoverEvent("&3"+dr.getId()+"&f:&6"+dr.getName()+"&f:",
-					HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getL().getString("CmdLoan.HoverInfo")
+					HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getLang().getString("CmdLoan.HoverInfo")
 					.replace("%id%", String.valueOf(dr.getId()))
 					.replace("%name%", dr.getName())
 					.replace("%from%", dr.getFrom())
@@ -105,16 +105,16 @@ public class ARGLoan_List extends ArgumentModule
 					.replace("%fi%", String.valueOf(dr.isFinished()))
 					));
 			bc.add(ChatApi.apiChat("&eⓘ", 
-					ClickEvent.Action.RUN_COMMAND, plugin.getYamlHandler().getL().getString("CmdLoan.InfoCmd")+" "+dr.getId(),
-					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
+					ClickEvent.Action.RUN_COMMAND, plugin.getYamlHandler().getLang().getString("CmdLoan.InfoCmd")+" "+dr.getId(),
+					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("GeneralHover")));
 			bc.add(ChatApi.apiChat("&a✔", 
-					ClickEvent.Action.SUGGEST_COMMAND, plugin.getYamlHandler().getL().getString("CmdLoan.ForgiveCmd")+" "+dr.getId(),
-					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
+					ClickEvent.Action.SUGGEST_COMMAND, plugin.getYamlHandler().getLang().getString("CmdLoan.ForgiveCmd")+" "+dr.getId(),
+					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("GeneralHover")));
 			bc.add(ChatApi.tctl(" &1| "));
 		}
 		TextComponent tx = ChatApi.tc("");
 		tx.setExtra(bc);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.List.Headline")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.List.Headline")
 				.replace("%name%", player.getName())));
 		player.spigot().sendMessage(tx);
 		String cmdstring = plugin.getYamlHandler().getCom().getString(ac.getPath()+".CommandString");

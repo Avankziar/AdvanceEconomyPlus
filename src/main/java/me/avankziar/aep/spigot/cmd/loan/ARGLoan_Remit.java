@@ -14,10 +14,10 @@ import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.handler.KeyHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 
 public class ARGLoan_Remit extends ArgumentModule
@@ -37,7 +37,7 @@ public class ARGLoan_Remit extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		String ids = args[1];
@@ -46,7 +46,7 @@ public class ARGLoan_Remit extends ArgumentModule
 		if(!MatchApi.isInteger(ids))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", ids)));
 			return;
 		}
@@ -57,40 +57,40 @@ public class ARGLoan_Remit extends ArgumentModule
 		}
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanDontExist")));
 			return;
 		}
 		LoanRepayment dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
 		if(dr.isForgiven())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Forgive.CanBeUndone")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Forgive.CanBeUndone")));
 			return;
 		}
 		if(!dr.getLoanOwner().equals(player.getUniqueId().toString())
 				&& !player.hasPermission(Utility.PERM_BYPASS_LOAN_FORGIVE))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.NotLoanOwner")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.NotLoanOwner")));
 			return;
 		}
-		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm")))
+		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getLang().getString("CmdLoan.ConfirmTerm")))
 		{
 			player.spigot().sendMessage(ChatApi.generateTextComponent(
-					plugin.getYamlHandler().getL().getString("CmdLoan.Accept.PleaseConfirm")
+					plugin.getYamlHandler().getLang().getString("CmdLoan.Accept.PleaseConfirm")
 					.replace("%cmd%", AEPSettings.settings.getCommands(KeyHandler.L_REMIT)
-							.replace(" ", "+")+"+"+plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm"))));
+							.replace(" ", "+")+"+"+plugin.getYamlHandler().getLang().getString("CmdLoan.ConfirmTerm"))));
 			return;
 		}
 		double dif = dr.getTotalAmount()-dr.getAmountPaidSoFar();
 		if(dif <= 0)
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanAlreadyPaidOff")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyPaidOff")));
 			return;
 		}
 		dr.setForgiven(true);
 		plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-		AEPUser fromplayer = AEPUserHandler.getEcoPlayer(dr.getFrom());
-		AEPUser toplayer = AEPUserHandler.getEcoPlayer(dr.getTo());
-		String tomsg = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Forgive.LoanIsForgiven")
+		OLD_AEPUser fromplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getFrom());
+		OLD_AEPUser toplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getTo());
+		String tomsg = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Forgive.LoanIsForgiven")
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%dif%", String.valueOf(AdvancedEconomyPlus.getVault().format(dif)))
 				.replace("%from%", fromplayer.getName())
@@ -132,7 +132,7 @@ public class ARGLoan_Remit extends ArgumentModule
 		} else if(!dr.getTo().equals(dr.getLoanOwner()) && dr.getTo().equals(player.getUniqueId().toString()))
 		{
 			player.sendMessage(tomsg);
-			AEPUser doplayer = AEPUserHandler.getEcoPlayer(dr.getLoanOwner());
+			OLD_AEPUser doplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getLoanOwner());
 			if(toplayer.isMoneyPlayerFlow())
 			{
 				if(bungee)
@@ -162,7 +162,7 @@ public class ARGLoan_Remit extends ArgumentModule
 					}
 				}
 			}
-			AEPUser doplayer = AEPUserHandler.getEcoPlayer(dr.getLoanOwner());
+			OLD_AEPUser doplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getLoanOwner());
 			if(toplayer.isMoneyPlayerFlow())
 			{
 				if(bungee)

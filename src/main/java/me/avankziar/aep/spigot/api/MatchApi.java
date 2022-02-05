@@ -2,12 +2,10 @@ package main.java.me.avankziar.aep.spigot.api;
 
 import java.util.UUID;
 
-import main.java.me.avankziar.aep.spigot.object.AEPSettings;
-
 public class MatchApi
 {
 	//https://regex101.com/ für regular expression zu bauen
-	public static boolean isBankAccountNumber(String numberstring)
+	/*public static boolean isBankAccountNumber(String numberstring)
 	{
 		if(numberstring == null)
 		{
@@ -95,7 +93,7 @@ public class MatchApi
 			else {return false;}
 		}
 		return false;
-	}
+	}*/
 	
 	public static boolean isNumber(String numberstring)
 	{

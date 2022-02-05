@@ -27,18 +27,18 @@ public class ARGStandingOrder_Cancel extends ArgumentModule
 		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
+					plugin.getYamlHandler().getLang().getString("NoStandingOrder")));
 			return;
 		}
 		if(!PendingHandler.standingOrder.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdStandingOrder.NoPendingOrder")));
+					plugin.getYamlHandler().getLang().getString("CmdStandingOrder.NoPendingOrder")));
 			return;
 		}
 		PendingHandler.standingOrder.remove(player.getUniqueId().toString());
 		player.sendMessage(ChatApi.tl(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Cancel.IsCancelled")));
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Cancel.IsCancelled")));
 		return;
 	}
 }

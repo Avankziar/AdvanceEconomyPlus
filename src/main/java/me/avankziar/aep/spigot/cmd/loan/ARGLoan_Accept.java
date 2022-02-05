@@ -14,11 +14,12 @@ import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.handler.KeyHandler;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -39,13 +40,13 @@ public class ARGLoan_Accept extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		if(!PendingHandler.loanToAccept.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdLoan.NoToAcceptLoan")));
+					plugin.getYamlHandler().getLang().getString("CmdLoan.NoToAcceptLoan")));
 			return;
 		}
 		String confirm = "";
@@ -53,16 +54,16 @@ public class ARGLoan_Accept extends ArgumentModule
 		{
 			confirm = args[1];
 		}
-		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm")))
+		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getLang().getString("CmdLoan.ConfirmTerm")))
 		{
 			player.spigot().sendMessage(ChatApi.generateTextComponent(
-					plugin.getYamlHandler().getL().getString("CmdLoan.PleaseConfirm")
+					plugin.getYamlHandler().getLang().getString("CmdLoan.PleaseConfirm")
 					.replace("%cmd%", AEPSettings.settings.getCommands(KeyHandler.L_ACCEPT).replace(" ", "+")
-							+"+"+plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm"))));
+							+"+"+plugin.getYamlHandler().getLang().getString("CmdLoan.ConfirmTerm"))));
 			return;
 		}
 		LoanRepayment dr = PendingHandler.loanToAccept.get(player.getUniqueId().toString());
-		AEPUser toplayer = AEPUserHandler.getEcoPlayer(dr.getTo());
+		OLD_AEPUser toplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getTo());
 		
 		EconomyResponse withdraw = AdvancedEconomyPlus.getVault().withdrawPlayer(
 				Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), dr.getTotalAmount());
@@ -82,16 +83,16 @@ public class ARGLoan_Accept extends ArgumentModule
 		
 		plugin.getMysqlHandler().create(MysqlHandler.Type.LOAN, dr);
 		
-		String drowner = Utility.convertUUIDToName(dr.getLoanOwner());
+		String drowner = Utility.convertUUIDToName(dr.getLoanOwner(), EconomyType.PLAYER);
 		if(drowner == null)
 		{
 			drowner = "/";
 		}
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Accept.YouHaveAccepted")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Accept.YouHaveAccepted")
 				.replace("%drowner%", drowner)
 				.replace("%name%", dr.getName())));
 		
-		String tomsg = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Accept.PayerHasAccepted")
+		String tomsg = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Accept.PayerHasAccepted")
 				.replace("%toplayer%", toplayer.getName())
 				.replace("%name%", dr.getName())
 				.replace("%player%", player.getName()));
@@ -111,7 +112,7 @@ public class ARGLoan_Accept extends ArgumentModule
 		}
 		if(!dr.getTo().equals(dr.getLoanOwner()))
 		{
-			AEPUser Loanowner = AEPUserHandler.getEcoPlayer(dr.getLoanOwner());
+			OLD_AEPUser Loanowner = _AEPUserHandler_OLD.getEcoPlayer(dr.getLoanOwner());
 			if(Loanowner.isMoneyPlayerFlow())
 			{
 				if(bungee)

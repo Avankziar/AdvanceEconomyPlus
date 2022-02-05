@@ -2,6 +2,8 @@ package main.java.me.avankziar.aep.spigot.object;
 
 import java.time.LocalDate;
 
+import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
+
 public class TrendLogger
 {
 	public enum Type
@@ -9,32 +11,49 @@ public class TrendLogger
 		STABIL, UP, DOWN;
 	}
 	
-	private LocalDate date;
+	private long unixTime;
 	private Type type;
-	private String UUIDOrNumber;
+	private int accountID;
 	private double relativeAmountChange;
 	private double firstValue;
 	private double lastValue;
 	
-	public TrendLogger(LocalDate date, Type type, String UUIDOrNumber, double relativeAmountChange,
+	public TrendLogger(long unixTime, Type type, int accountID, double relativeAmountChange,
 			double firstValue, double lastValue)
 	{
-		setDate(date);
+		setUnixTime(unixTime);
 		setType(type);
-		setUUIDOrNumber(UUIDOrNumber);
+		setAccountID(accountID);
+		setRelativeAmountChange(relativeAmountChange);
+		setFirstValue(firstValue);
+		setLastValue(lastValue);
+	}
+	
+	public TrendLogger(LocalDate date, Type type, int accountID, double relativeAmountChange,
+			double firstValue, double lastValue)
+	{
+		setUnixTime(TimeHandler.getTime(date));
+		setType(type);
+		setAccountID(accountID);
 		setRelativeAmountChange(relativeAmountChange);
 		setFirstValue(firstValue);
 		setLastValue(lastValue);
 	}
 
-	public LocalDate getDate()
+	/**
+	 * @return the unixTime
+	 */
+	public long getUnixTime()
 	{
-		return date;
+		return unixTime;
 	}
 
-	public void setDate(LocalDate date)
+	/**
+	 * @param unixTime the unixTime to set
+	 */
+	public void setUnixTime(long unixTime)
 	{
-		this.date = date;
+		this.unixTime = unixTime;
 	}
 
 	public Type getType()
@@ -47,14 +66,20 @@ public class TrendLogger
 		this.type = type;
 	}
 
-	public String getUUIDOrNumber()
+	/**
+	 * @return the accountID
+	 */
+	public int getAccountID()
 	{
-		return UUIDOrNumber;
+		return accountID;
 	}
 
-	public void setUUIDOrNumber(String uUIDOrNumber)
+	/**
+	 * @param accountID the accountID to set
+	 */
+	public void setAccountID(int accountID)
 	{
-		UUIDOrNumber = uUIDOrNumber;
+		this.accountID = accountID;
 	}
 
 	public double getRelativeAmountChange()

@@ -32,7 +32,7 @@ public class ARGEcoReComment extends ArgumentModule
 		if(!MatchApi.isInteger(idstring))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", idstring)));
 			return;
 		}
@@ -54,17 +54,18 @@ public class ARGEcoReComment extends ArgumentModule
 		ActionLogger el = (ActionLogger) plugin.getMysqlHandler().getData(MysqlHandler.Type.ACTION, "`id` = ?",id);
 		if(el == null)
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.ReComment.LogNotExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdEco.ReComment.LogNotExist")));
 			return;
 		}
-		if(!el.getOrdereruuid().equals(player.getUniqueId().toString()) && !player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))
+		if((el.getOrdererUUID() == null || (el.getOrdererUUID() != null && !el.getOrdererUUID().toString().equals(player.getUniqueId().toString())
+				&& !player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.ReComment.NoOrderer")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdEco.ReComment.NoOrderer")));
 			return;
 		}
 		el.setComment(recomment);
 		plugin.getMysqlHandler().updateData(MysqlHandler.Type.ACTION, el, "`id` = ?",id);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.ReComment.CommentWasChange")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdEco.ReComment.CommentWasChange")
 				.replace("%id%", idstring)
 				.replace("%comment%", recomment)));
 		return;

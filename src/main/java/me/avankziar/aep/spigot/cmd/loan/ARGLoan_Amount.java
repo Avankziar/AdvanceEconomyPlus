@@ -30,13 +30,13 @@ public class ARGLoan_Amount extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		if(!PendingHandler.loanRepayment.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdLoan.NoWaitingLoanProposal")));
+					plugin.getYamlHandler().getLang().getString("CmdLoan.NoWaitingLoanProposal")));
 			return;
 		}
 		String ta = args[1]; //totalamount
@@ -45,21 +45,21 @@ public class ARGLoan_Amount extends ArgumentModule
 		if(!MatchApi.isDouble(ta))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", ta)));
 			return;
 		}
 		if(!MatchApi.isDouble(ar))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", ar)));
 			return;
 		}
 		if(!MatchApi.isDouble(it))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", it)));
 			return;
 		}
@@ -69,21 +69,21 @@ public class ARGLoan_Amount extends ArgumentModule
 		if(!MatchApi.isPositivNumber(toam))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
+					plugin.getYamlHandler().getLang().getString("NumberIsNegativ")
 					.replace("%args%", ta)));
 			return;
 		}
 		if(!MatchApi.isPositivNumber(amra))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
+					plugin.getYamlHandler().getLang().getString("NumberIsNegativ")
 					.replace("%args%", ta)));
 			return;
 		}
 		if(inst <= -100)
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("InterestCantBeUnderMinus100")
+					plugin.getYamlHandler().getLang().getString("InterestCantBeUnderMinus100")
 					.replace("%args%", ta)));
 			return;
 		}
@@ -94,9 +94,9 @@ public class ARGLoan_Amount extends ArgumentModule
 		dr.setAmountRatio(amra);
 		dr.setInterest(inst);
 		PendingHandler.loanRepayment.replace(player.getUniqueId().toString(), dr);
-		player.spigot().sendMessage(ChatApi.hoverEvent(plugin.getYamlHandler().getL().getString("CmdLoan.Amount.SetsAmounts"),
+		player.spigot().sendMessage(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdLoan.Amount.SetsAmounts"),
 				HoverEvent.Action.SHOW_TEXT,
-				plugin.getYamlHandler().getL().getString("CmdLoan.Amount.Hover")
+				plugin.getYamlHandler().getLang().getString("CmdLoan.Amount.Hover")
 				.replace("%ta%", String.valueOf(AdvancedEconomyPlus.getVault().format(toam)))
 				.replace("%ar%", String.valueOf(AdvancedEconomyPlus.getVault().format(amra)))
 				.replace("%in%", String.valueOf(AdvancedEconomyPlus.getVault().format(inst)))

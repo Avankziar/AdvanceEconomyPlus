@@ -67,7 +67,7 @@ public class AdvancedEconomyPlus extends Plugin
 	{
 		PluginManager pm = getProxy().getPluginManager();
 		pm.registerListener(this, new SpigotListener(this));
-		getProxy().registerChannel("advanceeconomy:spigottobungee");
-		getProxy().registerChannel("advanceeconomy:bungeetospigot");
+		getProxy().registerChannel("advancedeconomy:spigottobungee");
+		getProxy().registerChannel("advancedeconomy:bungeetospigot");
 	}
 }

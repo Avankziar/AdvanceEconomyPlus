@@ -12,10 +12,10 @@ import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler.Methode;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 
 public class ARGMoneyLoggerSettings_GUI extends ArgumentModule
@@ -35,6 +35,7 @@ public class ARGMoneyLoggerSettings_GUI extends ArgumentModule
 		int page = 0;
 		String otherplayername = player.getName();
 		Methode methode = Methode.LOG;
+		//loggersettings holen, account id nach management abfragen.
 		if(args.length >= 3)
 		{
 			if(args[2].equals(otherplayername))
@@ -45,7 +46,7 @@ public class ARGMoneyLoggerSettings_GUI extends ArgumentModule
 				if(!player.hasPermission(Utility.PERM_BYPASS_LOGOTHER))
 				{
 					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getL().getString("NoPermission")));
+							plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return;
 				}
 				otherplayername = args[2];
@@ -66,12 +67,12 @@ public class ARGMoneyLoggerSettings_GUI extends ArgumentModule
 				methode = Methode.valueOf(args[4]);
 			} catch(EnumConstantNotPresentException e) {}
 		}
-		AEPUser eco = AEPUserHandler.getEcoPlayer(otherplayername);
+		OLD_AEPUser eco = _AEPUserHandler_OLD.getEcoPlayer(otherplayername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
+					plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 			return;
 		}
 		if(args.length <= 3)
@@ -81,7 +82,7 @@ public class ARGMoneyLoggerSettings_GUI extends ArgumentModule
 		{
 			if(!LoggerSettingsHandler.getLoggerSettings().containsKey(player.getUniqueId()))
 			{
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Log.NoLoggerSettingsFound")));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdMoney.Log.NoLoggerSettingsFound")));
 				return;
 			}
 			LoggerSettings fst = LoggerSettingsHandler.getLoggerSettings().get(player.getUniqueId());

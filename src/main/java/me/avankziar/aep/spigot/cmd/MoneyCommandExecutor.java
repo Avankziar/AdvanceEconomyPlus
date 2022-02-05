@@ -15,8 +15,8 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import net.md_5.bungee.api.chat.ClickEvent;
 
 public class MoneyCommandExecutor implements CommandExecutor
@@ -52,7 +52,7 @@ public class MoneyCommandExecutor implements CommandExecutor
 				if(!player.hasPermission(cc.getPermission()))
 				{
 					///Du hast dafür keine Rechte!
-					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getL().getString("NoPermission")));
+					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return false;
 				}
 				money(player);
@@ -114,7 +114,7 @@ public class MoneyCommandExecutor implements CommandExecutor
 							} else
 							{
 								///Du hast dafür keine Rechte!
-								player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("NoPermission")));
+								player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 								return false;
 							}
 						} else
@@ -137,31 +137,25 @@ public class MoneyCommandExecutor implements CommandExecutor
 				}
 			}
 		}
-		/*String arg = "";
-		for(String s : args)
-		{
-			arg += s;
-		}*/
 		if(player != null)
 		{
 			///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
-			player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getL().getString("InputIsWrong"),
+			player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 					ClickEvent.Action.RUN_COMMAND, AdvancedEconomyPlus.infoCommand));
 			//AdvancedEconomyPlus.log.info(sender.getName() + " send command: " + cmd.getName() + arg);
 		} else
 		{
-			sender.sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getL().getString("InputIsWrong"),
+			sender.sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 					ClickEvent.Action.RUN_COMMAND, AdvancedEconomyPlus.infoCommand).toLegacyText());
 			//AdvancedEconomyPlus.log.info(sender.getName() + " send command: " + cmd.getName() + arg);
 		}
-		
 		return false;
 	}
 	
 	public void money(Player player)
 	{
-		AEPUser eco = AEPUserHandler.getEcoPlayer(player);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.PlayerBalance")
+		OLD_AEPUser eco = _AEPUserHandler_OLD.getEcoPlayer(player);
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdMoney.PlayerBalance")
 				.replace("%time%", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
 				.replace("%balance%", AdvancedEconomyPlus.getVault().format(eco.getBalance()))
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())));

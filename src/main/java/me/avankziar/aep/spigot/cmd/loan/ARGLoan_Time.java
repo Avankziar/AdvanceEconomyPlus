@@ -31,13 +31,13 @@ public class ARGLoan_Time extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		if(!PendingHandler.loanRepayment.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdLoan.NoWaitingLoanProposal")));
+					plugin.getYamlHandler().getLang().getString("CmdLoan.NoWaitingLoanProposal")));
 			return;
 		}
 		String st = args[1];
@@ -51,8 +51,8 @@ public class ARGLoan_Time extends ArgumentModule
 		dr.setEndTime(endtime);
 		dr.setRepeatingTime(repeatingtime);
 		PendingHandler.loanRepayment.replace(player.getUniqueId().toString(), dr);
-		player.spigot().sendMessage(ChatApi.hoverEvent(plugin.getYamlHandler().getL().getString("CmdLoan.Times.SetTimes"),
-				HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("CmdLoan.Times.Hover")
+		player.spigot().sendMessage(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdLoan.Times.SetTimes"),
+				HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("CmdLoan.Times.Hover")
 				.replace("%st%", st)
 				.replace("%et%", et)
 				.replace("%rt%", rt)));

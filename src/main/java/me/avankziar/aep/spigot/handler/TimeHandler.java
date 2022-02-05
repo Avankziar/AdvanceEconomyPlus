@@ -1,8 +1,11 @@
 package main.java.me.avankziar.aep.spigot.handler;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
@@ -21,6 +24,12 @@ public class TimeHandler
 				.format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"));
 	}
 	
+	public static String getTimeSlim(long l)
+	{
+		return LocalDateTime.ofInstant(Instant.ofEpochMilli(l), ZoneId.systemDefault())
+				.format(DateTimeFormatter.ofPattern("dd.MM-HH:mm"));
+	}
+	
 	public static long getTime(String l)
 	{
 		try
@@ -31,7 +40,21 @@ public class TimeHandler
 		{
 			return 0;
 		}
-				
+	}
+	
+	public static long getTime(LocalDateTime l)
+	{
+		return l.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();	
+	}
+	
+	public static long getTime(LocalDate l)
+	{
+		return l.toEpochSecond(LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC)*1000;
+	}
+	
+	public static LocalDateTime getLocalDateTime(long l)
+	{
+		return LocalDateTime.parse(getTime(l), DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss"));
 	}
 	
 	public static String getRepeatingTime(long l) // dd-HH:mm

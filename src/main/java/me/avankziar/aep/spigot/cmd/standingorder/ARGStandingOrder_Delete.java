@@ -30,7 +30,7 @@ public class ARGStandingOrder_Delete extends ArgumentModule
 		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
+					plugin.getYamlHandler().getLang().getString("NoStandingOrder")));
 			return;
 		}
 		String ids = args[1];
@@ -38,24 +38,24 @@ public class ARGStandingOrder_Delete extends ArgumentModule
 		if(!MatchApi.isInteger(ids))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", ids)));
 			return;
 		}
 		id = Integer.parseInt(ids);
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.STANDINGORDER, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.OrderDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.OrderDontExist")));
 			return;
 		}
 		StandingOrder so = (StandingOrder) plugin.getMysqlHandler().getData(MysqlHandler.Type.STANDINGORDER, "`id` = ?", id);
 		if(!so.getFrom().equals(player.getUniqueId().toString()) && !player.hasPermission(Utility.PERM_BYPASS_STANDINGORDER_DELETE))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.NotOrderer")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.NotOrderer")));
 			return;
 		}
 		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.STANDINGORDER, "`id` = ?", id);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.Delete.IsDeleted")));
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Delete.IsDeleted")));
 		return;
 	}
 }

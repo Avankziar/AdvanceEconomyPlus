@@ -53,14 +53,45 @@ Build 4 ========================================================================
 - Mysql:
   - Datenbank wo nur SpielerUUID, Spielername enthalten sind. Wegen der ConvertUUIDToPlayername
   - Datenbank wo alle Accounts sind, egal ob wallets oder bankaccounts, auch die von Entitys oder server.
-    - Accountnamen sind NICHTglobal einzigartig. Sie sind NUR einzigartig beim Spieler selber, sodass er keine zwei account haben kann,
+    - Accountnamen sind NICHT global einzigartig. Sie sind NUR einzigartig beim Spieler selber, sodass er keine zwei account haben kann,
       die gleich heißen.
     - Accounts werden bei cmd anhand der id oder accountname sowie spielername gefunden.
-    - Accounts werden intern anhand des uuid, des
+    - Accounts werden intern anhand des uuid, des accounttyps und der accountcategory (default = MAIN) ausgesucht
   - Datenbank wo alle Default Account (Wallets wie Bankaccounts) für alle existierenden Währungen vorhanden sind.
     Sie sind per Category abrufbar und einstellbar.
     UUID, Currency, AccountID, Category
     - Die Defaultaccounts sind die, die für alle internen normalen abläufe zuständig sind.
+  - Datenbank wo per accountID und uuid die rechte hinterlegt sind
++ ActionLog LocateDateTime in long (Unix) geändert.
++ ActionLog String kategorie hinzugefügt.
++ LoggerHandler alle Methoden mit EconomyLogger in ActionLog geändert.
++ ActionLoggerEvent long unxitime AND String kategorie hinzugefügt.
++ LoggerSettings %uuid% is now %accountName%
+  
+  Todo:
+  - MysqlTabellen Setup schreiben
+  - MysqlTabellen TableXY schreiben
+  - Mysql den desc aus den methoden nehmen.
+  - Im Joinlistener, den Spieler regestrieren und seine Konten erstellen. sollten alte Konten vorhanden sein, diese convertieren.
+  - ActionLog mit einer category versehen, Object, wie MysqlTabelle
+  - Mysql Performance in allen Tabellen hinzufügen. Siehe scc
+  - PlaceHolderAPI einbinden
+  - Config Value einbauen um Überweisungen auf Cooldown zu halten.
+  - Steuer Config Werte für Überweisungen, Bankkonten dauer.
+  - Permission für alle AccountCategory machen, um sie als DefaultAccounts machen können.
+    CountPerm für die Anzahl an Accounts Wallets wie Banks.
+  - Bei der Currency .yml einen Boolean ob bei einem Umtausch von dieser Währung zu einer anderen,
+    Steuern vorher (Diese Währung) oder nachher (die andere Währung) abgezogen werden soll.
+  - CurrenyConfig Wert einbauen, um definieren zu können, ob man selbst erstellte Accounts löschen kann.
+    Dazu ein boolean wert in der mysql für vordefinierte Accounts.
+  - CurrencyConfig eine Liste bauen, um zu definieren von welcher Category man Welche art von Account man erstellen darf, wie teuer die sind
+    und die Countpermission für die Anzahl an Accounts.
+  - Permission festlegen um Währungen umzutauschen => <RestPerm>.<WährungVon>.<WährungZu>
+  - Eventuell einen boolean bei den Transactionen einbauen, welches erlaubt das der Withdraw account in den Minus gehen kann.
+  - Beim Pay account noch das anstehende beachten in der klasse selbst
+  - LoggerSettings query ändern
+  - LoggerSettings adding %account_owner_name%, %account_owner_type%
+  - LoggerSettings Slot 3 => AccountID, Slot 5 => Category für die Dateien ändern
 
 Build 3 ============================================================================================================================
 - +CommandTree eingebungen und dahingehend umgeschrieben. Bedeutet Befehle und Permission sind änderbar.

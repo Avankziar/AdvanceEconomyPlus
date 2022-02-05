@@ -1,119 +1,166 @@
 package main.java.me.avankziar.aep.spigot.object;
 
-import java.time.LocalDateTime;
+import java.util.UUID;
+
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 
 public class ActionLogger
 {
-	public enum Type
-	{
-		DEPOSIT_WITHDRAW, TAKEN, GIVEN
-	}
-	
 	private int id;
-	private LocalDateTime dateTime;
-	private String fromUUIDOrNumber;
-	private String toUUIDOrNumber;
-	private String fromName; //Bankname oder Playername
-	private String toName;
-	private String ordereruuid;
-	private double amount;
-	private Type type;
+	private long unixTime;
+	private int fromAccountID;
+	private int toAccountID;
+	private int taxAccountID;
+	private OrdererType orderType;
+	private UUID ordererUUID; //Only UUID from a player or the Plugin
+	private String ordererPlugin;
+	private double amountToWithdraw;
+	private double amountToDeposit;
+	private double amountToTax;
+	private String category;
 	private String comment;
 	
-	public ActionLogger(int id, LocalDateTime dateTime,
-			String FromUUIDOrNumber, String toUUIDOrNumber, String fromName, String toName, String ordereruuid,
-			double amount, Type type, String comment)
+	public ActionLogger(int id, long unixTime,
+			int fromAccountID, int toAccountID, int taxAccountID, OrdererType orderType, UUID ordererUUID, String ordererPlugin,
+			double amountToWithdraw, double amountToDeposit, double amountToTax, String category, String comment)
 	{
 		setId(id);
-		setDateTime(dateTime);
-		setFromUUIDOrNumber(FromUUIDOrNumber);
-		setFromName(fromName);
-		setToUUIDOrNumber(toUUIDOrNumber);
-		setToName(toName);
-		setOrdereruuid(ordereruuid);
-		setAmount(amount);
-		setType(type);
+		setUnixTime(unixTime);
+		setFromAccountID(fromAccountID);
+		setToAccountID(toAccountID);
+		setTaxAccountID(taxAccountID);
+		setOrderType(orderType);
+		setOrdererUUID(ordererUUID);
+		setOrdererPlugin(ordererPlugin);
+		setAmountToWithdraw(amountToWithdraw);
+		setAmountToDeposit(amountToDeposit);
+		setAmountToTax(amountToTax);
+		setCategory(category);
 		setComment(comment);
 	}
 
-	public LocalDateTime getDateTime()
+	public long getUnixTime()
 	{
-		return dateTime;
+		return unixTime;
 	}
 
-	public void setDateTime(LocalDateTime dateTime)
+	public void setUnixTime(long unixTime)
 	{
-		this.dateTime = dateTime;
+		this.unixTime = unixTime;
 	}
 
-	public String getFromUUIDOrNumber()
+	public int getFromAccountID()
 	{
-		return fromUUIDOrNumber;
+		return fromAccountID;
 	}
 
-	public void setFromUUIDOrNumber(String FromUUIDOrNumber)
+	public void setFromAccountID(int fromAccountID)
 	{
-		this.fromUUIDOrNumber = FromUUIDOrNumber;
+		this.fromAccountID = fromAccountID;
 	}
 
-	public String getToUUIDOrNumber()
+	public int getToAccountID()
 	{
-		return toUUIDOrNumber;
+		return toAccountID;
 	}
 
-	public void setToUUIDOrNumber(String toUUIDOrNumber)
+	public void setToAccountID(int toAccountID)
 	{
-		this.toUUIDOrNumber = toUUIDOrNumber;
+		this.toAccountID = toAccountID;
 	}
 
-	public String getFromName()
+	/**
+	 * @return the taxAccountID
+	 */
+	public int getTaxAccountID()
 	{
-		return fromName;
+		return taxAccountID;
 	}
 
-	public void setFromName(String fromName)
+	/**
+	 * @param taxAccountID the taxAccountID to set
+	 */
+	public void setTaxAccountID(int taxAccountID)
 	{
-		this.fromName = fromName;
+		this.taxAccountID = taxAccountID;
 	}
 
-	public String getToName()
+	public OrdererType getOrderType()
 	{
-		return toName;
+		return orderType;
 	}
 
-	public void setToName(String toName)
+	public void setOrderType(OrdererType orderType)
 	{
-		this.toName = toName;
+		this.orderType = orderType;
 	}
 
-	public String getOrdereruuid()
+	public UUID getOrdererUUID()
 	{
-		return ordereruuid;
+		return ordererUUID;
 	}
 
-	public void setOrdereruuid(String ordereruuid)
+	public void setOrdererUUID(UUID ordererUUID)
 	{
-		this.ordereruuid = ordereruuid;
+		this.ordererUUID = ordererUUID;
 	}
 
-	public double getAmount()
+	public String getOrdererPlugin()
 	{
-		return amount;
+		return ordererPlugin;
 	}
 
-	public void setAmount(double amount)
+	public void setOrdererPlugin(String ordererPlugin)
 	{
-		this.amount = amount;
+		this.ordererPlugin = ordererPlugin;
 	}
 
-	public Type getType()
+	/**
+	 * @return the amountToWithdraw
+	 */
+	public double getAmountToWithdraw()
 	{
-		return type;
+		return amountToWithdraw;
 	}
 
-	public void setType(Type type)
+	/**
+	 * @param amountToWithdraw the amountToWithdraw to set
+	 */
+	public void setAmountToWithdraw(double amountToWithdraw)
 	{
-		this.type = type;
+		this.amountToWithdraw = amountToWithdraw;
+	}
+
+	/**
+	 * @return the amountToDeposit
+	 */
+	public double getAmountToDeposit()
+	{
+		return amountToDeposit;
+	}
+
+	/**
+	 * @param amountToDeposit the amountToDeposit to set
+	 */
+	public void setAmountToDeposit(double amountToDeposit)
+	{
+		this.amountToDeposit = amountToDeposit;
+	}
+
+	/**
+	 * @return the amountToTax
+	 */
+	public double getAmountToTax()
+	{
+		return amountToTax;
+	}
+
+	/**
+	 * @param amountToTax the amountToTax to set
+	 */
+	public void setAmountToTax(double amountToTax)
+	{
+		this.amountToTax = amountToTax;
 	}
 
 	public String getComment()
@@ -124,6 +171,22 @@ public class ActionLogger
 	public void setComment(String comment)
 	{
 		this.comment = comment;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public String getCategory()
+	{
+		return category;
+	}
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(String category)
+	{
+		this.category = category;
 	}
 
 	public int getId()

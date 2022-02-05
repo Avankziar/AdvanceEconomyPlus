@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import me.arcaniax.hdb.api.PlayerClickHeadEvent;
 
 public class HeadDatabaseHook implements Listener
@@ -45,14 +45,14 @@ public class HeadDatabaseHook implements Listener
 		}
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(),
-				playeruuid, plugin.getYamlHandler().getL().getString("HeadDatabase.UUID"),
-				playername, plugin.getYamlHandler().getL().getString("HeadDatabase.Name"),
-				plugin.getYamlHandler().getL().getString("HeadDatabase.Orderer"),
+				playeruuid, plugin.getYamlHandler().getLang().getString("HeadDatabase.UUID"),
+				playername, plugin.getYamlHandler().getLang().getString("HeadDatabase.Name"),
+				plugin.getYamlHandler().getLang().getString("HeadDatabase.Orderer"),
 				amount, 
 				ActionLoggerEvent.Type.TAKEN,
-				plugin.getYamlHandler().getL().getString("HeadDatabase.Comment")
+				plugin.getYamlHandler().getLang().getString("HeadDatabase.Comment")
 				.replace("%head%", itemname)));
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-				LocalDate.now(), playeruuid, amount, AEPUserHandler.getEcoPlayer(UUID.fromString(playeruuid)).getBalance()));
+				LocalDate.now(), playeruuid, amount, _AEPUserHandler_OLD.getEcoPlayer(UUID.fromString(playeruuid)).getBalance()));
 	}
 }

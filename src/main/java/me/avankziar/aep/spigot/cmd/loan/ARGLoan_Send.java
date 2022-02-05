@@ -18,6 +18,7 @@ import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
 import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -39,30 +40,30 @@ public class ARGLoan_Send extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		if(!PendingHandler.loanRepayment.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdLoan.NoWaitingLoanProposal")));
+					plugin.getYamlHandler().getLang().getString("CmdLoan.NoWaitingLoanProposal")));
 			return;
 		}
 		String otherplayer = args[1];
-		String uuid = Utility.convertNameToUUID(otherplayer);
+		UUID uuid = Utility.convertNameToUUID(otherplayer, EconomyType.PLAYER);
 		if(uuid == null)
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("PlayerNotExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 			return;
 		}
 		if(PendingHandler.loanToAccept.containsKey(uuid))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdLoan.AlreadyHavingProposal")));
+					plugin.getYamlHandler().getLang().getString("CmdLoan.AlreadyHavingProposal")));
 			return;
 		}
 		LoanRepayment dr = PendingHandler.loanRepayment.get(player.getUniqueId().toString());
-		String hover = plugin.getYamlHandler().getL().getString("CmdLoan.HoverInfo")
+		String hover = plugin.getYamlHandler().getLang().getString("CmdLoan.HoverInfo")
 				.replace("%id%", String.valueOf(dr.getId()))
 				.replace("%name%", dr.getName())
 				.replace("%from%", dr.getFrom())
@@ -79,33 +80,33 @@ public class ARGLoan_Send extends ArgumentModule
 				.replace("%fo%", String.valueOf(dr.isForgiven()))
 				.replace("%fi%", String.valueOf(dr.isFinished()));
 		player.spigot().sendMessage(
-				ChatApi.hoverEvent(plugin.getYamlHandler().getL().getString("CmdLoan.Send.YourProposal")
+				ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdLoan.Send.YourProposal")
 						.replace("%player%", args[2]),
 				HoverEvent.Action.SHOW_TEXT, hover));
 		TextComponent tx = ChatApi.hoverEvent(
-				plugin.getYamlHandler().getL().getString("CmdLoan.Send.AProposal")
+				plugin.getYamlHandler().getLang().getString("CmdLoan.Send.AProposal")
 				.replace("%player%", player.getName()),
 				HoverEvent.Action.SHOW_TEXT, hover);
 		boolean bungee = AEPSettings.settings.isBungee();
 		ArrayList<BaseComponent> list = new ArrayList<>();
 		list.add(tx);
-		TextComponent ar = ChatApi.generateTextComponent(plugin.getYamlHandler().getL().getString("CmdLoan.Send.AcceptReject")
-				.replace("%acceptcmd%", AEPSettings.settings.getCommands(KeyHandler.L_ACCEPT).replace(" ", "+")+"+"+plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm"))
+		TextComponent ar = ChatApi.generateTextComponent(plugin.getYamlHandler().getLang().getString("CmdLoan.Send.AcceptReject")
+				.replace("%acceptcmd%", AEPSettings.settings.getCommands(KeyHandler.L_ACCEPT).replace(" ", "+")+"+"+plugin.getYamlHandler().getLang().getString("CmdLoan.ConfirmTerm"))
 				.replace("%rejectcmd%", AEPSettings.settings.getCommands(KeyHandler.L_REJECT).replace(" ", "+")));
 		ArrayList<BaseComponent> list2 = new ArrayList<>();
 		list2.add(ar);
 		if(bungee)
 		{
-			BungeeBridge.sendBungeeTextComponent(player, uuid,
+			BungeeBridge.sendBungeeTextComponent(player, uuid.toString(),
 					BungeeBridge.generateMessage(list), false, "");
-			BungeeBridge.sendBungeeTextComponent(player, uuid,
+			BungeeBridge.sendBungeeTextComponent(player, uuid.toString(),
 					BungeeBridge.generateMessage(list2), false, "");
 		} else
 		{
-			if(Bukkit.getPlayer(UUID.fromString(uuid)) != null)
+			if(Bukkit.getPlayer(UUID.fromString(uuid.toString())) != null)
 			{
-				Bukkit.getPlayer(UUID.fromString(uuid)).spigot().sendMessage(tx);
-				Bukkit.getPlayer(UUID.fromString(uuid)).spigot().sendMessage(ar);
+				Bukkit.getPlayer(UUID.fromString(uuid.toString())).spigot().sendMessage(tx);
+				Bukkit.getPlayer(UUID.fromString(uuid.toString())).spigot().sendMessage(ar);
 			}
 		}
 		return;

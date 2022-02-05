@@ -21,7 +21,8 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import main.java.me.avankziar.aep.spigot.api.LoggerApi;
-import main.java.me.avankziar.aep.spigot.api.VaultApi;
+import main.java.me.avankziar.aep.spigot.api.economy.IFHApi;
+import main.java.me.avankziar.aep.spigot.api.economy.VaultApi;
 import main.java.me.avankziar.aep.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
@@ -82,6 +83,7 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlSetup;
 import main.java.me.avankziar.aep.spigot.database.YamlHandler;
 import main.java.me.avankziar.aep.spigot.database.YamlManager;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.handler.KeyHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
@@ -93,10 +95,11 @@ import main.java.me.avankziar.aep.spigot.listener.LoggerListener;
 import main.java.me.avankziar.aep.spigot.listener.PlayerListener;
 import main.java.me.avankziar.aep.spigot.listenerhandler.LoggerSettingsListenerHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 
 public class AdvancedEconomyPlus extends JavaPlugin
 {
+	private static AdvancedEconomyPlus plugin;
 	public static Logger log;
 	public String pluginName = "AdvancedEconomyPlus";
 	private static YamlManager yamlManager;
@@ -104,9 +107,11 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	private static MysqlSetup mysqlSetup;
 	private static MysqlHandler mysqlHandler;
 	private static Utility utility;
-	private static AdvancedEconomyPlus plugin;
-	private static VaultApi vaultApi;
 	private static BackgroundTask backgroundTask;
+	
+	private static VaultApi vaultApi;
+	private static IFHApi ifhApi;
+	
 	private static LoggerApi loggerApi;
 	
 	private ArrayList<String> players = new ArrayList<>();
@@ -163,11 +168,15 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		loggerApi = new LoggerApi(this);
 		new BungeeBridge(this);
 		backgroundTask = new BackgroundTask(this);
-		setupEconomy();
+		setupIFH();
+		setupVault();
 		setupStrings();
 		setupCommandTree();
 		setupListener();
 		setupBstats();
+		ConfigHandler.init(plugin);
+		//setupExtraPermission(); ADDME
+		//new CurrencyCommandSetup(plugin).setupCommandCurrency();
 	}
 	
 	public void onDisable()
@@ -283,7 +292,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		new ARGEcoPlayer(plugin, player);
 		new ARGEcoReComment(plugin, recomment);
 		
-		if(AEPSettings.settings.isPlayerAccount())
+		if(AEPSettings.settings.isPlayerAccount()) //FIXME Existiert nicht mehr
 		{
 			log.info("Activate PlayerAccounts...");
 			ArgumentConstructor actionlog = new ArgumentConstructor(yamlHandler, baseCommandII+"_actionlog", 0, 0, 2, false, playerMapII);
@@ -463,9 +472,8 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	public void setupListener()
 	{
 		PluginManager pm = getServer().getPluginManager();
-		getServer().getMessenger().registerOutgoingPluginChannel(this, "advanceeconomy:spigottobungee");
+		getServer().getMessenger().registerOutgoingPluginChannel(this, "advancedeconomy:spigottobungee");
 		pm.registerEvents(new PlayerListener(plugin), plugin);
-		pm.registerEvents(new LoggerListener(), plugin);
 		pm.registerEvents(new LoggerSettingsListenerHandler(plugin), plugin);
 		if(existHook("ChestShop"))
 		{
@@ -487,38 +495,6 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			log.info(pluginName+" hook with QuickShop");
 			pm.registerEvents(new QuickShopHook(plugin), plugin);
 		}
-	}
-	
-	public boolean reload()
-	{
-		try
-		{
-			if(!yamlHandler.loadYamlHandler())
-			{
-				return false;
-			}
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
-		{
-			mysqlSetup.closeConnection();
-			if(!mysqlHandler.loadMysqlHandler())
-			{
-				return false;
-			}
-			if(!mysqlSetup.loadMysqlSetup())
-			{
-				return false;
-			}
-		} else
-		{
-			return false;
-		}
-		AEPSettings.initSettings(this);
-		return true;
 	}
 	
 	public ArrayList<BaseConstructor> getHelpList()
@@ -584,12 +560,12 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	public void setupPlayers()
 	{
-		ArrayList<AEPUser> cu = ConvertHandler.convertListI(
+		ArrayList<OLD_AEPUser> cu = ConvertHandler.convertListIOLD(
 				plugin.getMysqlHandler().getTop(MysqlHandler.Type.PLAYER,
 						"`id`", 0,
 						plugin.getMysqlHandler().lastID(MysqlHandler.Type.PLAYER)));
 		ArrayList<String> cus = new ArrayList<>();
-		for(AEPUser chus : cu) 
+		for(OLD_AEPUser chus : cu) 
 		{
 			cus.add(chus.getName());	
 		}
@@ -659,8 +635,13 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	{
 		return vaultApi;
 	}
+	
+	public IFHApi getIFHApi()
+	{
+		return ifhApi;
+	}
 
-	private boolean setupEconomy() 
+	private boolean setupVault() 
 	{
 		if (plugin.getServer().getPluginManager().isPluginEnabled("Vault")) 
 		{
@@ -673,10 +654,26 @@ public class AdvancedEconomyPlus extends JavaPlugin
             log.info(pluginName + " detected Vault. Hooking!");
             return true;
         }
-		log.severe("Vault is not set in the Plugin " + pluginName + "!");
-		Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
 		return false;
     }
+	
+	private boolean setupIFH()
+	{
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+			log.severe("IFH is not set in the Plugin " + pluginName + "! Disable plugin!");
+			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
+	    	return false;
+	    }
+		ifhApi = new IFHApi(plugin);
+    	plugin.getServer().getServicesManager().register(
+        main.java.me.avankziar.ifh.spigot.economy.Economy.class,
+        ifhApi,
+        this,
+        ServicePriority.Normal);
+    	log.info(pluginName + " detected InterfaceHub >>> Economy.class is provided!");
+		return false;
+	}
 	
 	public boolean existHook(String externPluginName)
 	{
@@ -691,18 +688,5 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	{
 		int pluginId = 7665;
         new Metrics(this, pluginId);
-	}
-	
-	public LinkedHashMap<String, String> getWebTables()
-	{
-		LinkedHashMap<String, String> map = new LinkedHashMap<>();
-		map.put("playeraccount", getMysqlHandler().tableNameI);
-		//map.put("bankaccount", getMysqlHandler().tableNameII);
-		map.put("actionlog", getMysqlHandler().tableNameIII);
-		map.put("trendlog", getMysqlHandler().tableNameIV);
-		map.put("standingorder", getMysqlHandler().tableNameV);
-		map.put("loan", getMysqlHandler().tableNameVI);
-		map.put("loggersettingspreset", getMysqlHandler().tableNameVII);
-		return map;
 	}
 }

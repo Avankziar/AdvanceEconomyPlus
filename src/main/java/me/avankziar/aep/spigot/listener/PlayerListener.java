@@ -1,18 +1,15 @@
 package main.java.me.avankziar.aep.spigot.listener;
 
-import java.time.LocalDate;
-
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.economy.AccountHandler;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
+import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
 
 public class PlayerListener implements Listener
 {
@@ -26,25 +23,24 @@ public class PlayerListener implements Listener
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event)
 	{
-		AEPUser eco = AEPUserHandler.getEcoPlayer(event.getPlayer().getUniqueId());
-		if(eco == null)
+		AEPUser aepu = (AEPUser) plugin.getMysqlHandler().getData(
+				MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", event.getPlayer().getUniqueId().toString());
+		//ADDME die alten Accounts übertragen
+		if(aepu == null)
 		{
-			AdvancedEconomyPlus.getVault().createPlayerAccount(event.getPlayer());
+			aepu = new AEPUser(event.getPlayer().getUniqueId(), event.getPlayer().getName(), 0,
+					ConfigHandler.getDefaultMoneyFlowNotification(true),
+					ConfigHandler.getDefaultMoneyFlowNotification(false));
+			AccountHandler.createAllCurrencyAccounts(event.getPlayer());
 		} else
 		{
 			String newname = event.getPlayer().getName();
-			if(!newname.equals(eco.getName()))
+			if(!newname.equals(aepu.getName()))
 			{
-				eco.setName(newname);
-				plugin.getMysqlHandler().updateData(Type.PLAYER, eco, "`id` = ?", eco.getId());
+				aepu.setName(newname);
+				plugin.getMysqlHandler().updateData(Type.PLAYERDATA, aepu, "`player_uuid` = ?", aepu.getUUID().toString());
+				//ADDME alle Accounts updaten wo der Spieler als Eigentümer eingetragen ist.
 			}
-		}
-		eco = AEPUserHandler.getEcoPlayer(event.getPlayer().getUniqueId());
-		if(!plugin.getMysqlHandler().exist(Type.TREND,
-				"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(LocalDate.now()), event.getPlayer().getUniqueId().toString()))
-		{
-			Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-					LocalDate.now(), eco.getUUID(), 0, eco.getBalance()));
 		}
 	}
 }

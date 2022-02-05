@@ -16,11 +16,11 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogHandler;
 import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -59,7 +59,7 @@ public class LoanCommandExecutor implements CommandExecutor
 				if(!player.hasPermission(cc.getPermission()))
 				{
 					///Du hast dafür keine Rechte!
-					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getL().getString("NoPermission")));
+					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return false;
 				}
 				if(args.length == 1)
@@ -77,7 +77,7 @@ public class LoanCommandExecutor implements CommandExecutor
 			if(!player.hasPermission(cc.getPermission()))
 			{
 				///Du hast dafür keine Rechte!
-				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getL().getString("NoPermission")));
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return false;
 			}
 			baseCommands(player, 0, null);
@@ -118,7 +118,7 @@ public class LoanCommandExecutor implements CommandExecutor
 						} else
 						{
 							///Du hast dafür keine Rechte!
-							player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getL().getString("NoPermission")));
+							player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 							return false;
 						}
 					}/* else if(length > ac.maxArgsConstructor) 
@@ -136,7 +136,7 @@ public class LoanCommandExecutor implements CommandExecutor
 			}
 		}
 		///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
-		player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getL().getString("InputIsWrong"),
+		player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 				ClickEvent.Action.RUN_COMMAND, AdvancedEconomyPlus.infoCommand));
 		return false;
 	}
@@ -146,7 +146,7 @@ public class LoanCommandExecutor implements CommandExecutor
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		String playeruuid = player.getUniqueId().toString();
@@ -157,10 +157,10 @@ public class LoanCommandExecutor implements CommandExecutor
 				if(!player.hasPermission(Utility.PERM_BYPASS_LOAN_LIST))
 				{
 					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getL().getString("NoPermission")));
+							plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return;
 				}
-				AEPUser user = AEPUserHandler.getEcoPlayer(otherplayer);
+				OLD_AEPUser user = _AEPUserHandler_OLD.getEcoPlayer(otherplayer);
 				if(user != null)
 				{
 					playeruuid = user.getUUID();
@@ -169,9 +169,8 @@ public class LoanCommandExecutor implements CommandExecutor
 		}
 		int start = page*25;
 		int end = 24;
-		boolean desc = true;
 		ArrayList<LoanRepayment> list = ConvertHandler.convertListVI(
-				plugin.getMysqlHandler().getList(MysqlHandler.Type.LOAN, "`id`", desc, start, end,
+				plugin.getMysqlHandler().getList(MysqlHandler.Type.LOAN, "`id` DESC", start, end,
 						"`from_player` = ? OR `to_player` = ? OR `loanowner` = ?",
 						playeruuid, playeruuid, playeruuid));
 		int last = plugin.getMysqlHandler().countWhereID(MysqlHandler.Type.LOAN,
@@ -207,7 +206,7 @@ public class LoanCommandExecutor implements CommandExecutor
 				color = "&2";
 			}
 			bc.add(ChatApi.hoverEvent(color+dr.getId()+"&f:"+color+dr.getName()+"&f:",
-					HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getL().getString("CmdMoney.Loan.HoverInfo")
+					HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getLang().getString("CmdMoney.Loan.HoverInfo")
 					.replace("%id%", String.valueOf(dr.getId()))
 					.replace("%name%", dr.getName())
 					.replace("%from%", dr.getFrom())
@@ -225,16 +224,16 @@ public class LoanCommandExecutor implements CommandExecutor
 					.replace("%fi%", String.valueOf(dr.isFinished()))
 					));
 			bc.add(ChatApi.apiChat("&eⓘ", 
-					ClickEvent.Action.RUN_COMMAND, plugin.getYamlHandler().getL().getString("CmdMoney.Loan.InfoCmd")+" "+dr.getId(),
-					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
+					ClickEvent.Action.RUN_COMMAND, plugin.getYamlHandler().getLang().getString("CmdMoney.Loan.InfoCmd")+" "+dr.getId(),
+					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("GeneralHover")));
 			bc.add(ChatApi.apiChat("&a✔", 
-					ClickEvent.Action.SUGGEST_COMMAND, plugin.getYamlHandler().getL().getString("CmdMoney.Loan.ForgiveCmd")+" "+dr.getId(),
-					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
+					ClickEvent.Action.SUGGEST_COMMAND, plugin.getYamlHandler().getLang().getString("CmdMoney.Loan.ForgiveCmd")+" "+dr.getId(),
+					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("GeneralHover")));
 			bc.add(ChatApi.tctl(" &1| "));
 		}
 		TextComponent tx = ChatApi.tc("");
 		tx.setExtra(bc);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Loan.List.Headline")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdMoney.Loan.List.Headline")
 				.replace("%name%", player.getName())));
 		player.spigot().sendMessage(tx);
 		String cmdstring = plugin.getYamlHandler().getCom().getString(cc.getPath()+".CommandString");

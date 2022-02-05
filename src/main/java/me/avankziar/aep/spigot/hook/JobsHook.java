@@ -20,7 +20,7 @@ import com.gamingmesh.jobs.api.JobsPrePaymentEvent;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 
 public class JobsHook implements Listener
 {
@@ -100,17 +100,17 @@ public class JobsHook implements Listener
 				{
 					Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 							LocalDateTime.now(),
-							plugin.getYamlHandler().getL().getString("JobsRebornHook.UUID"),
+							plugin.getYamlHandler().getLang().getString("JobsRebornHook.UUID"),
 							playeruuid,
-							plugin.getYamlHandler().getL().getString("JobsRebornHook.Name"),
+							plugin.getYamlHandler().getLang().getString("JobsRebornHook.Name"),
 							playername,
-							plugin.getYamlHandler().getL().getString("JobsRebornHook.Orderer"),
+							plugin.getYamlHandler().getLang().getString("JobsRebornHook.Orderer"),
 							value,
 							ActionLoggerEvent.Type.GIVEN,
-							plugin.getYamlHandler().getL().getString("JobsRebornHook.Comment")
+							plugin.getYamlHandler().getLang().getString("JobsRebornHook.Comment")
 							.replace("%job%", job)));
 					Bukkit.getPluginManager().callEvent(
-							new TrendLoggerEvent(LocalDate.now(), playeruuid, value, AEPUserHandler.getEcoPlayer(op).getBalance()));
+							new TrendLoggerEvent(LocalDate.now(), playeruuid, value, _AEPUserHandler_OLD.getEcoPlayer(op).getBalance()));
 					playerlist.replace(playeruuid, 0.0);
 				}
 			}
@@ -133,17 +133,17 @@ public class JobsHook implements Listener
 					{
 						Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 								LocalDateTime.now(),
-								plugin.getYamlHandler().getL().getString("JobsRebornHook.UUID"),
+								plugin.getYamlHandler().getLang().getString("JobsRebornHook.UUID"),
 								playeruuid,
-								plugin.getYamlHandler().getL().getString("JobsRebornHook.Name"),
+								plugin.getYamlHandler().getLang().getString("JobsRebornHook.Name"),
 								playername,
-								plugin.getYamlHandler().getL().getString("JobsRebornHook.Orderer"),
+								plugin.getYamlHandler().getLang().getString("JobsRebornHook.Orderer"),
 								value,
 								ActionLoggerEvent.Type.GIVEN,
-								plugin.getYamlHandler().getL().getString("JobsRebornHook.Comment")
+								plugin.getYamlHandler().getLang().getString("JobsRebornHook.Comment")
 								.replace("%job%", job)));
 						Bukkit.getPluginManager().callEvent(
-								new TrendLoggerEvent(LocalDate.now(), playeruuid, value, AEPUserHandler.getEcoPlayer(op).getBalance()));
+								new TrendLoggerEvent(LocalDate.now(), playeruuid, value, _AEPUserHandler_OLD.getEcoPlayer(op).getBalance()));
 						playerlist.replace(playeruuid, 0.0);
 					}
 				}

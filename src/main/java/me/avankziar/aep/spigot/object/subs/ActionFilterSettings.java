@@ -1,38 +1,26 @@
 package main.java.me.avankziar.aep.spigot.object.subs;
 
 public class ActionFilterSettings
-{	
-	private String from;
-	private String to;
+{
 	private String orderer;
+	private String category;
 	private String comment;
 	
 	public ActionFilterSettings()
 	{
-		setFrom(null);
-		setTo(null);
+		setCategory(null);
 		setOrderer(null);
 		setComment(null);
 	}
 
-	public String getFrom()
+	public String getCategory()
 	{
-		return from;
+		return category;
 	}
 
-	public void setFrom(String from)
+	public void setCategory(String category)
 	{
-		this.from = from;
-	}
-
-	public String getTo()
-	{
-		return to;
-	}
-
-	public void setTo(String to)
-	{
-		this.to = to;
+		this.category = category;
 	}
 
 	public String getOrderer()

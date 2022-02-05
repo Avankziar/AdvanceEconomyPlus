@@ -32,7 +32,7 @@ public class ARGStandingOrder_Starttime extends ArgumentModule
 		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
+					plugin.getYamlHandler().getLang().getString("NoStandingOrder")));
 			return;
 		}
 		String st = args[1];
@@ -40,28 +40,28 @@ public class ARGStandingOrder_Starttime extends ArgumentModule
 		if(!PendingHandler.standingOrder.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdStandingOrder.NoPendingOrder")));
+					plugin.getYamlHandler().getLang().getString("CmdStandingOrder.NoPendingOrder")));
 			return;
 		}
 		StandingOrder so = PendingHandler.standingOrder.get(player.getUniqueId().toString());
 		if(so.getAmount() <= 0)
 		{
 			player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-					plugin.getYamlHandler().getL().getString("CmdStandingOrder.StartTime.Amount")
+					plugin.getYamlHandler().getLang().getString("CmdStandingOrder.StartTime.Amount")
 					.replace("%amountcmd%", AEPSettings.settings.getCommands(KeyHandler.SO_AMOUNT).replace(" ", "+"))));
 			return;
 		}
 		if(so.getRepeatingTime() <= 0)
 		{
 			player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-					plugin.getYamlHandler().getL().getString("CmdStandingOrder.StartTime.RepeatingTime")
+					plugin.getYamlHandler().getLang().getString("CmdStandingOrder.StartTime.RepeatingTime")
 					.replace("%repeatingtimecmd%", AEPSettings.settings.getCommands(KeyHandler.SO_REPEATINGTIME).replace(" ", "+"))));
 			return;
 		}
 		if(so.getRepeatingTime() < AEPSettings.settings.getStandingOrderSpamProtection()
 				&& so.getAmount() < AEPSettings.settings.getStandingOrderValueProtection())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.StartTime.SpamProtection")
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.StartTime.SpamProtection")
 					.replace("%amount%", String.valueOf(AEPSettings.settings.getStandingOrderValueProtection()))
 					.replace("%repeatingtime%", TimeHandler.getRepeatingTime(AEPSettings.settings.getStandingOrderSpamProtection()))));
 			return;
@@ -70,7 +70,7 @@ public class ARGStandingOrder_Starttime extends ArgumentModule
 		if(starttime == 0)
 		{
 			player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-					plugin.getYamlHandler().getL().getString("CmdStandingOrder.StartTime.WrongSyntax")));
+					plugin.getYamlHandler().getLang().getString("CmdStandingOrder.StartTime.WrongSyntax")));
 			return;
 		}
 		so.setStartTime(starttime);
@@ -78,7 +78,7 @@ public class ARGStandingOrder_Starttime extends ArgumentModule
 		so.setLastTime(lastTime);
 		PendingHandler.standingOrder.remove(player.getUniqueId().toString());
 		plugin.getMysqlHandler().create(Type.STANDINGORDER, so);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.StartTime.SetStartTime")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.StartTime.SetStartTime")
 				.replace("%starttime%", st)));
 		return;
 	}

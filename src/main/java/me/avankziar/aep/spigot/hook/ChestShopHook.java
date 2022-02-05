@@ -18,8 +18,8 @@ import com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 
 public class ChestShopHook implements Listener
 {
@@ -45,8 +45,8 @@ public class ChestShopHook implements Listener
 		String itemId = "";
         int itemQuantities = 0;
         Material itemType = null;
-        AEPUser owner = AEPUserHandler.getEcoPlayer(UUID.fromString(owneruuid));
-        AEPUser client = AEPUserHandler.getEcoPlayer(UUID.fromString(clientuuid));
+        OLD_AEPUser owner = _AEPUserHandler_OLD.getEcoPlayer(UUID.fromString(owneruuid));
+        OLD_AEPUser client = _AEPUserHandler_OLD.getEcoPlayer(UUID.fromString(clientuuid));
         Double balanceowner = 0.0; //TODO bank
         Double balanceclient = 0.0;
         
@@ -80,7 +80,7 @@ public class ChestShopHook implements Listener
 					clientuuid, 
 					amount, 
 					ActionLoggerEvent.Type.DEPOSIT_WITHDRAW,
-					plugin.getYamlHandler().getL().getString("ChestShopHook.Buy")
+					plugin.getYamlHandler().getLang().getString("ChestShopHook.Buy")
 					.replace("%amount%", String.valueOf(itemQuantities))
 					.replace("%item%", itemId)
 					.replace("%player%", clientname)));
@@ -89,7 +89,7 @@ public class ChestShopHook implements Listener
 					LocalDate.now(), 
 					owneruuid, 
 					amount, 
-					AEPUserHandler.getEcoPlayer(
+					_AEPUserHandler_OLD.getEcoPlayer(
 							UUID.fromString(owneruuid))
 					.getBalance()));
 			Bukkit.getPluginManager().callEvent(
@@ -97,7 +97,7 @@ public class ChestShopHook implements Listener
 					LocalDate.now(), 
 					clientuuid,
 					-amount,
-					AEPUserHandler.getEcoPlayer(
+					_AEPUserHandler_OLD.getEcoPlayer(
 							UUID.fromString(clientuuid))
 					.getBalance()));
 		} else 
@@ -112,7 +112,7 @@ public class ChestShopHook implements Listener
 					clientuuid, 
 					amount, 
 					ActionLoggerEvent.Type.DEPOSIT_WITHDRAW,
-					plugin.getYamlHandler().getL().getString("ChestShopHook.Sell")
+					plugin.getYamlHandler().getLang().getString("ChestShopHook.Sell")
 					.replace("%amount%", String.valueOf(itemQuantities))
 					.replace("%item%", itemId)
 					.replace("%player%", ownername)));

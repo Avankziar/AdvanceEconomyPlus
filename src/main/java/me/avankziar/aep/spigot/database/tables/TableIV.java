@@ -14,62 +14,12 @@ import java.util.Map;
 import org.json.simple.JSONValue;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger.Type;
 
 public interface TableIV
 {
-	
-	default boolean existIV(AdvancedEconomyPlus plugin, String whereColumn, Object... object) 
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameIV 
-						+ "` WHERE "+whereColumn+" LIMIT 1";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : object)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        
-		        
-		        result = preparedStatement.executeQuery();
-		        while (result.next()) 
-		        {
-		        	return true;
-		        }
-		    } catch (SQLException e) 
-			{
-				  AdvancedEconomyPlus.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return false;
-	}
-	
 	default boolean createIV(AdvancedEconomyPlus plugin, Object object) 
 	{
 		if(!(object instanceof TrendLogger))
@@ -82,14 +32,14 @@ public interface TableIV
 		if (conn != null) {
 			try 
 			{
-				String sql = "INSERT INTO `" + plugin.getMysqlHandler().tableNameIV 
-						+ "`(`dates`, `trend_type`, `uuidornumber`, `relative_amount_change`,"
+				String sql = "INSERT INTO `" + MysqlHandler.Type.TREND.getValue()
+						+ "`(`dates`, `trend_type`, `account_id`, `relative_amount_change`,"
 						+ " `firstvalue`, `lastvalue`) " 
 						+ "VALUES(?, ?, ?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
-		        preparedStatement.setString(1, ConvertHandler.serialised(tl.getDate()));
+		        preparedStatement.setLong(1, tl.getUnixTime());
 		        preparedStatement.setString(2, tl.getType().toString());
-		        preparedStatement.setString(3, tl.getUUIDOrNumber());
+		        preparedStatement.setInt(3, tl.getAccountID());
 		        preparedStatement.setDouble(4, tl.getRelativeAmountChange());
 		        preparedStatement.setDouble(5, tl.getFirstValue());
 		        preparedStatement.setDouble(6, tl.getLastValue());
@@ -134,14 +84,14 @@ public interface TableIV
 		{
 			try 
 			{
-				String data = "UPDATE `" + plugin.getMysqlHandler().tableNameIV
-						+ "` SET `dates` = ?, `trend_type` = ?, `uuidornumber` = ?, `relative_amount_change` = ?,"
+				String data = "UPDATE `" + MysqlHandler.Type.TREND.getValue()
+						+ "` SET `dates` = ?, `trend_type` = ?, `account_id` = ?, `relative_amount_change` = ?,"
 						+ " `firstvalue` = ?, `lastvalue` = ?" 
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
-				preparedStatement.setString(1, ConvertHandler.serialised(tl.getDate()));
+				preparedStatement.setLong(1, tl.getUnixTime());
 		        preparedStatement.setString(2, tl.getType().toString());
-		        preparedStatement.setString(3, tl.getUUIDOrNumber());
+		        preparedStatement.setInt(3, tl.getAccountID());
 		        preparedStatement.setDouble(4, tl.getRelativeAmountChange());
 		        preparedStatement.setDouble(5, tl.getFirstValue());
 		        preparedStatement.setDouble(6, tl.getLastValue());
@@ -181,7 +131,7 @@ public interface TableIV
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.TREND.getValue() 
 						+ "` WHERE "+whereColumn+" LIMIT 1";
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -194,9 +144,9 @@ public interface TableIV
 		        result = preparedStatement.executeQuery();
 		        while (result.next()) 
 		        {
-		        	return new TrendLogger(ConvertHandler.deserialisedDate(result.getString("dates")),
+		        	return new TrendLogger(result.getLong("dates"),
 		        			Type.valueOf(result.getString("trend_type")),
-		        			result.getString("uuidornumber"),
+		        			result.getInt("account_id"),
 		        			result.getDouble("relative_amount_change"),
 		        			result.getDouble("firstvalue"),
 		        			result.getDouble("lastvalue"));
@@ -225,134 +175,8 @@ public interface TableIV
 		return null;
 	}
 	
-	default boolean deleteDataIV(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		try 
-		{
-			String sql = "DELETE FROM `" + plugin.getMysqlHandler().tableNameIV + "` WHERE "+whereColumn;
-			preparedStatement = conn.prepareStatement(sql);
-			int i = 1;
-	        for(Object o : whereObject)
-	        {
-	        	preparedStatement.setObject(i, o);
-	        	i++;
-	        }
-			preparedStatement.execute();
-			return true;
-		} catch (Exception e) 
-		{
-			e.printStackTrace();
-		} finally 
-		{
-			try {
-				if (preparedStatement != null) 
-				{
-					preparedStatement.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
-	
-	default int lastIDIV(AdvancedEconomyPlus plugin)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameIV + "` ORDER BY `id` DESC LIMIT 1";
-		        preparedStatement = conn.prepareStatement(sql);
-		        
-		        result = preparedStatement.executeQuery();
-		        while(result.next())
-		        {
-		        	return result.getInt("id");
-		        }
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
-	default int countWhereIDIV(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameIV
-						+ "` WHERE "+whereColumn
-						+ " ORDER BY `id` DESC";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : whereObject)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        result = preparedStatement.executeQuery();
-		        int count = 0;
-		        while(result.next())
-		        {
-		        	count++;
-		        }
-		        return count;
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
 	default ArrayList<TrendLogger> getListIV(AdvancedEconomyPlus plugin, String orderByColumn,
-			boolean desc, int start, int end, String whereColumn, Object... whereObject)
+			int start, int end, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -361,16 +185,8 @@ public interface TableIV
 		{
 			try 
 			{
-				String sql = "";
-				if(desc)
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV 
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
-				} else
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV 
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC LIMIT "+start+", "+end;
-				}
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.TREND.getValue() 
+				+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -382,9 +198,9 @@ public interface TableIV
 		        ArrayList<TrendLogger> list = new ArrayList<TrendLogger>();
 		        while (result.next()) 
 		        {
-		        	TrendLogger tl = new TrendLogger(ConvertHandler.deserialisedDate(result.getString("dates")),
+		        	TrendLogger tl = new TrendLogger(result.getLong("dates"),
 		        			Type.valueOf(result.getString("trend_type")),
-		        			result.getString("uuidornumber"),
+		        			result.getInt("account_id"),
 		        			result.getDouble("relative_amount_change"),
 		        			result.getDouble("firstvalue"),
 		        			result.getDouble("lastvalue"));
@@ -424,7 +240,7 @@ public interface TableIV
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.TREND.getValue() 
 						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
@@ -432,9 +248,9 @@ public interface TableIV
 		        ArrayList<Object> list = new ArrayList<Object>();
 		        while (result.next()) 
 		        {
-		        	TrendLogger tl = new TrendLogger(ConvertHandler.deserialisedDate(result.getString("dates")),
+		        	TrendLogger tl = new TrendLogger(result.getLong("dates"),
 		        			Type.valueOf(result.getString("trend_type")),
-		        			result.getString("uuidornumber"),
+		        			result.getInt("account_id"),
 		        			result.getDouble("relative_amount_change"),
 		        			result.getDouble("firstvalue"),
 		        			result.getDouble("lastvalue"));
@@ -466,7 +282,7 @@ public interface TableIV
 	}
 	
 	default ArrayList<TrendLogger> getAllListAtIV(AdvancedEconomyPlus plugin, String orderByColumn,
-			boolean desc, String whereColumn, Object...whereObject) throws IOException
+			String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -475,16 +291,8 @@ public interface TableIV
 		{
 			try 
 			{
-				String sql = "";
-				if(desc)
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
-				} else
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
-				}
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.TREND.getValue()
+				+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -496,9 +304,9 @@ public interface TableIV
 		        ArrayList<TrendLogger> list = new ArrayList<TrendLogger>();
 		        while (result.next()) 
 		        {
-		        	TrendLogger tl = new TrendLogger(ConvertHandler.deserialisedDate(result.getString("dates")),
+		        	TrendLogger tl = new TrendLogger(result.getLong("dates"),
 		        			Type.valueOf(result.getString("trend_type")),
-		        			result.getString("uuidornumber"),
+		        			result.getInt("account_id"),
 		        			result.getDouble("relative_amount_change"),
 		        			result.getDouble("firstvalue"),
 		        			result.getDouble("lastvalue"));
@@ -531,7 +339,7 @@ public interface TableIV
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	default String getJSONOutputIV(AdvancedEconomyPlus plugin, String playerName, String orderByColumn,
-			boolean desc, String whereColumn, Object...whereObject) 
+			String whereColumn, Object...whereObject) 
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -540,16 +348,8 @@ public interface TableIV
 		{
 			try 
 			{
-				String sql = "";
-				if(desc)
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
-				} else
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIV
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
-				}
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.TREND.getValue()
+				+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
 				
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;

@@ -1,14 +1,16 @@
 package main.java.me.avankziar.aep.spigot.assistance;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.ne_w.EntityData;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 
 public class Utility
 {
@@ -70,25 +72,46 @@ public class Utility
 		return newd;
 	}
 	
-	public static String convertUUIDToName(String uuid) throws IOException
+	public static String convertUUIDToName(String uuid, EconomyEntity.EconomyType type)
 	{
-		String name = null;
-		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYER, "player_uuid = ?", uuid))
+		switch(type)
 		{
-			name = ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYER,
-					"player_uuid = ?", uuid)).getName();
-			return name;
+		case ENTITY:
+		case SERVER:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.ENTITYDATA, "`entity_uuid` = ? AND `entity_type` = ?", uuid, type.toString()))
+			{
+				return ((EntityData) plugin.getMysqlHandler().getData(MysqlHandler.Type.ENTITYDATA,
+						"`entity_uuid` = ? AND `entity_type` = ?", uuid, type.toString())).getName();
+			}
+			break;
+		case PLAYER:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", uuid))
+			{
+				return ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", uuid)).getName();
+			}
+			break;
 		}
 		return null;
 	}
 	
-	public static String convertNameToUUID(String playername)
+	public static UUID convertNameToUUID(String name, EconomyEntity.EconomyType type)
 	{
-		String uuid = "";
-		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYER, "`player_name` = ?", playername))
+		switch(type)
 		{
-			uuid = ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYER, "`player_name` = ?", playername)).getUUID();
-			return uuid;
+		case ENTITY:
+		case SERVER:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.ENTITYDATA, "`entity_name` = ? AND `entity_type` = ?", name, type.toString()))
+			{
+				return ((EntityData) plugin.getMysqlHandler().getData(MysqlHandler.Type.ENTITYDATA,
+						"`entity_name` = ? AND `entity_type` = ?", name, type.toString())).getUUID();
+			}
+			break;
+		case PLAYER:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", name))
+			{
+				return ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYER, "`player_name` = ?", name)).getUUID();
+			}
+			break;
 		}
 		return null;
 	}

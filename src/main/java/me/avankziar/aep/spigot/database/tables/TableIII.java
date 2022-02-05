@@ -11,66 +11,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.json.simple.JSONValue;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger.Type;
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 
 public interface TableIII
-{
-	
-	default boolean existIII(AdvancedEconomyPlus plugin, String whereColumn, Object... object) 
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameIII 
-						+ "` WHERE "+whereColumn+" LIMIT 1";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : object)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        
-		        result = preparedStatement.executeQuery();
-		        while (result.next()) 
-		        {
-		        	return true;
-		        }
-		    } catch (SQLException e) 
-			{
-				  AdvancedEconomyPlus.log.warning("Error: " + e.getMessage());
-				  e.printStackTrace();
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return false;
-	}
-	
+{	
 	default boolean createIII(AdvancedEconomyPlus plugin, Object object) 
 	{
 		if(!(object instanceof ActionLogger))
@@ -83,21 +36,26 @@ public interface TableIII
 		if (conn != null) {
 			try 
 			{
-				String sql = "INSERT INTO `" + plugin.getMysqlHandler().tableNameIII 
-						+ "`(`datetime`,"
-						+ " `from_uuidornumber`, `from_name`, `to_uuidornumber`, `to_name`,"
-						+ " `orderer_uuid`, `amount`, `eco_type`, `comment`) " 
-						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String sql = "INSERT INTO `" + MysqlHandler.Type.ACTION.getValue()
+						+ "`(`unixtime`,"
+						+ " `from_account_id`, `to_account_id`, `tax_account_id`,"
+						+ " `orderer_type`, `orderer_uuid`, `orderer_plugin`,"
+						+ " `amount_to_withdraw`, `amount_to_deposit`, `amount_to_tax`,"
+						+ " `category`, `comment`) " 
+						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
-		        preparedStatement.setString(1, ConvertHandler.serialised(el.getDateTime()));
-		        preparedStatement.setString(2, el.getFromUUIDOrNumber());
-		        preparedStatement.setString(3, el.getFromName());
-		        preparedStatement.setString(4, el.getToUUIDOrNumber());
-		        preparedStatement.setString(5, el.getToName());
-		        preparedStatement.setString(6, el.getOrdereruuid());
-		        preparedStatement.setDouble(7, el.getAmount());
-		        preparedStatement.setString(8, el.getType().toString());
-		        preparedStatement.setString(9, el.getComment());
+		        preparedStatement.setLong(1, el.getUnixTime());
+		        preparedStatement.setInt(2, el.getFromAccountID());
+		        preparedStatement.setInt(3, el.getToAccountID());
+		        preparedStatement.setInt(4, el.getTaxAccountID());
+		        preparedStatement.setString(5, el.getOrderType().toString());
+		        preparedStatement.setString(6, el.getOrdererUUID() != null ? el.getOrdererUUID().toString() : null);
+		        preparedStatement.setString(7, el.getOrdererPlugin() != null ? el.getOrdererPlugin() : null);
+		        preparedStatement.setDouble(8, el.getAmountToWithdraw());
+		        preparedStatement.setDouble(9, el.getAmountToDeposit());
+		        preparedStatement.setDouble(10, el.getAmountToTax());
+		        preparedStatement.setString(11, el.getCategory());
+		        preparedStatement.setString(12, el.getComment());
 		        
 		        preparedStatement.executeUpdate();
 		        return true;
@@ -139,22 +97,27 @@ public interface TableIII
 		{
 			try 
 			{
-				String data = "UPDATE `" + plugin.getMysqlHandler().tableNameIII
-						+ "` SET `datetime` = ?,"
-						+ " `from_uuidornumber` = ?, `from_name` = ?, `to_uuidornumber` = ?, `to_name` = ?," 
-						+ " `orderer_uuid` = ?, `amount` = ?, `eco_type` = ? , `comment` = ?" 
+				String data = "UPDATE `" + MysqlHandler.Type.ACTION.getValue()
+						+ "` SET `unixtime` = ?,"
+						+ " `from_account_id` = ?, `to_account_id` = ? = ?, `tax_account_id`, = ?"
+						+ " `orderer_type` = ?, `orderer_uuid` = ?, `orderer_plugin` = ?,"
+						+ " `amount_to_withdraw` = ?, `amount_to_deposit` = ?, `amount_to_tax`, = ?"
+						+ " `category` = ?, `comment` = ?"
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
-				preparedStatement.setString(1, ConvertHandler.serialised(el.getDateTime()));
-		        preparedStatement.setString(2, el.getFromUUIDOrNumber());
-		        preparedStatement.setString(3, el.getFromName());
-		        preparedStatement.setString(4, el.getToUUIDOrNumber());
-		        preparedStatement.setString(5, el.getToName());
-		        preparedStatement.setString(6, el.getOrdereruuid());
-		        preparedStatement.setDouble(7, el.getAmount());
-		        preparedStatement.setString(8, el.getType().toString());
-		        preparedStatement.setString(9, el.getComment());
-		        int i = 10;
+				preparedStatement.setLong(1, el.getUnixTime());
+		        preparedStatement.setInt(2, el.getFromAccountID());
+		        preparedStatement.setInt(3, el.getToAccountID());
+		        preparedStatement.setInt(4, el.getTaxAccountID());
+		        preparedStatement.setString(5, el.getOrderType().toString());
+		        preparedStatement.setString(6, el.getOrdererUUID() != null ? el.getOrdererUUID().toString() : null);
+		        preparedStatement.setString(7, el.getOrdererPlugin() != null ? el.getOrdererPlugin() : null);
+		        preparedStatement.setDouble(8, el.getAmountToWithdraw());
+		        preparedStatement.setDouble(9, el.getAmountToDeposit());
+		        preparedStatement.setDouble(10, el.getAmountToTax());
+		        preparedStatement.setString(11, el.getCategory());
+		        preparedStatement.setString(12, el.getComment());
+		        int i = 11;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -189,7 +152,7 @@ public interface TableIII
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.ACTION.getValue() 
 						+ "` WHERE "+whereColumn+" LIMIT 1";
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -204,11 +167,18 @@ public interface TableIII
 		        {
 		        	return new ActionLogger(
 		        			result.getInt("id"),
-		        			ConvertHandler.deserialised(result.getString("datetime")),
-		        			result.getString("from_uuidornumber"), result.getString("to_uuidornumber"),
-		        			result.getString("from_name"), result.getString("to_name"),
-		        			result.getString("orderer_uuid"), result.getDouble("amount"),
-		        			Type.valueOf(result.getString("eco_type")), result.getString("comment"));
+		        			result.getLong("unixtime"),
+		        			result.getInt("from_account_id"), 
+		        			result.getInt("to_account_id"),
+		        			result.getInt("fax_account_id"),
+		        			OrdererType.valueOf(result.getString("orderer_type")),
+		        			UUID.fromString(result.getString("orderer_uuid")),
+		        			result.getString("orderer_plugin"),
+		        			result.getDouble("amount_to_withdraw"),
+		        			result.getDouble("amount_to_deposit"),
+		        			result.getDouble("amount_to_tax"),
+		        			result.getString("category"),
+		        			result.getString("comment"));
 		        }
 		    } catch (SQLException e) 
 			{
@@ -234,133 +204,7 @@ public interface TableIII
 		return null;
 	}
 	
-	default boolean deleteDataIII(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		try 
-		{
-			String sql = "DELETE FROM `" + plugin.getMysqlHandler().tableNameIII + "` WHERE "+whereColumn;
-			preparedStatement = conn.prepareStatement(sql);
-			int i = 1;
-	        for(Object o : whereObject)
-	        {
-	        	preparedStatement.setObject(i, o);
-	        	i++;
-	        }
-			preparedStatement.execute();
-			return true;
-		} catch (Exception e) 
-		{
-			e.printStackTrace();
-		} finally 
-		{
-			try {
-				if (preparedStatement != null) 
-				{
-					preparedStatement.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
-	
-	default int lastIDIII(AdvancedEconomyPlus plugin)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameIII + "` ORDER BY `id` DESC LIMIT 1";
-		        preparedStatement = conn.prepareStatement(sql);
-		        
-		        result = preparedStatement.executeQuery();
-		        while(result.next())
-		        {
-		        	return result.getInt("id");
-		        }
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
-	default int countWhereIDIII(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
-	{
-		PreparedStatement preparedStatement = null;
-		ResultSet result = null;
-		Connection conn = plugin.getMysqlSetup().getConnection();
-		if (conn != null) 
-		{
-			try 
-			{			
-				String sql = "SELECT `id` FROM `" + plugin.getMysqlHandler().tableNameIII 
-						+ "` WHERE "+whereColumn
-						+ " ORDER BY `id` DESC";
-		        preparedStatement = conn.prepareStatement(sql);
-		        int i = 1;
-		        for(Object o : whereObject)
-		        {
-		        	preparedStatement.setObject(i, o);
-		        	i++;
-		        }
-		        result = preparedStatement.executeQuery();
-		        int count = 0;
-		        while(result.next())
-		        {
-		        	count++;
-		        }
-		        return count;
-		    } catch (SQLException e) 
-			{
-		    	e.printStackTrace();
-		    	return 0;
-		    } finally 
-			{
-		    	  try 
-		    	  {
-		    		  if (result != null) 
-		    		  {
-		    			  result.close();
-		    		  }
-		    		  if (preparedStatement != null) 
-		    		  {
-		    			  preparedStatement.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    	  }
-		      }
-		}
-		return 0;
-	}
-	
-	default ArrayList<ActionLogger> getListIII(AdvancedEconomyPlus plugin, String orderByColumn, boolean desc,
+	default ArrayList<ActionLogger> getListIII(AdvancedEconomyPlus plugin, String orderByColumn,
 			int start, int end, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
@@ -370,16 +214,8 @@ public interface TableIII
 		{
 			try 
 			{
-				String sql = "";
-				if(desc)
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII 
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
-				} else
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII 
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC LIMIT "+start+", "+end;
-				}
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.ACTION.getValue() 
+					+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -393,11 +229,18 @@ public interface TableIII
 		        {
 		        	ActionLogger el = new ActionLogger(
 		        			result.getInt("id"),
-		        			ConvertHandler.deserialised(result.getString("datetime")),
-		        			result.getString("from_uuidornumber"), result.getString("to_uuidornumber"),
-		        			result.getString("from_name"), result.getString("to_name"),
-		        			result.getString("orderer_uuid"), result.getDouble("amount"),
-		        			Type.valueOf(result.getString("eco_type")), result.getString("comment"));
+		        			result.getLong("unixtime"),
+		        			result.getInt("from_account_id"), 
+		        			result.getInt("to_account_id"),
+		        			result.getInt("fax_account_id"),
+		        			OrdererType.valueOf(result.getString("orderer_type")),
+		        			UUID.fromString(result.getString("orderer_uuid")),
+		        			result.getString("orderer_plugin"),
+		        			result.getDouble("amount_to_withdraw"),
+		        			result.getDouble("amount_to_deposit"),
+		        			result.getDouble("amount_to_tax"),
+		        			result.getString("category"),
+		        			result.getString("comment"));
 		        	list.add(el);
 		        }
 		        return list;
@@ -434,7 +277,7 @@ public interface TableIII
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.ACTION.getValue() 
 						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
@@ -444,11 +287,18 @@ public interface TableIII
 		        {
 		        	ActionLogger el = new ActionLogger(
 		        			result.getInt("id"),
-		        			ConvertHandler.deserialised(result.getString("datetime")),
-		        			result.getString("from_uuidornumber"), result.getString("to_uuidornumber"),
-		        			result.getString("from_name"), result.getString("to_name"),
-		        			result.getString("orderer_uuid"), result.getDouble("amount"),
-		        			Type.valueOf(result.getString("eco_type")), result.getString("comment"));
+		        			result.getLong("unixtime"),
+		        			result.getInt("from_account_id"), 
+		        			result.getInt("to_account_id"),
+		        			result.getInt("fax_account_id"),
+		        			OrdererType.valueOf(result.getString("orderer_type")),
+		        			UUID.fromString(result.getString("orderer_uuid")),
+		        			result.getString("orderer_plugin"),
+		        			result.getDouble("amount_to_withdraw"),
+		        			result.getDouble("amount_to_deposit"),
+		        			result.getDouble("amount_to_tax"),
+		        			result.getString("category"),
+		        			result.getString("comment"));
 		        	list.add(el);
 		        }
 		        return list;
@@ -477,7 +327,7 @@ public interface TableIII
 	}
 	
 	default ArrayList<ActionLogger> getAllListAtIII(AdvancedEconomyPlus plugin, String orderByColumn,
-			boolean desc, String whereColumn, Object...whereObject) throws IOException
+			String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -486,16 +336,8 @@ public interface TableIII
 		{
 			try 
 			{
-				String sql = "";
-				if(desc)
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
-				} else
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
-				}
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.ACTION.getValue()
+				+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
 				
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -510,11 +352,18 @@ public interface TableIII
 		        {
 		        	ActionLogger el = new ActionLogger(
 		        			result.getInt("id"),
-		        			ConvertHandler.deserialised(result.getString("datetime")),
-		        			result.getString("from_uuidornumber"), result.getString("to_uuidornumber"),
-		        			result.getString("from_name"), result.getString("to_name"),
-		        			result.getString("orderer_uuid"), result.getDouble("amount"),
-		        			Type.valueOf(result.getString("eco_type")), result.getString("comment"));
+		        			result.getLong("unixtime"),
+		        			result.getInt("from_account_id"), 
+		        			result.getInt("to_account_id"),
+		        			result.getInt("fax_account_id"),
+		        			OrdererType.valueOf(result.getString("orderer_type")),
+		        			UUID.fromString(result.getString("orderer_uuid")),
+		        			result.getString("orderer_plugin"),
+		        			result.getDouble("amount_to_withdraw"),
+		        			result.getDouble("amount_to_deposit"),
+		        			result.getDouble("amount_to_tax"),
+		        			result.getString("category"),
+		        			result.getString("comment"));
 		        	list.add(el);
 		        }
 		        return list;
@@ -542,8 +391,8 @@ public interface TableIII
 		return null;
 	}
 	
-	default ArrayList<ActionLogger> getAllListAtIIIDateTimeModified(AdvancedEconomyPlus plugin, String orderByColumn,
-			boolean desc, LocalDateTime start, LocalDateTime end, String whereColumn, Object...whereObject) throws IOException
+	default ArrayList<ActionLogger> getAllListAtIIIUnixtimeModified(AdvancedEconomyPlus plugin, String orderByColumn,
+			LocalDateTime start, LocalDateTime end, String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -552,19 +401,8 @@ public interface TableIII
 		{
 			try 
 			{
-				String sql = "";
-				if(desc)
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
-				} else
-				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
-					/*
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
-							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";*/
-				}
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.ACTION.getValue()
+				+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
 				
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -577,16 +415,23 @@ public interface TableIII
 		        ArrayList<ActionLogger> list = new ArrayList<ActionLogger>();
 		        while (result.next()) 
 		        {
-		        	LocalDateTime dt = ConvertHandler.deserialised(result.getString("datetime"));
+		        	LocalDateTime dt = TimeHandler.getLocalDateTime(result.getLong("unixtime"));
 		        	if(dt.isAfter(start) && dt.isBefore(end))
 		        	{
 		        		ActionLogger el = new ActionLogger(
 			        			result.getInt("id"),
-			        			dt,
-			        			result.getString("from_uuidornumber"), result.getString("to_uuidornumber"),
-			        			result.getString("from_name"), result.getString("to_name"),
-			        			result.getString("orderer_uuid"), result.getDouble("amount"),
-			        			Type.valueOf(result.getString("eco_type")), result.getString("comment"));
+			        			result.getLong("unixtime"),
+			        			result.getInt("from_account_id"), 
+			        			result.getInt("to_account_id"),
+			        			result.getInt("fax_account_id"),
+			        			OrdererType.valueOf(result.getString("orderer_type")),
+			        			UUID.fromString(result.getString("orderer_uuid")),
+			        			result.getString("orderer_plugin"),
+			        			result.getDouble("amount_to_withdraw"),
+			        			result.getDouble("amount_to_deposit"),
+			        			result.getDouble("amount_to_tax"),
+			        			result.getString("category"),
+			        			result.getString("comment"));
 			        	list.add(el);
 		        	}
 		        }
@@ -629,11 +474,11 @@ public interface TableIII
 				String sql = "";
 				if(desc)
 				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
+					sql = "SELECT * FROM `" + MysqlHandler.Type.ACTION.getValue()
 							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
 				} else
 				{
-					sql = "SELECT * FROM `" + plugin.getMysqlHandler().tableNameIII
+					sql = "SELECT * FROM `" + MysqlHandler.Type.ACTION.getValue()
 							+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" ASC";
 				}
 				

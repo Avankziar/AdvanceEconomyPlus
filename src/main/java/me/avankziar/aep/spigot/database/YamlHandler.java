@@ -30,6 +30,8 @@ public class YamlHandler
 	
 	private File loggersettings = null;
 	private YamlConfiguration ls = new YamlConfiguration();
+	
+	private LinkedHashMap<String, YamlConfiguration> cy = new LinkedHashMap<>();//Currency Uniquename
 
 	public YamlHandler(AdvancedEconomyPlus plugin) throws IOException 
 	{
@@ -47,7 +49,7 @@ public class YamlHandler
 		return com;
 	}
 	
-	public YamlConfiguration getL()
+	public YamlConfiguration getLang()
 	{
 		return lang;
 	}
@@ -55,6 +57,11 @@ public class YamlHandler
 	public YamlConfiguration getFilSet()
 	{
 		return ls;
+	}
+	
+	public YamlConfiguration getCurrency(String uniquename)
+	{
+		return cy.get(uniquename);
 	}
 	
 	public boolean loadYamlHandler() throws IOException
@@ -150,6 +157,11 @@ public class YamlHandler
 			return false;
 		}
 		
+		if(!mkdirCurrencies())
+		{
+			return false;
+		}
+		
 		if(!mkdirLoggerSettings())
 		{
 			return false;
@@ -185,6 +197,40 @@ public class YamlHandler
 		}
 		//Niederschreiben aller Werte in die Datei
 		writeFile(language, lang, plugin.getYamlManager().getLanguageKey());
+		return true;
+	}
+	
+	private boolean mkdirCurrencies() throws IOException
+	{
+		File directory = new File(plugin.getDataFolder()+"/Currencies/");
+		if(!directory.exists())
+		{
+			directory.mkdir();
+		}
+		for(String currency : plugin.getYamlHandler().getConfig().getStringList("LoadCurrency"))
+		{
+			File cur = new File(directory.getPath(), currency+".yml");
+			if(!cur.exists()) 
+			{
+				AdvancedEconomyPlus.log.info("Create %cur%.yml...".replace("%cur%", currency));
+				try(InputStream in = plugin.getResource("default.yml"))
+				{
+					//Erstellung einer "leere" config.yml
+					Files.copy(in, cur.toPath());
+				} catch (IOException e)
+				{
+					AdvancedEconomyPlus.log.info("Error by %cur%.yml! Check your Configs!".replace("%cur%", currency));
+					continue;
+				}
+			}
+			YamlConfiguration c = new YamlConfiguration();
+			if(!loadYamlTask(cur, c))
+			{
+				return false;
+			}
+			writeFile(cur, c, plugin.getYamlManager().getCurrencyKey(currency));
+			cy.put(currency, c);
+		}
 		return true;
 	}
 	

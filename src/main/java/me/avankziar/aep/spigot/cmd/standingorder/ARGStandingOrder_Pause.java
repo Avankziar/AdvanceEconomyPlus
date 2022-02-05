@@ -30,7 +30,7 @@ public class ARGStandingOrder_Pause extends ArgumentModule
 		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
+					plugin.getYamlHandler().getLang().getString("NoStandingOrder")));
 			return;
 		}
 		String ids = args[1];
@@ -38,27 +38,27 @@ public class ARGStandingOrder_Pause extends ArgumentModule
 		if(!MatchApi.isInteger(ids))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", ids)));
 			return;
 		}
 		id = Integer.parseInt(ids);
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.STANDINGORDER, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.OrderDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.OrderDontExist")));
 			return;
 		}
 		StandingOrder so = (StandingOrder) plugin.getMysqlHandler().getData(MysqlHandler.Type.STANDINGORDER, "`id` = ?", id);
 		if(!so.getFrom().equals(player.getUniqueId().toString()) && !player.hasPermission(Utility.PERM_BYPASS_STANDINGORDER_PAUSE))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.NotOrderer")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.NotOrderer")));
 			return;
 		}
 		if(so.isCancelled())
 		{
 			so.setCancelled(false);
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.STANDINGORDER, so, "`id` = ?", so.getId());
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.Pause.WasCancelled")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Pause.WasCancelled")));
 			return;
 		} else
 		{
@@ -66,13 +66,13 @@ public class ARGStandingOrder_Pause extends ArgumentModule
 			{
 				so.setPaused(false);
 				plugin.getMysqlHandler().updateData(MysqlHandler.Type.STANDINGORDER, so, "`id` = ?", so.getId());
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.Pause.IsUnpaused")));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Pause.IsUnpaused")));
 				return;
 			} else
 			{
 				so.setPaused(true);
 				plugin.getMysqlHandler().updateData(MysqlHandler.Type.STANDINGORDER, so, "`id` = ?", so.getId());
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.Pause.IsPaused")));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Pause.IsPaused")));
 				return;
 			}
 		}

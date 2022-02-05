@@ -1,7 +1,6 @@
 package main.java.me.avankziar.aep.spigot.api;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
@@ -20,40 +19,13 @@ public class LoggerApi
 	}
 	
 	/**
-	 * Add a mysql Entry in the 3. mysql table from the economy plugin.
-	 * @param  dateTime | The exact date and time
-	 * @param  fromUUIDOrNumber | The playeruuid or the bankaccountnumber from the money came. If the money came from a plugin, write here "<i>System</i>".
-	 * @param  fromName | The playername or bankaccountname from the money came. If the money came from a plugin, write here "<i>System</i>".
-	 * @param  toUUIDOrNumber | the playeruuid or bankaccountnumber where to the money go.
-	 * @param  toName | the playername or bankaccountname where to the money go.
-	 * @param  ordererUUID | the playeruuid whitch has the money flow order. If the money cam from a plugin, write here "<i>PluginName</i>".
-	 * @param  type | Which Type is the Logger
-	 * @param  comment | The comment regarging the money flow.
-	 *         The objects that replace the "?" from the whereColumn String
-	 * @return void
-	 * @author Christoph Steins/Avankziar
-	 * @see ActionLogger
-	 */
-	public static void addEconomyLogger(LocalDateTime dateTime,
-			String fromUUIDOrNumber, String toUUIDOrNumber, String fromName, String toName, String ordererUUID,
-			double amount, ActionLogger.Type type, String comment)
-	{
-		ActionLogger economylogger = new ActionLogger(0, dateTime, fromUUIDOrNumber, toUUIDOrNumber, fromName, toName,
-				ordererUUID, amount, type, comment);
-		if(economylogger != null)
-		{
-			plugin.getMysqlHandler().create(Type.ACTION, economylogger);
-		}
-	}
-	
-	/**
 	 * Add a mysql Entry in the 4. mysql table from the economy plugin.
 	 * @param  economylogger | A object which contains a the EconomyLogger.class, which contains all needed informations.
 	 * @return void
 	 * @author Christoph Steins/Avankziar
 	 * @see ActionLogger
 	 */
-	public static void addEconomyLogger(ActionLogger economylogger)
+	public static void addActionLogger(ActionLogger economylogger)
 	{
 		if(economylogger != null)
 		{
@@ -69,7 +41,7 @@ public class LoggerApi
 	 * @author Christoph Steins/Avankziar
 	 * @see ActionLogger
 	 */
-	public static ActionLogger getEconomyLogger(String whereColumn, Object... whereObjects)
+	public static ActionLogger getActionLogger(String whereColumn, Object... whereObjects)
 	{
 		if(plugin.getMysqlHandler().exist(Type.ACTION, whereColumn, whereObjects))
 		{
@@ -89,7 +61,7 @@ public class LoggerApi
 	 * @author Christoph Steins/Avankziar
 	 * @see ActionLogger
 	 */
-	public static ArrayList<ActionLogger> getEconomyLoggerList(String orderByColumn,
+	public static ArrayList<ActionLogger> getActionLoggerList(String orderByColumn,
 			int start, int end, String whereColumn, Object... whereObjects)
 	{
 		return ConvertHandler.convertListIII(
@@ -98,23 +70,23 @@ public class LoggerApi
 	
 	/**
 	 * Create or update a TrendLogger in the 4. mysql table.
-	 * @param  date | The exact local date.
-	 * @param  UUIDOrNumber | The playeruuid or bankaccountnumber wich is involved.
-	 * @param  relativeAmountChange | The relative money change.
+	 * @param date
+	 * @param accountID | the accountID which is involved.
+	 * @param relativeAmountChange  | The relative money change.
+	 * @param balance
 	 * @return void
 	 * @author Christoph Steins/Avankziar
 	 * @see TrendLogger
 	 */
-	public static void addTrendLogger(LocalDate date, String UUIDOrNumber, double relativeAmountChange,
-			double balance)
+	public static void addTrendLogger(LocalDate date, int accountID, double relativeAmountChange, double balance)
 	{
 		TrendLogger.Type newtype = TrendLogger.Type.STABIL;
-		TrendLogger trendLogger = new TrendLogger(date, newtype, UUIDOrNumber, relativeAmountChange, balance, balance);
+		TrendLogger trendLogger = new TrendLogger(date, newtype, accountID, relativeAmountChange, balance, balance);
 		if(plugin.getMysqlHandler().exist(Type.TREND,
-				"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(date), UUIDOrNumber))
+				"`dates` = ? AND `account_id` = ?", ConvertHandler.serialised(date), accountID))
 		{
 			TrendLogger oldtrendLogger = (TrendLogger) plugin.getMysqlHandler().getData(Type.TREND,
-					"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(date), UUIDOrNumber);
+					"`dates` = ? AND `account_id` = ?", ConvertHandler.serialised(date), accountID);
 			double newrelative = trendLogger.getRelativeAmountChange()+oldtrendLogger.getRelativeAmountChange();
 			if(MatchApi.isPositivNumber(newrelative) 
 					&& newrelative > plugin.getYamlHandler().getConfig().getDouble("TrendLogger.ValueIsStabil"))
@@ -125,13 +97,13 @@ public class LoggerApi
 			{
 				newtype = TrendLogger.Type.DOWN;
 			}
-			TrendLogger newtl = new TrendLogger(date, newtype, UUIDOrNumber, newrelative,
+			TrendLogger newtl = new TrendLogger(date, newtype, accountID, newrelative,
 					oldtrendLogger.getFirstValue(), trendLogger.getLastValue());
 			plugin.getMysqlHandler().updateData(Type.TREND, newtl, 
-					"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(date), UUIDOrNumber);
+					"`dates` = ? AND `account_id` = ?", ConvertHandler.serialised(date), accountID);
 		} else
 		{
-			trendLogger = new TrendLogger(date, newtype, UUIDOrNumber, relativeAmountChange, balance-relativeAmountChange, balance);
+			trendLogger = new TrendLogger(date, newtype, accountID, relativeAmountChange, balance-relativeAmountChange, balance);
 			plugin.getMysqlHandler().create(Type.TREND, trendLogger);
 		}
 	}
@@ -147,12 +119,12 @@ public class LoggerApi
 	{
 		TrendLogger.Type newtype = TrendLogger.Type.STABIL;
 		if(plugin.getMysqlHandler().exist(Type.TREND,
-				"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(trendLogger.getDate()),
-				trendLogger.getUUIDOrNumber()))
+				"`dates` = ? AND `account_id` = ?", trendLogger.getUnixTime(),
+				trendLogger.getAccountID()))
 		{
 			TrendLogger oldtrendLogger = (TrendLogger) plugin.getMysqlHandler().getData(Type.TREND,
-					"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(trendLogger.getDate()),
-					trendLogger.getUUIDOrNumber());
+					"`dates` = ? AND `account_id` = ?", trendLogger.getUnixTime(),
+					trendLogger.getAccountID());
 			double newrelative = trendLogger.getRelativeAmountChange()+oldtrendLogger.getRelativeAmountChange();
 			if(MatchApi.isPositivNumber(newrelative) 
 					&& newrelative > plugin.getYamlHandler().getConfig().getDouble("TrendLogger.ValueIsStabil"))
@@ -163,11 +135,11 @@ public class LoggerApi
 			{
 				newtype = TrendLogger.Type.DOWN;
 			}
-			TrendLogger newtl = new TrendLogger(trendLogger.getDate(), newtype, trendLogger.getUUIDOrNumber(), newrelative,
+			TrendLogger newtl = new TrendLogger(trendLogger.getUnixTime(), newtype, trendLogger.getAccountID(), newrelative,
 					oldtrendLogger.getFirstValue(), trendLogger.getLastValue());
 			plugin.getMysqlHandler().updateData(Type.TREND, newtl, 
-					"`dates` = ? AND `uuidornumber` = ?", ConvertHandler.serialised(trendLogger.getDate()),
-					trendLogger.getUUIDOrNumber());
+					"`dates` = ? AND `account_id` = ?", trendLogger.getUnixTime(),
+					trendLogger.getAccountID());
 		} else
 		{
 			plugin.getMysqlHandler().create(Type.TREND, trendLogger);

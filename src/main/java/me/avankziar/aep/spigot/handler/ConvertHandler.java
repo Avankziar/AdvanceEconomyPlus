@@ -5,39 +5,25 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import main.java.me.avankziar.aep.spigot.object.BankAccount;
-import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
+import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
+import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
+import main.java.me.avankziar.aep.spigot.object.ne_w.DefaultAccount;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 
 public class ConvertHandler
 {
-	public static ArrayList<AEPUser> convertListI(ArrayList<?> list)
+	public static ArrayList<OLD_AEPUser> convertListIOLD(ArrayList<?> list)
 	{
-		ArrayList<AEPUser> el = new ArrayList<>();
+		ArrayList<OLD_AEPUser> el = new ArrayList<>();
 		for(Object o : list)
 		{
-			if(o instanceof AEPUser)
+			if(o instanceof OLD_AEPUser)
 			{
-				el.add((AEPUser) o);
-			} else
-			{
-				return null;
-			}
-		}
-		return el;
-	}
-	
-	public static ArrayList<BankAccount> convertListII(ArrayList<?> list)
-	{
-		ArrayList<BankAccount> el = new ArrayList<>();
-		for(Object o : list)
-		{
-			if(o instanceof BankAccount)
-			{
-				el.add((BankAccount) o);
+				el.add((OLD_AEPUser) o);
 			} else
 			{
 				return null;
@@ -102,6 +88,54 @@ public class ConvertHandler
 			if(o instanceof LoanRepayment)
 			{
 				el.add((LoanRepayment) o);
+			} else
+			{
+				return null;
+			}
+		}
+		return el;
+	}
+	
+	public static ArrayList<Account> convertListII(ArrayList<?> list)
+	{
+		ArrayList<Account> el = new ArrayList<>();
+		for(Object o : list)
+		{
+			if(o instanceof Account)
+			{
+				el.add((Account) o);
+			} else
+			{
+				return null;
+			}
+		}
+		return el;
+	}
+	
+	public static ArrayList<DefaultAccount> convertListVIII(ArrayList<?> list)
+	{
+		ArrayList<DefaultAccount> el = new ArrayList<>();
+		for(Object o : list)
+		{
+			if(o instanceof DefaultAccount)
+			{
+				el.add((DefaultAccount) o);
+			} else
+			{
+				return null;
+			}
+		}
+		return el;
+	}
+	
+	public static ArrayList<AccountManagement> convertListIX(ArrayList<?> list)
+	{
+		ArrayList<AccountManagement> el = new ArrayList<>();
+		for(Object o : list)
+		{
+			if(o instanceof AccountManagement)
+			{
+				el.add((AccountManagement) o);
 			} else
 			{
 				return null;

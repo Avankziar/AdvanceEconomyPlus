@@ -40,7 +40,7 @@ public class ARGStandingOrder_List extends ArgumentModule
 		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
+					plugin.getYamlHandler().getLang().getString("NoStandingOrder")));
 			return;
 		}
 		int page = 0;
@@ -68,15 +68,15 @@ public class ARGStandingOrder_List extends ArgumentModule
 			bc.add(ChatApi.tctl("&3"+so.getId()+"&f:&6"+so.getName()+"&f:"));
 			bc.add(ChatApi.apiChat("&eⓘ", 
 					ClickEvent.Action.RUN_COMMAND, AEPSettings.settings.getCommands(KeyHandler.SO_INFO)+" "+so.getId(),
-					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
+					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("GeneralHover")));
 			bc.add(ChatApi.apiChat("&4✖", 
 					ClickEvent.Action.SUGGEST_COMMAND, AEPSettings.settings.getCommands(KeyHandler.SO_DELETE)+" "+so.getId(),
-					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getL().getString("GeneralHover")));
+					HoverEvent.Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("GeneralHover")));
 			bc.add(ChatApi.tctl(" &1| "));
 		}
 		TextComponent tx = ChatApi.tc("");
 		tx.setExtra(bc);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdStandingOrder.List.Headline")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdStandingOrder.List.Headline")
 				.replace("%player%", player.getName())));
 		player.spigot().sendMessage(tx);
 		String cmdstring = plugin.getYamlHandler().getCom().getString(ac.getPath()+".CommandString");

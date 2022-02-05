@@ -11,7 +11,6 @@ import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 public class AEPSettings
 {
 	private ArrayList<String> reservedNames;
-	private BankAccountHandler.Type numberType;
 	private boolean bungee;
 	private boolean mysql;
 	private boolean debug;

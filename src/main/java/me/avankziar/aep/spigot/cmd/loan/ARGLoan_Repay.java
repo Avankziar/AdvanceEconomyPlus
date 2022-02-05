@@ -34,7 +34,7 @@ public class ARGLoan_Repay extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		String ids = args[1];
@@ -49,7 +49,7 @@ public class ARGLoan_Repay extends ArgumentModule
 		if(!MatchApi.isInteger(ids))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", ids)));
 			return;
 		}
@@ -57,40 +57,40 @@ public class ARGLoan_Repay extends ArgumentModule
 		if(!MatchApi.isDouble(amounts))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", amounts)));
 			return;
 		}
 		amount = Double.parseDouble(amounts);
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanDontExist")));
 			return;
 		}
 		LoanRepayment dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
 		if(dr.isFinished())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanAlreadyPaidOff")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyPaidOff")));
 			return;
 		}
 		if(dr.isForgiven())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.LoanAlreadyForgiven")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyForgiven")));
 			return;
 		}
 		if(!dr.getFrom().equals(player.getUniqueId().toString()))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Repay.IsNotYourLoan")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Repay.IsNotYourLoan")));
 		}
-		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm")))
+		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getLang().getString("CmdLoan.ConfirmTerm")))
 		{
 			
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdLoan.Accept.PleaseConfirm")
+					plugin.getYamlHandler().getLang().getString("CmdLoan.Accept.PleaseConfirm")
 					.replace("%repaycmd%", AEPSettings.settings.getCommands(KeyHandler.L_REPAY)+" %id% %amount% "
 							.replace("%id%", ids)
 							.replace("%amount%", amounts)
-							+" "+plugin.getYamlHandler().getL().getString("CmdLoan.ConfirmTerm"))));
+							+" "+plugin.getYamlHandler().getLang().getString("CmdLoan.ConfirmTerm"))));
 			return;
 		}
 		double dif = dr.getTotalAmount()-dr.getAmountPaidSoFar();
@@ -101,7 +101,7 @@ public class ARGLoan_Repay extends ArgumentModule
 			dr.setFinished(true);
 			recieved = dif;
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Repay.RepayMoreThanNeeded")
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Repay.RepayMoreThanNeeded")
 					.replace("%name%", dr.getName())
 					.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 					.replace("%amount%", amounts)
@@ -111,12 +111,12 @@ public class ARGLoan_Repay extends ArgumentModule
 			dr.addPayment(amount);
 			recieved = amount;
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Repay.RepayedAmount")
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Repay.RepayedAmount")
 					.replace("%name%", dr.getName())
 					.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 					.replace("%amount%", amounts)));
 		}
-		String message = plugin.getYamlHandler().getL().getString("CmdLoan.Repay.RepayRecieved")
+		String message = plugin.getYamlHandler().getLang().getString("CmdLoan.Repay.RepayRecieved")
 				.replace("%name%", dr.getName())
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%amount%", String.valueOf(AdvancedEconomyPlus.getVault().format(recieved)));

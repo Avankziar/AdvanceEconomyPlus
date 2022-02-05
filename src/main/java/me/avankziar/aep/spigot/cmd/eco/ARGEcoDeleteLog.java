@@ -30,7 +30,7 @@ public class ARGEcoDeleteLog extends ArgumentModule
 		if(!MatchApi.isInteger(idstring))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", idstring)));
 			return;
 		}
@@ -38,11 +38,11 @@ public class ARGEcoDeleteLog extends ArgumentModule
 		ActionLogger el = (ActionLogger) plugin.getMysqlHandler().getData(MysqlHandler.Type.ACTION, "`id` = ?",id);
 		if(el == null)
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.DeleteLog.LogNotExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdEco.DeleteLog.LogNotExist")));
 			return;
 		}
 		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.ACTION, "`id` = ?", id);
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.DeleteLog.LogWasDeleted")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdEco.DeleteLog.LogWasDeleted")
 				.replace("%id%", idstring)));
 		return;
 	}

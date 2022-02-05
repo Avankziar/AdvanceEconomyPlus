@@ -2,6 +2,7 @@ package main.java.me.avankziar.aep.spigot.assistance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Function;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -75,7 +76,7 @@ public class ChatApiSmall
 							String hoveraction = function[1];
 							String hoverstringpath = function[2];
 							String hoverstring = ChatApi.tl(
-									AdvancedEconomyPlus.getPlugin().getYamlHandler().getL().getString(hoverstringpath));
+									AdvancedEconomyPlus.getPlugin().getYamlHandler().getLang().getString(hoverstringpath));
 							ChatApi.hoverEvent(tc, HoverEvent.Action.valueOf(hoveraction),
 									hoverstring);
 						}
@@ -157,7 +158,7 @@ public class ChatApiSmall
 							String hoveraction = function[1];
 							String hoverstringpath = function[2];
 							String hoverstring = replaceHoverReplacer(ChatApi.tl(
-									AdvancedEconomyPlus.getPlugin().getYamlHandler().getL().getString(hoverstringpath)), hoverReplacer);
+									AdvancedEconomyPlus.getPlugin().getYamlHandler().getLang().getString(hoverstringpath)), hoverReplacer);
 							ChatApi.hoverEvent(tc, HoverEvent.Action.valueOf(hoveraction),
 									hoverstring);
 						}
@@ -178,6 +179,86 @@ public class ChatApiSmall
 		}
 		textcomponent.setExtra(list);
 		return textcomponent;
+	}
+	
+	public static ArrayList<BaseComponent> generateTextComponentII(String message, HashMap<String,String> hoverReplacer)
+	{
+		String[] array = message.split(" ");
+		YamlConfiguration cfg = AdvancedEconomyPlus.getPlugin().getYamlHandler().getConfig();
+		String idclick = cfg.getString("Identifier.Click");
+		String idhover = cfg.getString("Identifier.Hover");
+		String sepb = cfg.getString("Seperator.BetweenFunction");
+		String sepw = cfg.getString("Seperator.WhithinFuction");
+		String sepspace = cfg.getString("Seperator.Space");
+		ArrayList<BaseComponent> list = new ArrayList<BaseComponent>();
+		String lastColor = null;
+		for(int i = 0; i < array.length; i++)
+		{
+			String word = array[i];
+			lastColor = getLastColor(lastColor, word);
+			//Word enthält Funktion
+			if(word.contains(idclick) || word.contains(idhover))
+			{
+				if(word.contains(sepb))
+				{
+					String[] functionarray = word.split(sepb);
+					String originmessage = null;
+					if(i+1 == array.length)
+					{
+						//Letzter Value
+						originmessage = functionarray[0].replace(sepspace, " ");
+					} else
+					{
+						originmessage = functionarray[0].replace(sepspace, " ")+" ";
+					}
+					//Eine Funktion muss mehr als einen wert haben
+					if(functionarray.length<2)
+					{
+						continue;
+					}
+					TextComponent tc = ChatApi.tctl(lastColor+originmessage);
+					for(String f : functionarray)
+					{
+						if(f.contains(idclick))
+						{
+							String[] function = f.split(sepw);
+							if(function.length!=3)
+							{
+								continue;
+							}
+							String clickaction = function[1];
+							String clickstring = function[2].replace(sepspace, " ");
+							ChatApi.clickEvent(tc, ClickEvent.Action.valueOf(clickaction), clickstring);
+						} else if(f.contains(idhover))
+						{
+							String[] function = f.split(sepw);
+							if(function.length!=3)
+							{
+								continue;
+							}
+							String hoveraction = function[1];
+							String hoverstringpath = function[2];
+							String hoverstring = replaceHoverReplacer(ChatApi.tl(
+									AdvancedEconomyPlus.getPlugin().getYamlHandler().getLang().getString(hoverstringpath)), hoverReplacer);
+							ChatApi.hoverEvent(tc, HoverEvent.Action.valueOf(hoveraction),
+									hoverstring);
+						}
+					}
+					list.add(tc);
+				}
+			} else
+			{
+				//Beinhalten keine Funktion
+				if(i+1 == array.length)
+				{
+					list.add(ChatApi.tctl(lastColor+word));
+				} else
+				{
+					list.add(ChatApi.tctl(lastColor+word+" "));
+				}
+			}
+		}
+		return list;
 	}
 	
 	private static String getLastColor(String lastColor, String s)

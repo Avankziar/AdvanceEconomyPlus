@@ -18,9 +18,9 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -54,7 +54,7 @@ public class ARGMoneyGiveConsole extends ArgumentModule
 		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			sender.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
+					plugin.getYamlHandler().getLang().getString("NoPlayerAccount")));
 			return;
 		}
 		if(MatchApi.isDouble(amountstring))
@@ -63,14 +63,14 @@ public class ARGMoneyGiveConsole extends ArgumentModule
 		} else
 		{
 			sender.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", amountstring)));
 			return;
 		}
 		if(!MatchApi.isPositivNumber(amount))
 		{
 			sender.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
+					plugin.getYamlHandler().getLang().getString("NumberIsNegativ")
 					.replace("%args%", amountstring)));
 			return;
 		}
@@ -98,12 +98,12 @@ public class ARGMoneyGiveConsole extends ArgumentModule
 				
 			}
 		}
-		AEPUser toplayer = AEPUserHandler.getEcoPlayer(toplayername);
+		OLD_AEPUser toplayer = _AEPUserHandler_OLD.getEcoPlayer(toplayername);
 		if(toplayer == null)
 		{
 			//Der Spieler existiert nicht!
 			sender.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
+					plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 			return;
 		}
 		EconomyResponse deposit = AdvancedEconomyPlus.getVault().depositPlayer(toplayer.getName(), amount);
@@ -112,24 +112,24 @@ public class ARGMoneyGiveConsole extends ArgumentModule
 			sender.sendMessage(ChatApi.tl(deposit.errorMessage));
 			return;
 		}
-		toplayer = AEPUserHandler.getEcoPlayer(toplayername);
+		toplayer = _AEPUserHandler_OLD.getEcoPlayer(toplayername);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(), customTo, toplayer.getUUID(), customTo, toplayer.getName(), 
 				customOrderer,
 				amount, ActionLoggerEvent.Type.GIVEN, comment));
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), toplayer.getUUID(), amount, toplayer.getBalance()));
 		List<BaseComponent> list = new ArrayList<>();
-		TextComponent message = ChatApi.apiChat(plugin.getYamlHandler().getL().getString("CmdMoney.Give.DepositWithDraw")
+		TextComponent message = ChatApi.apiChat(plugin.getYamlHandler().getLang().getString("CmdMoney.Give.DepositWithDraw")
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
 				.replace("%name1%", customTo)
 				.replace("%name2%", toplayer.getName()), null, "", 
 				HoverEvent.Action.SHOW_TEXT, 
-				plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerOrdererNote")
+				plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerOrdererNote")
 				.replace("%orderer%", customOrderer)
 				.replace("%comment%", comment));
 		list.add(message);
-		String messageII = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Give.DepositWithDrawBalance")
+		String messageII = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdMoney.Give.DepositWithDrawBalance")
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%name%", toplayer.getName())
 				.replace("%balance%", AdvancedEconomyPlus.getVault().format(toplayer.getBalance())));

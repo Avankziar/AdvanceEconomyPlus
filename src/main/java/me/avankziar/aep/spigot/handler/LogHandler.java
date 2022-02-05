@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
@@ -15,11 +14,15 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.ChatApiSmall;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
+import main.java.me.avankziar.aep.spigot.cmd.cst.sub.CommandSuggest;
+import main.java.me.avankziar.aep.spigot.cmd.cst.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler.Methode;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -28,8 +31,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class LogHandler
 {
-	public static void pastNextPage(AdvancedEconomyPlus plugin, Player player, String path, String playername,
-			int page, boolean lastpage, String cmdstring)
+	public static void pastNextPage(AdvancedEconomyPlus plugin, Player player, ArrayList<ArrayList<BaseComponent>> msg,
+			int page, boolean lastpage, String cmdstring, String playervalue, String accountName)
 	{
 		if(page==0 && lastpage)
 		{
@@ -37,29 +40,38 @@ public class LogHandler
 		}
 		int i = page+1;
 		int j = page-1;
-		TextComponent MSG = ChatApi.tctl("");
-		List<BaseComponent> pages = new ArrayList<BaseComponent>();
+		ArrayList<BaseComponent> pages = new ArrayList<BaseComponent>();
 		if(page!=0)
 		{
 			TextComponent msg2 = ChatApi.tctl(
-					plugin.getYamlHandler().getL().getString(path+"Log.Past"));
-			String cmd = cmdstring+String.valueOf(j);
-			if(playername != null)
+					plugin.getYamlHandler().getLang().getString("Log.Past"));
+			String cmd = cmdstring.trim();
+			if(playervalue != null)
 			{
-				cmd += " "+playername;
+				cmd += " "+playervalue;
 			}
+			if(accountName != null)
+			{
+				cmd += " "+accountName;
+			}
+			cmd += " "+String.valueOf(j);
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
 			pages.add(msg2);
 		}
 		if(!lastpage)
 		{
 			TextComponent msg1 = ChatApi.tctl(
-					plugin.getYamlHandler().getL().getString(path+"Log.Next"));
-			String cmd = cmdstring+String.valueOf(i);
-			if(playername != null)
+					plugin.getYamlHandler().getLang().getString("Log.Next"));
+			String cmd = cmdstring.trim();
+			if(playervalue != null)
 			{
-				cmd += " "+playername;
+				cmd += " "+playervalue;
 			}
+			if(accountName != null)
+			{
+				cmd += " "+accountName;
+			}
+			cmd += " "+String.valueOf(i);
 			msg1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
 			if(pages.size()==1)
 			{
@@ -67,11 +79,16 @@ public class LogHandler
 			}
 			pages.add(msg1);
 		}
-		MSG.setExtra(pages);	
-		player.spigot().sendMessage(MSG);
+		msg.add(pages);
+		for(List<BaseComponent> m : msg)
+		{
+			TextComponent n = ChatApi.tctl("");
+			n.setExtra(m);
+			player.spigot().sendMessage(n);
+		}
 	}
 	
-	public static void pastNextPageFirstNameThanNumber(AdvancedEconomyPlus plugin, Player player, String path, String playername,
+	public static void pastNextPageLoggerSettings(AdvancedEconomyPlus plugin, Player player, ArrayList<ArrayList<BaseComponent>> msg,
 			int page, boolean lastpage, String cmdstring, String methode)
 	{
 		if(page==0 && lastpage)
@@ -80,31 +97,20 @@ public class LogHandler
 		}
 		int i = page+1;
 		int j = page-1;
-		TextComponent MSG = ChatApi.tctl("");
-		List<BaseComponent> pages = new ArrayList<BaseComponent>();
+		ArrayList<BaseComponent> pages = new ArrayList<BaseComponent>();
 		if(page!=0)
 		{
 			TextComponent msg2 = ChatApi.tctl(
-					plugin.getYamlHandler().getL().getString(path+"Log.Past"));
-			String cmd = cmdstring;
-			if(playername != null)
-			{
-				cmd += playername;
-			}
-			cmd += " "+String.valueOf(j)+" "+methode;
+					plugin.getYamlHandler().getLang().getString("Log.Past"));
+			String cmd = cmdstring+String.valueOf(j)+" "+methode;
 			msg2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
 			pages.add(msg2);
 		}
 		if(!lastpage)
 		{
 			TextComponent msg1 = ChatApi.tctl(
-					plugin.getYamlHandler().getL().getString(path+"Log.Next"));
-			String cmd = cmdstring;
-			if(playername != null)
-			{
-				cmd += playername;
-			}
-			cmd += " "+String.valueOf(i)+" "+methode;
+					plugin.getYamlHandler().getLang().getString("Log.Next"));
+			String cmd = cmdstring+String.valueOf(i)+" "+methode;
 			msg1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
 			if(pages.size()==1)
 			{
@@ -112,323 +118,188 @@ public class LogHandler
 			}
 			pages.add(msg1);
 		}
-		MSG.setExtra(pages);	
-		player.spigot().sendMessage(MSG);
+		msg.add(pages);
+		for(List<BaseComponent> m : msg)
+		{
+			TextComponent n = ChatApi.tctl("");
+			n.setExtra(m);
+			player.spigot().sendMessage(n);
+		}
 	}
 	
-	public static void sendActionLogs(AdvancedEconomyPlus plugin, Player player, AEPUser eco,
+	public static void sendActionLogs(AdvancedEconomyPlus plugin, Player player,
 			LoggerSettings fst, ArrayList<ActionLogger> list,
-			int page, int end, String playername, int last,  String cmdstring)
+			int page, int end, int last,
+			LoggerSettingsHandler.Access access, String cmdstring)
 	{
 		boolean lastpage = false;
 		if(end > last)
 		{
 			lastpage = true;
 		}
-		String name = eco.getName();
-		if(fst.getActionFilter().getFrom() != null && fst.getActionFilter().getTo() != null)
-		{
-			if(fst.getActionFilter().getFrom().equals(fst.getActionFilter().getTo())
-					&& !MatchApi.isBankAccountNumber(fst.getActionFilter().getFrom()))
-			{
-				UUID uuid = UUID.fromString(fst.getActionFilter().getFrom());
-				if(uuid != null)
-				{
-					AEPUser user = AEPUserHandler.getEcoPlayer(uuid);
-					if(user != null)
-					{
-						name = user.getName();
-					}
-				} else
-				{
-					name = fst.getActionFilter().getFrom();
-				}
-			} /*else
-			{
-				//TODO BANK
-			}*/
-		}
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Log.Headline")
-				.replace("%name%", name)
+		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
+		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
+		ArrayList<BaseComponent> m1 = new ArrayList<>();
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.ActionLog.Headline")
+				.replace("%accountName%", ac.getAccountName())
+				.replace("%accountID%", String.valueOf(ac.getID()))
+				.replace("%accountOwner%", ac.getOwner().getName())
 				.replace("%amount%", String.valueOf(last))));
-		for(ActionLogger el : list)
+		for(ActionLogger al : list)
 		{
 			String orderer = "";
-			UUID uuid = null;
-			try
+			if(al.getOrderType() == OrdererType.PLAYER)
 			{
-				uuid = UUID.fromString(el.getOrdereruuid());
-			} catch(IllegalArgumentException e) {}
-			if(uuid != null)
-			{
-				AEPUser ord = AEPUserHandler.getEcoPlayer(uuid);
-				if(ord == null)
+				if(al.getOrdererUUID() != null)
 				{
-					orderer = el.getOrdereruuid();
+					String other = Utility.convertUUIDToName(al.getOrdererUUID().toString(), EconomyEntity.EconomyType.PLAYER);
+					orderer = other != null ? other : "N.A.";
 				} else
 				{
-					orderer = ord.getName();
+					orderer = "N.A.";
 				}
 			} else
 			{
-				orderer = el.getOrdereruuid();
+				orderer = al.getOrdererPlugin();
 			}
-			String comment = "";
-			if(el.getComment() != null)
-			{
-				comment = el.getComment();
-			}
+			
+			String category = al.getCategory() != null ? al.getCategory() : "N.A.";
+			String comment = al.getComment() != null ? al.getComment() : "N.A.";
 			HashMap<String,String> map = new HashMap<String,String>();
 			map.put("%orderer%", orderer);
+			map.put("%category%", category);
 			map.put("%comment%", comment);
 			
-			String sender = player.getUniqueId().toString();
-			String reciver = player.getUniqueId().toString();
-			if(fst.getActionFilter().getFrom() != null)
+			Account send = null;
+			Account rec = null;
+			if(al.getFromAccountID() == ac.getID())
 			{
-				sender = fst.getActionFilter().getFrom();
+				send = ac;
+				rec = plugin.getIFHApi().getAccount(al.getToAccountID());
+			} else if(al.getToAccountID() == ac.getID())
+			{
+				send = plugin.getIFHApi().getAccount(al.getFromAccountID());
+				rec = ac;
 			}
-			if(fst.getActionFilter().getTo() != null)
+			String withdraw = plugin.getIFHApi().format(al.getAmountToWithdraw(), send.getCurrency());
+			String deposit = plugin.getIFHApi().format(al.getAmountToDeposit(), rec.getCurrency());
+			map.put("%fromaccountid%", String.valueOf(send.getID()));
+			map.put("%fromaccountname%", send.getAccountName());
+			map.put("%fromaccountowner%", send.getOwner().getName());
+			map.put("%toaccountid%", String.valueOf(rec.getID()));
+			map.put("%toaccountname%", rec.getAccountName());
+			map.put("%toaccountowner%", rec.getOwner().getName());
+			map.put("%withdraw%", withdraw);
+			map.put("%tax%", plugin.getIFHApi().format(al.getAmountToTax(), send.getCurrency()));
+			map.put("%deposit%", deposit);
+			
+			ArrayList<BaseComponent> m2 = new ArrayList<>();
+			if(al.getFromAccountID() == ac.getID())
 			{
-				reciver = fst.getActionFilter().getTo();
+				m2.addAll(ChatApiSmall.generateTextComponentII(
+						plugin.getYamlHandler().getLang().getString("Log.ActionLog.MainMessage")
+						.replace("%date%", TimeHandler.getTimeSlim(al.getUnixTime()))
+						.replace("%fromcolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Negative"))
+						.replace("%fromaccountid%", String.valueOf(send.getID()))
+						.replace("%fromaccountname%", send.getAccountName())
+						.replace("%fromaccountowner%", send.getOwner().getName())
+						.replace("%tocolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Neutral"))
+						.replace("%toaccountid%", String.valueOf(rec.getID()))
+						.replace("%toaccountid%", String.valueOf(rec.getID()))
+						.replace("%toaccountname%", rec.getAccountName())
+						.replace("%toaccountowner%", rec.getOwner().getName())
+						.replace("%format%", withdraw),
+						map));
+			} else
+			{
+				m2.addAll(ChatApiSmall.generateTextComponentII(
+						plugin.getYamlHandler().getLang().getString("Log.ActionLog.MainMessage")
+						.replace("%date%", TimeHandler.getTimeSlim(al.getUnixTime()))
+						.replace("%fromcolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Neutral"))
+						.replace("%fromaccountid%", String.valueOf(send.getID()))
+						.replace("%fromaccountname%", send.getAccountName())
+						.replace("%fromaccountowner%", send.getOwner().getName())
+						.replace("%tocolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Positive"))
+						.replace("%toaccountid%", String.valueOf(rec.getID()))
+						.replace("%toaccountid%", String.valueOf(rec.getID()))
+						.replace("%toaccountname%", rec.getAccountName())
+						.replace("%toaccountowner%", rec.getOwner().getName())
+						.replace("%format%", deposit),
+						map));
 			}
-			if(MatchApi.isBankAccountNumber(el.getFromUUIDOrNumber()))
+			if(
+					(
+					al.getOrderType() == OrdererType.PLAYER 
+					&& al.getOrdererUUID() != null 
+					&& player.getUniqueId().toString().equals(al.getOrdererUUID().toString())
+					) 
+					|| player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_EDITLOG))
+					|| player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_DELETELOG)))
 			{
-				if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG) && 
-						(el.getOrdereruuid().equals(reciver) 
-								|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT)))
+				m2.add(ChatApi.tctl(" | "));
+				if(
+						(
+						al.getOrderType() == OrdererType.PLAYER 
+						&& al.getOrdererUUID() != null 
+						&& player.getUniqueId().toString().equals(al.getOrdererUUID().toString())
+						)
+						||player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_EDITLOG)))
 				{
-					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-							plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerBToPPositivAll")
-							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
-							.replace("%toname%", el.getToName())
-							.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-							.replace("%id%", String.valueOf(el.getId())),
-							map));
-				} else if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG))
-				{
-					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-							plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerBToPPositivDelete")
-							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
-							.replace("%toname%", el.getToName())
-							.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-							.replace("%id%", String.valueOf(el.getId())),
-							map));
-				} else if(el.getOrdereruuid().equals(reciver) 
-						|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))
-				{
-					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-							plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerBToPPositivRe")
-							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
-							.replace("%toname%", el.getToName())
-							.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-							.replace("%id%", String.valueOf(el.getId())),
-							map));
-				} else
-				{
-					player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-							plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerBToPPositiv")
-							.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-							.replace("%fromnumber%", el.getFromUUIDOrNumber()).replace("%fromname%", el.getFromName())
-							.replace("%toname%", el.getToName())
-							.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-							.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-							.replace("%id%", String.valueOf(el.getId())),
+					m2.addAll(ChatApiSmall.generateTextComponentII(
+							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Edit")
+							.replace("%cmd%", CommandSuggest.EDITLOG)
+							.replace("%id%", String.valueOf(al.getId())),
 							map));
 				}
-			} else //isUUID
-			{
-				if(MatchApi.isBankAccountNumber(el.getToUUIDOrNumber()))
+				if(player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_DELETELOG)))
 				{
-					if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG) && 
-							(el.getOrdereruuid().equals(sender) 
-									|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT)))
-					{
-						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-								plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToBNegativAll")
-								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-								.replace("%fromname%", el.getFromName())
-								.replace("%tonumber%", el.getToName()).replace("%toname%", el.getToName())
-								.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-								.replace("%id%", String.valueOf(el.getId())),
-								map));
-					} else if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG))
-					{
-						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-								plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToBNegativDelete")
-								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-								.replace("%fromname%", el.getFromName())
-								.replace("%tonumber%", el.getToName()).replace("%toname%", el.getToName())
-								.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-								.replace("%id%", String.valueOf(el.getId())),
-								map));
-					} else if(el.getOrdereruuid().equals(sender) 
-							|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))
-					{
-						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-								plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToBNegativRe")
-								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-								.replace("%fromname%", el.getFromName())
-								.replace("%tonumber%", el.getToName()).replace("%toname%", el.getToName())
-								.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-								.replace("%id%", String.valueOf(el.getId())),
-								map));
-					} else
-					{
-						player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-								plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToBNegativ")
-								.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-								.replace("%fromname%", el.getFromName())
-								.replace("%tonumber%", el.getToName()).replace("%toname%", el.getToName())
-								.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-								.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-								.replace("%id%", String.valueOf(el.getId())),
-								map));
-					}
-				} else //isUUID
-				{
-					if(el.getFromUUIDOrNumber().equals(sender))
-					{
-						if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG) && 
-								(el.getOrdereruuid().equals(reciver) 
-										|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT)))
-						{
-							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-									plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToPNegativAll")
-									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-									.replace("%fromname%", el.getFromName())
-									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-									.replace("%id%", String.valueOf(el.getId())),
-									map));
-						} else if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG))
-						{
-							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-									plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToPNegativDelete")
-									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-									.replace("%fromname%", el.getFromName())
-									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-									.replace("%id%", String.valueOf(el.getId())),
-									map));
-						} else if(el.getOrdereruuid().equals(reciver) 
-								|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))
-						{
-							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-									plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToPNegativRe")
-									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-									.replace("%fromname%", el.getFromName())
-									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-									.replace("%id%", String.valueOf(el.getId())),
-									map));
-						} else
-						{
-							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-									plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToPNegativ")
-									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-									.replace("%fromname%", el.getFromName())
-									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-									.replace("%id%", String.valueOf(el.getId())),
-									map));
-						}
-					} else
-					{
-						if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG) && 
-								(el.getOrdereruuid().equals(sender) 
-										|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT)))
-						{
-							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-									plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToPPositivAll")
-									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-									.replace("%fromname%", el.getFromName())
-									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-									.replace("%id%", String.valueOf(el.getId())),
-									map));
-						} else if(player.hasPermission(Utility.PERM_CMD_ECO_DELETELOG))
-						{
-							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-									plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToPPositivDelete")
-									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-									.replace("%fromname%", el.getFromName())
-									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-									.replace("%id%", String.valueOf(el.getId())),
-									map));
-						} else if(el.getOrdereruuid().equals(sender) 
-								|| player.hasPermission(Utility.PERM_BYPASS_RECOMMENT))
-						{
-							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-									plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToPPositivRe")
-									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-									.replace("%fromname%", el.getFromName())
-									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-									.replace("%id%", String.valueOf(el.getId())),
-									map));
-						} else
-						{
-							player.spigot().sendMessage(ChatApiSmall.generateTextComponent(
-									plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerPToPPositiv")
-									.replace("%date%", el.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm")))
-									.replace("%fromname%", el.getFromName())
-									.replace("%toname%", el.getToName())
-									.replace("%amount%", AdvancedEconomyPlus.getVault().format(el.getAmount()))
-									.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
-									.replace("%id%", String.valueOf(el.getId())),
-									map));
-						}
-					}
+					m2.addAll(ChatApiSmall.generateTextComponentII(
+							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Delete")
+							.replace("%cmd%", CommandSuggest.DELETELOG)
+							.replace("%id%", String.valueOf(al.getId())),
+							map));
 				}
 			}
+			msg.add(m2);
 		}
-		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.LOG.toString());
+		if(access == LoggerSettingsHandler.Access.COMMAND)
+		{
+			pastNextPage(plugin, player, msg, page, lastpage, cmdstring, ac.getOwner().getName(), ac.getAccountName());
+		} else
+		{
+			pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, LoggerSettingsHandler.Methode.LOG.toString());
+		}
 	}
 	
-	public static void sendActionDiagram(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<ActionLogger> list,
-			int page, int end, String playername, int last, String cmdstring)
+	public static void sendActionDiagram(AdvancedEconomyPlus plugin, Player player,
+			LoggerSettings fst, ArrayList<ActionLogger> list,
+			int page, int end, int last, String cmdstring)
 	{
 		if(list.size()<2)
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.NotEnoughValues")));
+					plugin.getYamlHandler().getLang().getString("Log.Diagram.NotEnoughValues")));
 			return;
 		}
 		double maxamount = 0.0;
 		double minamount = 0.0;
 		int i = 0;
+		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
 		while(i<list.size())
 		{
 			ActionLogger el  = list.get(i);
+			int check = ac.getID() == el.getFromAccountID() ? 1 : (ac.getID() == el.getToAccountID() ? 2 : 3) ;
 			if(i == 0)
 			{
-				minamount = el.getAmount();
+				minamount = check == 1 ? el.getAmountToDeposit() : (check == 2 ? el.getAmountToWithdraw() : el.getAmountToTax());
 			}
-			if(minamount > el.getAmount())
+			if(minamount > (check == 1 ? el.getAmountToDeposit() : (check == 2 ? el.getAmountToWithdraw() : el.getAmountToTax())))
 			{
-				minamount = el.getAmount();
+				minamount = check == 1 ? el.getAmountToDeposit() : (check == 2 ? el.getAmountToWithdraw() : el.getAmountToTax());
 			}
-			if(maxamount < el.getAmount())
+			if(maxamount < (check == 1 ? el.getAmountToDeposit() : (check == 2 ? el.getAmountToWithdraw() : el.getAmountToTax())))
 			{
-				maxamount = el.getAmount();
+				maxamount = check == 1 ? el.getAmountToDeposit() : (check == 2 ? el.getAmountToWithdraw() : el.getAmountToTax());
 			}
 			i++;
 		} 
@@ -447,41 +318,36 @@ public class LogHandler
 		{
 			lastpage = true;
 		}
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.HeadlineII")
-				.replace("%player%", eco.getName())
+		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
+		ArrayList<BaseComponent> m1 = new ArrayList<>();
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.Diagram.HeadlineII")
+				.replace("%accountname%", ac.getAccountName())
 				.replace("%amount%", String.valueOf(last))));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Infoline")
-				.replace("%max%", AdvancedEconomyPlus.getVault().format(maxamount))
-				.replace("%min%", AdvancedEconomyPlus.getVault().format(minamount))
-				.replace("%median%", AdvancedEconomyPlus.getVault().format(median))));
+		msg.add(m1);
+		ArrayList<BaseComponent> m2 = new ArrayList<>();
+		m2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.Diagram.Infoline")
+				.replace("%max%", plugin.getIFHApi().format(maxamount, ac.getCurrency()))
+				.replace("%min%", plugin.getIFHApi().format(minamount, ac.getCurrency()))
+				.replace("%median%", plugin.getIFHApi().format(median, ac.getCurrency()))));
+		msg.add(m2);
 		while(i<=list.size()-1)
 		{
-			ActionLogger tl = list.get(i);
-			String message = "&e"+tl.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))+": ";
+			ActionLogger al = list.get(i);
+			String message = "&e"+TimeHandler.getTime(al.getUnixTime())+": ";
 			final int firstlength = message.length();
 			double amount = 0;
-			if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
+			if(ac.getID() == al.getFromAccountID())
 			{
-				//positiv
-				amount = tl.getAmount();
-			} else
+				//Negativ
+				amount = -al.getAmountToWithdraw();
+			} else if(ac.getID() == al.getTaxAccountID())
 			{
-				if(MatchApi.isBankAccountNumber(tl.getToUUIDOrNumber()))
-				{
-					//negativ
-					amount = -tl.getAmount();
-				} else
-				{
-					if(tl.getFromUUIDOrNumber().equals(eco.getUUID()))
-					{
-						//negativ
-						amount = -tl.getAmount();
-					} else
-					{
-						//positiv
-						amount = tl.getAmount();
-					}
-				}
+				//positive
+				amount = al.getAmountToTax();
+			} else 
+			{
+				//positive
+				amount = al.getAmountToDeposit();
 			}
 			double percent = (amount/hpercent)*100;
 			int greenBlocks = 10+(int) Utility.round((amount/hpercent)*10,0);
@@ -500,57 +366,51 @@ public class LogHandler
 			message = StringUtils.rightPad(message, message.length()+redBlocks*3, "&c█");
 			final int secondlength = (message.length()-firstlength)/2;
 			message = message.substring(0, firstlength+secondlength)+"&f|"+message.substring(firstlength+secondlength);
+			ArrayList<BaseComponent> m3 = new ArrayList<>();
 			if(MatchApi.isPositivNumber(amount))
 			{
-				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Positiv")
-						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(amount))
-						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
+				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
+						plugin.getYamlHandler().getLang().getString("CmdMoney.Diagram.Positiv")
+						.replace("%relativ%", plugin.getIFHApi().format(amount, ac.getCurrency()))
+						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
 			} else
 			{
-				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Negativ")
-						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(amount))
-						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
+				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
+						plugin.getYamlHandler().getLang().getString("CmdMoney.Diagram.Negativ")
+						.replace("%relativ%", plugin.getIFHApi().format(amount, ac.getCurrency()))
+						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
 			}
+			msg.add(m3);
 			i++;
 		}
-		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.DIAGRAM.toString());
+		pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, Methode.DIAGRAM.toString());
 	}
 	
-	public static void sendActionGrafic(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<ActionLogger> list,
-			int page, int end, String playername, int last, String cmdstring)
+	public static void sendActionGrafic(AdvancedEconomyPlus plugin, Player player,
+			LoggerSettings fst, ArrayList<ActionLogger> list,
+			int page, int end, int last, String cmdstring)
 	{
 		double maxamount = 0.0;
 		double minamount = 0.0;
 		int safeline = -1;
 		int i = 0;
 		double amount = 0;
+		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
 		while(i<list.size())
 		{
-			ActionLogger el  = list.get(i);
-			if(MatchApi.isBankAccountNumber(el.getFromUUIDOrNumber()))
+			ActionLogger al  = list.get(i);
+			if(ac.getID() == al.getFromAccountID())
 			{
-				//positiv
-				amount = el.getAmount();
-			} else
+				//Negativ
+				amount = -al.getAmountToWithdraw();
+			} else if(ac.getID() == al.getTaxAccountID())
 			{
-				if(MatchApi.isBankAccountNumber(el.getToUUIDOrNumber()))
-				{
-					//negativ
-					amount = -el.getAmount();
-				} else
-				{
-					if(el.getFromUUIDOrNumber().equals(eco.getUUID()))
-					{
-						//negativ
-						amount = -el.getAmount();
-					} else
-					{
-						//positiv
-						amount = el.getAmount();
-					}
-				}
+				//positive
+				amount = al.getAmountToTax();
+			} else 
+			{
+				//positive
+				amount = al.getAmountToDeposit();
 			}
 			if(i == 0)
 			{
@@ -576,7 +436,7 @@ public class LogHandler
 		double hpercent = (maxamount-minamount);
 		String wim = plugin.getYamlHandler().getConfig().getString("GraficSpaceSymbol", "ˉ");
 		String x = plugin.getYamlHandler().getConfig().getString("GraficPointSymbol", "x");
-		String headmessage = "&a▼"+AdvancedEconomyPlus.getVault().format(maxamount);
+		String headmessage = "&a▼"+plugin.getIFHApi().format(maxamount, ac.getCurrency());
 		String messageI = "|";
 		String messageII = "|";
 		String messageIII = "|";
@@ -589,35 +449,25 @@ public class LogHandler
 		String messageIX = "|";
 		String messageX = "|";
 		String messageXI = wim;
-		String bottommessage = "&c▲"+AdvancedEconomyPlus.getVault().format(minamount);
-		String lastline = "&6▲"+list.get(list.size()-1).getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+		String bottommessage = "&c▲"+plugin.getIFHApi().format(minamount, ac.getCurrency());
+		String lastline = "&6▲"+TimeHandler.getTime(list.get(list.size()-1).getUnixTime());
 		i = list.size()-1;
 		while(i>=0)
 		{
-			ActionLogger tl = list.get(i);
+			ActionLogger al = list.get(i);
 			double median = 0;
-			if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
+			if(ac.getID() == al.getFromAccountID())
 			{
-				//positiv
-				median = tl.getAmount();
-			} else
+				//Negativ
+				amount = -al.getAmountToWithdraw();
+			} else if(ac.getID() == al.getTaxAccountID())
 			{
-				if(MatchApi.isBankAccountNumber(tl.getToUUIDOrNumber()))
-				{
-					//negativ
-					median = -tl.getAmount();
-				} else
-				{
-					if(tl.getFromUUIDOrNumber().equals(eco.getUUID()))
-					{
-						//negativ
-						median = -tl.getAmount();
-					} else
-					{
-						//positiv
-						median = tl.getAmount();
-					}
-				}
+				//positive
+				amount = al.getAmountToTax();
+			} else 
+			{
+				//positive
+				amount = al.getAmountToDeposit();
 			}
 			safeline = (int) Utility.round(((maxamount-median)/hpercent)*10,0);
 			if(safeline > 10)
@@ -768,37 +618,69 @@ public class LogHandler
 		{
 			lastpage = true;
 		}
-		lastline += "&6"+list.get(0).getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))+"▲";
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendGrafic.HeadlineII")
-				.replace("%player%", eco.getName())
+		lastline += "&6"+TimeHandler.getTime(list.get(0).getUnixTime())+"▲";
+		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
+		ArrayList<BaseComponent> m1 = new ArrayList<>();
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.Grafic.HeadlineII")
+				.replace("%accountname%", ac.getAccountName())
 				.replace("%amount%", String.valueOf(last))));
-		player.sendMessage(ChatApi.tl(headmessage));
-		player.sendMessage(ChatApi.tl(messageI));
-		player.sendMessage(ChatApi.tl(messageII));
-		player.sendMessage(ChatApi.tl(messageIII));
-		player.sendMessage(ChatApi.tl(messageIV));
-		player.sendMessage(ChatApi.tl(messageV));
-		player.sendMessage(ChatApi.tl(middlemessage));
-		player.sendMessage(ChatApi.tl(messageVI));
-		player.sendMessage(ChatApi.tl(messageVII));
-		player.sendMessage(ChatApi.tl(messageVIII));
-		player.sendMessage(ChatApi.tl(messageIX));
-		player.sendMessage(ChatApi.tl(messageX));
-		player.sendMessage(ChatApi.tl(messageXI));
-		player.sendMessage(ChatApi.tl(bottommessage));
-		player.sendMessage(ChatApi.tl(lastline));
-		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.GRAFIC.toString());
+		msg.add(m1);
+		ArrayList<BaseComponent> m2 = new ArrayList<>();
+		m2.add(ChatApi.tctl(headmessage));
+		msg.add(m2);
+		ArrayList<BaseComponent> m3 = new ArrayList<>();
+		m3.add(ChatApi.tctl(messageI));
+		msg.add(m3);
+		ArrayList<BaseComponent> m4 = new ArrayList<>();
+		m4.add(ChatApi.tctl(messageII));
+		msg.add(m4);
+		ArrayList<BaseComponent> m5 = new ArrayList<>();
+		m5.add(ChatApi.tctl(messageIII));
+		msg.add(m5);
+		ArrayList<BaseComponent> m6 = new ArrayList<>();
+		m6.add(ChatApi.tctl(messageIV));
+		msg.add(m6);
+		ArrayList<BaseComponent> m7 = new ArrayList<>();
+		m7.add(ChatApi.tctl(messageV));
+		msg.add(m7);
+		ArrayList<BaseComponent> m8 = new ArrayList<>();
+		m8.add(ChatApi.tctl(middlemessage));
+		msg.add(m8);
+		ArrayList<BaseComponent> m9 = new ArrayList<>();
+		m9.add(ChatApi.tctl(messageVI));
+		msg.add(m9);
+		ArrayList<BaseComponent> m10 = new ArrayList<>();
+		m10.add(ChatApi.tctl(messageVII));
+		msg.add(m10);
+		ArrayList<BaseComponent> m11 = new ArrayList<>();
+		m11.add(ChatApi.tctl(messageVIII));
+		msg.add(m11);
+		ArrayList<BaseComponent> m12 = new ArrayList<>();
+		m12.add(ChatApi.tctl(messageIX));
+		msg.add(m12);
+		ArrayList<BaseComponent> m13 = new ArrayList<>();
+		m13.add(ChatApi.tctl(messageX));
+		msg.add(m13);
+		ArrayList<BaseComponent> m14 = new ArrayList<>();
+		m14.add(ChatApi.tctl(messageXI));
+		msg.add(m14);
+		ArrayList<BaseComponent> m15 = new ArrayList<>();
+		m15.add(ChatApi.tctl(bottommessage));
+		msg.add(m15);
+		ArrayList<BaseComponent> m16 = new ArrayList<>();
+		m16.add(ChatApi.tctl(lastline));
+		msg.add(m16);
+		pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, Methode.GRAFIC.toString());
 		return;
 	}
 	
-	//TODO:System.outs
-	public static void sendActionBarChart(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<ActionLogger> list,
-			int page, int end, String playername, int last, String cmdstring)
+	public static void sendActionBarChart(AdvancedEconomyPlus plugin, Player player, LoggerSettings fst, ArrayList<ActionLogger> list,
+			int page, int end, int last, String cmdstring)
 	{
 		if(list.size()<2)
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.NotEnoughValues")));
+					plugin.getYamlHandler().getLang().getString("Log.Diagram.NotEnoughValues")));
 			return;
 		}
 		double maxNegativ = 0.0;
@@ -818,35 +700,28 @@ public class LogHandler
 		ArrayList<ActionLogger> twelfthMonth = new ArrayList<>();
 		ArrayList<ActionLogger> thirteenthMonth = new ArrayList<>();
 		
+		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
+		
 		int i = 0;
-		LocalDateTime startDate = list.get(list.size()-1).getDateTime();
+		LocalDateTime startDate = TimeHandler.getLocalDateTime(list.get(list.size()-1).getUnixTime());
 		while(i < list.size())
 		{
-			ActionLogger tl  = list.get(i);
-			if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
+			ActionLogger al  = list.get(i);
+			if(ac.getID() == al.getFromAccountID())
+			{
+				//negativ
+				maxNegativ -= al.getAmountToWithdraw();
+			} else if(ac.getID() == al.getTaxAccountID())
 			{
 				//positiv
-				maxPositiv += tl.getAmount();
-			} else
+				maxPositiv += al.getAmountToTax();
+			} else if(ac.getID() == al.getToAccountID())
 			{
-				if(MatchApi.isBankAccountNumber(tl.getToUUIDOrNumber()))
-				{
-					//negativ
-					maxNegativ -= tl.getAmount();
-				} else
-				{
-					if(tl.getFromUUIDOrNumber().equals(eco.getUUID()))
-					{
-						//negativ
-						maxNegativ -= tl.getAmount();
-					} else
-					{
-						//positiv
-						maxPositiv += tl.getAmount();
-					}
-				}
+				//positiv
+				maxPositiv += al.getAmountToDeposit();
 			}
-			LocalDateTime tldt = tl.getDateTime();
+			
+			LocalDateTime tldt = TimeHandler.getLocalDateTime(al.getUnixTime());
 			LocalDateTime sdClone = startDate;
 			int j = 1;
 			sdClone = sdClone.minusMonths(1);
@@ -858,43 +733,43 @@ public class LogHandler
 					switch(j)
 					{
 					case 13:
-						firstMonth.add(tl);
+						firstMonth.add(al);
 						break;  //Break unterbricht switch case
 					case 12:
-						secondMonth.add(tl);
+						secondMonth.add(al);
 						break;
 					case 11:
-						thirdMonth.add(tl);
+						thirdMonth.add(al);
 						break;
 					case 10:
-						fourthMonth.add(tl);
+						fourthMonth.add(al);
 						break;
 					case 9:
-						fifthMonth.add(tl);
+						fifthMonth.add(al);
 						break;
 					case 8:
-						sixthMonth.add(tl);
+						sixthMonth.add(al);
 						break;
 					case 7:
-						seventhMonth.add(tl);
+						seventhMonth.add(al);
 						break;
 					case 6:
-						eighthMonth.add(tl);
+						eighthMonth.add(al);
 						break;
 					case 5:
-						ninthMonth.add(tl);
+						ninthMonth.add(al);
 						break;
 					case 4:
-						tenthMonth.add(tl);
+						tenthMonth.add(al);
 						break;
 					case 3:
-						eleventhMonth.add(tl);
+						eleventhMonth.add(al);
 						break;
 					case 2:
-						twelfthMonth.add(tl);
+						twelfthMonth.add(al);
 						break;
 					case 1:
-						thirteenthMonth.add(tl);
+						thirteenthMonth.add(al);
 						break;
 					}
 					break;
@@ -962,36 +837,26 @@ public class LogHandler
 			LocalDateTime month = null;
 			if(lists.size() >= 1)
 			{
-				month = lists.get(0).getDateTime();
+				month = TimeHandler.getLocalDateTime(lists.get(0).getUnixTime());
 			} else
 			{
 				k++;
 				continue;
 			}
-			for(ActionLogger tl : lists)
+			for(ActionLogger al : lists)
 			{
-				if(MatchApi.isBankAccountNumber(tl.getFromUUIDOrNumber()))
+				if(ac.getID() == al.getFromAccountID())
+				{
+					//negativ
+					smaxNegativ -= al.getAmountToWithdraw();
+				} else if(ac.getID() == al.getTaxAccountID())
 				{
 					//positiv
-					smaxPositiv += tl.getAmount();
-				} else
+					smaxPositiv += al.getAmountToTax();
+				} else if(ac.getID() == al.getToAccountID())
 				{
-					if(MatchApi.isBankAccountNumber(tl.getToUUIDOrNumber()))
-					{
-						//negativ
-						smaxNegativ -= tl.getAmount();
-					} else
-					{
-						if(tl.getFromUUIDOrNumber().equals(eco.getUUID()))
-						{
-							//negativ
-							smaxNegativ -= tl.getAmount();
-						} else
-						{
-							//positiv
-							smaxPositiv += tl.getAmount();
-						}
-					}
+					//positiv
+					smaxPositiv += al.getAmountToDeposit();
 				}
 			}
 			double smaxTotal = smaxPositiv + smaxNegativ;		
@@ -1033,15 +898,15 @@ public class LogHandler
 			if(k == 0)
 			{
 				totalbc.get(k).add(ChatApi.hoverEvent(bars, Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessageII")
+						plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.HoverMessageII")
 						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
 						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
 						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
 						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 						));
-				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.LastYear")));
+				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.LastYear")));
 				totalbc.get(k).add(ChatApi.hoverEvent(barsII, Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessageII")
+						plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.HoverMessageII")
 						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
 						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
 						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
@@ -1050,7 +915,7 @@ public class LogHandler
 			} else
 			{
 				totalbc.get(k).add(ChatApi.hoverEvent(bars, Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessage")
+						plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.HoverMessage")
 						.replace("%percentP%", AdvancedEconomyPlus.getVault().format(hpercentP))
 						.replace("%percentN%", AdvancedEconomyPlus.getVault().format(hpercentN))
 						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
@@ -1058,10 +923,10 @@ public class LogHandler
 						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
 						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 						));
-				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.Month")
+				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.Month")
 						.replace("%month%", month.format(DateTimeFormatter.ofPattern("MM.yyyy")))));
 				totalbc.get(k).add(ChatApi.hoverEvent(barsII, Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.HoverMessage")
+						plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.HoverMessage")
 						.replace("%percentP%", AdvancedEconomyPlus.getVault().format(hpercentP))
 						.replace("%percentN%", AdvancedEconomyPlus.getVault().format(hpercentN))
 						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
@@ -1072,18 +937,24 @@ public class LogHandler
 			}
 			k++;
 		}
-		
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.Headline")
-				.replace("%player%", eco.getName())
+		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
+		ArrayList<BaseComponent> m1 = new ArrayList<>();
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.Headline")
+				.replace("%player%", ac.getOwner().getName())
 				.replace("%amount%", String.valueOf(list.size()))));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.BarChart.Infoline")));
+		msg.add(m1);
+		ArrayList<BaseComponent> m2 = new ArrayList<>();
+		m2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.Infoline")));
+		msg.add(m2);
 		for(ArrayList<BaseComponent> bc : totalbc)
 		{
 			if(!bc.isEmpty())
 			{
+				ArrayList<BaseComponent> m3 = new ArrayList<>();
 				TextComponent tc = ChatApi.tc("");
 				tc.setExtra(bc);
-				player.spigot().sendMessage(tc);
+				m3.add(tc);
+				msg.add(m3);
 			}
 		}
 		
@@ -1092,123 +963,81 @@ public class LogHandler
 		{
 			lastpage = true;
 		}
-		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.BARCHART.toString());
+		pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, Methode.BARCHART.toString());
 		return;
 	}
 	
-	//TODO nicht richtig
-	public static void sendGetTotal(AdvancedEconomyPlus plugin, Player player, AEPUser eco, String path, ArrayList<ActionLogger> list,
-			String playername, int last, String searchword)
-	{
-		double positiv = 0.0;
-		double negativ = 0.0;
-		double total = 0.0;
-		for(ActionLogger el : list)
-		{
-			if(el.getFromUUIDOrNumber().equals(eco.getUUID()))
-			{
-				negativ -= el.getAmount();
-			} else if(el.getToUUIDOrNumber().equals(eco.getUUID()))
-			{
-				positiv += el.getAmount();
-			}
-			total += el.getAmount();
-		}
-		if(searchword == null)
-		{
-			searchword = "/";
-		}
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString(path+"GetTotal.Headline")
-				.replace("%name%", eco.getName())
-				.replace("%amount%", String.valueOf(last))
-				.replace("%searchword%", searchword)));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString(path+"GetTotal.PositivValues")
-				.replace("%value%", AdvancedEconomyPlus.getVault().format(positiv))));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString(path+"GetTotal.NegativValues")
-				.replace("%value%", AdvancedEconomyPlus.getVault().format(negativ))));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString(path+"GetTotal.TotalValues")
-				.replace("%value%", AdvancedEconomyPlus.getVault().format(total))));
-	}
-	
-	public static void sendTrendLogs(AdvancedEconomyPlus plugin, Player player, AEPUser eco,
+	public static void sendTrendLogs(AdvancedEconomyPlus plugin, Player player,
 			LoggerSettings fst, ArrayList<TrendLogger> list,
-			int page, int end, String playername, int last, String cmdstring)
+			int page, int end, int last,
+			LoggerSettingsHandler.Access access, String cmdstring)
 	{
 		boolean lastpage = false;
 		if(end > last)
 		{
 			lastpage = true;
 		}
-		String name = eco.getName();
-		if(fst.getActionFilter().getFrom() != null && fst.getActionFilter().getTo() != null)
-		{
-			if(fst.getActionFilter().getFrom().equals(fst.getActionFilter().getTo())
-					&& !MatchApi.isBankAccountNumber(fst.getActionFilter().getFrom()))
-			{
-				UUID uuid = UUID.fromString(fst.getActionFilter().getFrom());
-				if(uuid != null)
-				{
-					AEPUser user = AEPUserHandler.getEcoPlayer(uuid);
-					if(user != null)
-					{
-						name = user.getName();
-					}
-				} else
-				{
-					name = fst.getActionFilter().getFrom();
-				}
-			} /*else
-			{
-				//TODO BANK
-			}*/
-		}
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.Headline")
-				.replace("%player%", name)
+		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
+		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
+		ArrayList<BaseComponent> m1 = new ArrayList<>();
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.TrendLog.Headline")
+				.replace("%accountName%", ac.getAccountName())
+				.replace("%accountID%", String.valueOf(ac.getID()))
+				.replace("%accountOwner%", ac.getOwner().getName())
 				.replace("%amount%", String.valueOf(last))));
+		msg.add(m1);
 		for(TrendLogger tl : list)
 		{
+			ArrayList<BaseComponent> m2 = new ArrayList<>();
 			if(MatchApi.isPositivNumber(tl.getRelativeAmountChange()))
 			{
-				player.spigot().sendMessage(ChatApi.hoverEvent(
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.ChangePositiv")
-						.replace("%date%", tl.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+				m2.add(ChatApi.hoverEvent(
+						plugin.getYamlHandler().getLang().getString("Log.TrendLog.ChangePositiv")
+						.replace("%date%", TimeHandler.getLocalDateTime(tl.getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
 						.replace("%first%", AdvancedEconomyPlus.getVault().format(tl.getFirstValue()))
 						.replace("%last%", AdvancedEconomyPlus.getVault().format(tl.getLastValue())),
 						HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.Positiv")
+						plugin.getYamlHandler().getLang().getString("Log.TrendLog.Positiv")
 						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))));
 			} else if(tl.getRelativeAmountChange() == 0) 
 			{
-				player.spigot().sendMessage(ChatApi.hoverEvent(
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.ChangeNeutral")
-						.replace("%date%", tl.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+				m2.add(ChatApi.hoverEvent(
+						plugin.getYamlHandler().getLang().getString("Log.TrendLog.ChangeNeutral")
+						.replace("%date%", TimeHandler.getLocalDateTime(tl.getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
 						.replace("%first%", AdvancedEconomyPlus.getVault().format(tl.getFirstValue()))
 						.replace("%last%", AdvancedEconomyPlus.getVault().format(tl.getLastValue())),
 						HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.Positiv")
+						plugin.getYamlHandler().getLang().getString("Log.TrendLog.Positiv")
 						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))));
 			} else
 			{
-				player.spigot().sendMessage(ChatApi.hoverEvent(
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.ChangeNegativ")
-						.replace("%date%", tl.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+				m2.add(ChatApi.hoverEvent(
+						plugin.getYamlHandler().getLang().getString("Log.TrendLog.ChangeNegativ")
+						.replace("%date%", TimeHandler.getLocalDateTime(tl.getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
 						.replace("%first%", AdvancedEconomyPlus.getVault().format(tl.getFirstValue()))
 						.replace("%last%", AdvancedEconomyPlus.getVault().format(tl.getLastValue())),
 						HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendLog.Negativ")
+						plugin.getYamlHandler().getLang().getString("Log.TrendLog.Negativ")
 						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))));
 			}
+			msg.add(m2);
 		}
-		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.LOG.toString());
+		if(access == LoggerSettingsHandler.Access.COMMAND)
+		{
+			pastNextPage(plugin, player, msg, page, lastpage, cmdstring, ac.getOwner().getName(), ac.getAccountName());
+		} else
+		{
+			pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, LoggerSettingsHandler.Methode.LOG.toString());
+		}
 	}
 	
-	public static void sendTrendDiagram(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<TrendLogger> list,
-			int page, int end, String playername, int last, String cmdstring)
+	public static void sendTrendDiagram(AdvancedEconomyPlus plugin, Player player, 
+			LoggerSettings fst, ArrayList<TrendLogger> list,
+			int page, int end, int last, String cmdstring)
 	{
 		if(list.size()<2)
 		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.NotEnoughValues")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Log.Diagram.NotEnoughValues")));
 			return;
 		}
 		double maxamount = 0.0;
@@ -1250,13 +1079,21 @@ public class LogHandler
 		{
 			lastpage = true;
 		}
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Headline")
-				.replace("%player%", eco.getName())
+		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
+		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
+		ArrayList<BaseComponent> m1 = new ArrayList<>();
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.Diagram.Headline")
+				.replace("%accountName%", ac.getAccountName())
+				.replace("%accountID%", String.valueOf(ac.getID()))
+				.replace("%accountOwner%", ac.getOwner().getName())
 				.replace("%amount%", String.valueOf(last))));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Infoline")
+		msg.add(m1);
+		ArrayList<BaseComponent> m2 = new ArrayList<>();
+		m2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.Diagram.Infoline")
 				.replace("%max%", AdvancedEconomyPlus.getVault().format(maxamount))
 				.replace("%min%", AdvancedEconomyPlus.getVault().format(minamount))
 				.replace("%median%", AdvancedEconomyPlus.getVault().format(median))));
+		msg.add(m2);
 		while(i < list.size())
 		{
 			TrendLogger tl = list.get(i);
@@ -1264,7 +1101,7 @@ public class LogHandler
 			{
 				continue;
 			}
-			String message = "&e"+tl.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))+": ";
+			String message = "&e"+TimeHandler.getLocalDateTime(tl.getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))+": ";
 			final int firstlength = message.length();
 			double percent = (tl.getRelativeAmountChange()/hpercent)*100;
 			int greenBlocks =10+ (int)percent/10;
@@ -1283,33 +1120,36 @@ public class LogHandler
 			message = StringUtils.rightPad(message, message.length()+redBlocks*3, "&c█");
 			final int secondlength = (message.length()-firstlength)/2;
 			message = message.substring(0, firstlength+secondlength)+"&f|"+message.substring(firstlength+secondlength);
+			ArrayList<BaseComponent> m3 = new ArrayList<>();
 			if(MatchApi.isPositivNumber(tl.getRelativeAmountChange()))
 			{
-				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Positiv")
+				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
+						plugin.getYamlHandler().getLang().getString("LLog.TrendDiagram.Positiv")
 						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))
 						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
 			} else
 			{
-				player.spigot().sendMessage(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getL().getString("CmdMoney.TrendDiagram.Negativ")
+				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
+						plugin.getYamlHandler().getLang().getString("CmdMoney.TrendDiagram.Negativ")
 						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))
 						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
 			}
+			msg.add(m3);
 			i++;
 		}
-		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.DIAGRAM.toString());
+		pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, Methode.DIAGRAM.toString());
 	}
 	
-	public static void sendTrendGrafic(AdvancedEconomyPlus plugin, Player player, AEPUser eco, ArrayList<TrendLogger> list,
-			int page, int end, String playername, int last, String cmdstring)
+	public static void sendTrendGrafic(AdvancedEconomyPlus plugin, Player player,
+			LoggerSettings fst, ArrayList<TrendLogger> list,
+			int page, int end, int last, String cmdstring)
 	{
 		//ˉ
 		//Es passen max 45 `x` in die chatleiste, das bedeutet maximal 
 		if(list.size()<2)
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.TrendGrafic.NotEnoughValues")));
+					plugin.getYamlHandler().getLang().getString("Log.Grafic.NotEnoughValues")));
 			return;
 		}
 		double maxamount = 0.0;
@@ -1369,7 +1209,7 @@ public class LogHandler
 		String messageX = "|";
 		String messageXI = wim;
 		String bottommessage = "&c▲"+AdvancedEconomyPlus.getVault().format(minamount);
-		String lastline = "&6▲"+list.get(list.size()-1).getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+		String lastline = "&6▲"+TimeHandler.getLocalDateTime(list.get(list.size()-1).getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 		i = list.size()-1;
 		while(i>=0)
 		{
@@ -1528,26 +1368,47 @@ public class LogHandler
 		{
 			lastpage = true;
 		}
-		lastline += "&6"+list.get(0).getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))+"▲";
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.TrendGrafic.Headline")
-				.replace("%player%", eco.getName())
+		lastline += "&6"+TimeHandler.getLocalDateTime(list.get(0).getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))+"▲";
+		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
+		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
+		ArrayList<BaseComponent> m1 = new ArrayList<>();
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.Grafic.Headline")
+				.replace("%accountName%", ac.getAccountName())
+				.replace("%accountID%", String.valueOf(ac.getID()))
+				.replace("%accountOwner%", ac.getOwner().getName())
 				.replace("%amount%", String.valueOf(last))));
-		player.sendMessage(ChatApi.tl(headmessage));
-		player.sendMessage(ChatApi.tl(messageI));
-		player.sendMessage(ChatApi.tl(messageII));
-		player.sendMessage(ChatApi.tl(messageIII));
-		player.sendMessage(ChatApi.tl(messageIV));
-		player.sendMessage(ChatApi.tl(messageV));
-		player.sendMessage(ChatApi.tl(middlemessage));
-		player.sendMessage(ChatApi.tl(messageVI));
-		player.sendMessage(ChatApi.tl(messageVII));
-		player.sendMessage(ChatApi.tl(messageVIII));
-		player.sendMessage(ChatApi.tl(messageIX));
-		player.sendMessage(ChatApi.tl(messageX));
-		player.sendMessage(ChatApi.tl(messageXI));
-		player.sendMessage(ChatApi.tl(bottommessage));
-		player.sendMessage(ChatApi.tl(lastline));
-		pastNextPageFirstNameThanNumber(plugin, player, "CmdMoney.", playername, page, lastpage, cmdstring, Methode.GRAFIC.toString());
+		msg.add(m1);
+		ArrayList<BaseComponent> m2 = new ArrayList<>();
+		m2.add(ChatApi.tctl(headmessage));
+		ArrayList<BaseComponent> m3 = new ArrayList<>();
+		m3.add(ChatApi.tctl(messageI));
+		ArrayList<BaseComponent> m4 = new ArrayList<>();
+		m4.add(ChatApi.tctl(messageII));
+		ArrayList<BaseComponent> m5 = new ArrayList<>();
+		m5.add(ChatApi.tctl(messageIII));
+		ArrayList<BaseComponent> m6 = new ArrayList<>();
+		m6.add(ChatApi.tctl(messageIV));
+		ArrayList<BaseComponent> m7 = new ArrayList<>();
+		m7.add(ChatApi.tctl(messageV));
+		ArrayList<BaseComponent> m8 = new ArrayList<>();
+		m8.add(ChatApi.tctl(middlemessage));
+		ArrayList<BaseComponent> m9 = new ArrayList<>();
+		m9.add(ChatApi.tctl(messageVI));
+		ArrayList<BaseComponent> m10 = new ArrayList<>();
+		m10.add(ChatApi.tctl(messageVII));
+		ArrayList<BaseComponent> m11 = new ArrayList<>();
+		m11.add(ChatApi.tctl(messageVIII));
+		ArrayList<BaseComponent> m12 = new ArrayList<>();
+		m12.add(ChatApi.tctl(messageIX));
+		ArrayList<BaseComponent> m13 = new ArrayList<>();
+		m13.add(ChatApi.tctl(messageX));
+		ArrayList<BaseComponent> m14 = new ArrayList<>();
+		m14.add(ChatApi.tctl(messageXI));
+		ArrayList<BaseComponent> m15 = new ArrayList<>();
+		m15.add(ChatApi.tctl(bottommessage));
+		ArrayList<BaseComponent> m16 = new ArrayList<>();
+		m16.add(ChatApi.tctl(lastline));
+		pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, Methode.GRAFIC.toString());
 		return;
 	}
 }

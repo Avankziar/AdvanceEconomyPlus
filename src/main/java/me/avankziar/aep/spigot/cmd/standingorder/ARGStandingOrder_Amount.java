@@ -29,7 +29,7 @@ public class ARGStandingOrder_Amount extends ArgumentModule
 		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
+					plugin.getYamlHandler().getLang().getString("NoStandingOrder")));
 			return;
 		}
 		String amounts = args[1];
@@ -37,7 +37,7 @@ public class ARGStandingOrder_Amount extends ArgumentModule
 		if(!MatchApi.isDouble(amounts))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", amounts)));
 			return;
 		}
@@ -45,21 +45,21 @@ public class ARGStandingOrder_Amount extends ArgumentModule
 		if(!MatchApi.isPositivNumber(amount))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
+					plugin.getYamlHandler().getLang().getString("NumberIsNegativ")
 					.replace("%args%", amounts)));
 			return;
 		}
 		if(!PendingHandler.standingOrder.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdStandingOrder.NoPendingOrder")));
+					plugin.getYamlHandler().getLang().getString("CmdStandingOrder.NoPendingOrder")));
 			return;
 		}
 		StandingOrder so = PendingHandler.standingOrder.get(player.getUniqueId().toString());
 		so.setAmount(amount);
 		PendingHandler.standingOrder.replace(player.getUniqueId().toString(), so);
 		player.sendMessage(ChatApi.tl(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Amount.SetAmount")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Amount.SetAmount")
 				.replace("%name%", so.getName())
 				.replace("%amount%", amounts)
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())));

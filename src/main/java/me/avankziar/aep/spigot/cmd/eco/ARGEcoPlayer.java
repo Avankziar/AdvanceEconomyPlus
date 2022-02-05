@@ -7,8 +7,8 @@ import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class ARGEcoPlayer extends ArgumentModule
@@ -29,27 +29,27 @@ public class ARGEcoPlayer extends ArgumentModule
 		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
+					plugin.getYamlHandler().getLang().getString("NoPlayerAccount")));
 			return;
 		}
-		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
+		OLD_AEPUser eco = _AEPUserHandler_OLD.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
+					plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 			return;
 		}
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.Player.Headline")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdEco.Player.Headline")
 				.replace("%player%", eco.getName())));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.Player.UUID")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdEco.Player.UUID")
 				.replace("%uuid%", eco.getUUID())));
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.Player.Balance")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdEco.Player.Balance")
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%balance%", AdvancedEconomyPlus.getVault().format(eco.getBalance()))));
 		if(AEPSettings.settings.isBank())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdEco.Player.BankAccount")
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdEco.Player.BankAccount")
 					.replace("%bankaccount%", eco.getBankAccountNumber().toString())));
 		}
 		eco = null;

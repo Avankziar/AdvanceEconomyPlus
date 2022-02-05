@@ -18,8 +18,8 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
 import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -48,7 +48,7 @@ public class ARGMoneyTake extends ArgumentModule
 		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			sender.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
+					plugin.getYamlHandler().getLang().getString("NoPlayerAccount")));
 			return;
 		}
 		if(MatchApi.isDouble(amountstring))
@@ -57,14 +57,14 @@ public class ARGMoneyTake extends ArgumentModule
 		} else
 		{
 			sender.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoNumber")
+					plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%args%", amountstring)));
 			return;
 		}
 		if(!MatchApi.isPositivNumber(amount))
 		{
 			sender.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NumberIsNegativ")
+					plugin.getYamlHandler().getLang().getString("NumberIsNegativ")
 					.replace("%args%", amountstring)));
 			return;
 		}
@@ -82,18 +82,18 @@ public class ARGMoneyTake extends ArgumentModule
 				
 			}
 		}
-		AEPUser fromplayer = AEPUserHandler.getEcoPlayer(fromplayername);
+		OLD_AEPUser fromplayer = _AEPUserHandler_OLD.getEcoPlayer(fromplayername);
 		if(fromplayer == null)
 		{
 			//Der Spieler existiert nicht!
 			sender.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
+					plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 			return;
 		}
 		boolean has = AdvancedEconomyPlus.getVault().has(Bukkit.getOfflinePlayer(UUID.fromString(fromplayer.getUUID())), amount);
 		if(has == false)
 		{
-			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Take.NoFullAmount")
+			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdMoney.Take.NoFullAmount")
 					.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
 					.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())));
 			return;
@@ -104,7 +104,7 @@ public class ARGMoneyTake extends ArgumentModule
 			sender.sendMessage(ChatApi.tl(withdraw.errorMessage));
 			return;
 		}
-		fromplayer = AEPUserHandler.getEcoPlayer(fromplayername);
+		fromplayer = _AEPUserHandler_OLD.getEcoPlayer(fromplayername);
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(), fromplayer.getUUID(), player.getUniqueId().toString(), fromplayer.getName(), player.getName(), orderer,
 				amount, ActionLoggerEvent.Type.TAKEN, comment));		
@@ -112,17 +112,17 @@ public class ARGMoneyTake extends ArgumentModule
 				-amount, fromplayer.getBalance()));
 		List<BaseComponent> list = new ArrayList<>();
 		TextComponent message = ChatApi.apiChat(
-				plugin.getYamlHandler().getL().getString("CmdMoney.Take.DepositWithDraw")
+				plugin.getYamlHandler().getLang().getString("CmdMoney.Take.DepositWithDraw")
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%amount%", AdvancedEconomyPlus.getVault().format(amount))
 				.replace("%name1%", fromplayer.getName())
 				.replace("%name2%", player.getName()), null, "",
 				HoverEvent.Action.SHOW_TEXT,
-				plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerOrdererNote")
+				plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerOrdererNote")
 				.replace("%orderer%", orderer)
 				.replace("%comment%", comment));
 		list.add(message);
-		String messageII = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Take.DepositWithDrawBalance")
+		String messageII = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdMoney.Take.DepositWithDrawBalance")
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%name%", fromplayer.getName())
 				.replace("%balance%", AdvancedEconomyPlus.getVault().format(fromplayer.getBalance())));

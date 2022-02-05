@@ -12,8 +12,8 @@ import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class ARGMoneyFreeze extends ArgumentModule
@@ -34,15 +34,15 @@ public class ARGMoneyFreeze extends ArgumentModule
 		if(!AEPSettings.settings.isPlayerAccount())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoPlayerAccount")));
+					plugin.getYamlHandler().getLang().getString("NoPlayerAccount")));
 			return;
 		}
-		AEPUser eco = AEPUserHandler.getEcoPlayer(playername);
+		OLD_AEPUser eco = _AEPUserHandler_OLD.getEcoPlayer(playername);
 		if(eco == null)
 		{
 			//Der Spieler existiert nicht!
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
+					plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 			return;
 		}
 		String message = "";
@@ -51,20 +51,20 @@ public class ARGMoneyFreeze extends ArgumentModule
 			eco.setFrozen(false);
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.PLAYER, eco, "`id` = ?", eco.getId());
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.YouDefrozenSomeone")
+					plugin.getYamlHandler().getLang().getString("CmdMoney.Freeze.YouDefrozenSomeone")
 					.replace("%player%", eco.getName())));
 			message = ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.YourAccountWasDefrozen")
+					plugin.getYamlHandler().getLang().getString("CmdMoney.Freeze.YourAccountWasDefrozen")
 					.replace("%player%", player.getName()));
 		} else
 		{
 			eco.setFrozen(true);
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.PLAYER, eco, "`id` = ?", eco.getId());
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.YouFrozenSomeone")
+					plugin.getYamlHandler().getLang().getString("CmdMoney.Freeze.YouFrozenSomeone")
 					.replace("%player%", eco.getName())));
 			message = ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdMoney.Freeze.YourAccountWasFrozen")
+					plugin.getYamlHandler().getLang().getString("CmdMoney.Freeze.YourAccountWasFrozen")
 					.replace("%player%", player.getName()));
 		}
 		boolean bungee = AEPSettings.settings.isBungee();

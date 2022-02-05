@@ -1,97 +1,141 @@
 package main.java.me.avankziar.aep.spigot.database;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.database.tables.TableI;
-import main.java.me.avankziar.aep.spigot.database.tables.TableII;
+import main.java.me.avankziar.aep.spigot.database.tables.OLDTableI;
 import main.java.me.avankziar.aep.spigot.database.tables.TableIII;
 import main.java.me.avankziar.aep.spigot.database.tables.TableIV;
 import main.java.me.avankziar.aep.spigot.database.tables.TableV;
 import main.java.me.avankziar.aep.spigot.database.tables.TableVI;
 import main.java.me.avankziar.aep.spigot.database.tables.TableVII;
 
-public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV, TableVI, TableVII
+public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, TableVI, TableVII
 {
 	public enum Type
 	{
-		PLAYER, BANKACCOUNT, ACTION, TREND, STANDINGORDER, LOAN, LOGGERSETTINGSPRESET;
+		PLAYER("economyPlayerData"),
+		ACTION("aepActionLogger"),
+		TREND("aepTrendLogger"),
+		STANDINGORDER("economyStandingOrder"),
+		LOAN("economyLoan"),
+		LOGGERSETTINGSPRESET("economyLoggerSettingsPreset"),
+		//NEw stuff
+		ENTITYDATA("aepEntityData"),
+		PLAYERDATA("aepPlayerData"),
+		ACCOUNT("aepAccount"),
+		DEFAULTACCOUNT("aepDefaultAccount"),
+		ACCOUNTMANAGEMENT("aepAccountManagement");
+		
+		private Type(String value)
+		{
+			this.value = value;
+		}
+		
+		private final String value;
+
+		public String getValue()
+		{
+			return value;
+		}
+	}
+	
+	public enum QueryType
+	{
+		INSERT, UPDATE, DELETE, READ;
+	}
+	
+	/*
+	 * Alle Mysql Reihen, welche durch den Betrieb aufkommen.
+	 */
+	public static long startRecordTime = System.currentTimeMillis();
+	public static int inserts = 0;
+	public static int updates = 0;
+	public static int deletes = 0;
+	public static int reads = 0;
+	
+	public static void addRows(QueryType type, int amount)
+	{
+		switch(type)
+		{
+		case DELETE:
+			deletes += amount;
+			break;
+		case INSERT:
+			inserts += amount;
+		case READ:
+			reads += amount;
+			break;
+		case UPDATE:
+			updates += amount;
+			break;
+		}
+	}
+	
+	public static void resetsRows()
+	{
+		inserts = 0;
+		updates = 0;
+		reads = 0;
+		deletes = 0;
 	}
 	
 	private AdvancedEconomyPlus plugin;
-	public String tableNameI; //Spieler
-	public String tableNameII; //BankAccount
-	public String tableNameIII; //ACTION
-	public String tableNameIV; //Trend
-	public String tableNameV; //DauerAuftrag
-	public String tableNameVI; //Schuldentilgung
-	public String tableNameVII; //LoggerSettingsPreset
 	
 	public MysqlHandler(AdvancedEconomyPlus plugin) 
 	{
 		this.plugin = plugin;
-		loadMysqlHandler();
-	}
-	
-	public boolean loadMysqlHandler()
-	{
-		tableNameI = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameI");
-		if(tableNameI == null)
-		{
-			return false;
-		}
-		tableNameII = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameII");
-		if(tableNameII == null)
-		{
-			return false;
-		}
-		tableNameIII = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameIII");
-		if(tableNameIII == null)
-		{
-			return false;
-		}
-		tableNameIV = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameIV");
-		if(tableNameIV == null)
-		{
-			return false;
-		}
-		tableNameV = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameV");
-		if(tableNameV == null)
-		{
-			return false;
-		}
-		tableNameVI = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameVI");
-		if(tableNameVI == null)
-		{
-			return false;
-		}
-		tableNameVII = plugin.getYamlHandler().getConfig().getString("Mysql.TableNameVII");
-		if(tableNameVII == null)
-		{
-			return false;
-		}
-		return true;
 	}
 	
 	public boolean exist(Type type, String whereColumn, Object... whereObject)
 	{
-		switch(type)
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
 		{
-		case PLAYER:
-			return TableI.super.existI(plugin, whereColumn, whereObject);
-		case BANKACCOUNT:
-			return TableII.super.existII(plugin, whereColumn, whereObject);
-		case ACTION:
-			return TableIII.super.existIII(plugin, whereColumn, whereObject);
-		case TREND:
-			return TableIV.super.existIV(plugin, whereColumn, whereObject);
-		case STANDINGORDER:
-			return TableV.super.existV(plugin, whereColumn, whereObject);
-		case LOAN:
-			return TableVI.super.existVI(plugin, whereColumn, whereObject);
-		case LOGGERSETTINGSPRESET:
-			return TableVII.super.existVII(plugin, whereColumn, whereObject);
+			try 
+			{			
+				String sql = "SELECT `id` FROM `" + type.getValue()
+						+ "` WHERE "+whereColumn+" LIMIT 1";
+		        preparedStatement = conn.prepareStatement(sql);
+		        int i = 1;
+		        for(Object o : whereObject)
+		        {
+		        	preparedStatement.setObject(i, o);
+		        	i++;
+		        }
+		        result = preparedStatement.executeQuery();
+		        MysqlHandler.addRows(QueryType.READ, result.getMetaData().getColumnCount());
+		        while (result.next()) 
+		        {
+		        	return true;
+		        }
+		    } catch (SQLException e) 
+			{
+				  AdvancedEconomyPlus.log.warning("Error: " + e.getMessage());
+				  e.printStackTrace();
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedStatement != null) 
+		    		  {
+		    			  preparedStatement.close();
+		    		  }
+		    	  } catch (Exception e) {
+		    		  e.printStackTrace();
+		    	  }
+		      }
 		}
 		return false;
 	}
@@ -101,9 +145,7 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 		switch(type)
 		{
 		case PLAYER:
-			return TableI.super.createI(plugin, object);
-		case BANKACCOUNT:
-			return TableII.super.createII(plugin, object);
+			return OLDTableI.super.createI(plugin, object);
 		case ACTION:
 			return TableIII.super.createIII(plugin, object);
 		case TREND:
@@ -123,9 +165,7 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 		switch(type)
 		{
 		case PLAYER:
-			return TableI.super.updateDataI(plugin, object, whereColumn, whereObject);
-		case BANKACCOUNT:
-			return TableII.super.updateDataII(plugin, object, whereColumn, whereObject);
+			return OLDTableI.super.updateDataI(plugin, object, whereColumn, whereObject);
 		case ACTION:
 			return TableIII.super.updateDataIII(plugin, object, whereColumn, whereObject);
 		case TREND:
@@ -145,9 +185,7 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 		switch(type)
 		{
 		case PLAYER:
-			return TableI.super.getDataI(plugin, whereColumn, whereObject);
-		case BANKACCOUNT:
-			return TableII.super.getDataII(plugin, whereColumn, whereObject);
+			return OLDTableI.super.getDataI(plugin, whereColumn, whereObject);
 		case ACTION:
 			return TableIII.super.getDataIII(plugin, whereColumn, whereObject);
 		case TREND:
@@ -162,90 +200,199 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 		return null;
 	}
 	
-	public boolean deleteData(Type type, String whereColumn, Object... whereObject)
+	public int deleteData(Type type, String whereColumn, Object... whereObject)
 	{
-		switch(type)
+		PreparedStatement preparedStatement = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		try 
 		{
-		case PLAYER:
-			return TableI.super.deleteDataI(plugin, whereColumn, whereObject);
-		case BANKACCOUNT:
-			return TableII.super.deleteDataII(plugin, whereColumn, whereObject);
-		case ACTION:
-			return TableIII.super.deleteDataIII(plugin, whereColumn, whereObject);
-		case TREND:
-			return TableIV.super.deleteDataIV(plugin, whereColumn, whereObject);
-		case STANDINGORDER:
-			return TableV.super.deleteDataV(plugin, whereColumn, whereObject);
-		case LOAN:
-			return TableVI.super.deleteDataVI(plugin, whereColumn, whereObject);
-		case LOGGERSETTINGSPRESET:
-			return TableVII.super.deleteDataVII(plugin, whereColumn, whereObject);
+			String sql = "DELETE FROM `" + type.getValue() + "` WHERE "+whereColumn;
+			preparedStatement = conn.prepareStatement(sql);
+			int i = 1;
+	        for(Object o : whereObject)
+	        {
+	        	preparedStatement.setObject(i, o);
+	        	i++;
+	        }
+	        int d = preparedStatement.executeUpdate();
+			MysqlHandler.addRows(QueryType.DELETE, d);
+			return d;
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		} finally 
+		{
+			try {
+				if (preparedStatement != null) 
+				{
+					preparedStatement.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		return false;
+		return 0;
 	}
 	
 	public int lastID(Type type)
 	{
-		switch(type)
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
 		{
-		case PLAYER:
-			return TableI.super.lastIDI(plugin);
-		case BANKACCOUNT:
-			return TableII.super.lastIDII(plugin);
-		case ACTION:
-			return TableIII.super.lastIDIII(plugin);
-		case TREND:
-			return TableIV.super.lastIDIV(plugin);
-		case STANDINGORDER:
-			return TableV.super.lastIDV(plugin);
-		case LOAN:
-			return TableVI.super.lastIDVI(plugin);
-		case LOGGERSETTINGSPRESET:
-			return TableVII.super.lastIDVII(plugin);
+			try 
+			{			
+				String sql = "SELECT `id` FROM `" + type.getValue() + "` ORDER BY `id` DESC LIMIT 1";
+		        preparedStatement = conn.prepareStatement(sql);
+		        
+		        result = preparedStatement.executeQuery();
+		        MysqlHandler.addRows(QueryType.READ, result.getMetaData().getColumnCount());
+		        while(result.next())
+		        {
+		        	return result.getInt("id");
+		        }
+		    } catch (SQLException e) 
+			{
+		    	e.printStackTrace();
+		    	return 0;
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedStatement != null) 
+		    		  {
+		    			  preparedStatement.close();
+		    		  }
+		    	  } catch (Exception e) 
+		    	  {
+		    		  e.printStackTrace();
+		    	  }
+		      }
 		}
 		return 0;
 	}
 	
 	public int countWhereID(Type type, String whereColumn, Object... whereObject)
 	{
-		switch(type)
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
 		{
-		case PLAYER:
-			return TableI.super.countWhereIDI(plugin, whereColumn, whereObject);
-		case BANKACCOUNT:
-			return TableII.super.countWhereIDII(plugin, whereColumn, whereObject);
-		case ACTION:
-			return TableIII.super.countWhereIDIII(plugin, whereColumn, whereObject);
-		case TREND:
-			return TableIV.super.countWhereIDIV(plugin, whereColumn, whereObject);
-		case STANDINGORDER:
-			return TableV.super.countWhereIDV(plugin, whereColumn, whereObject);
-		case LOAN:
-			return TableVI.super.countWhereIDVI(plugin, whereColumn, whereObject);
-		case LOGGERSETTINGSPRESET:
-			return TableVII.super.countWhereIDVII(plugin, whereColumn, whereObject);
+			try 
+			{			
+				String sql = "SELECT `id` FROM `" + type.getValue()
+						+ "` WHERE "+whereColumn
+						+ " ORDER BY `id` DESC";
+		        preparedStatement = conn.prepareStatement(sql);
+		        int i = 1;
+		        for(Object o : whereObject)
+		        {
+		        	preparedStatement.setObject(i, o);
+		        	i++;
+		        }
+		        result = preparedStatement.executeQuery();
+		        MysqlHandler.addRows(QueryType.READ, result.getMetaData().getColumnCount());
+		        int count = 0;
+		        while(result.next())
+		        {
+		        	count++;
+		        }
+		        return count;
+		    } catch (SQLException e) 
+			{
+		    	e.printStackTrace();
+		    	return 0;
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedStatement != null) 
+		    		  {
+		    			  preparedStatement.close();
+		    		  }
+		    	  } catch (Exception e) 
+		    	  {
+		    		  e.printStackTrace();
+		    	  }
+		      }
 		}
 		return 0;
 	}
 	
-	public ArrayList<?> getList(Type type, String orderByColumn, boolean desc, int start, int end, String whereColumn, Object...whereObject)
+	public int getCount(Type type, String orderByColumn, String whereColumn, Object... whereObject)
+	{
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
+		{
+			try 
+			{
+				String sql = " SELECT count(*) FROM `"+type.getValue()
+						+"` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+		        preparedStatement = conn.prepareStatement(sql);
+		        int i = 1;
+		        for(Object o : whereObject)
+		        {
+		        	preparedStatement.setObject(i, o);
+		        	i++;
+		        }
+		        
+		        result = preparedStatement.executeQuery();
+		        MysqlHandler.addRows(QueryType.READ, result.getMetaData().getColumnCount());
+		        while (result.next()) 
+		        {
+		        	return result.getInt(1);
+		        }
+		    } catch (SQLException e) 
+			{
+				  e.printStackTrace();
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedStatement != null) 
+		    		  {
+		    			  preparedStatement.close();
+		    		  }
+		    	  } catch (Exception e) {
+		    		  e.printStackTrace();
+		    	  }
+		      }
+		}
+		return 0;
+	}
+	
+	public ArrayList<?> getList(Type type, String orderByColumn, int start, int quantity, String whereColumn, Object...whereObject)
 	{
 		switch(type)
 		{
 		case PLAYER:
-			return TableI.super.getListI(plugin, orderByColumn, start, end, whereColumn, whereObject);
-		case BANKACCOUNT:
-			return TableII.super.getListII(plugin, orderByColumn, start, end, whereColumn, whereObject);
+			return OLDTableI.super.getListI(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
 		case ACTION:
-			return TableIII.super.getListIII(plugin, orderByColumn, desc, start, end, whereColumn, whereObject);
+			return TableIII.super.getListIII(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
 		case TREND:
-			return TableIV.super.getListIV(plugin, orderByColumn, desc, start, end, whereColumn, whereObject);
+			return TableIV.super.getListIV(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
 		case STANDINGORDER:
-			return TableV.super.getListV(plugin, orderByColumn, start, end, whereColumn, whereObject);
+			return TableV.super.getListV(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
 		case LOAN:
-			return TableVI.super.getListVI(plugin, orderByColumn, start, end, whereColumn, whereObject);
+			return TableVI.super.getListVI(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
 		case LOGGERSETTINGSPRESET:
-			return TableVII.super.getListVII(plugin, orderByColumn, start, end, whereColumn, whereObject);
+			return TableVII.super.getListVII(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
 		}
 		return null;
 	}
@@ -255,9 +402,7 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 		switch(type)
 		{
 		case PLAYER:
-			return TableI.super.getTopI(plugin, orderByColumn, start, end);
-		case BANKACCOUNT:
-			return TableII.super.getTopII(plugin, orderByColumn, start, end);
+			return OLDTableI.super.getTopI(plugin, orderByColumn, start, end);
 		case ACTION:
 			return TableIII.super.getTopIII(plugin, orderByColumn, start, end);
 		case TREND:
@@ -273,18 +418,16 @@ public class MysqlHandler implements TableI, TableII, TableIII, TableIV, TableV,
 	}
 	
 	public ArrayList<?> getAllListAt(Type type, String orderByColumn,
-			boolean desc, String whereColumn, Object...whereObject) throws IOException
+			String whereColumn, Object...whereObject) throws IOException
 	{
 		switch(type)
 		{
 		case PLAYER:
-			return TableI.super.getAllListAtI(plugin, orderByColumn, whereColumn, whereObject);
-		case BANKACCOUNT:
-			return TableII.super.getAllListAtII(plugin, orderByColumn, whereColumn, whereObject);
+			return OLDTableI.super.getAllListAtI(plugin, orderByColumn, whereColumn, whereObject);
 		case ACTION:
-			return TableIII.super.getAllListAtIII(plugin, orderByColumn, desc, whereColumn, whereObject);
+			return TableIII.super.getAllListAtIII(plugin, orderByColumn, whereColumn, whereObject);
 		case TREND:
-			return TableIV.super.getAllListAtIV(plugin, orderByColumn, desc, whereColumn, whereObject);
+			return TableIV.super.getAllListAtIV(plugin, orderByColumn, whereColumn, whereObject);
 		case STANDINGORDER:
 			return TableV.super.getAllListAtV(plugin, orderByColumn, whereColumn, whereObject);
 		case LOAN:

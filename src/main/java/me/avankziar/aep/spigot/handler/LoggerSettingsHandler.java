@@ -16,25 +16,34 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.assistance.Utility;
+import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.Language.ISO639_2B;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.InventoryHandlerType;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.OrderType;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import main.java.me.avankziar.aep.spigot.object.subs.ActionFilterSettings;
 import main.java.me.avankziar.aep.spigot.object.subs.TrendFilterSettings;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
 
 public class LoggerSettingsHandler
 {
+	public enum Access
+	{
+		COMMAND, GUI
+	}
+	
 	public enum Methode
 	{
 		BARCHART, DIAGRAM, GRAFIC, LOG, JSON;
@@ -55,7 +64,7 @@ public class LoggerSettingsHandler
 		return filterSettings;
 	}
 	
-	public void generateGUI(Player player, UUID uuid, UUID UseUUID, String UseBankNumber, Inventory openInventory, int page)
+	public void generateGUI(Player player, UUID uuid, int accountID, Inventory openInventory, int page)
 	{
 		Inventory inventory = openInventory;
 		if(openInventory == null)
@@ -65,7 +74,7 @@ public class LoggerSettingsHandler
 		LoggerSettings fst = getLoggerSettings().get(uuid);
 		if(fst == null)
 		{
-			fst = new LoggerSettings(UseUUID, UseBankNumber, page);
+			fst = new LoggerSettings(accountID, page);
 			fst.setInventoryHandlerType(InventoryHandlerType.NORMAL);
 			getLoggerSettings().put(uuid, fst);
 		}
@@ -182,19 +191,19 @@ public class LoggerSettingsHandler
 		case 40: //Barchart Befehl ausführen
 			fst.setAction(true);
 			getLoggerSettings().replace(uuid, fst);
-			forwardingToOutput((Player) event.getWhoClicked(), fst, true, Methode.BARCHART, 0);
+			forwardingToOutput((Player) event.getWhoClicked(), fst, Access.GUI, Methode.BARCHART, 0, loggerSettingsCommandString);
 			break;
 		case 48: //Diagram Befehl ausführen. Linksklick: Action | Rechtsklick: Trend
 			if(event.isLeftClick())
 			{
 				fst.setAction(true);
 				getLoggerSettings().replace(uuid, fst);
-				forwardingToOutput((Player) event.getWhoClicked(), fst, true, Methode.DIAGRAM, 0);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, Access.GUI, Methode.DIAGRAM, 0, loggerSettingsCommandString);
 			} else if(event.isRightClick())
 			{
 				fst.setAction(false);
 				getLoggerSettings().replace(uuid, fst);
-				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.DIAGRAM, 0);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, Access.GUI, Methode.DIAGRAM, 0, loggerSettingsCommandString);
 			}
 			break;
 		case 50: //Grafik Befehl ausführen.
@@ -202,12 +211,12 @@ public class LoggerSettingsHandler
 			{
 				fst.setAction(true);
 				getLoggerSettings().replace(uuid, fst);
-				forwardingToOutput((Player) event.getWhoClicked(), fst, true, Methode.GRAFIC, 0);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, Access.GUI, Methode.GRAFIC, 0, loggerSettingsCommandString);
 			} else if(event.isRightClick())
 			{
 				fst.setAction(false);
 				getLoggerSettings().replace(uuid, fst);
-				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.GRAFIC, 0);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, Access.GUI, Methode.GRAFIC, 0, loggerSettingsCommandString);
 			}
 			break;
 		case 49: //Log Befehl ausführen.
@@ -215,12 +224,12 @@ public class LoggerSettingsHandler
 			{
 				fst.setAction(true);
 				getLoggerSettings().replace(uuid, fst);
-				forwardingToOutput((Player) event.getWhoClicked(), fst, true, Methode.LOG, 0);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, Access.GUI, Methode.LOG, 0, loggerSettingsCommandString);
 			} else if(event.isRightClick())
 			{
 				fst.setAction(false);
 				getLoggerSettings().replace(uuid, fst);
-				forwardingToOutput((Player) event.getWhoClicked(), fst, false, Methode.LOG, 0);
+				forwardingToOutput((Player) event.getWhoClicked(), fst, Access.GUI, Methode.LOG, 0, loggerSettingsCommandString);
 			}
 			break;
 		case 36: //PreSet 1
@@ -252,7 +261,7 @@ public class LoggerSettingsHandler
 				fst.setSlotid(slotid);
 				plugin.getMysqlHandler().create(Type.LOGGERSETTINGSPRESET, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 44: //PreSet 2
 			slotid = 2;
@@ -283,7 +292,7 @@ public class LoggerSettingsHandler
 				fst.setSlotid(slotid);
 				plugin.getMysqlHandler().create(Type.LOGGERSETTINGSPRESET, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 45: //PreSet 3
 			slotid = 3;
@@ -314,7 +323,7 @@ public class LoggerSettingsHandler
 				fst.setSlotid(slotid);
 				plugin.getMysqlHandler().create(Type.LOGGERSETTINGSPRESET, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 53: //PreSet 4
 			slotid = 4;
@@ -345,23 +354,23 @@ public class LoggerSettingsHandler
 				fst.setSlotid(slotid);
 				plugin.getMysqlHandler().create(Type.LOGGERSETTINGSPRESET, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
-		case 3: //Sender Set Befehl ausführen
+		case 3: //Account ID Set Befehl ausführen
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
 			{
 				resetLoggerSetting(fst);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.DROP) // Q
 			{
-				fst.getActionFilter().setFrom(null);
+				fst.setAccountID(0);
 				getLoggerSettings().replace(uuid, fst);
-				generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+				generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 				break;
 			} else if(event.getClick() == ClickType.LEFT
 					|| event.getClick() == ClickType.RIGHT) // Links || Rechts
 			{
-				fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_FROM);
+				fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_ACCOUNT_ID);
 				getLoggerSettings().replace(uuid, fst);
 				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
 				break;
@@ -376,7 +385,7 @@ public class LoggerSettingsHandler
 			{
 				fst.getActionFilter().setOrderer(null);
 				getLoggerSettings().replace(uuid, fst);
-				generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+				generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 				break;
 			} else if(event.getClick() == ClickType.LEFT
 					|| event.getClick() == ClickType.RIGHT) // Links || Rechts
@@ -387,21 +396,21 @@ public class LoggerSettingsHandler
 				break;
 			}
 			break;
-		case 5: //to Set Befehl ausführen
+		case 5: //Category Set Befehl ausführen
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
 			{
 				resetLoggerSetting(fst);
 				getLoggerSettings().replace(uuid, fst);
 			} else if(event.getClick() == ClickType.DROP) // Q
 			{
-				fst.getActionFilter().setTo(null);
+				fst.setAccountID(0);
 				getLoggerSettings().replace(uuid, fst);
-				generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+				generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 				break;
 			} else if(event.getClick() == ClickType.LEFT
 					|| event.getClick() == ClickType.RIGHT) // Links || Rechts
 			{
-				fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_TO);
+				fst.setInventoryHandlerType(InventoryHandlerType.ANVILEDITOR_CATEGORY);
 				getLoggerSettings().replace(uuid, fst);
 				generateAnvilStringEditor((Player)event.getWhoClicked(), fst);
 				break;
@@ -416,7 +425,7 @@ public class LoggerSettingsHandler
 			{
 				fst.getActionFilter().setComment(null);
 				getLoggerSettings().replace(uuid, fst);
-				generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+				generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 				break;
 			} else if(event.getClick() == ClickType.LEFT
 					|| event.getClick() == ClickType.RIGHT) // Links || Rechts
@@ -458,7 +467,7 @@ public class LoggerSettingsHandler
 				fst.setMin(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 9:
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q : Alles Löschen
@@ -490,7 +499,7 @@ public class LoggerSettingsHandler
 				fst.setMin(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;	
 		case 18:
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q : Alles Löschen
@@ -522,7 +531,7 @@ public class LoggerSettingsHandler
 				fst.setMin(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;	
 		//Max ist für Greatthan, Between
 		case 8:
@@ -555,7 +564,7 @@ public class LoggerSettingsHandler
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 17:
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q : Alles Löschen
@@ -587,7 +596,7 @@ public class LoggerSettingsHandler
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 26:
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q : Alles Löschen
@@ -619,7 +628,7 @@ public class LoggerSettingsHandler
 				fst.setMax(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		//Firststand
 		case 29:
@@ -652,7 +661,7 @@ public class LoggerSettingsHandler
 				fst.getTrendfFilter().setFirstStand(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 38:
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
@@ -686,7 +695,7 @@ public class LoggerSettingsHandler
 				fst.getTrendfFilter().setFirstStand(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		//LastStand
 		case 33:
@@ -719,7 +728,7 @@ public class LoggerSettingsHandler
 				fst.getTrendfFilter().setLastStand(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 42:
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
@@ -751,7 +760,7 @@ public class LoggerSettingsHandler
 				fst.getTrendfFilter().setLastStand(d);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 11: //Descending boolean einbauen
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
@@ -767,7 +776,7 @@ public class LoggerSettingsHandler
 				fst.setDescending(true);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		case 15: //OrderType einstellen.
 			if(event.getClick() == ClickType.CONTROL_DROP) // Strg + Q
@@ -783,7 +792,7 @@ public class LoggerSettingsHandler
 				fst.setOrderType(OrderType.ID);
 				getLoggerSettings().replace(uuid, fst);
 			}
-			generateGUI((Player) event.getWhoClicked(), uuid, fst.getUuid(), fst.getBankNumber(), inventory, fst.getPage());
+			generateGUI((Player) event.getWhoClicked(), uuid, fst.getAccountID(), inventory, fst.getPage());
 			break;
 		default:
 			break;
@@ -809,7 +818,7 @@ public class LoggerSettingsHandler
 	{
 		player.closeInventory();
 		player.spigot().sendMessage(ChatApi.clickEvent
-				(plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsTextSuggest")
+				(plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsTextSuggest")
 				, Action.SUGGEST_COMMAND, loggerSettingsTextCommandString));
 	}
 	
@@ -820,47 +829,52 @@ public class LoggerSettingsHandler
 		{
 			return;
 		}
-		AEPUser eco = null;
 		if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_COMMENT)
 		{
 			fst.getActionFilter().setComment(searchtext.replace("'", ""));
-		} else if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_FROM)
+		} else if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_ACCOUNT_ID)
 		{
-			eco = AEPUserHandler.getEcoPlayer(searchtext.replace("'", ""));
-			if(eco == null)
+			String[] args = searchtext.replace("'", "").split(" ");
+			Account ac = null;
+			if(args.length == 1)
 			{
-				fst.getActionFilter().setFrom(searchtext.replace("'", ""));
-			} else
+				if(MatchApi.isInteger(args[0]))
+				{
+					ac = plugin.getIFHApi().getAccount(Integer.parseInt(args[0]));
+					if(ac != null)
+					{
+						fst.setAccountID(ac.getID());
+					}
+				}
+			} else if(args.length == 2)
 			{
-				fst.getActionFilter().setFrom(eco.getUUID().toString());
+				EconomyEntity ee = plugin.getIFHApi().getEntity(args[0]);
+				ac = plugin.getIFHApi().getAccount(ee, args[1]);
+				if(ac != null)
+				{
+					fst.setAccountID(ac.getID());
+				}
 			}
-		} else if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_TO)
+		} else if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_CATEGORY)
 		{
-			eco = AEPUserHandler.getEcoPlayer(searchtext.replace("'", ""));
-			if(eco == null)
-			{
-				fst.getActionFilter().setTo(searchtext.replace("'", ""));
-			} else
-			{
-				fst.getActionFilter().setTo(eco.getUUID().toString());
-			}
+			fst.getActionFilter().setCategory(searchtext.replace("'", ""));
 		} else if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_ORDERER)
 		{
-			eco = AEPUserHandler.getEcoPlayer(searchtext.replace("'", ""));
-			if(eco == null)
+			EconomyEntity ee = plugin.getIFHApi().getEntity(searchtext.replace("'", ""));
+			if(ee != null)
 			{
-				fst.getActionFilter().setOrderer(searchtext.replace("'", ""));
+				fst.getActionFilter().setOrderer(ee.getUUID().toString());
 			} else
 			{
-				fst.getActionFilter().setOrderer(eco.getUUID().toString());
+				fst.getActionFilter().setOrderer(searchtext.replace("'", ""));
 			}
 		} else
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsTextOnlyThroughGUI")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsTextOnlyThroughGUI")));
 			return;
 		}
 		getLoggerSettings().put(player.getUniqueId(), fst);
-		generateGUI(player, player.getUniqueId(), null, null, null, fst.getPage());
+		generateGUI(player, player.getUniqueId(), -1, null, fst.getPage());
 	}
 	
 	public ItemStack generateItem(int slot, LoggerSettings fst, UUID uuid, boolean withEnd, boolean isPreset)
@@ -912,92 +926,46 @@ public class LoggerSettingsHandler
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%uuid%") && ls.getUuid() != null)
+					if(s.contains("%accountName%") && ls.getAccountID() > 0)
 					{
-						AEPUser eco = AEPUserHandler.getEcoPlayer(ls.getUuid());
-						if(eco != null)
+						Account ac = plugin.getIFHApi().getAccount(ls.getAccountID());
+						if(ac != null)
 						{
-							s = s.replace("%uuid%", eco.getName());
-						} else
-						{
-							s = s.replace("%uuid%", ls.getUuid().toString());
+							s = s.replace("%accountName%", ac.getAccountName());
 						}
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%number%") && ls.getBankNumber() != null)
+					if(s.contains("%number%"))
 					{
-						s = s.replace("%number%", ls.getBankNumber());
+						s = s.replace("%number%", String.valueOf(ls.getAccountID()));
 						lore.add(s);
 						continue;
 					}
 					if(fst.getActionFilter() != null)
 					{
-						if((s.contains("%from%") || s.contains("%to%"))
-								&& (ls.getActionFilter().getFrom() != null || ls.getActionFilter().getTo() != null))
+						if(s.contains("%orderer%") && ls.getActionFilter().getOrderer() != null)
 						{
-							AEPUser eco = null;
-							if(ls.getActionFilter().getFrom() != null)
+							if(MatchApi.isUUID(ls.getActionFilter().getOrderer()))
 							{
-								try
+								EconomyEntity ee = plugin.getIFHApi().getEntity(UUID.fromString(ls.getActionFilter().getOrderer()));
+								if(ee != null)
 								{
-									eco = AEPUserHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getFrom()));
-								} catch(IllegalArgumentException e) {}
-							}
-							if(eco != null)
-							{
-								s = s.replace("%from%", eco.getName());
-							} else if(ls.getActionFilter().getFrom() != null)
-							{
-								s = s.replace("%from%", ls.getActionFilter().getFrom());
+									s = s.replace("%orderer%", ee.getName());
+								} else
+								{
+									s = s.replace("%orderer%", "/");
+								}
 							} else
 							{
-								s = s.replace("%from%", "/");
-							}
-							AEPUser ecoII = null;
-							if(ls.getActionFilter().getTo() != null)
-							{
-								try
-								{
-									ecoII = AEPUserHandler.getEcoPlayer(UUID.fromString(ls.getActionFilter().getTo()));
-								} catch(IllegalArgumentException e) {}
-							}
-							if(ecoII != null)
-							{
-								s = s.replace("%to%", ecoII.getName());
-							} else if(ls.getActionFilter().getTo() != null)
-							{
-								s = s.replace("%to%", ls.getActionFilter().getTo());
-							} else
-							{
-								s = s.replace("%to%", "/");
+								s = s.replace("%orderer%", ls.getActionFilter().getOrderer());
 							}
 							lore.add(s);
 							continue;
 						}
-						if(s.contains("%orderer%") && ls.getActionFilter().getOrderer() != null)
+						if(s.contains("%category%") && ls.getActionFilter().getCategory() != null)
 						{
-							AEPUser eco = null;
-							UUID ecouuid = null;
-							try
-							{
-								ecouuid = UUID.fromString(ls.getActionFilter().getOrderer());
-								if(ecouuid != null)
-								{
-									eco = AEPUserHandler.getEcoPlayer(ecouuid);
-								}
-							} catch(IllegalArgumentException e){}
-							if(eco != null)
-							{
-								s = s.replace("%orderer%", eco.getName());
-							} else if(ls.getActionFilter().getOrderer() != null)
-							{
-								s = s.replace("%orderer%", ls.getActionFilter().getOrderer());
-							} else
-							{
-								s = s.replace("%orderer%", "/");
-							}
-							s = s.replace("%orderer%", ls.getActionFilter().getOrderer());
+							s = s.replace("%category%", ChatApi.tl(ls.getActionFilter().getCategory()));
 							lore.add(s);
 							continue;
 						}
@@ -1070,87 +1038,46 @@ public class LoggerSettingsHandler
 					lore.add(s);
 					continue;
 				}
-				if(s.contains("%uuid%") && fst.getUuid() != null)
+				if(s.contains("%accountName%") && fst.getAccountID() > 0)
 				{
-					AEPUser eco = AEPUserHandler.getEcoPlayer(fst.getUuid());
-					if(eco != null)
+					Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
+					if(ac != null)
 					{
-						s = s.replace("%uuid%", eco.getName());
-					} else
-					{
-						s = s.replace("%uuid%", fst.getUuid().toString());
+						s = s.replace("%accountName%", ac.getAccountName());
 					}
 					lore.add(s);
 					continue;
 				}
-				if(s.contains("%number%") && fst.getBankNumber() != null)
+				if(s.contains("%number%"))
 				{
-					s = s.replace("%number%", fst.getBankNumber());
+					s = s.replace("%number%", String.valueOf(fst.getAccountID()));
 					lore.add(s);
 					continue;
 				}
 				if(fst.getActionFilter() != null)
 				{
-					if((s.contains("%from%") || s.contains("%to%"))
-							&& (fst.getActionFilter().getFrom() != null || fst.getActionFilter().getTo() != null))
+					if(s.contains("%orderer%") && fst.getActionFilter().getOrderer() != null)
 					{
-						AEPUser eco = null;
-						if(fst.getActionFilter().getFrom() != null)
+						if(MatchApi.isUUID(fst.getActionFilter().getOrderer()))
 						{
-							try
+							EconomyEntity ee = plugin.getIFHApi().getEntity(UUID.fromString(fst.getActionFilter().getOrderer()));
+							if(ee != null)
 							{
-								eco = AEPUserHandler.getEcoPlayer(UUID.fromString(fst.getActionFilter().getFrom()));
-							} catch(IllegalArgumentException e) {}
-						}
-						if(eco != null)
-						{
-							s = s.replace("%from%", eco.getName());
-						} else if(fst.getActionFilter().getFrom() != null)
-						{
-							s = s.replace("%from%", fst.getActionFilter().getFrom());
+								s = s.replace("%orderer%", ee.getName());
+							} else
+							{
+								s = s.replace("%orderer%", "/");
+							}
 						} else
 						{
-							s = s.replace("%from%", "/");
-						}
-						AEPUser ecoII = null;
-						if(fst.getActionFilter().getTo() != null)
-						{
-							try
-							{
-								ecoII = AEPUserHandler.getEcoPlayer(UUID.fromString(fst.getActionFilter().getTo()));
-							} catch(IllegalArgumentException e) {}
-						}
-						if(ecoII != null)
-						{
-							s = s.replace("%to%", ecoII.getName());
-						} else if(fst.getActionFilter().getTo() != null)
-						{
-							s = s.replace("%to%", fst.getActionFilter().getTo());
-						} else
-						{
-							s = s.replace("%to%", "/");
+							s = s.replace("%orderer%", fst.getActionFilter().getOrderer());
 						}
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%orderer%") && fst.getActionFilter().getOrderer() != null)
+					if(s.contains("%category%") && fst.getActionFilter().getCategory() != null)
 					{
-						AEPUser eco = null;
-						try
-						{
-							eco = AEPUserHandler.getEcoPlayer(UUID.fromString(fst.getActionFilter().getOrderer()));
-						} catch(IllegalArgumentException e) {}
-						if(eco != null)
-						{
-							s = s.replace("%orderer%", eco.getName());
-						} else if(fst.getActionFilter().getOrderer() != null)
-						{
-							s = s.replace("%orderer%", fst.getActionFilter().getOrderer());
-						} else
-						{
-							s = s.replace("%orderer%", "/");
-						}
-						s = s.replace("%orderer%", fst.getActionFilter().getOrderer());
+						s = s.replace("%category%", ChatApi.tl(fst.getActionFilter().getCategory()));
 						lore.add(s);
 						continue;
 					}
@@ -1202,280 +1129,255 @@ public class LoggerSettingsHandler
 		return is;
 	}
 	
-	public void forwardingToOutput(Player player, LoggerSettings fst, boolean isAction, Methode methode, int page) throws IOException
+	public void forwardingToOutput(Player player, LoggerSettings fst, LoggerSettingsHandler.Access access, Methode methode, int page, String cmdString) throws IOException
 	{
-		if(fst.getActionFilter().getFrom() != null
-				&& fst.getActionFilter().getTo() != null
-				&& (fst.getActionFilter().getFrom().equals(fst.getActionFilter().getTo())
-						|| (!fst.getActionFilter().getFrom().equals(player.getName())
-								&& !fst.getActionFilter().getTo().equals(player.getName())))
-				&& !player.hasPermission(Utility.PERM_BYPASS_LOGOTHER))
+		new BukkitRunnable()
 		{
-			fst.setInventoryHandlerType(InventoryHandlerType.NONE);
-			getLoggerSettings().replace(player.getUniqueId(), fst);
-			player.closeInventory();
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getL().getString("NoPermission")));
-			return;
-		}
-		player.closeInventory();
-		ArrayList<Object> whereObjects = new ArrayList<>();
-		String query = "";
-		String order = "`id`";
-		if(isAction)
-		{
-			if(fst.getOrderType() != OrderType.ID)
+			@Override
+			public void run()
 			{
-				order = "`amount`";
-			}
-			if(fst.getActionFilter().getFrom() != null
-					&& fst.getActionFilter().getTo() != null
-					&& fst.getActionFilter().getFrom().equals(fst.getActionFilter().getTo()))
-			{
-				query += "(`from_uuidornumber` = ? OR ";
-				whereObjects.add(fst.getActionFilter().getFrom());
-				query += "`to_uuidornumber` = ?) AND ";
-				whereObjects.add(fst.getActionFilter().getTo());
-			} else if(fst.getActionFilter().getFrom() != null
-					|| fst.getActionFilter().getTo() != null)
-			{
-				if(fst.getActionFilter().getFrom() != null)
+				if(fst.getAccountID() > 0
+						&& !plugin.getIFHApi().canManageAccount(fst.getAccountID(), player.getUniqueId(), AccountManagementType.CAN_SEE_LOG))
 				{
-					query += "(`from_uuidornumber` = ? AND ";
-					whereObjects.add(fst.getActionFilter().getFrom());
+					fst.setInventoryHandlerType(InventoryHandlerType.NONE);
+					getLoggerSettings().replace(player.getUniqueId(), fst);
+					player.closeInventory();
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+					return;
+				}
+				Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
+				if(ac == null)
+				{
+					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Log.AccountDontExit")));
+					player.closeInventory();
+					return;
+				}
+				player.closeInventory();
+				ArrayList<Object> whereObjects = new ArrayList<>();
+				String query = "";
+				String order = "`id`";
+				if(fst.isAction())
+				{
+					if(fst.getOrderType() != OrderType.ID)
+					{
+						order = "`amount`"+ (fst.isDescending() ? " DESC" : " ASC");
+					}
+					if(fst.getAccountID() > 0)
+					{
+						query += "(`from_account_id` = ? OR ";
+						whereObjects.add(fst.getAccountID());
+						query += "`tax_account_id` = ? OR ";
+						whereObjects.add(fst.getAccountID());
+						query += "`to_account_id` = ?) AND ";
+						whereObjects.add(fst.getAccountID());
+					}
+					if(fst.getActionFilter().getOrderer() != null)
+					{
+						query += "`orderer_uuid` = ? AND ";
+						whereObjects.add(fst.getActionFilter().getOrderer());
+					}
+					if(fst.getActionFilter().getCategory() != null)
+					{
+						query += "(`category` LIKE ?) AND ";
+						whereObjects.add("%"+fst.getActionFilter().getCategory()+"%");
+					}
+					if(fst.getActionFilter().getComment() != null)
+					{
+						query += "(`comment` LIKE ?) AND ";
+						whereObjects.add("%"+fst.getActionFilter().getComment()+"%");
+					}
+					if(fst.getMin() != null)
+					{
+						query += "`amount` > ? AND ";
+						whereObjects.add(fst.getMin());
+					}
+					if(fst.getMax() != null)
+					{
+						query += "`amount` < ? AND ";
+						whereObjects.add(fst.getMax());
+					}
 				} else
 				{
-					query += "(`from_uuidornumber` = ? AND ";
-					if(fst.getUuid() != null)
+					if(fst.getOrderType() != OrderType.ID)
 					{
-						whereObjects.add(fst.getUuid().toString());
-					} else
+						order = "`relative_amount_change`"+ (fst.isDescending() ? " DESC" : " ASC");
+					}
+					if(fst.getAccountID() > 0)
 					{
-						whereObjects.add(fst.getBankNumber());
+						query += "`account_id` = ? AND ";
+						whereObjects.add(fst.getAccountID());
+					}
+					if(fst.getTrendfFilter().getFirstStand() != null)
+					{
+						query += "`firstvalue` > ? AND ";
+						whereObjects.add(fst.getTrendfFilter().getFirstStand());
+					}
+					if(fst.getTrendfFilter().getLastStand() != null)
+					{
+						query += "`lastvalue` < ? AND ";
+						whereObjects.add(fst.getTrendfFilter().getLastStand());
+					}
+					if(fst.getMin() != null)
+					{
+						query += "`relative_amount_change` > ? AND ";
+						whereObjects.add(fst.getMin());
+					}
+					if(fst.getMax() != null)
+					{
+						query += "`relative_amount_change` < ? AND ";
+						whereObjects.add(fst.getMax());
 					}
 				}
-				if(fst.getActionFilter().getTo() != null)
+				query = query.substring(0, query.length()-5);
+				OLD_AEPUser eco = _AEPUserHandler_OLD.getEcoPlayer(player.getUniqueId());
+				if(eco == null)
 				{
-					query += "`to_uuidornumber` = ?) AND ";
-					whereObjects.add(fst.getActionFilter().getTo());
-				} else
+					//Der Spieler existiert nicht!
+					player.sendMessage(ChatApi.tl(
+							plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
+					return;
+				}
+				fst.setInventoryHandlerType(InventoryHandlerType.NONE);
+				getLoggerSettings().replace(player.getUniqueId(), fst);
+				int start = 0;
+				int end = 0;
+				player.closeInventory();
+				Object[] whereObject = whereObjects.toArray(new Object[whereObjects.size()]);
+				if(Methode.BARCHART == methode)
 				{
-					query += "`to_uuidornumber` = ?) AND ";
-					if(fst.getUuid() != null)
+					start = page;
+					end = page+1;
+					LocalDateTime now = LocalDateTime.now();
+					LocalDateTime ending = LocalDateTime.of(
+							now.getYear()-(start),
+							now.getMonth(),
+							now.getDayOfMonth(),
+							now.getHour(),
+							now.getMinute(),
+							now.getSecond());
+					LocalDateTime starting = LocalDateTime.of(
+							now.getYear()-(end),
+							now.getMonth(),
+							1, 1, 1, 1);
+					ArrayList<ActionLogger> list = new ArrayList<>();
+					try
 					{
-						whereObjects.add(fst.getUuid().toString());
+						list = ConvertHandler.convertListIII(
+								plugin.getMysqlHandler().getAllListAtIIIUnixtimeModified(plugin, order, starting, ending,
+								query, whereObject));
+					} catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+					int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
+					LogHandler.sendActionBarChart(plugin, player, fst, list, page, end, last, 
+							(cmdString != null ? cmdString : loggerSettingsCommandString));
+					return;
+				} else if(Methode.DIAGRAM == methode)
+				{
+					if(fst.isAction())
+					{
+						start = page*10;
+						end = 9;
+						ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
+								plugin.getMysqlHandler().getList(Type.ACTION, order, start, end,
+										query, whereObject));
+						int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
+						LogHandler.sendActionDiagram(plugin, player, fst, list, page, end, last, 
+								cmdString != null ? cmdString : loggerSettingsCommandString);
+						return;
 					} else
 					{
-						whereObjects.add(fst.getBankNumber());
+						start = page*10;
+						end = 9;
+						ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
+								plugin.getMysqlHandler().getList(Type.TREND, order, start, end,
+										query, whereObject));
+						int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
+						LogHandler.sendTrendDiagram(plugin, player, fst, list, page, end, last, 
+								cmdString != null ? cmdString : loggerSettingsCommandString);
+						return;
 					}
+				} else if(Methode.GRAFIC == methode)
+				{
+					if(fst.isAction())
+					{
+						start = page*26;
+						end = 25;
+						ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
+								plugin.getMysqlHandler().getList(Type.ACTION, order, start, end,
+										query, whereObject));
+						int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
+						LogHandler.sendActionGrafic(plugin, player, fst, list, page, end, last, 
+								cmdString != null ? cmdString : loggerSettingsCommandString);
+						return;
+					} else
+					{
+						start = page*26;
+						end = 26;
+						ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
+								plugin.getMysqlHandler().getList(Type.TREND, order, start, end,
+										query, whereObject));
+						int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
+						LogHandler.sendTrendGrafic(plugin, player, fst, list, page, end, last, 
+								cmdString != null ? cmdString : loggerSettingsCommandString);
+						return;
+					}
+				} else if(Methode.LOG == methode)
+				{
+					if(fst.isAction())
+					{
+						start = page*10;
+						end = 9;
+						ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
+								plugin.getMysqlHandler().getList(Type.ACTION, order, start, end,
+										query, whereObject));
+						int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
+						LogHandler.sendActionLogs(plugin, player, fst, list, page, end, last, 
+								access,
+								cmdString != null ? cmdString : loggerSettingsCommandString);
+						return;
+					} else
+					{
+						start = page*10;
+						end = 9;
+						ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
+								plugin.getMysqlHandler().getList(Type.TREND, order, start, end,
+										query, whereObject));
+						int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
+						LogHandler.sendTrendLogs(plugin, player, fst, list, page, end, last, 
+								access, cmdString != null ? cmdString : loggerSettingsCommandString);
+						return;
+					}
+				} else if(Methode.JSON == methode)
+				{
+					if(fst.isAction())
+					{
+						String json = plugin.getMysqlHandler().getJSONOutputIII(plugin, player.getName(), order, fst.isDescending(), query, whereObject);
+						player.spigot().sendMessage(ChatApi.clickEvent(
+								plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsJSONOutput"),
+								ClickEvent.Action.COPY_TO_CLIPBOARD,
+								json));
+						player.spigot().sendMessage(ChatApi.clickEvent(
+								plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsJSONWebsiteText"),
+								ClickEvent.Action.OPEN_URL,
+								plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsJSONWebsite")));
+					} else
+					{
+						String json = plugin.getMysqlHandler().getJSONOutputIV(plugin, player.getName(), order, query, whereObject);
+						player.spigot().sendMessage(ChatApi.clickEvent(
+								plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsJSONOutput"),
+								ClickEvent.Action.COPY_TO_CLIPBOARD,
+								json));
+						player.spigot().sendMessage(ChatApi.clickEvent(
+								plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsJSONWebsiteText"),
+								ClickEvent.Action.OPEN_URL,
+								plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsJSONWebsite")));
+					}
+					return;
 				}
-			} else
-			{
-				query += "(`from_uuidornumber` = ? OR ";
-				if(fst.getUuid() != null)
-				{
-					whereObjects.add(fst.getUuid().toString());
-				} else
-				{
-					whereObjects.add(fst.getBankNumber());
-				}
-				query += "`to_uuidornumber` = ?) AND ";
-				if(fst.getUuid() != null)
-				{
-					whereObjects.add(fst.getUuid().toString());
-				} else
-				{
-					whereObjects.add(fst.getBankNumber());
-				}
 			}
-			if(fst.getActionFilter().getOrderer() != null)
-			{
-				query += "`orderer_uuid` = ? AND ";
-				whereObjects.add(fst.getActionFilter().getOrderer());
-			}
-			if(fst.getActionFilter().getComment() != null)
-			{
-				query += "(`comment` LIKE ?) AND ";
-				whereObjects.add("%"+fst.getActionFilter().getComment()+"%");
-			}
-			if(fst.getMin() != null)
-			{
-				query += "`amount` > ? AND ";
-				whereObjects.add(fst.getMin());
-			}
-			if(fst.getMax() != null)
-			{
-				query += "`amount` < ? AND ";
-				whereObjects.add(fst.getMax());
-			}
-		} else
-		{
-			if(fst.getOrderType() != OrderType.ID)
-			{
-				order = "`relative_amount_change`";
-			}
-			if(fst.getUuid() != null)
-			{
-				query += "`uuidornumber` = ? AND ";
-				whereObjects.add(fst.getUuid().toString());
-			} else if(fst.getBankNumber() != null)
-			{
-				query += "`uuidornumber` = ? AND ";
-				whereObjects.add(fst.getBankNumber());
-			}
-			if(fst.getTrendfFilter().getFirstStand() != null)
-			{
-				query += "`firstvalue` > ? AND ";
-				whereObjects.add(fst.getTrendfFilter().getFirstStand());
-			}
-			if(fst.getTrendfFilter().getLastStand() != null)
-			{
-				query += "`lastvalue` < ? AND ";
-				whereObjects.add(fst.getTrendfFilter().getLastStand());
-			}
-			if(fst.getMin() != null)
-			{
-				query += "`relative_amount_change` > ? AND ";
-				whereObjects.add(fst.getMin());
-			}
-			if(fst.getMax() != null)
-			{
-				query += "`relative_amount_change` < ? AND ";
-				whereObjects.add(fst.getMax());
-			}
-		}
-		query = query.substring(0, query.length()-5);
-		AEPUser eco = AEPUserHandler.getEcoPlayer(player.getUniqueId());
-		if(eco == null)
-		{
-			//Der Spieler existiert nicht!
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("PlayerNotExist")));
-			return;
-		}
-		fst.setInventoryHandlerType(InventoryHandlerType.NONE);
-		getLoggerSettings().replace(player.getUniqueId(), fst);
-		int start = 0;
-		int end = 0;
-		player.closeInventory();
-		Object[] whereObject = whereObjects.toArray(new Object[whereObjects.size()]);
-		if(Methode.BARCHART == methode)
-		{
-			start = page;
-			end = page+1;
-			LocalDateTime now = LocalDateTime.now();
-			LocalDateTime ending = LocalDateTime.of(
-					now.getYear()-(start),
-					now.getMonth(),
-					now.getDayOfMonth(),
-					now.getHour(),
-					now.getMinute(),
-					now.getSecond());
-			LocalDateTime starting = LocalDateTime.of(
-					now.getYear()-(end),
-					now.getMonth(),
-					1, 1, 1, 1);
-			ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
-					plugin.getMysqlHandler().getAllListAtIIIDateTimeModified(plugin, order, fst.isDescending(), starting, ending,
-					query, whereObject));
-			int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
-			LogHandler.sendActionBarChart(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
-			return;
-		} else if(Methode.DIAGRAM == methode)
-		{
-			if(isAction)
-			{
-				start = page*10;
-				end = 9;
-				ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
-						plugin.getMysqlHandler().getList(Type.ACTION, order, fst.isDescending(), start, end,
-								query, whereObject));
-				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
-				LogHandler.sendActionDiagram(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
-				return;
-			} else
-			{
-				start = page*10;
-				end = 9;
-				ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
-						plugin.getMysqlHandler().getList(Type.TREND, order, fst.isDescending(), start, end,
-								query, whereObject));
-				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
-				LogHandler.sendTrendDiagram(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
-				return;
-			}
-		} else if(Methode.GRAFIC == methode)
-		{
-			if(isAction)
-			{
-				start = page*26;
-				end = 25;
-				ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
-						plugin.getMysqlHandler().getList(Type.ACTION, order, fst.isDescending(), start, end,
-								query, whereObject));
-				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
-				LogHandler.sendActionGrafic(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
-				return;
-			} else
-			{
-				start = page*26;
-				end = 26;
-				ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
-						plugin.getMysqlHandler().getList(Type.TREND, order, fst.isDescending(), start, end,
-								query, whereObject));
-				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
-				LogHandler.sendTrendGrafic(plugin, player, eco, list, page, end, player.getName(), last, loggerSettingsCommandString);
-				return;
-			}
-		} else if(Methode.LOG == methode)
-		{
-			if(isAction)
-			{
-				start = page*10;
-				end = 9;
-				ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
-						plugin.getMysqlHandler().getList(Type.ACTION, order, fst.isDescending(), start, end,
-								query, whereObject));
-				int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
-				LogHandler.sendActionLogs(plugin, player, eco, fst, list, page, end, player.getName(), last, loggerSettingsCommandString);
-				return;
-			} else
-			{
-				start = page*10;
-				end = 9;
-				ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
-						plugin.getMysqlHandler().getList(Type.TREND, order, fst.isDescending(), start, end,
-								query, whereObject));
-				int last = plugin.getMysqlHandler().countWhereID(Type.TREND, query, whereObject);
-				LogHandler.sendTrendLogs(plugin, player, eco, fst, list, page, end, player.getName(), last, loggerSettingsCommandString);
-				return;
-			}
-		} else if(Methode.JSON == methode)
-		{
-			if(isAction)
-			{
-				String json = plugin.getMysqlHandler().getJSONOutputIII(plugin, player.getName(), order, fst.isDescending(), query, whereObject);
-				player.spigot().sendMessage(ChatApi.clickEvent(
-						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONOutput"),
-						ClickEvent.Action.COPY_TO_CLIPBOARD,
-						json));
-				player.spigot().sendMessage(ChatApi.clickEvent(
-						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONWebsiteText"),
-						ClickEvent.Action.OPEN_URL,
-						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONWebsite")));
-			} else
-			{
-				String json = plugin.getMysqlHandler().getJSONOutputIV(plugin, player.getName(), order, fst.isDescending(), query, whereObject);
-				player.spigot().sendMessage(ChatApi.clickEvent(
-						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONOutput"),
-						ClickEvent.Action.COPY_TO_CLIPBOARD,
-						json));
-				player.spigot().sendMessage(ChatApi.clickEvent(
-						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONWebsiteText"),
-						ClickEvent.Action.OPEN_URL,
-						plugin.getYamlHandler().getL().getString("CmdMoney.Log.LoggerSettingsJSONWebsite")));
-			}
-			return;
-		}
+		}.runTaskAsynchronously(plugin);
 	}
 	
 	public String valueOf(boolean boo)

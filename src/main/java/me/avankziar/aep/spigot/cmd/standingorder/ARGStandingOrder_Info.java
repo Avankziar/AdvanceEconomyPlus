@@ -17,6 +17,7 @@ import main.java.me.avankziar.aep.spigot.handler.KeyHandler;
 import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
 
 public class ARGStandingOrder_Info extends ArgumentModule
 {
@@ -35,7 +36,7 @@ public class ARGStandingOrder_Info extends ArgumentModule
 		if(!AEPSettings.settings.isStandingOrder())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoStandingOrder")));
+					plugin.getYamlHandler().getLang().getString("NoStandingOrder")));
 			return;
 		}
 		String ids = null;
@@ -47,7 +48,7 @@ public class ARGStandingOrder_Info extends ArgumentModule
 			if(!MatchApi.isInteger(ids))
 			{
 				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getL().getString("NoNumber")
+						plugin.getYamlHandler().getLang().getString("NoNumber")
 						.replace("%args%", ids)));
 				return;
 			}
@@ -58,7 +59,7 @@ public class ARGStandingOrder_Info extends ArgumentModule
 			if(!PendingHandler.standingOrder.containsKey(player.getUniqueId().toString()))
 			{
 				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getL().getString("CmdStandingOrder.NoPendingOrder")));
+						plugin.getYamlHandler().getLang().getString("CmdStandingOrder.NoPendingOrder")));
 				return;
 			}
 			so = PendingHandler.standingOrder.get(player.getUniqueId().toString());
@@ -67,7 +68,7 @@ public class ARGStandingOrder_Info extends ArgumentModule
 			if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.STANDINGORDER, "`id` = ?", id))
 			{
 				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getL().getString("CmdStandingOrder.OrderDontExist")));
+						plugin.getYamlHandler().getLang().getString("CmdStandingOrder.OrderDontExist")));
 				return;
 			}
 			StandingOrder soid = (StandingOrder) plugin.getMysqlHandler().getData(MysqlHandler.Type.STANDINGORDER, "`id` = ?", id);
@@ -75,59 +76,59 @@ public class ARGStandingOrder_Info extends ArgumentModule
 					&& !player.hasPermission(Utility.PERM_BYPASS_STANDINGORDER_INFO))
 			{
 				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.NoInfo")));
+						plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.NoInfo")));
 				return;
 			}
 			so = soid;
 		}
 		
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.Headline")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.Headline")
 				.replace("%id%", String.valueOf(so.getId()))
 				.replace("%cancelcmd%", AEPSettings.settings.getCommands(KeyHandler.SO_CANCEL).replace(" ", "+"))
 				.replace("%deletecmd%", AEPSettings.settings.getCommands(KeyHandler.SO_DELETE).replace(" ", "+"))));
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.Name")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.Name")
 				.replace("%name%", so.getName())));
-		String from = Utility.convertUUIDToName(so.getFrom());
+		String from = Utility.convertUUIDToName(so.getFrom(), EconomyType.PLAYER);
 		if(from == null)
 		{
 			from = "/";
 		}
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.From")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.From")
 				.replace("%from%", from)));
-		String to = Utility.convertUUIDToName(so.getTo());
+		String to = Utility.convertUUIDToName(so.getTo(), EconomyType.PLAYER);
 		if(to == null)
 		{
 			to = "/";
 		}
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.To")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.To")
 				.replace("%to%", to)));
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.Amount")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.Amount")
 				.replace("%amountcmd%", AEPSettings.settings.getCommands(KeyHandler.SO_AMOUNT).replace(" ", "+"))
 				.replace("%amount%", String.valueOf(so.getAmount()))));
 		player.spigot().sendMessage(ChatApi.tctl(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.AmountPaidSoFar")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.AmountPaidSoFar")
 				.replace("%amountpaidsofar%", String.valueOf(so.getAmountPaidSoFar()))));
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.RepeatingTime")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.RepeatingTime")
 				.replace("%repeatingtimecmd%", AEPSettings.settings.getCommands(KeyHandler.SO_REPEATINGTIME).replace(" ", "+"))
 				.replace("%repeatingtime%", TimeHandler.getRepeatingTime(so.getRepeatingTime()))));
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.StartTime")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.StartTime")
 				.replace("%starttimecmd%", AEPSettings.settings.getCommands(KeyHandler.SO_STARTTIME).replace(" ", "+"))
 				.replace("%starttime%", TimeHandler.getTime(so.getStartTime()))));
 		player.spigot().sendMessage(ChatApi.tctl(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.LastTime")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.LastTime")
 				.replace("%lasttime%", TimeHandler.getTime(so.getLastTime()))));
 		player.spigot().sendMessage(ChatApi.tctl(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.isCancelled")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.isCancelled")
 				.replace("%cancelled%", String.valueOf(so.isCancelled()))));
 		player.spigot().sendMessage(ChatApi.tctl(
-				plugin.getYamlHandler().getL().getString("CmdStandingOrder.Info.isPaused")
+				plugin.getYamlHandler().getLang().getString("CmdStandingOrder.Info.isPaused")
 				.replace("%paused%", String.valueOf(so.isPaused()))));
 		return;
 	}

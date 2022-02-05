@@ -11,10 +11,10 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
-import main.java.me.avankziar.aep.spigot.handler.AEPUserHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class ARGLoan_Reject extends ArgumentModule
@@ -34,22 +34,22 @@ public class ARGLoan_Reject extends ArgumentModule
 		if(!AEPSettings.settings.isLoanRepayment())
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("NoLoan")));
+					plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return;
 		}
 		if(!PendingHandler.loanToAccept.containsKey(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getL().getString("CmdLoan.NoToAcceptLoan")));
+					plugin.getYamlHandler().getLang().getString("CmdLoan.NoToAcceptLoan")));
 			return;
 		}
 		LoanRepayment dr = PendingHandler.loanToAccept.get(player.getUniqueId().toString());
-		AEPUser toplayer = AEPUserHandler.getEcoPlayer(dr.getLoanOwner());
-		String tomsg = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Reject.isRejecting")
+		OLD_AEPUser toplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getLoanOwner());
+		String tomsg = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Reject.isRejecting")
 				.replace("%toplayer%", toplayer.getName())
 				.replace("%name%", dr.getName())
 				.replace("%player%", player.getName()));
-		String tomsgII  = ChatApi.tl(plugin.getYamlHandler().getL().getString("CmdLoan.Reject.isCancelled"));
+		String tomsgII  = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Reject.isCancelled"));
 		boolean bungee = AEPSettings.settings.isBungee();
 		if(toplayer.isMoneyPlayerFlow())
 		{
