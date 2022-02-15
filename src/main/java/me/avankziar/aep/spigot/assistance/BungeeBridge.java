@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -179,10 +178,6 @@ public class BungeeBridge
 	
 	public static void sendBungeeMessage(Player p, String uuid, String message, boolean returnplayeronline, String returnmessage)
 	{
-		if(!AEPSettings.settings.isBungee())
-		{
-			return;
-		}
 		String µ = "µ";
 		String Category = "message";
 		String completMessage = Category+µ+uuid+µ+message+µ+returnplayeronline+µ+returnmessage;
@@ -198,10 +193,6 @@ public class BungeeBridge
 	
 	public static void sendBungeeTextComponent(Player p, String uuid, String message, boolean returnplayeronline, String returnmessage)
 	{
-		if(!AEPSettings.settings.isBungee())
-		{
-			return;
-		}
 		String µ = "µ";
 		String Category = "messagetextcomponent";
 		String completMessage = Category+µ+uuid+µ+message+µ+returnplayeronline+µ+returnmessage;

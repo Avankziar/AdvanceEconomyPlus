@@ -26,9 +26,12 @@ public class PlayerListener implements Listener
 		AEPUser aepu = (AEPUser) plugin.getMysqlHandler().getData(
 				MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", event.getPlayer().getUniqueId().toString());
 		//ADDME die alten Accounts übertragen
+		//ADDME die Accounts für alle Währungen erstellen
+		//ADDME die Admins über die überfälligen PlayerData aufklären(Die anzahl)
+		//ADDME wenn spieler joinen, ihre lastTime neusetzen.
 		if(aepu == null)
 		{
-			aepu = new AEPUser(event.getPlayer().getUniqueId(), event.getPlayer().getName(), 0,
+			aepu = new AEPUser(event.getPlayer().getUniqueId(), event.getPlayer().getName(),
 					ConfigHandler.getDefaultMoneyFlowNotification(true),
 					ConfigHandler.getDefaultMoneyFlowNotification(false));
 			AccountHandler.createAllCurrencyAccounts(event.getPlayer());
@@ -40,6 +43,7 @@ public class PlayerListener implements Listener
 				aepu.setName(newname);
 				plugin.getMysqlHandler().updateData(Type.PLAYERDATA, aepu, "`player_uuid` = ?", aepu.getUUID().toString());
 				//ADDME alle Accounts updaten wo der Spieler als Eigentümer eingetragen ist.
+				//ADDME einen config wert einbauen um einstellen zu können, alte accounts mitrüber zu nehmen.
 			}
 		}
 	}

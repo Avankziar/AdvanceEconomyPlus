@@ -65,7 +65,7 @@ public class LoggerApi
 			int start, int end, String whereColumn, Object... whereObjects)
 	{
 		return ConvertHandler.convertListIII(
-				plugin.getMysqlHandler().getList(Type.ACTION, orderByColumn, true, start, end, whereColumn, whereObjects));
+				plugin.getMysqlHandler().getList(Type.ACTION, orderByColumn, start, end, whereColumn, whereObjects));
 	}
 	
 	/**
@@ -178,6 +178,6 @@ public class LoggerApi
 			int start, int end, String whereColumn, Object... whereObjects)
 	{
 		return ConvertHandler.convertListIV(
-				plugin.getMysqlHandler().getList(Type.TREND, orderByColumn, true, start, end, whereColumn, whereObjects));
+				plugin.getMysqlHandler().getList(Type.TREND, orderByColumn, start, end, whereColumn, whereObjects));
 	}
 }

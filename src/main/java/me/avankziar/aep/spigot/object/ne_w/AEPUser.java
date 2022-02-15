@@ -6,17 +6,17 @@ public class AEPUser
 {
 	private UUID uuid;
 	private String name;
-	private int shortPayAccountID;
 	private boolean walletMoneyFlowNotification;
 	private boolean bankMoneyFlowNotification;
+	private long lastTimeLogin;
 	
-	public AEPUser(UUID uuid, String name, int shortPayAccountID, boolean walletMoneyFlowNotification, boolean bankMoneyFlowNotification)
+	public AEPUser(UUID uuid, String name, boolean walletMoneyFlowNotification, boolean bankMoneyFlowNotification, long lastTimeLogin)
 	{
 		setUUID(uuid);
 		setName(name);
-		setShortPayAccountID(shortPayAccountID);
 		setWalletMoneyFlowNotification(walletMoneyFlowNotification);
 		setBankMoneyFlowNotification(bankMoneyFlowNotification);
+		setLastTimeLogin(lastTimeLogin);
 	}
 
 	/**
@@ -52,22 +52,6 @@ public class AEPUser
 	}
 
 	/**
-	 * @return the shortPayAccount
-	 */
-	public int getShortPayAccountID()
-	{
-		return shortPayAccountID;
-	}
-
-	/**
-	 * @param shortPayAccount the shortPayAccount to set
-	 */
-	public void setShortPayAccountID(int shortPayAccountID)
-	{
-		this.shortPayAccountID = shortPayAccountID;
-	}
-
-	/**
 	 * @return the walletMoneyFlowNotification
 	 */
 	public boolean isWalletMoneyFlowNotification()
@@ -97,6 +81,22 @@ public class AEPUser
 	public void setBankMoneyFlowNotification(boolean bankMoneyFlowNotification)
 	{
 		this.bankMoneyFlowNotification = bankMoneyFlowNotification;
+	}
+
+	/**
+	 * @return the lastTimeLogin
+	 */
+	public long getLastTimeLogin()
+	{
+		return lastTimeLogin;
+	}
+
+	/**
+	 * @param lastTimeLogin the lastTimeLogin to set
+	 */
+	public void setLastTimeLogin(long lastTimeLogin)
+	{
+		this.lastTimeLogin = lastTimeLogin;
 	}
 
 }

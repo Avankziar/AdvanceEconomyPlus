@@ -1,10 +1,7 @@
 package main.java.me.avankziar.aep.spigot.hook;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,8 +13,6 @@ import org.maxgamer.quickshop.shop.Shop;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
-import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
-import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
@@ -75,7 +70,9 @@ public class QuickShopHook implements Listener
 		{
 			isname = is.getType().toString();
 		}
-		
+
+		//FIXME 
+		/*
 		if(shop.isBuying())
 		{
 			Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
@@ -136,6 +133,7 @@ public class QuickShopHook implements Listener
 					amount,
 					balanceclient));
 		}
+		*/
 	}
 
 }

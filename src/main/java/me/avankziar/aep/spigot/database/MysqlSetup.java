@@ -58,6 +58,18 @@ public class MysqlSetup
 		{
 			return false;
 		}
+		if(!setupDatabaseVIII())
+		{
+			return false;
+		}
+		if(!setupDatabaseIX())
+		{
+			return false;
+		}
+		if(!setupDatabaseX())
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -147,9 +159,9 @@ public class MysqlSetup
         		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
         		+ " player_uuid char(36) NOT NULL UNIQUE,"
         		+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,"
-        		+ " account_id_shortpay int,"
         		+ " wallet_moneyflow_notification boolean,"
-        		+ " bank_moneyflow_notification boolean"
+        		+ " bank_moneyflow_notification boolean,"
+        		+ " unixtime bigint"
         		+ ");";
 		baseSetup(data);
 		return true;
@@ -214,13 +226,15 @@ public class MysqlSetup
 		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.STANDINGORDER.getValue()
         		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
         		+ " standing_order_name text,"
-        		+ " from_player text,"
-        		+ " to_player text,"
+        		+ " owner_uuid text,"
+        		+ " from_account int,"
+        		+ " to_account int,"
         		+ " amount double,"
-        		+ " amountpaidsofar double,"
-        		+ " starttime bigint,"
-        		+ " repeatingtime bigint,"
-        		+ " lasttime bigint,"
+        		+ " amount_paid_so_far double,"
+        		+ " amount_paid_to_tax double,"
+        		+ " start_time bigint,"
+        		+ " repeating_time bigint,"
+        		+ " last_time bigint,"
         		+ " cancelled boolean,"
         		+ " paused boolean"
         		+ ");";
@@ -233,17 +247,18 @@ public class MysqlSetup
 		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.LOAN.getValue()
         		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
         		+ " name text,"
-        		+ " from_player text,"
-        		+ " to_player text,"
-        		+ " debtowner text,"
-        		+ " totalamount double,"
-        		+ " amountratio double,"
-        		+ " amountpaidsofar double,"
+        		+ " from_account int,"
+        		+ " to_account int,"
+        		+ " loan_owner text,"
+        		+ " debtor text,"
+        		+ " total_amount double,"
+        		+ " amount_ratio double,"
+        		+ " amount_paid_so_far double,"
         		+ " interest double,"
-        		+ " starttime bigint,"
-        		+ " repeatingtime bigint,"
-        		+ " lasttime bigint,"
-        		+ " endtime bigint,"
+        		+ " start_time bigint,"
+        		+ " repeating_time bigint,"
+        		+ " last_time bigint,"
+        		+ " end_time bigint,"
         		+ " forgiven boolean,"
         		+ " paused boolean,"
         		+ " finished boolean"
@@ -258,7 +273,7 @@ public class MysqlSetup
         		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
         		+ " slotid int,"
         		+ " player_uuid char(36),"
-        		+ " banknumber text,"
+        		+ " banknumber text," //FIXME
         		+ " isaction boolean,"
         		+ " inventoryhandlertype text,"
         		+ " isdescending boolean,"
@@ -293,9 +308,21 @@ public class MysqlSetup
 	{
 		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.ACCOUNTMANAGEMENT.getValue()
         		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-        		+ " uuid char(36) NOT NULL,"
+        		+ " player_uuid char(36) NOT NULL,"
         		+ " account_id int,"
         		+ " account_management_type text"
+        		+ " );";
+		baseSetup(data);
+		return true;
+	}
+	
+	public boolean setupDatabaseX() 
+	{
+		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.QUICKPAYACCOUNT.getValue()
+        		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
+        		+ " player_uuid char(36) NOT NULL,"
+        		+ " account_id int,"
+        		+ " account_currency text"
         		+ " );";
 		baseSetup(data);
 		return true;

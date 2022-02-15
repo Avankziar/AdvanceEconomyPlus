@@ -1,16 +1,22 @@
 package main.java.me.avankziar.aep.spigot.object;
 
+import java.util.UUID;
+
 public class LoanRepayment
 {
 	//Schulden Tilgung
 	private int id;
 	private String name;
-	private String from; //UUID or Bank
-	private String to; //UUID or Bank
-	private String loanOwner; //Kann nur ein Spieler sein. Und nur dieser kann die Schulden als "getilgt" setzen.
+	private int fromID;
+	private int toID;
+	private UUID owner; //Kann nur ein Spieler sein. Und nur dieser kann die Schulden als "getilgt" setzen.
+	private UUID debtor; //Der Schuldner
+	private double loanAmount; //Betrag welcher geliehen wurde, ohne zinsen, steuern etc.
 	private double totalAmount; //Gesamtbetrag der zu zahlen ist.
 	private double amountRatio; //Schulden Rate, wieviel pro Zahlung gezahlt werden soll.
+	private double taxInDecimal; //Steuern in decimalzahl: 1.0 == 100%
 	private double amountPaidSoFar; //Bisher gezahlter Betrag
+	private double amountPaidToTax; //Bisher gezahlter Betrag
 	private double interest; //Zinsen, nur auf komplett summe gerechnet. Prozent angabe
 	private long startTime; //Beginn der Zahlung
 	private long repeatingTime; //Millisekunden, wann wieder gezahlt werden muss.
@@ -20,19 +26,24 @@ public class LoanRepayment
 	private boolean paused; //Sind die Schulden vom Eigentümer pausiert worden.
 	private boolean finished; //Ist alles bezahlt worden.
 	
-	public LoanRepayment(int id, String name, String from, String to, String loanOwner,
-			double totalAmount, double amountRatio, double amountPaidSoFar, double interest,
+	public LoanRepayment(int id, String name, int fromID, int toID, UUID owner, UUID debtor,
+			double totalAmount, double loanAmount, double amountRatio, double taxInDecimal,
+			double amountPaidSoFar, double amountPaidToTax, double interest,
 			long startTime, long repeatingTime, long lastTime, long endTime,
 			boolean forgiven, boolean paused, boolean finished)
 	{
 		setId(id);
 		setName(name);
-		setFrom(from);
-		setTo(to);
-		setLoanOwner(loanOwner);
+		setAccountFromID(fromID);
+		setAccountToID(toID);
+		setOwner(owner);
+		setDebtor(debtor);
 		setTotalAmount(totalAmount);
+		setLoanAmount(loanAmount);
 		setAmountRatio(amountRatio);
+		setTaxInDecimal(taxInDecimal);
 		setAmountPaidSoFar(amountPaidSoFar);
+		setAmountPaidToTax(amountPaidToTax);
 		setInterest(interest);
 		setStartTime(startTime);
 		setRepeatingTime(repeatingTime);
@@ -41,26 +52,6 @@ public class LoanRepayment
 		setForgiven(forgiven);
 		setPaused(paused);
 		setFinished(finished);
-	}
-
-	public String getFrom()
-	{
-		return from;
-	}
-
-	public void setFrom(String from)
-	{
-		this.from = from;
-	}
-
-	public String getTo()
-	{
-		return to;
-	}
-
-	public void setTo(String to)
-	{
-		this.to = to;
 	}
 
 	public double getTotalAmount()
@@ -197,14 +188,97 @@ public class LoanRepayment
 	{
 		amountPaidSoFar = amountPaidSoFar + amount;
 	}
-
-	public String getLoanOwner()
+	
+	public void addTax(double amount)
 	{
-		return loanOwner;
+		amountPaidToTax = amountPaidToTax + amount;
 	}
 
-	public void setLoanOwner(String loanOwner)
+	public int getAccountFromID()
 	{
-		this.loanOwner = loanOwner;
+		return fromID;
+	}
+
+	public void setAccountFromID(int fromID)
+	{
+		this.fromID = fromID;
+	}
+
+	public int getAccountToID()
+	{
+		return toID;
+	}
+
+	public void setAccountToID(int toID)
+	{
+		this.toID = toID;
+	}
+
+	public UUID getOwner()
+	{
+		return owner;
+	}
+
+	public void setOwner(UUID owner)
+	{
+		this.owner = owner;
+	}
+
+	public double getAmountPaidToTax()
+	{
+		return amountPaidToTax;
+	}
+
+	public void setAmountPaidToTax(double amountPaidToTax)
+	{
+		this.amountPaidToTax = amountPaidToTax;
+	}
+
+	/**
+	 * @return the debtor
+	 */
+	public UUID getDebtor()
+	{
+		return debtor;
+	}
+
+	/**
+	 * @param debtor the debtor to set
+	 */
+	public void setDebtor(UUID debtor)
+	{
+		this.debtor = debtor;
+	}
+
+	/**
+	 * @return the loanAmount
+	 */
+	public double getLoanAmount()
+	{
+		return loanAmount;
+	}
+
+	/**
+	 * @param loanAmount the loanAmount to set
+	 */
+	public void setLoanAmount(double loanAmount)
+	{
+		this.loanAmount = loanAmount;
+	}
+
+	/**
+	 * @return the taxInDecimal
+	 */
+	public double getTaxInDecimal()
+	{
+		return taxInDecimal;
+	}
+
+	/**
+	 * @param taxInDecimal the taxInDecimal to set
+	 */
+	public void setTaxInDecimal(double taxInDecimal)
+	{
+		this.taxInDecimal = taxInDecimal;
 	}
 }

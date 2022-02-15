@@ -2,8 +2,6 @@ package main.java.me.avankziar.aep.spigot.api.economy;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -17,8 +15,6 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
-import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
@@ -524,6 +520,8 @@ public class VaultApi implements Economy
 			dr.setFinished(true);
 		}
 		plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
+		//FIXME
+		/*
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(), dr.getFrom(), dr.getTo(),
 				from, to, plugin.getYamlHandler().getLang().getString("LoanRepayment.Orderer"), dr.getAmountRatio(), 
@@ -532,6 +530,7 @@ public class VaultApi implements Economy
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
 				LocalDate.now(), dr.getFrom(), -dr.getAmountRatio(), ecofrom.getBalance()));
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), dr.getTo(), dr.getAmountRatio(), ecoto.getBalance()));
+		*/
 		
 		Player player = Bukkit.getPlayer(ecofrom.getUUID());
 		if(player != null)

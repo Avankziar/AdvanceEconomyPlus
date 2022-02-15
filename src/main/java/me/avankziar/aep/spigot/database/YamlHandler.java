@@ -210,7 +210,8 @@ public class YamlHandler
 		for(String currency : plugin.getYamlHandler().getConfig().getStringList("LoadCurrency"))
 		{
 			File cur = new File(directory.getPath(), currency+".yml");
-			if(!cur.exists()) 
+			boolean exist = cur.exists();
+			if(!exist) 
 			{
 				AdvancedEconomyPlus.log.info("Create %cur%.yml...".replace("%cur%", currency));
 				try(InputStream in = plugin.getResource("default.yml"))
@@ -228,7 +229,10 @@ public class YamlHandler
 			{
 				return false;
 			}
-			writeFile(cur, c, plugin.getYamlManager().getCurrencyKey(currency));
+			if(!exist) 
+			{
+				writeFile(cur, c, plugin.getYamlManager().getCurrencyKey(currency));
+			}
 			cy.put(currency, c);
 		}
 		return true;

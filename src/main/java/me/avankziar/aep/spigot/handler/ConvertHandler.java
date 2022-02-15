@@ -10,6 +10,7 @@ import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
+import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
 import main.java.me.avankziar.aep.spigot.object.ne_w.DefaultAccount;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
@@ -24,6 +25,22 @@ public class ConvertHandler
 			if(o instanceof OLD_AEPUser)
 			{
 				el.add((OLD_AEPUser) o);
+			} else
+			{
+				return null;
+			}
+		}
+		return el;
+	}
+	
+	public static ArrayList<AEPUser> convertListI(ArrayList<?> list)
+	{
+		ArrayList<AEPUser> el = new ArrayList<>();
+		for(Object o : list)
+		{
+			if(o instanceof AEPUser)
+			{
+				el.add((AEPUser) o);
 			} else
 			{
 				return null;

@@ -1,5 +1,6 @@
 package main.java.me.avankziar.aep.spigot.cmd.cst.transaction;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -14,24 +15,27 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
+import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
+import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
-import main.java.me.avankziar.aep.spigot.object.CommandStructurType;
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
 import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 
-public class Take implements CommandExecutor
+public class Take extends ArgumentModule implements CommandExecutor
 {
 	private AdvancedEconomyPlus plugin;
 	private CommandConstructor cc;
 	private ArgumentConstructor ac;
 	private CommandStructurType cst;
 	
-	public Take(AdvancedEconomyPlus plugin, CommandConstructor cc, ArgumentConstructor ac, CommandStructurType cst)
+	public Take(CommandConstructor cc, ArgumentConstructor ac, CommandStructurType cst)
 	{
-		this.plugin = plugin;
+		super(ac);
+		this.plugin = BaseConstructor.getPlugin();
 		this.cc = cc;
 		this.ac = ac;
 		this.cst = cst;
@@ -46,7 +50,6 @@ public class Take implements CommandExecutor
 			return false;
 		}
 		Player player = (Player) sender;
-		String cmdString;
 		if(cst == CommandStructurType.SINGLE)
 		{
 			if(!player.hasPermission(cc.getPermission()))
@@ -54,7 +57,7 @@ public class Take implements CommandExecutor
 				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return false;
 			}
-			cmdString = cc.getCommandString();
+			String cmdString = cc.getCommandString();
 			int zero = 0;
 			int one = 1;
 			int two = 2;
@@ -69,14 +72,27 @@ public class Take implements CommandExecutor
 					middlePart(player, cmdString, args, zero, one, two, three, four);
 				}
 			}.runTaskAsynchronously(plugin);
-		} else
+		}
+		return true;
+	}
+	
+	@Override
+	public void run(CommandSender sender, String[] args) throws IOException
+	{
+		if(!(sender instanceof Player))
+		{
+			sender.sendMessage("Cmd only for Players!");
+			return;
+		}
+		Player player = (Player) sender;
+		if(cst == CommandStructurType.NESTED)
 		{
 			if(!player.hasPermission(ac.getPermission()))
 			{
 				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
-				return false;
+				return;
 			}
-			cmdString = ac.getCommandString();
+			String cmdString = ac.getCommandString();
 			int zero = 0+1;
 			int one = 1+1;
 			int two = 2+1;
@@ -92,9 +108,11 @@ public class Take implements CommandExecutor
 				}
 			}.runTaskAsynchronously(plugin);
 		}
-		return true;
 	}
-	
+
+	/*
+	 * take <Player> <AccountName> <amount> [category] [comment...]
+	 */
 	private void middlePart(Player player, String cmdString, String[] args,
 			int zero, int one, int two, int three, int four)
 	{
@@ -102,7 +120,7 @@ public class Take implements CommandExecutor
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
-					.replace("%cmd%", cc.getCommandString())
+					.replace("%cmd%", cmdString)
 					.replace("%amount%", three+" - "+four)));
 			return;
 		}
@@ -178,6 +196,7 @@ public class Take implements CommandExecutor
 				}
 				catStart++;
 			}
+			comment = sb.toString();
 		}
 		endpart(player, from, voids, category, comment, amount);
 	}

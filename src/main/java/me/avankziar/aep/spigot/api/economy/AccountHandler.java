@@ -356,14 +356,22 @@ public class AccountHandler
 		return true;
 	}
 
-	public boolean removeManagementTypeToAccount(Account account, UUID uuid, AccountManagementType accountManagementType)
+	public boolean removeManagementTypeFromAccount(Account account, UUID uuid, AccountManagementType accountManagementType)
 	{
 		if(canManageAccount(account, uuid, accountManagementType))
 		{
 			plugin.getMysqlHandler().deleteData(MysqlHandler.Type.ACCOUNTMANAGEMENT,
-					"`uuid` = ? AND `account_id` = ? AND `account_management_type` = ?",
+					"`player_uuid` = ? AND `account_id` = ? AND `account_management_type` = ?",
 					uuid.toString(), account.getID(), accountManagementType);
 		}
+		return true;
+	}
+	
+	public boolean removeManagementTypeFromAccount(int accountID)
+	{
+		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.ACCOUNTMANAGEMENT,
+				"`account_id` = ?",
+				accountID);
 		return true;
 	}
 	
@@ -375,7 +383,7 @@ public class AccountHandler
 	public boolean canManageAccount(int accountID, UUID uuid, AccountManagementType accountManagementType)
 	{
 		return plugin.getMysqlHandler().exist(MysqlHandler.Type.ACCOUNTMANAGEMENT,
-				"`uuid` = ? AND `account_id` = ? AND `account_management_type` = ?",
+				"`player_uuid` = ? AND `account_id` = ? AND `account_management_type` = ?",
 				uuid.toString(), accountID, accountManagementType);
 	}
 }

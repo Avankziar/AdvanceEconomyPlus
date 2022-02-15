@@ -664,7 +664,7 @@ public class TransactionHandler
 		if(withdrawAccounttaxDepot != null && amountToTax > 0.0 && ex.taxTo == TaxToCurrency.TO_WITHDRAW_CURRENCY)
 		{
 			withdrawAccounttaxDepot.setBalance(withdrawAccounttaxDepot.getBalance()+amountToTax);
-		} else if(depositAccounttaxDepot != null && amountToTax > 0.0 && ex.taxTo == TaxToCurrency.TO_WITHDRAW_CURRENCY)
+		} else if(depositAccounttaxDepot != null && amountToTax > 0.0 && ex.taxTo == TaxToCurrency.TO_DEPOSIT_CURRENCY)
 		{
 			depositAccounttaxDepot.setBalance(depositAccounttaxDepot.getBalance()+amountToTax);
 		}
@@ -719,7 +719,7 @@ public class TransactionHandler
 			withdrawAccounttaxDepot.setBalance(withdrawAccounttaxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 					withdrawAccounttaxDepot.getID(), amountToTax, withdrawAccounttaxDepot.getBalance(), withdrawAccounttaxDepot.getBalance()));
-		} else if(depositAccounttaxDepot != null && amountToTax > 0.0 && ex.taxTo == TaxToCurrency.TO_WITHDRAW_CURRENCY)
+		} else if(depositAccounttaxDepot != null && amountToTax > 0.0 && ex.taxTo == TaxToCurrency.TO_DEPOSIT_CURRENCY)
 		{
 			depositAccounttaxDepot.setBalance(depositAccounttaxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,

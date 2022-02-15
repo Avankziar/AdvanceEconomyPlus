@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.object.ne_w.QuickPayAccount;
 import main.java.me.avankziar.ifh.spigot.economy.Economy;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
@@ -270,6 +271,13 @@ public class IFHApi implements Economy
 	
 	//INFO AccountHandling
 	
+	public int getQuickPayAccount(EconomyCurrency economyCurrency, UUID uuid)
+	{
+		QuickPayAccount qpa = (QuickPayAccount) plugin.getMysqlHandler().getData(MysqlHandler.Type.QUICKPAYACCOUNT, "`account_currency` = ? AND `player_uuid` = ?",
+				economyCurrency.getUniqueName(), uuid.toString());
+		return qpa != null ? qpa.getAccountID() : -1;
+	}
+	
 	@Override
 	public EconomyEntity getEntity(UUID uuid)
 	{
@@ -477,9 +485,15 @@ public class IFHApi implements Economy
 	}
 	
 	@Override
-	public boolean removeManagementTypeToAccount(Account account, UUID uuid, AccountManagementType acountManagementType)
+	public boolean removeManagementTypeFromAccount(Account account, UUID uuid, AccountManagementType acountManagementType)
 	{
-		return accountHandler.removeManagementTypeToAccount(account, uuid, acountManagementType);
+		return accountHandler.removeManagementTypeFromAccount(account, uuid, acountManagementType);
+	}
+	
+	@Override
+	public boolean removeManagementTypeFromAccount(int accountID)
+	{
+		return accountHandler.removeManagementTypeFromAccount(accountID);
 	}
 	
 	@Override

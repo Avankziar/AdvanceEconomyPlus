@@ -14,14 +14,16 @@ import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
-import main.java.me.avankziar.aep.spigot.cmd.cst.sub.CommandSuggest;
-import main.java.me.avankziar.aep.spigot.cmd.cst.sub.ExtraPerm;
+import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
+import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
+import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
@@ -36,9 +38,9 @@ public class Balance implements CommandExecutor
 	private CommandConstructor cc;
 	private CommandStructurType cst;
 	
-	public Balance(AdvancedEconomyPlus plugin, CommandConstructor cc, CommandStructurType cst)
+	public Balance(CommandConstructor cc, CommandStructurType cst)
 	{
-		this.plugin = plugin;
+		this.plugin = BaseConstructor.getPlugin();
 		this.cc = cc;
 		this.cst = cst;
 	}
@@ -219,17 +221,17 @@ public class Balance implements CommandExecutor
 						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency()))));
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.Info")
-						.replace("%cmd%", CommandSuggest.ACCOUNT_INFO.trim())
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACCOUNT_INFO).trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLog")
-						.replace("%cmd%", CommandSuggest.ACTIONLOG.trim())
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACTIONLOG).trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLog")
-						.replace("%cmd%", CommandSuggest.TRENDLOG.trim())
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
 			} else if(plugin.getIFHApi().canManageAccount(a, 
@@ -240,12 +242,12 @@ public class Balance implements CommandExecutor
 						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency()))));
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLog")
-						.replace("%cmd%", CommandSuggest.ACTIONLOG.trim())
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACTIONLOG).trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLog")
-						.replace("%cmd%", CommandSuggest.TRENDLOG.trim())
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
 			} else

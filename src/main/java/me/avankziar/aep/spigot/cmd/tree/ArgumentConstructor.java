@@ -3,8 +3,6 @@ package main.java.me.avankziar.aep.spigot.cmd.tree;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import main.java.me.avankziar.aep.spigot.database.YamlHandler;
-
 public class ArgumentConstructor extends BaseConstructor
 {
     public int minArgsConstructor;
@@ -15,17 +13,18 @@ public class ArgumentConstructor extends BaseConstructor
     public LinkedHashMap<Integer, ArrayList<String>> tabList;
 
     public ArgumentConstructor(
-    		YamlHandler yamlHandler,
+    		CommandExecuteType cet,
     		String path, int position, int minArgs, int maxArgs, boolean canConsoleAccess,
     		LinkedHashMap<Integer, ArrayList<String>> tablistAddingOtherValue,
     		ArgumentConstructor...argumentConstructors)
     {
-    	super(yamlHandler.getCom().getString(path+".Argument"),
+    	super(cet, 
+    			getPlugin().getYamlHandler().getCom().getString(path+".Argument"),
     			path,
-    			yamlHandler.getCom().getString(path+".Permission"),
-    			yamlHandler.getCom().getString(path+".Suggestion"),
-    			yamlHandler.getCom().getString(path+".CommandString"),
-    			yamlHandler.getCom().getString(path+".HelpInfo"),
+    			getPlugin().getYamlHandler().getCom().getString(path+".Permission"),
+    			getPlugin().getYamlHandler().getCom().getString(path+".Suggestion"),
+    			getPlugin().getYamlHandler().getCom().getString(path+".CommandString"),
+    			getPlugin().getYamlHandler().getCom().getString(path+".HelpInfo"),
     			canConsoleAccess);
         this.minArgsConstructor = minArgs;
         this.maxArgsConstructor = maxArgs;

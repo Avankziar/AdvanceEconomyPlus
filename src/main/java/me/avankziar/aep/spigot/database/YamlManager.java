@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.Language.ISO639_2B;
-import main.java.me.avankziar.aep.spigot.object.CommandExecuteType;
-import main.java.me.avankziar.aep.spigot.object.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.object.TaxationCase;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
@@ -207,15 +207,23 @@ public class YamlManager
 		}
 		MechanicSettings:
 		{
-			configKeys.put("Enable.DebuggingMode"
+			configKeys.put("EnableCommands.StandingOrder"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					true}));
+			configKeys.put("EnableCommands.Loan"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+					true}));
+			configKeys.put("Enable.DebugMode"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					false}));
-			configKeys.put("Enable.Command.StandingOrder"
+			configKeys.put("Enable.CurrencyMayUseStandingOrder"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					false}));
-			configKeys.put("Enable.Command.Loan"
+					"dollar",
+					"taller"}));
+			configKeys.put("Enable.CurrencyMayUseLoanRepayment"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					false}));
+					"dollar",
+					"taller"}));
 		}
 		EconomySettings:
 		{
@@ -229,12 +237,13 @@ public class YamlManager
 			configKeys.put("Do.Default.BankMoneyFlowNotification"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					true}));
-			configKeys.put("Execute.StandingOrderPayments"
+			configKeys.put("Do.DebugMode"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					true}));
-			configKeys.put("Execute.LoanPayments"
-					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					true}));
+					"backgroundtaskGeneral",
+					"backgroundtaskLoanRepayment",
+					"backgroundtaskStandingOrder",
+					"transaction",
+					"transactioncmd"})); //ADDME
 			configKeys.put("TrendLogger.ValueIsStabil"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					1000.0}));
@@ -244,12 +253,7 @@ public class YamlManager
 			configKeys.put("GraficPointSymbol"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"x"}));
-			configKeys.put("StandingOrderTimeSpamProtection"
-					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"00-00:15"}));
-			configKeys.put("StandingOrderValueSpamProtection"
-					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					500.0}));
+			
 			
 		}
 		JobsRebornHook:
@@ -258,29 +262,31 @@ public class YamlManager
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"0", "15", "30", "45"}));
 		}
-		BankSettings:
-		{
-			configKeys.put("ReservedNames"
-					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"YourSever", "YourServerMk2"}));
-			configKeys.put("BankAccountFromat"
-					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					"FOUR_DIGITS_TIMES_THREE"}));
-		}
-		RepeatingTimes:
-		{
-			configKeys.put("StandingOrderRepeatTime"
-					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					180}));
-			configKeys.put("LoanRepaymentRepeatTime"
-					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					180}));
-		}
+		configKeys.put("StandingOrder.TimeSpamProtection"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"dollar;00-00:15",
+				"taler;00-00:15"}));
+		configKeys.put("StandingOrder.ValueSpamProtection"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"dollar;500.0",
+				"taler;500.0"}));
+		configKeys.put("StandingOrder.DoPaymenTask"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				false}));
+		configKeys.put("StandingOrder.RepeatTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				180}));
+		configKeys.put("Loan.RepaymentRepeatTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				180}));
+		configKeys.put("Loan.ToLendingALoanPlayerMustBeTheOwnerOfTheAccount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
 	}
 	
 	private void commandsInput(String path, String name, String basePermission, 
 			String suggestion, String commandString,
-			String helpInfoGerman, String helpInfoEnglish, String explanation)
+			String helpInfoGerman, String helpInfoEnglish)
 	{
 		commandsKeys.put(path+".Name"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -298,14 +304,11 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				helpInfoGerman,
 				helpInfoEnglish}));
-		commandsKeys.put(path+".Explanation"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				explanation}));
 	}
 	
 	private void argumentInput(String path, String argument, String basePermission, 
 			String suggestion, String commandString,
-			String helpInfoGerman, String helpInfoEnglish, String explanation)
+			String helpInfoGerman, String helpInfoEnglish)
 	{
 		commandsKeys.put(path+".Argument"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -323,390 +326,387 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				helpInfoGerman,
 				helpInfoEnglish}));
-		commandsKeys.put(path+".Explanation"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				explanation}));
 	}
 	
-	@SuppressWarnings("unused") //TODO:Commands
-	public void initCommands()
+	public void initCommands()//TODO:Commands
 	{
+		comSingleNested();
 		comBypass();
-		Econ:
-		{
-			comEcon();
-		}
 		
-		Money:
-		{			
-			comMoney();
-			comMoneyLogs();
-			comMoneyLoggerSettings();
-		}
+		comAEP();
+		comAEPLogs();
+		comAEPLoggerSettings();
 		
-		Loan:
-		{
-			comLoan();
-		}
+		comMoney();
 		
-		StandingOrder:
-		{
-			comStandingOrder();
-		}
+		comLoan();
+		
+		comStandingOrder();
+	}
+	
+	private void comSingleNested()
+	{
+		commandsKeys.put("Commands.SINGLE"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				CommandExecuteType.PAY.toString()+";pay",
+				CommandExecuteType.GIVE.toString()+";give"})); //ADDME
+		commandsKeys.put("Commands.NESTED"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				CommandExecuteType.PAY.toString()+";pay",
+				CommandExecuteType.GIVE.toString()+";give"})); //ADDME
 	}
 	
 	private void comBypass()
 	{
 		commandsKeys.put("Bypass.LoggerSettingsLogOther"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.money.loggersettingslogother"}));
+				"aep.cmd.money.loggersettingslogother"}));
 		commandsKeys.put("Bypass.Recomment"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.recomment"}));
+				"aep.cmd.bypass.recomment"}));
 		commandsKeys.put("Bypass.LogOther"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"eco.bypass.logother"}));
 		commandsKeys.put("Bypass.StandingOrderCreate"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.standingorder.create"}));
+				"aep.cmd.bypass.standingorder.create"}));
 		commandsKeys.put("Bypass.StandingOrderInfo"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.standingorder.info"}));
+				"aep.cmd.bypass.standingorder.info"}));
 		commandsKeys.put("Bypass.StandingOrderDelete"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.standingorder.delete"}));
+				"aep.cmd.bypass.standingorder.delete"}));
 		commandsKeys.put("Bypass.StandingOrderPause"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.standingorder.pause"}));
+				"aep.cmd.bypass.standingorder.pause"}));
 		commandsKeys.put("Bypass.StandingOrderList"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.standingorder.list"}));
+				"aep.cmd.bypass.standingorder.list"}));
 		commandsKeys.put("Bypass.LoanCreate"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.loan.create"}));
+				"aep.cmd.bypass.loan.create"}));
 		commandsKeys.put("Bypass.LoanForgive"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.loan.forgive"}));
+				"aep.cmd.bypass.loan.forgive"}));
 		commandsKeys.put("Bypass.LoanInfo"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.loan.info"}));
+				"aep.cmd.bypass.loan.info"}));
 		commandsKeys.put("Bypass.LoanList"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.loan.list"}));
+				"aep.cmd.bypass.loan.list"}));
 		commandsKeys.put("Bypass.LoanPause"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.loan.pause"}));
+				"aep.cmd.bypass.loan.pause"}));
 		commandsKeys.put("Bypass.LoanTransfer"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"eco.cmd.bypass.loan.transfer"}));
+				"aep.cmd.bypass.loan.transfer"}));
 	}
 	
-	private void comEcon()
+	private void comAEP()
 	{
-		commandsInput("eco", "econ", "eco.cmd.eco", "/econ [pagenumber]", "/econ ",
-				"&c/econ &f| Infoseite für alle Befehle.",
-				"&c/econ &f| Info page for all commands.",
-				"Base and Info Command");
-		String basePermission = "eco.cmd.eco";
-		argumentInput("eco_deletelog", "deletelog", basePermission,
-				"/econ deletelog <id>", "/econ deletelog ",
-				"&c/econ deletelog &f| Löscht den Log-Eintrag. AdminBefehl.",
-				"&c/econ deletelog &f| Deletes the log entry. Admin command.",
-				"Delete the log with the <id>");
+		commandsInput("aep", "aep", "aep.cmd.aep", "/aep [pagenumber]", "/aep ",
+				"&c/aep &f| Infoseite für alle Befehle.",
+				"&c/aep &f| Info page for all commands.");
+		String basePermission = "aep.cmd.aep";
+		argumentInput("aep_deletelog", "deletelog", basePermission,
+				"/aep deletelog <id>", "/aep deletelog ",
+				"&c/aep deletelog &f| Löscht den Log-Eintrag. AdminBefehl.",
+				"&c/aep deletelog &f| Deletes the log entry. Admin command.");
 		
-		argumentInput("eco_player", "player", basePermission,
-				"/econ player <player>", "/econ player ",
-				"&c/econ player <Spielername> &f| Zeigt alle Infos zum Spieler an.",
-				"&c/econ player <player name> &f| Shows all information about the player.",
-				"Show the players balance uuid etc.");
+		argumentInput("aep_player", "player", basePermission,
+				"/aep player <player>", "/aep player ",
+				"&c/aep player <Spielername> &f| Zeigt alle Infos zum Spieler an.",
+				"&c/aep player <player name> &f| Shows all information about the player.");
 		
-		argumentInput("eco_recomment", "recomment", basePermission,
-				"/econ recomment <id> <message>", "/econ recomment ",
-				"&c/econ recomment <Id> <Note> &f| Ändert die angehängte Notiz des Log-Eintrages.",
-				"&c/econ recomment <Id> <Note> &f| Changes the attached note of the log entry.",
-				"Rewrite a log entry.");
+		argumentInput("aep_recomment", "recomment", basePermission,
+				"/aep recomment <id> <message>", "/aep recomment ",
+				"&c/aep recomment <Id> <Kategorie> <Note...> &f| Ändert die angehängte Notiz des Log-Eintrages.",
+				"&c/aep recomment <Id> <category> <Note...> &f| Changes the attached note of the log entry.");
 	}
 	
 	private void comMoney()
 	{
-		commandsInput("money", "money", "eco.cmd.money", "/money", "/money",
+		commandsInput("money", "money", "aep.cmd.money",
+				"/money", "/money",
 				"&c/money &f| Zeigt dein Guthaben an.",
-				"&c/money &f| Shows your balance.",
-				"Display your balance");
-		String basePermission = "eco.cmd.money";
-		argumentInput("money_freeze", "freeze", basePermission,
-				"/money freeze <player>", "/money freeze ",
-				"&c/money freeze <Spielername> &f| Friert das Spielerkonto ein oder gibt es frei.",
-				"&c/money freeze <player name> &f| Freezes or releases the player account.",
-				"Freeze the playeraccount");
+				"&c/money &f| Shows your balance.");
+		commandsInput("balance", "balance", "aep.cmd.balance",
+				"/balance", "/",
+				"&c/balance &f| Zeigt dein Guthaben an.",
+				"&c/balance &f| Shows your balance.");
+		String basePermission = "aep.cmd.";
 		
 		argumentInput("money_give", "give", basePermission,
-				"/money give <player> <value> [note]", "/money give ",
-				"&c/money give <Spielername> <Betrag> [Notiz] &f| Überweist den Betrag auf das Spielerkonto.",
-				"&c/money give <player name> <amount>  [note] &f| Transfers the amount to the players balance.",
-				"Give the player from the void money");
+				"/money give <player> <accountname> <amount> [category] [comment...]", "/money give ",
+				"&c/money give <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Überweist den Betrag auf das Spielerkonto.",
+				"&c/money give <player> <accountname> <amount> [category] [comment...] &f| Transfers the amount to the players balance.");
+		commandsInput("give", "give", basePermission+"give",
+				"/give <player> <accountname> <amount> [category] [comment...]", "/give ",
+				"&c/give <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Überweist den Betrag auf das Spielerkonto.",
+				"&c/give <player> <accountname> <amount> [category] [comment...] &f| Transfers the amount to the players balance.");
 		
 		argumentInput("money_giveconsole", "giveconsole", basePermission,
-				"/money giveconsole <player> <value> <customFrom> <customOrderer> [note]", "/money giveconsole ",
-				"&c/money giveconsole <Spielername> <Betrag> <CustomSender> <CustomAuftraggeber> [Notiz] &f| Überweist den Betrag auf das Spielerkonto.",
-				"&c/money giveconsole <player name> <amount> customFrom> <customOrderer> [note] &f| Transfers the amount to the players balance.",
-				"Give the player from the void money" + 
-				" customFrom = The fake Player/Npc/whatever from the money may comes. (It comes always from the void btw.^^)" + 
-				" customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.");
+				"/money giveconsole <player> <accountname> <amount> [category] [comment...]", "/money giveconsole ",
+				"&c/money giveconsole <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Überweist den Betrag auf das Spielerkonto.",
+				"&c/money giveconsole <player> <accountname> <amount> [category] [comment...] &f| Transfers the amount to the players balance.");
+		commandsInput("giveconsole", "giveconsole", basePermission+"giveconsole",
+				"/giveconsole <player> <accountname> <amount> [category] [comment...]", "/money giveconsole ",
+				"&c/giveconsole <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Überweist den Betrag auf das Spielerkonto.",
+				"&c/giveconsole <player> <accountname> <amount> [category] [comment...] &f| Transfers the amount to the players balance.");
 		
 		argumentInput("money_pay", "pay", basePermission,
-				"/money pay <player> <value> [note]", "/money pay ",
-				"&c/money pay <Spielername> <Betrag> [Notiz] &f| Zahlt dem Spieler den Betrag.",
-				"&c/money pay <player name> [note] &f| Pays the player the amount",
-				"Player to player paying.");
+				"/money pay <fromplayer> <fromaccountname> <amount> <toplayer> <toaccountname> [category] [comment...]", "/money pay ",
+				"&c/money pay <fromplayer> <fromaccountname> <amount> <toplayer> <toaccountname> [category] [comment...] &f| Zahlt dem Spieler den Betrag.",
+				"&c/money pay <fromplayer> <fromaccountname> <amount> <toplayer> <toaccountname> [category] [comment...] &f| Pays the player the amount");
+		commandsInput("pay", "pay", basePermission+"pay",
+				"/pay <fromplayer> <fromaccountname> <amount> <toplayer> <toaccountname> [category] [comment...]", "/money pay ",
+				"&c/pay <fromplayer> <fromaccountname> <amount> <toplayer> <toaccountname> [category] [comment...] &f| Zahlt dem Spieler den Betrag.",
+				"&c/pay <fromplayer> <fromaccountname> <amount> <toplayer> <toaccountname> [category] [comment...] &f| Pays the player the amount");
 		
 		argumentInput("money_set", "set", basePermission,
-				"/money set <player> <value> [note]", "/money set ",
-				"&c/money set <Spielername> <Betrag> [Notiz] &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.",
-				"&c/money set <playername> <amount> [note] &f| Sets the players balance to the desired amount.",
-				"Set the balance of the player.");
+				"/money set <player> <accountname> <amount> [category] [comment...]", "/money set ",
+				"&c/money set <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.",
+				"&c/money set <player> <accountname> <amount> [category] [comment...] &f| Sets the players balance to the desired amount.");
+		commandsInput("set", "set", basePermission+"set",
+				"/set <player> <accountname> <amount> [category] [comment...]", "/money set ",
+				"&c/set <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.",
+				"&c/set <player> <accountname> <amount> [category] [comment...] &f| Sets the players balance to the desired amount.");
 		
 		argumentInput("money_setconsole", "setconsole", basePermission,
-				"/money setconsole <player> <value> <customTo> <customOrderer> [note]", "/money setconsole ",
-				"&c/money setconsole <Spielername> <Betrag> <customEmpfänger> <customAuftraggeber> [Notiz] &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.",
-				"&c/money setconsole <playername> <amount> <customTo> <customOrderer> [note] &f| Sets the players balance to the desired amount.",
-				"Set the balance of the player." + 
-				" customTo = The fake Player/Npc/whatever where the money may go/comes." +
-				" (It goes/comes always in the void btw.^^)" + 
-				" customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.");
+				"/money setconsole <player> <accountname> <amount> [category] [comment...]", "/money setconsole ",
+				"&c/money setconsole <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.",
+				"&c/money setconsole <player> <accountname> <amount> [category] [comment...] &f| Sets the players balance to the desired amount.");
+		commandsInput("setconsole", "setconsole", basePermission+"setconsole",
+				"/setconsole <player> <accountname> <amount> [category] [comment...]", "/setconsole ",
+				"&c/setconsole <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Setzt das Guthaben des Spielers auf den gewünschten Betrag.",
+				"&c/setconsole <player> <accountname> <amount> [category] [comment...] &f| Sets the players balance to the desired amount.");
 		
 		argumentInput("money_take", "take", basePermission,
-				"/money take <player> <value> [note]", "/money take ",
-				"&c/money take <Spielername> <Betrag> [Notiz] &f| Zieht den Betrag vom Spielerkonto ab.",
-				"&c/money take <playername> <amount> [note] &f| Deduct the amount from the player balance.",
-				"Take the money from a player in the void");
+				"/money take <player> <accountname> <amount> [category] [comment...]", "/money take ",
+				"&c/money take <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Zieht den Betrag vom Spielerkonto ab.",
+				"&c/money take <player> <accountname> <amount> [category] [comment...] &f| Deduct the amount from the player balance.");
+		commandsInput("take", "take", basePermission+"take",
+				"/take <player> <accountname> <amount> [category] [comment...]", "/take ",
+				"&c/take <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Zieht den Betrag vom Spielerkonto ab.",
+				"&c/take <player> <accountname> <amount> [category] [comment...] &f| Deduct the amount from the player balance.");
 		
 		argumentInput("money_takeconsole", "takeconsole", basePermission,
-				"/money takeconsole <player> <value> <customTo> <customOrderer> [note]", "/money takeconsole ",
-				"&c/money takeconsole <Spielername> <Betrag> <customEmpfänger> <customAuftraggeber> [Notiz] &f| Zieht den Betrag vom Spielerkonto ab.",
-				"&c/money takeconsole <playername> <amount> <customTo> <customOrderer> [note] &f| Deduct the amount from the player balance.",
-				"Take the money from a player in the void" + 
-				" customTo = The fake Player/Npc/whatever where the money may go. (It goes always in the void btw.^^)" + 
-				" customOrderer = The fake Player/Npc/whatever where the orderer of this is. Can you use by console use^^.");
+				"/money takeconsole <player> <accountname> <amount> [category] [comment...]", "/money takeconsole ",
+				"&c/money takeconsole <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Zieht den Betrag vom Spielerkonto ab.",
+				"&c/money takeconsole <player> <accountname> <amount> [category] [comment...] &f| Deduct the amount from the player balance.");
+		commandsInput("takeconsole", "takeconsole", basePermission+"takeconsole",
+				"/takeconsole <player> <accountname> <amount> [category] [comment...]", "/takeconsole ",
+				"&c/takeconsole <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...] &f| Zieht den Betrag vom Spielerkonto ab.",
+				"&c/takeconsole <player> <accountname> <amount> [category] [comment...] &f| Deduct the amount from the player balance.");
 		
-		argumentInput("money_toggle", "toggle", basePermission,
-				"/money toggle", "/money toggle ",
-				"&c/money toggle &f| Schaltet Nachrichten aus und ein, die als Überweisung auf euer Spielerkonto eingehen.",
-				"&c/money toggle &f| Enables and disables messages that are sent to your player account as a bank transfer.",
-				"Toggle to see money payment messages");
+		argumentInput("money_walletnotification", "walletnotification", basePermission,
+				"/money walletnotification", "/money walletnotificatione ",
+				"&c/money walletnotification &f| Schaltet Nachrichten aus und ein, die als Überweisung auf euer Brieftaschenkonto eingehen.",
+				"&c/money walletnotification &f| Enables and disables messages that are sent to your wallet account as a transaction.");
+		commandsInput("walletnotification", "walletnotification", basePermission+"walletnotification",
+				"/walletnotification", "/walletnotificatione ",
+				"&c/walletnotification &f| Schaltet Nachrichten aus und ein, die als Überweisung auf euer Brieftaschenkonto eingehen.",
+				"&c/walletnotification &f| Enables and disables messages that are sent to your wallet account as a transaction.");
+		argumentInput("money_banknotification", "banknotification", basePermission,
+				"/money banknotification", "/money banknotificatione ",
+				"&c/money banknotification &f| Schaltet Nachrichten aus und ein, die als Überweisung auf euer Bankkonto eingehen.",
+				"&c/money banknotification &f| Enables and disables messages that are sent to your bank account as a transaction.");
+		commandsInput("banknotification", "banknotification", basePermission+"banknotification",
+				"/banknotification", "/banknotificatione ",
+				"&c/banknotification &f| Schaltet Nachrichten aus und ein, die als Überweisung auf euer bankkonto eingehen.",
+				"&c/banknotification &f| Enables and disables messages that are sent to your bank account as a transaction.");
 		
-		argumentInput("money_top", "top", basePermission,
-				"/money top [pagenumber]", "/money top ",
-				"&c/money top [Seitenzahl] &f| Zeigt die Liste der bestbetuchten Spieler an.",
-				"&c/money top [page number] &f| Shows the list of the best players.",
-				"Show the top balance players.");
+		argumentInput("money_toplist", "toplist", basePermission,
+				"/money top <pagenumber> <currencyname>", "/money toplist ",
+				"&c/money top <Seitenzahl> <Währungsname> &f| Zeigt die Liste der bestbetuchten Accounts der Währung an.",
+				"&c/money top <page number> <currencyname> &f| Shows the list of the best accounts of the currency.");
+		commandsInput("toplist", "toplist", basePermission+"toplist",
+				"/toplist [pagenumber]", "/toplist ",
+				"&c/toplist [Seitenzahl] &f| Zeigt die Liste der bestbetuchten Spieler an.",
+				"&c/toplist [page number] &f| Shows the list of the best players.");
 	}
 	
-	private void comMoneyLogs()
+	private void comAEPLogs()
 	{
-		String basePermission = "eco.cmd.money";
-		argumentInput("money_actionlog", "actionlog", basePermission,
-				"/money actionlog [page] [playername]", "/money actionlog ",
-				"&c/money actionlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
-				"&c/money actionlog [page] [playername] &f| Shows direct the actionlog by the actual Settings.",
-				"Shows direct the actionlog by the actual Settings.");
-		argumentInput("money_trendlog", "trendlog", basePermission,
-				"/money trendlog [page] [playername]", "/money trendlog ",
-				"&c/money trendlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
-				"&c/money trendlog [page] [playername] &f| Shows direct the trendlog by the actual Settings.",
-				"Shows direct the trendlog by the actual Settings.");
+		String basePermission = "aep.cmd.money";
+		argumentInput("aep_actionlog", "actionlog", basePermission,
+				"/aep actionlog [page] [playername]", "/aep actionlog ",
+				"&c/aep actionlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
+				"&c/aep actionlog [page] [playername] &f| Shows direct the actionlog by the actual Settings.");
+		commandsInput("actionlog", "actionlog", basePermission,
+				"/actionlog [page] [playername]", "/actionlog ",
+				"&c/actionlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
+				"&c/actionlog [page] [playername] &f| Shows direct the actionlog by the actual Settings.");
+		argumentInput("aep_trendlog", "trendlog", basePermission,
+				"/aep trendlog [page] [playername]", "/aep trendlog ",
+				"&c/aep trendlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
+				"&c/aep trendlog [page] [playername] &f| Shows direct the trendlog by the actual Settings.");
+		commandsInput("trendlog", "trendlog", basePermission,
+				"/trendlog [page] [playername]", "/trendlog ",
+				"&c/trendlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
+				"&c/trendlog [page] [playername] &f| Shows direct the trendlog by the actual Settings.");
 	}
 	
-	private void comMoneyLoggerSettings()
+	private void comAEPLoggerSettings()
 	{
-		String basePermission = "eco.cmd.money";
-		argumentInput("money_loggersettings", "loggersettings", basePermission,
-				"/money loggersetting", "/money loggersetting ",
-				"&c/money loggersettings &f| Öffnet die Gui und mit angegebenen Argumenten gibt es die Daten in Form von Log, Diagram etc. aus.",
-				"&c/money loggersettings &f| Opens the gui and with given arguments it outputs the data in form of log, diagram etc.",
-				"Open the Gui for the loggersettings for Action- and trendlog");
+		String basePermission = "aep.cmd.money";
+		argumentInput("aep_loggersettings", "loggersettings", basePermission,
+				"/aep loggersetting", "/aep loggersetting ",
+				"&c/aep loggersettings &f| Öffnet die Gui und mit angegebenen Argumenten gibt es die Daten in Form von Log, Diagram etc. aus.",
+				"&c/aep loggersettings &f| Opens the gui and with given arguments it outputs the data in form of log, diagram etc.");
 		
-		basePermission = "eco.cmd.money.loggersettings";
-		argumentInput("money_loggersettings_gui", "gui", basePermission,
-				"/money loggersettings gui [playername] [page] [methode]", "/money loggersettings gui ",
-				"&c/money loggersettings gui [Spielername] [Seitenzahl] [Methode] &f| Öffnet die Gui und mit angegebenen Argumenten gibt es die Daten in Form von Log, Diagram etc. aus.",
-				"&c/money loggersettings gui [playername] [page] [methode] &f| Opens the gui and with given arguments it outputs the data in form of log, diagram etc.",
-				"Open the Gui for the loggersettings for Action- and trendlog. And display choosen settings as log, diagram etc.");
+		basePermission = "aep.cmd.money.loggersettings";
+		argumentInput("aep_loggersettings_gui", "gui", basePermission,
+				"/aep loggersettings gui [<playername> <accountname>] [page] [methode]", "/aep loggersettings gui ",
+				"&c/aep loggersettings gui [<Spielername> <Accountname>] [Seitenzahl] [Methode] &f| Öffnet die Gui und mit angegebenen Argumenten gibt es die Daten in Form von Log, Diagram etc. aus.",
+				"&c/aep loggersettings gui [<playername> <accountname>] [page] [methode] &f| Opens the gui and with given arguments it outputs the data in form of log, diagram etc.");
 		
-		argumentInput("money_loggersettings_other", "other", basePermission,
-				"/money loggersetting other [playername]", "/money loggersettings other ",
-				"&c/money loggersettings other [Spielername] &f| Öffnet die Gui eines anderen Spielers.",
-				"&c/money loggersettings other [playername] &f| Opens the gui of another player.",
-				"Open the Gui for the loggersettings of a other player for Action- and trendlog");
+		argumentInput("aep_loggersettings_other", "other", basePermission,
+				"/aep loggersetting other [playername]", "/aep loggersettings other ",
+				"&c/aep loggersettings other [Spielername] &f| Öffnet die Gui eines anderen Spielers.",
+				"&c/aep loggersettings other [playername] &f| Opens the gui of another player.");
 		
-		argumentInput("money_loggersettings_text", "text", basePermission,
-				"/money loggersettings text <Text...>", "/money loggersettings text ",
-				"&c/money loggersettings text <Text...> &f| Texteditor für bestimmte Parameter der Gui.",
-				"&c/money loggersettings text <Text...> &f| Text editor for certain parameters of the Gui.",
-				"Set a Searchtext for the comment, from, to or orderer value. (Always gui first!)");
+		argumentInput("aep_loggersettings_text", "text", basePermission,
+				"/aep loggersettings text <Text...>", "/aep loggersettings text ",
+				"&c/aep loggersettings text <Text...> &f| Texteditor für bestimmte Parameter der Gui.",
+				"&c/aep loggersettings text <Text...> &f| Text editor for certain parameters of the Gui.");
 	}
 	
-	private void comLoan() //TODO:ComLoan
+	private void comLoan()
 	{		
-		commandsInput("loan", "loan", "eco.cmd.loan", "/loan", "/loan ",
+		commandsInput("loan", "loan", "aep.cmd.loan", "/loan", "/loan ",
 				"&c/loan [Seitenzahl] [Spielername] &f| Zeigt deine Kredite an.",
-				"&c/loan [page] [playername] &f| Shows yours loans.",
-				"Display all of yours loans.");
-		String basePermission = "eco.cmd.loan";
+				"&c/loan [page] [playername] &f| Shows yours loans.");
+		String basePermission = "aep.cmd.loan";
 		argumentInput("loan_accept", "accept", basePermission,
 				"/loan accept [confirm]", "/loan accept",
 				"&c/loan accept [bestätigen] &f| Akzeptiert einen Kreditvorschlag.",
-				"&c/loan accept [confirm] &f| Accept a loanproposal.",
-				"Accept the loanproposal from the other player.");
+				"&c/loan accept [confirm] &f| Accept a loanproposal.");
 		
 		argumentInput("loan_amount", "amount", basePermission,
 				"/loan amount <totalamount> <amountratio> <interest>", "/loan amount ",
 				"&c/loan amount <gesamtbetrag> <ratenbetrag> <zinzen in %> &f| Setzt für den Gesamtbetrag, Ratenbetrag und die Zinsen für einen Kredit, welcher sich noch in Bearbeitung befindet.",
-				"&c/loan amount  <totalamount> <amountratio> <interest in %> &f| Sets the total amount, installment amount and interest for a loan that is still being processed.",
-				"Set to a loan in workprogress the totalamount, amountratio and interest.");
+				"&c/loan amount  <totalamount> <amountratio> <interest in %> &f| Sets the total amount, installment amount and interest for a loan that is still being processed.");
 		
 		argumentInput("loan_cancel", "cancel", basePermission,
 				"/loan cancel", "/loan cancel ",
 				"&c/loan cancel &f| Bricht die Krediterstellung ab.",
-				"&c/loan cancel &f| Cancels the credit creation.",
-				"Cancel the loan work in progress.");
+				"&c/loan cancel &f| Cancels the credit creation.");
 		
 		argumentInput("loan_create", "create", basePermission,
-				"/loan create <name> <sender> <reciver>", "/loan create ",
-				"&c/loan create <Name> <Sender> <Empfänger> &f| Erstellt einen Kreditvorschlag.",
-				"&c/loan create <name> <sender> <reciver> &f| Create a loanproposal.",
-				"Create a work in progress loanproposal");
+				"/loan create <name> <senderaccountid> <reciveraccountid> <debtorname>", "/loan create ",
+				"&c/loan create <Name> <SenderAccountID> <EmpfängerAccountID> <SchuldnerName> &f| Erstellt einen Kreditvorschlag.",
+				"&c/loan create <name> <senderaccountid> <reciveraccountid> <debtorname> &f| Create a loanproposal.");
 		
 		argumentInput("loan_info", "info", basePermission,
 				"/loan info [id]", "/loan info ",
 				"&c/loan info [id] &f| Zeigt alle Infos zu allen Krediten an. Ohne Id, wird der Kreditvorschlag angezeigt.",
-				"&c/loan info [id] &f| Shows all information about all loans. Without Id, the loan proposal is displayed.",
-				"Show all info to a loan. By no id, than is the work in progress loan");
+				"&c/loan info [id] &f| Shows all information about all loans. Without Id, the loan proposal is displayed.");
 		
 		argumentInput("loan_inherit", "inherit", basePermission,
 				"/loan inherit <id> <playername>", "/loan inherit ",
 				"&c/loan inherit <id> <Spielername> &f| Lässt den Spieler den Kredit erben. Somit muss er nun zahlen. Adminbefehl um bei Betrugsfall mit einem 2. Account, diesen dann zu belasten.",
-				"&c/loan inherit <id> <playername> &f| Lets the player inherit the loan. So now he must pay. Admin command to debit a 2nd account in case of fraud with a 2nd account.",
-				"Let the player inherit the loans to pay. Admincommand to inherit loans to player whitch cheats with a second acc.");
+				"&c/loan inherit <id> <playername> &f| Lets the player inherit the loan. So now he must pay. Admin command to debit a 2nd account in case of fraud with a 2nd account.");
 		
 		argumentInput("loan_list", "list", basePermission,
 				"/loan list [page]", "/loan list ",
 				"&c/loan list [Seitenzahl] &f| Zeigt seitenbasiert alle Kredite als Liste.",
-				"&c/loan list [page] &f| Shows all loans in a page-based list.",
-				"Show a list of all loans of all the player");
+				"&c/loan list [page] &f| Shows all loans in a page-based list.");
 		
 		argumentInput("loan_pause", "pause", basePermission,
 				"/loan pause <id>", "/loan pause ",
 				"&c/loan pause <id> &f| Pausiert oder nimmt die Zahlungen des Kredits wieder auf. Nur für den Krediteigentümer möglich!",
-				"&c/loan pause <id> &f| Pauses or resumes payments on the loan. Only possible for the loan owner!",
-				"Pause or unpause a loanrepayment");
+				"&c/loan pause <id> &f| Pauses or resumes payments on the loan. Only possible for the loan owner!");
 		
 		argumentInput("loan_payback", "payback", basePermission,
 				"/loan payback <id>", "/loan payback",
 				"&c/loan payback <id> &f| Zahlt dem Spieler den Rest des Kredites zurück als Admin.",
-				"&c/loan payback <id> &f| Pay the player back the rest of the loan as admin.",
-				"As admin payback the rest amount to the player.");
+				"&c/loan payback <id> &f| Pay the player back the rest of the loan as admin.");
 		
 		argumentInput("loan_reject", "reject", basePermission,
 				"/loan reject", "/loan reject",
 				"&c/loan reject &f| Lehnt einen Kreditvorschlag ab.",
-				"&c/loan reject &f| Rejects a loan proposal.",
-				"Reject a loan proposal");
+				"&c/loan reject &f| Rejects a loan proposal.");
 		
 		argumentInput("loan_remit", "remit", basePermission,
 				"/loan forgive <id> [confirm]", "/loan remit",
 				"&c/loan remit <id> &f| Der Restbetrag des Kredits wird erlassen.",
-				"&c/loan remit <id> &f| The remaining amount of the loan will be remitted.",
-				"Remit the restamount of the loan.");
+				"&c/loan remit <id> &f| The remaining amount of the loan will be remitted.");
 		
 		argumentInput("loan_repay", "repay", basePermission,
 				"/loan repay <id> <amount>", "/loan repay",
 				"&c/loan repay <id> <Betrag> &f| Zahlt einen Betrag vom Kredit ab.",
-				"&c/loan repay <id> <amount> &f| Pays an amount off the loan.",
-				"Repay the amount to a loan.");
+				"&c/loan repay <id> <amount> &f| Pays an amount off the loan.");
 		
 		argumentInput("loan_send", "send", basePermission,
 				"/loan send <player>", "/loan send ",
 				"&c/loan send <spielername> &f| Sendet einen Kreditvorschlag einem Spieler.",
-				"&c/loan send <player> &f| Sends a loan proposal to a player.",
-				"Send the player a loan proposal");
+				"&c/loan send <player> &f| Sends a loan proposal to a player.");
 		
 		argumentInput("loan_time", "time", basePermission,
 				"/loan time <starttime> <endtime> <repeatingtime>", "/loan time ",
 				"&c/loan time <startdatum|dd.MM.yyyy-HH:mm> <entdatum|dd.MM.yyyy-HH:mm> <ratenzyklus|dd-HH:mm> &f| Setzt die Zeiten für den Kreditvorschlag.",
-				"&c/loan time <starttime|dd.MM.yyyy-HH:mm> <endtime|dd.MM.yyyy-HH:mm> <repeatingtime|dd-HH:mm> &f| Sets the times for the loan proposal.",
-				"Set the times. Starttime and Endtime in <dd.MM.yyyy-HH:mm> and RepeatingTime in <dd-HH:mm> format");
+				"&c/loan time <starttime|dd.MM.yyyy-HH:mm> <endtime|dd.MM.yyyy-HH:mm> <repeatingtime|dd-HH:mm> &f| Sets the times for the loan proposal.");
 		
 		argumentInput("loan_transfer", "", basePermission,
 				"/loan transfer <id> <player>", "/loan transfer ",
 				"&c/loan transfer <id> <Spielername> &f| Überträgt den Eigentümerstatus und Rückzahlrecht an den Spieler.",
-				"&c/loan transfer <id> <player> &f| Transfers the ownership status and repayment right to the player.",
-				"Transfer the ownerstatus of your loan to the other player.");
+				"&c/loan transfer <id> <player> &f| Transfers the ownership status and repayment right to the player.");
 	}
 	
-	private void comStandingOrder() //TODO:ComStandingOrder
+	private void comStandingOrder()
 	{
-		commandsInput("standingorder", "standingorder", "eco.cmd.standingorder", "/standingorder", "/standingorder ",
+		commandsInput("standingorder", "standingorder", "aep.cmd.standingorder", "/standingorder", "/standingorder ",
 				"&c/standingorder [Seitenzahl] [Spielername] &f| Zeigt deine Daueraufträge an.",
-				"&c/standingorder [page] [playername] &f| Shows yours standing orders.",
-				"Display all of yours standing orders.");
-		String basePermission = "eco.cmd.standingorder";
+				"&c/standingorder [page] [playername] &f| Shows yours standing orders.");
+		String basePermission = "aep.cmd.standingorder";
 		argumentInput("standingorder_amount", "amount", basePermission,
-				"/standingorder amount <amount>", "/standingorder amount",
-				"&c/standingorder amount <Betrag> &f| Setzt den Betrag für ein noch wartenden Dauerauftrag.",
-				"&c/standingorder amount <Betrag> &f| Sets the amount for a still waiting standing order.",
-				"Set to a waiting standingorder the amount");
+				"/standingorder amount <amount> [id]", "/standingorder amount",
+				"&c/standingorder amount <Betrag> [id] &f| Setzt den Betrag für ein noch wartenden Dauerauftrag.",
+				"&c/standingorder amount <Betrag> [id] &f| Sets the amount for a still waiting standing order.");
 		
 		argumentInput("standingorder_cancel", "cancel", basePermission,
 				"/standingorder cancel", "/standingorder cancel",
 				"&c/standingorder cancel &f| Bricht den noch wartenden Dauerauftrag ab.",
-				"&c/standingorder cancel &f| Cancels the still waiting standing order.",
-				"Cancel the waiting standing order.");
+				"&c/standingorder cancel &f| Cancels the still waiting standing order.");
 		
 		argumentInput("standingorder_create", "create", basePermission,
 				"/standingorder create <name> <sender> <reciver>", "/standingorder create",
 				"&c/standingorder create <name> <Sender> <Empfänger> &f| Erstellt einen wartenden Dauerauftrag. Durch weitere Einstellung wird dieser finalisiert.",
-				"&c/standingorder create <name> <sender> <reciver> &f| Creates a waiting standing order. This is finalized by further settings.",
-				"Create a Standingorder. Additional Settings must be set.");
+				"&c/standingorder create <name> <sender> <reciver> &f| Creates a waiting standing order. This is finalized by further settings.");
 		
 		argumentInput("standingorder_delete", "delete", basePermission,
 				"/standingorder delete <id>", "/standingorder delete",
 				"&c/standingorder delete <id> &f| Löscht den schon existierenden Dauerauftrag.",
-				"&c/standingorder delete <id> &f| Deletes the already existing standing order.",
-				"Delete the standing order.");
+				"&c/standingorder delete <id> &f| Deletes the already existing standing order.");
 		
 		argumentInput("standingorder_info", "info", basePermission,
 				"/standingorder info [id]", "/standingorder info",
 				"&c/standingorder info [id] &f| Zeigt alle Info zu einem Dauerauftrag an. Bei keiner Angabe, zeigt es den noch wartenden Dauerauftrag.",
-				"&c/standingorder info [id] &f| Shows all information about a standing order. If not specified, it shows the still waiting standing order.",
-				"Show Infos about standingorder.");
+				"&c/standingorder info [id] &f| Shows all information about a standing order. If not specified, it shows the still waiting standing order.");
 		
 		argumentInput("standingorder_list", "list", basePermission,
 				"/standingorder list [page]", "/standingorder list ",
 				"&c/standingorder list [Seitenzahl] &f| Listet alle Daueraufträge von allen Spielern auf.",
-				"&c/standingorder list [Seitenzahl] &f| Lists all standing orders from all players.",
-				"Show a list of all standingorders from all players.");
+				"&c/standingorder list [Seitenzahl] &f| Lists all standing orders from all players.");
 		
 		argumentInput("standingorder_pause", "pause", basePermission,
 				"/standingorder pause <id>", "/standingorder pause ",
 				"&c/standingorder pause <ID> &f| Pausiert den Dauerauftrag. Falls er vorher abgebrochen wurde, setzte er den Status zurück.",
-				"&c/standingorder pause <ID> &f| Pauses the standing order. If it was canceled before, it resets the status.",
-				"Paused a standingorder or cancelled the cancelstatus.");
+				"&c/standingorder pause <ID> &f| Pauses the standing order. If it was canceled before, it resets the status.");
 		
 		argumentInput("standingorder_repeatingtime", "repeatingtime", basePermission,
 				"/standingorder repeatingtime <dd-HH:mm value>", "/standingorder repeatingtime",
 				"&c/standingorder repeatingtime <dd-HH:mm Wert> &f| Setzt eine Wiederholungsvariable, welche im dd-HH:mm Format geschrieben werden muss.",
-				"&c/standingorder repeatingtime <dd-HH:mm Wert> &f| Sets a repeat variable, which must be written in dd-HH:mm format.",
-				"Set the repeating time of the waiting standing order. Must use the specific >dd-HH:mm< Pattern. For example 01-23:50 for 1 day, 23 hours and 50 seconds.");
+				"&c/standingorder repeatingtime <dd-HH:mm Wert> &f| Sets a repeat variable, which must be written in dd-HH:mm format.");
 		
 		argumentInput("standingorder_starttime", "starttime", basePermission,
 				"/standingorder starttime <dd.MM.yyyy-HH:mm value>", "/standingorder starttime",
 				"&c/standingorder starttime <dd.MM.yyyy-HH:mm Wert> &f| Setzt das Startdatum. Es müssen vorher alle anderen Eigenschaften gesetzt sein, denn dieser Befehl startet auch gleichzeitig den Dauerauftrag!",
-				"&c/standingorder starttime <dd.MM.yyyy-HH:mm Wert> &f| Sets the start date. All other properties must be set first, because this command also starts the standing order at the same time!",
-				"Set the starttime in <dd.MM.yyyy-HH:mm> format. And Starts the standing order!");
+				"&c/standingorder starttime <dd.MM.yyyy-HH:mm Wert> &f| Sets the start date. All other properties must be set first, because this command also starts the standing order at the same time!");
 	}
 	
-	public void initLanguage() //TODO:Languages
+	public void initLanguage()
 	{
 		languageKeys.put("NoPermission"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -793,23 +793,31 @@ public class YamlManager
 				"&eZinsen können nicht kleiner oder gleich -100 % sein!",
 				"&eInterest cannot be less than or equal to -100 %!"}));
 		
-		languageKeys.put("StandingOrder.Orderer"
+		languageKeys.put("StandingOrder.Category"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"Dauerauftrag",
 				"StandingOrder"}));
 		languageKeys.put("StandingOrder.Comment"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDauerauftrag &f%name%~!~&dInsgesamt gezahlter Betrag: &f%totalpaid% %currency%",
-				"&eStandingOrder &f%name%~!~&dTotal amount paid: &f%totalpaid% %currency%"}));
+				"&eDauerauftrag &f%name%~!~&dInsgesamt gezahlter Betrag: &f%format%",
+				"&eStandingOrder &f%name%~!~&dTotal amount paid: &f%format%"}));
 		
-		languageKeys.put("LoanRepayment.Orderer"
+		languageKeys.put("LoanRepayment.CategoryI"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Kreditvergabe",
+				"Loangranting"}));
+		languageKeys.put("LoanRepayment.CategoryII"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"Kreditrückzahlung",
-				"DebtRepayment"}));
-		languageKeys.put("LoanRepayment.Comment"
+				"LoanRepayment"}));
+		languageKeys.put("LoanRepayment.CommentI"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eKredit &f%name%~!~&dInsgesamt gezahlter Betrag: &f%totalpaid% %currency%~!~&5Ausstehender Betrag: &f%waitingamount% %currency%",
-				"&eLoan &f%name%~!~&dTotal amount paid: &f%totalpaid% %currency%~!~&5Outstanding amount: &f%waitingamount% %currency%"}));
+				"&eKredit &f%name% &evergeben von &f%lender% &ean %debtor%&e, Account &f%owner% %accountname%(%id%)",
+				"&eLoan &f%name% &given from &f%lender% to %debtor%, Account &f%owner% %accountname%(%id%)"}));
+		languageKeys.put("LoanRepayment.CommentII"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKredit &f%name%~!~&dInsgesamt gezahlter Betrag: &f%totalpaid%~!~&5Ausstehender Betrag: &f%waitingamount%",
+				"&eLoan &f%name%~!~&dTotal amount paid: &f%totalpaid%~!~&5Outstanding amount: &f%waitingamount%"}));
 		
 		languageKeys.put("ChestShopHook.Sell"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -863,7 +871,8 @@ public class YamlManager
 				"&eShop: &f%amount% &6x &b%item% &evon &f%player% &cgekauft&e!",
 				"&eShop: &f%amount% &6x &b%item% &efrom &f%player% &cpurchased&e!"}));
 		
-		langEco();
+		//INFO:language
+		langEco_OLD();
 		langTransactionHandler();
 		langVaultApi();
 		langLog();
@@ -878,7 +887,7 @@ public class YamlManager
 				""}));*/
 	}
 	
-	private void langEco() //TODO:LangEco
+	private void langEco_OLD()
 	{
 		String base = "CmdEco.";
 		languageKeys.put(base+"BaseInfo.Headline"
@@ -930,11 +939,11 @@ public class YamlManager
 				"&cThe log entry does not exist!"}));
 		languageKeys.put(base+"ReComment.CommentWasChange"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDie Notiz vom Log &f#%id% &ewurde geändert in: &r%comment%",
-				"&eThe note from log &f#%id% &was changed to: &r%comment%"}));
+				"&eDie Notiz vom Log &f#%id% &ewurde geändert in: &r%category% &b- &r%comment%",
+				"&eThe note from log &f#%id% &was changed to: &r%category% &b- &r%comment%"}));
 	}
 	
-	private void langTransactionHandler()//TODO:Transactionhandler
+	private void langTransactionHandler()
 	{
 		String base = "TransactionHandler.";
 		languageKeys.put(base+"IS_NOT_ENABLED"
@@ -1179,15 +1188,131 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&e=====&7[&2Economy &bAktiongrafik: &f%accountname%&7 | Log-Anzahl: %amount%&7]&e=====",
 				"&e=====&7[&2Economy &bActiongrafic: &f%accountname%&7 | Log-Quantity: %amount%&7]&e====="}));
+		
+		languageKeys.put(base+"NoLoggerSettingsFound"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast keinen LoggerSetting ausgewählt!",
+				"&cYou have not selected a LoggerSetting!"}));
+		languageKeys.put(base+"NoOtherLoggerSettingsFound"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Spieler hat keinen LoggerSetting ausgewählt!",
+				"&cThe player has not selected a LoggerSetting!"}));
+	}
+	
+	private void langCurrency()
+	{
+		String base = "Cmd.";
+		languageKeys.put(base+"Exchange.CurrencyDontAllowExchange"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDie Währung &f%currency% &cerlaubt keinen Umtausch in eine andere Währung!",
+				"&cThe currency &f%currency% &cdoes not allow exchange into another currency!"}));
 	}
 	
 	private void langCmd()
 	{
 		String base = "Cmd.";
+		languageKeys.put(base+"AccountDontExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Account %account% existiert nicht!",
+				"&cThe account %account% does not exist!"}));
+		languageKeys.put(base+"DeleteLog.LogNotExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Log-Eintrag existiert nicht!",
+				"&cThe log entry does not exist!"}));
+		languageKeys.put(base+"DeleteLog.LogWasDeleted"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDer Log-Eintrag Nummer %id% wurde &cgelöscht&e!",
+				"&eThe log entry number %id% was &cdeleted&e!"}));
+		
+		languageKeys.put(base+"Player.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&2AEP &b%player%&7]&e=====",
+				"&e=====&7[&2AEP &b%player%&7]&e====="}));
+		languageKeys.put(base+"Player.AccountColor"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&b",
+				"&b"}));
+		languageKeys.put(base+"Player.AccountSeperator"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&7, ",
+				"&7, "}));
+		languageKeys.put(base+"Player.AccountID"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cID: &f%id%",
+				"&cOwner: &f%owner%"}));
+		languageKeys.put(base+"Player.AccountOwner"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEigentümer: &f%owner%",
+				"&cOwner: &f%owner%"}));
+		languageKeys.put(base+"Player.AccountBalance"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cKontostand: &f%balance%",
+				"&cBalance: &f%balance%"}));
+		languageKeys.put(base+"Player.AccountCategory"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cKategorie: &f%category%",
+				"&cCategory: &f%category%"}));
+		languageKeys.put(base+"Player.AccountPredefined"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cVordefiniert: &f%predefined%",
+				"&cPredefined: &f%predefined%"}));
+		languageKeys.put(base+"Player.AccountDefault"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDefault Account: &f%default%",
+				"&cDefault Account: &f%default%"}));
+		languageKeys.put(base+"Player.AccountQuickPay"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cQuickPay: &f%quickpay%",
+				"&cQuickPay: &f%quickpay%"}));
+		languageKeys.put(base+"Player."+AccountManagementType.CAN_ADMINISTRATE_ACCOUNT.toString()
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c◆ - Kann den Account administrieren.",
+				""}));
+		languageKeys.put(base+"Player."+AccountManagementType.CAN_SET_OWNERSHIP.toString()
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c● - Kann den Account einem anderen Spieler übertragen.",
+				""}));
+		languageKeys.put(base+"Player."+AccountManagementType.CAN_WITHDRAW.toString()
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c◈ - Kann Geld vom Account abheben.",
+				""}));
+		languageKeys.put(base+"Player."+AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT.toString()
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c◉ - Kann diesen Account als Default in seiner Kategorie setzten.",
+				""}));
+		languageKeys.put(base+"Player."+AccountManagementType.CAN_SEE_LOG.toString()
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c◌ - Kann den Account Action und Trendlog einsehen.",
+				""}));
+		languageKeys.put(base+"Player."+AccountManagementType.CAN_SEE_BALANCE.toString()
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c▢ - Kann den Kontostand einsehen.",
+				""}));
+		languageKeys.put(base+"Player."+AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&c◬ - Kann Benachrichtungen erhalten, wenn Geldtransaktionen durchgeführt werden.",
+				""}));
+		
+		languageKeys.put(base+"ReComment.NoOrderer"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu bist nicht der Auftraggeber des Logs!",
+				"&cYou are not order of the log!"}));
+		languageKeys.put(base+"ReComment.LogNotExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Log-Eintrag existiert nicht!",
+				"&cThe log entry does not exist!"}));
+		languageKeys.put(base+"ReComment.CommentWasChange"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eDie Notiz vom Log &f#%id% &ewurde geändert in: &r%comment%",
+				"&eThe note from log &f#%id% &was changed to: &r%comment%"}));
 		languageKeys.put(base+"NotEnoughArguments"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cFür den Befehl &f%cmd% &cmuss mindestens %amount% Argumente angegeben werden!",
 				"&cFor the command &f%cmd% &cmust be specified at least %amount% arguments!"}));
+		languageKeys.put(base+"QuickPayDontExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cFür die Währung existiert kein QuickPayAccount!",
+				"&cFor the currency do not exist a QuickPayAccount!"}));
 		languageKeys.put(base+"Balance.NotCorrectEconomyEntityEconomyType"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDas Argument &f%arg% &cist kein EconomyEntityType!",
@@ -1238,12 +1363,16 @@ public class YamlManager
 				" &9Ⓣ~click@RUN_COMMAND@/%cmd%+%account%+%player%+~hover@SHOW_TEXT@&eClick+here+for+the+trendlog+of+the+account!"}));
 		languageKeys.put(base+"Pay.PlayerIsNotRegistered"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDu bist nicht in der Datenbank registriert!",
-				"&cYou are not registered in the database!"}));
+				"&cDer Spieler ist nicht in der Datenbank registriert!",
+				"&cThe player is not registered in the database!"}));
 		languageKeys.put(base+"Pay.ShortPayAccountDontExist"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDein festgelegter ShortPay-Account existiert nicht!",
 				"&cYour specified ShortPay account does not exist!"}));
+		languageKeys.put(base+"Pay.AccountDontExist"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer angegbene Aaccount existiert nicht!",
+				"&cThe specified account does not exist!"}));
 		languageKeys.put(base+"Pay.TargetAccountDontExist"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDer Zielaccount existiert nicht!",
@@ -1314,12 +1443,24 @@ public class YamlManager
 				"&cThere are not enough values for this page number!"}));
 		languageKeys.put(base+"Top.Headline"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=======&7[&2Economy &bTop &eSeite %page%&7]&e=======",
-				"&e=======&7[&2Economy &bTop &epage %page%&7]&e======="}));
+				"&e=======&7[&2AEP %currency% &bTop &eSeite %page%&7]&e=======",
+				"&e=======&7[&2AEP %currency% &bTop &epage %page%&7]&e======="}));
 		languageKeys.put(base+"Top.TopLine"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&e%place%. &8%accountid%-&b%owner%&f-&6%accountname%: &r%format%",
 				"&e%place%. &8%accountid%-&b%owner%&f-&6%accountname%: &r%format%"}));
+		languageKeys.put("Cmd.GetTotal.PreLine"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eIm Geldsystem befindet sich folgende Mengen:",
+				""}));
+		languageKeys.put("Cmd.GetTotal.Line"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&6%currency%&b: %format%",
+				"&6%currency%&b: %format%"}));
+		languageKeys.put("Cmd.Pay."
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"",
+				""}));
 		languageKeys.put("Cmd.Pay."
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"",
@@ -1330,7 +1471,7 @@ public class YamlManager
 				""}));
 	}
 	
-	private void langMoney_OLD() //TODO:LangMoney
+	private void langMoney_OLD()
 	{
 		String base = "CmdMoney.";
 		languageKeys.put(base+"PlayerBalance"
@@ -1655,9 +1796,13 @@ public class YamlManager
 				"Relative change: &c%relativ%"}));
 	}
 	
-	private void langLoan() //TODO:LangLoan
+	private void langLoan()
 	{
-		String base = "CmdLoan.";
+		String base = "Cmd.Loan.";
+		languageKeys.put(base+"CurrencyDontAllowLoan"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDie Währung &f%currency% &cerlaubt keine Kredite!",
+				"&cThe currency &f%currency% &cdont allow loans!"}));
 		languageKeys.put(base+"ConfirmTerm"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"bestätigen",
@@ -1690,6 +1835,14 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDie angegebenen Spieler müssen auch existieren!",
 				"&cThe specified players must also exist!"}));
+		languageKeys.put(base+"YouCantBeCreateALoanIfYouHaveNoWithdrawRight"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu kannst keinen Kredit erstellen, wenn du vom Kreditgeberaccount keine Abhebungsrechte hast!",
+				"&cYou cant create a loan if you don't have withdrawal rights from the lender account!"}));
+		languageKeys.put(base+"YouMustBeTheAccountOwner"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu musst der Eigentümer des Accountes sein, welcher den Kredit vergibt!",
+				"&cYou must be the owner of the account that grants the credit!"}));
 		languageKeys.put(base+"YouCantBeTheOwnerOfYourOwnLoan"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu kannst nicht der Krediteigentümer sein, wenn der Kredit an dich geht!",
@@ -1708,8 +1861,8 @@ public class YamlManager
 				"&cRestloan has already been forgiven!"}));
 		languageKeys.put(base+"HoverInfo"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eID: &f%id%~!~&eName: &f%name%~!~&eKreditnehmer: &f%from%~!~&eKreditgeber: &f%to%~!~&eKrediteigentümer: &f%owner%~!~&eStartdatum: &f%st%~!~&eEnddatum: &f%et%~!~&eRatenzyklus: &f%rt%~!~&eBetrag: &r%apsf%&r/&3%ta%~!~&eRatenbetrag: &f%ar%~!~&eZinssatz: &f%in% %~!~&eIst Pausiert: &f%pa%~!~&eIst Vergeben: &e%fo%~!~&eIst Abbezahlt: &f%fi%",
-				"&eID: &f%id%~!~&eName: &f%name%~!~&eBorrower: &f%from%~!~&eLenders: &f%to%~!~&eLoanOwner: &f%owner%~!~&eStartdate: &f%st%~!~&eEnddate: &f%et%~!~&eRatecycle: &f%rt%~!~&eAmount: &r%apsf%&r/&3%ta%~!~&eInstalmentamount: &f%ar%~!~&eInterestrate: &f%in% %~!~&eIs Paused: &f%pa%~!~&eIs forgiven: &e%fo%~!~&eIs paid off: &f%fi%"}));
+				"&eID: &f%id%~!~&eName: &f%name%~!~&eKreditnehmer: &f%fromaccount% (%fromowner%)~!~&eKreditgeber: &f%toaccount% (%toowner%)~!~&eKrediteigentümer: &f%owner%~!~&eSchuldner: &f%debtor%~!~&eStartdatum: &f%st%~!~&eEnddatum: &f%et%~!~&eRatenzyklus: &f%rt%~!~&eBetrag: &r%apsf%&r/&3%ta% (%apsfip% &r%)~!~&eRatenbetrag: &f%ar%~!~&eZinssatz: &f%in% %~!~&eBisher gezahlte Steuern: &f%tax%~!~&eIst Pausiert: &f%pa%~!~&eIst Vergeben: &e%fo%~!~&eIst Abbezahlt: &f%fi%",
+				"&eID: &f%id%~!~&eName: &f%name%~!~&eBorrower: &f%fromaccount% (%fromowner%)~!~&eLenders: &f%toaccount% (%toowner%)~!~&eLoanOwner: &f%owner%~!~&eDebtor: &f%debtor%~!~&eStartdate: &f%st%~!~&eEnddate: &f%et%~!~&eRatecycle: &f%rt%~!~&eAmount: &r%apsf%&r/&3%ta% (%apsfip% &r%)~!~&eInstalmentamount: &f%ar%~!~&eInterestrate: &f%in% %~!~&eTaxes paid to date: &f%tax%~!~&eIs Paused: &f%pa%~!~&eIs forgiven: &e%fo%~!~&eIs paid off: &f%fi%"}));
 		languageKeys.put(base+"Accept.YouHaveAccepted"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast das Kreditangebot von &6%drowner% &f%name% &eangenommen!",
@@ -1724,7 +1877,7 @@ public class YamlManager
 				"&eThe loan &f%name% &ewas processed."}));
 		languageKeys.put(base+"Amount.Hover"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eGesamtbetrag: &r%ta% %currency% (Zinsen schon mit eingerechnet)~!~&eRaten: &r%am% %currency%~!~&eZinsen: &r%in% %~!~Vorraussichtlich Anzahl an Zahlungen: &r%min%",
+				"&eKredit: &r%la%~!~&b(Betrag ohne Zinsen und Steuern, wird an den Schuldner überwiesen)~!~&eZinsen: &r%in% %~!~Steuern: &r%tax% %~!~Gesamtbetrag: &r%ta%~!~&b(Zinsen und Steuern schon mit eingerechnet, muss der Schuldner an Verleiher und Server zurückzahlen~!~&bDer Server bekommt von der Raten, die Prozent welche als Steuern hinterlegt wurde.)~!~&eRaten: &r%am%~!~Vorraussichtlich Anzahl an Zahlungen: &r%min%",
 				"&ETotal amount: &r%ta% %currency% (interest already included)~!~&eRates: &r%am% %currency%~! &eInterest: &r%in% %~! &r%min%"}));
 		languageKeys.put(base+"Cancel.IsCancelled"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -1848,17 +2001,17 @@ public class YamlManager
 				"&eThe player &f%player% &ehas given you the loan &f%id% %e| &f%name% &transferred. &aFrom now on you will get the payments!"}));
 	}
 	
-	private void langStandingOrder() //TODO:LangStandingOrder
+	private void langStandingOrder()
 	{
-		String base = "CmdStandingOrder.";
+		String base = "Cmd.StandingOrder.";
 		languageKeys.put(base+"NoStandingOrders"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu hast keine Daueraufträge!",
 				"&cYou have no standing orders!"}));
-		languageKeys.put(base+"BankNotImplemented"
+		languageKeys.put(base+"CurrencyDontMayUseStandingOrder"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cBanken sind nicht implementiert! Wähle 2 Spieler aus.",
-				"&cBanks are not implemented! Select 2 players."}));
+				"&cDie Währung %currency% darf keine Dauerauftrage nutzen.",
+				"&cThe %currency% currency may not use standing orders."}));
 		languageKeys.put(base+"ContractAtTheExpenseOfThirdParties"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu darfst keinen Dauerauftrag zu lasten Dritten erstellen!",
@@ -1887,6 +2040,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eBetrag des noch wartenden Dauerauftrages &f%name% &ezu &f%amount% &r%currency% &egeändert.",
 				"&eAmount of the pending standing order &f%name% &eto &f%amount% &r%currency% &echanged."}));
+		languageKeys.put(base+"Amount.ChangeAmount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eBetrag des schon existierenden Dauerauftrages &f%name% &eauf &f%format% &egeändert.",
+				"&eAmount of the already existing standing order &f%name% &echanged to &f%format%&e."}));
 		languageKeys.put(base+"Cancel.IsCancelled"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu hast deinen noch wartenden Dauerauftrag abgebrochen!",
@@ -1905,36 +2062,44 @@ public class YamlManager
 				"&cYou do not have the right to view the information about the standing order!"}));
 		languageKeys.put(base+"Info.Headline"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e===&7[&bDauerauftrag &f%id% &c✖~click@RUN_COMMAND@%cancelcmd%~hover@SHOW_TEXT@&eBricht+den+noch+wartenden+Dauerauftrag+ab! &4✖~click@SUGGEST_COMMAND@%deletecmd%+%id%~hover@SHOW_TEXT@&eLöscht+den+Dauerauftrag! &7]&e===",
-				"&e===&7[&bStanding Order &f%id% &c✖~click@RUN_COMMAND@%cancelcmd%~hover@SHOW_TEXT@&eCancels+the+still+waiting+standing+order! &4✖~click@SUGGEST_COMMAND@%deletecmd%+%id%~hover@SHOW_TEXT@&eDelete+the+standing+order! &7]&e==="}));
+				"&e===&7[&bDauerauftrag &f%id% &c✖~click@RUN_COMMAND@%cmd%~hover@SHOW_TEXT@&eBricht+den+noch+wartenden+Dauerauftrag+ab! &4✖~click@SUGGEST_COMMAND@%cmdII%+%id%~hover@SHOW_TEXT@&eLöscht+den+Dauerauftrag! &7]&e===",
+				"&e===&7[&bStanding Order &f%id% &c✖~click@RUN_COMMAND@%cmd%~hover@SHOW_TEXT@&eCancels+the+still+waiting+standing+order! &4✖~click@SUGGEST_COMMAND@%cmdII%+%id%~hover@SHOW_TEXT@&eDelete+the+standing+order! &7]&e==="}));
 		languageKeys.put(base+"Info.Name"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cName: &f%name%",
 				"&cName: &f%name%"}));
+		languageKeys.put(base+"Info.Owner"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEigentümer: &f%owner%",
+				"&cOwner: &f%owner%"}));
 		languageKeys.put(base+"Info.From"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cAbsender: &f%from%",
-				"&cSender: &f%from%"}));
+				"&cAbsender: &f%accountname% [%id%] (%ownername%)",
+				"&cSender: &f%accountname% [%id%] (%ownername%)"}));
 		languageKeys.put(base+"Info.To"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cEmpfänger: &f%to%",
-				"&cReciver: &f%to%"}));
+				"&cEmpfänger: &f%accountname% [%id%] (%ownername%)",
+				"&cReciver: &f%%accountname% [%id%] (%ownername%)"}));
 		languageKeys.put(base+"Info.Amount"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cBetrag: &f%amount% &2✏~click@SUGGEST_COMMAND@%amountcmd%~hover@SHOW_TEXT@&eNur+noch+wartende+Daueraufträge+können+verändert+werden!",
-				"&cAmount: &f%amount% &2✏~click@SUGGEST_COMMAND@%amountcmd%~hover@SHOW_TEXT@&eOnly+waiting+standing+orders+can+be+changed!"}));
+				"&cBetrag: &f%format% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eKlicke+hier+um+den+Betrag+zu+ändern!",
+				"&cAmount: &f%format% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eClick+here+to+change+the+amount!"}));
 		languageKeys.put(base+"Info.AmountPaidSoFar"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cBisher gezahlter Betrag: &f%amountpaidsofar%",
-				"&cAmount paid so far: &f%amountpaidsofar%"}));
+				"&cBisher gezahlter Betrag: &f%format%",
+				"&cAmount paid so far: &f%format%"}));
+		languageKeys.put(base+"Info.AmountPaidToTax"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBisher gezahlter Betrag: &f%format%",
+				"&cAmount paid so far: &f%format%"}));
 		languageKeys.put(base+"Info.StartTime"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cStartdatum: &f%starttime% &2✏~click@SUGGEST_COMMAND@%starttimecmd%~hover@SHOW_TEXT@&eNur+noch+wartende+Daueraufträge+können+verändert+werden!",
-				"&cStartdate: &f%starttime% &2✏~click@SUGGEST_COMMAND@%starttimecmd%~hover@SHOW_TEXT@&eOnly+waiting+standing+orders+can+be+changed!"}));
+				"&cStartdatum: &f%starttime% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eNur+noch+wartende+Daueraufträge+können+verändert+werden!",
+				"&cStartdate: &f%starttime% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eOnly+waiting+standing+orders+can+be+changed!"}));
 		languageKeys.put(base+"Info.RepeatingTime"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cWiederholungszyklus: &f%repeatingtime% &2✏~click@SUGGEST_COMMAND@%repeatingtimecmd%~hover@SHOW_TEXT@&eNur+noch+wartende+Daueraufträge+können+verändert+werden!",
-				"&cRepeatingtime: &f%repeatingtime% &2✏~click@SUGGEST_COMMAND@%repeatingtimecmd%~hover@SHOW_TEXT@&eOnly+waiting+standing+orders+can+be+changed!"}));
+				"&cWiederholungszyklus: &f%repeatingtime% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eKlicke+hier+um+die+Wiederholungszeit+zu+ändern!",
+				"&cRepeatingtime: &f%repeatingtime% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eClick+here+to+change+the+repeatingtime!"}));
 		languageKeys.put(base+"Info.LastTime"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cZu letzt gezahlter Zeitpunkt: &f%lasttime%",
@@ -1993,7 +2158,7 @@ public class YamlManager
 				"&cAttention! Spam protection warning! You fall below the minimum repetition time &f(%repeatingtime%) &cand the minimum amount&f(%amount%)&c! Please change one of the two variables!"}));
 	}
 	
-	@SuppressWarnings("unused") //TODO:FilterSettings
+	@SuppressWarnings("unused")
 	public void initFilterSettings()
 	{
 		ActualParameter:

@@ -35,9 +35,9 @@ public class LoggerSettingsListenerHandler implements Listener
 		} else
 		{
 			if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_COMMENT
-					|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_FROM
+					|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_ACCOUNT_ID
 					|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_ORDERER
-					|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_TO)
+					|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_CATEGORY)
 			{
 				Player player = (Player) event.getPlayer();
 				player.updateInventory();
@@ -67,9 +67,9 @@ public class LoggerSettingsListenerHandler implements Listener
 			return;
 		}
 		if(fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_COMMENT
-				|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_FROM
+				|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_ACCOUNT_ID
 				|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_ORDERER
-				|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_TO)
+				|| fst.getInventoryHandlerType() == InventoryHandlerType.ANVILEDITOR_CATEGORY)
 		{
 			return;
 		}

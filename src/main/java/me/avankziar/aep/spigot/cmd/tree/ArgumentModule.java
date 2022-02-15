@@ -4,16 +4,18 @@ import java.io.IOException;
 
 import org.bukkit.command.CommandSender;
 
-import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-
 public abstract class ArgumentModule
 {
 	public ArgumentConstructor argumentConstructor;
 
-    public ArgumentModule(AdvancedEconomyPlus plugin, ArgumentConstructor argumentConstructor)
+    public ArgumentModule(ArgumentConstructor argumentConstructor)
     {
-       this.argumentConstructor = argumentConstructor;
-       plugin.getArgumentMap().put(argumentConstructor.getPath(), this);
+    	if(argumentConstructor == null)
+    	{
+    		return;
+    	}
+    	this.argumentConstructor = argumentConstructor;
+    	BaseConstructor.getPlugin().getArgumentMap().put(argumentConstructor.getPath(), this);
     }
     
     //This method will process the command.

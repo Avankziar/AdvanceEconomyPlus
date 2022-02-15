@@ -1,5 +1,8 @@
 package main.java.me.avankziar.aep.spigot.cmd.tree;
 
+import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
+
 public class BaseConstructor
 {
 	private String name;
@@ -10,7 +13,7 @@ public class BaseConstructor
 	private String helpInfo;
 	private boolean canConsoleAccess;
 	
-	public BaseConstructor(String name, String path, String permission, String suggestion, String commandString, String helpInfo, boolean canConsoleAccess)
+	public BaseConstructor(CommandExecuteType cet, String name, String path, String permission, String suggestion, String commandString, String helpInfo, boolean canConsoleAccess)
 	{
 		setName(name);
 		setPath(path);
@@ -19,6 +22,13 @@ public class BaseConstructor
 		setCommandString(commandString);
 		setHelpInfo(helpInfo);
 		setCanConsoleAccess(canConsoleAccess);
+		CommandSuggest.set(null, cet, commandString);
+		getPlugin().addingCommandHelps(this);
+	}
+	
+	public static AdvancedEconomyPlus getPlugin()
+	{
+		return AdvancedEconomyPlus.getPlugin();
 	}
 
 	public String getName()

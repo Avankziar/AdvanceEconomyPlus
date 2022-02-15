@@ -13,15 +13,16 @@ import org.bukkit.entity.Player;
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
+import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 
 public class TABCompletion implements TabCompleter
 {	
 	private AdvancedEconomyPlus plugin;
 	
-	public TABCompletion(AdvancedEconomyPlus plugin)
+	public TABCompletion()
 	{
-		this.plugin = plugin;
+		this.plugin = BaseConstructor.getPlugin();
 	}
 	
 	private void debug(Player player, String s)

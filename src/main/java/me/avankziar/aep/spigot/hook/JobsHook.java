@@ -1,7 +1,5 @@
 package main.java.me.avankziar.aep.spigot.hook;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
-import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 
 public class JobsHook implements Listener
 {
@@ -98,6 +93,8 @@ public class JobsHook implements Listener
 				double value = playerlist.get(playeruuid);
 				if(value > 0.0)
 				{
+					//FIXME 
+					/*
 					Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 							LocalDateTime.now(),
 							plugin.getYamlHandler().getLang().getString("JobsRebornHook.UUID"),
@@ -112,6 +109,7 @@ public class JobsHook implements Listener
 					Bukkit.getPluginManager().callEvent(
 							new TrendLoggerEvent(LocalDate.now(), playeruuid, value, _AEPUserHandler_OLD.getEcoPlayer(op).getBalance()));
 					playerlist.replace(playeruuid, 0.0);
+					*/
 				}
 			}
 		}
@@ -131,6 +129,8 @@ public class JobsHook implements Listener
 					double value = playerlist.get(playeruuid);
 					if(value > 0.0)
 					{
+						//FIXME 
+						/*
 						Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 								LocalDateTime.now(),
 								plugin.getYamlHandler().getLang().getString("JobsRebornHook.UUID"),
@@ -144,6 +144,7 @@ public class JobsHook implements Listener
 								.replace("%job%", job)));
 						Bukkit.getPluginManager().callEvent(
 								new TrendLoggerEvent(LocalDate.now(), playeruuid, value, _AEPUserHandler_OLD.getEcoPlayer(op).getBalance()));
+						*/
 						playerlist.replace(playeruuid, 0.0);
 					}
 				}

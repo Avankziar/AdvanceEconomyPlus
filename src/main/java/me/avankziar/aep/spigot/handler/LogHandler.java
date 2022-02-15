@@ -14,8 +14,9 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.ChatApiSmall;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
-import main.java.me.avankziar.aep.spigot.cmd.cst.sub.CommandSuggest;
-import main.java.me.avankziar.aep.spigot.cmd.cst.sub.ExtraPerm;
+import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
+import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler.Methode;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
@@ -233,7 +234,7 @@ public class LogHandler
 					&& al.getOrdererUUID() != null 
 					&& player.getUniqueId().toString().equals(al.getOrdererUUID().toString())
 					) 
-					|| player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_EDITLOG))
+					|| player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_RECOMMENT))
 					|| player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_DELETELOG)))
 			{
 				m2.add(ChatApi.tctl(" | "));
@@ -243,11 +244,11 @@ public class LogHandler
 						&& al.getOrdererUUID() != null 
 						&& player.getUniqueId().toString().equals(al.getOrdererUUID().toString())
 						)
-						||player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_EDITLOG)))
+						||player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_RECOMMENT)))
 				{
 					m2.addAll(ChatApiSmall.generateTextComponentII(
 							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Edit")
-							.replace("%cmd%", CommandSuggest.EDITLOG)
+							.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.RECOMMENT))
 							.replace("%id%", String.valueOf(al.getId())),
 							map));
 				}
@@ -255,7 +256,7 @@ public class LogHandler
 				{
 					m2.addAll(ChatApiSmall.generateTextComponentII(
 							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Delete")
-							.replace("%cmd%", CommandSuggest.DELETELOG)
+							.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.DELETELOG))
 							.replace("%id%", String.valueOf(al.getId())),
 							map));
 				}

@@ -6,7 +6,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
@@ -21,35 +20,19 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import main.java.me.avankziar.aep.spigot.api.LoggerApi;
+import main.java.me.avankziar.aep.spigot.api.economy.CurrencyCommandSetup;
 import main.java.me.avankziar.aep.spigot.api.economy.IFHApi;
 import main.java.me.avankziar.aep.spigot.api.economy.VaultApi;
 import main.java.me.avankziar.aep.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.bstats.Metrics;
-import main.java.me.avankziar.aep.spigot.cmd.EcoCommandExecutor;
-import main.java.me.avankziar.aep.spigot.cmd.LoanCommandExecutor;
-import main.java.me.avankziar.aep.spigot.cmd.MoneyCommandExecutor;
-import main.java.me.avankziar.aep.spigot.cmd.StandingOrderCommandExecutor;
+import main.java.me.avankziar.aep.spigot.cmd.AepCommandExecutor;
 import main.java.me.avankziar.aep.spigot.cmd.TABCompletion;
+import main.java.me.avankziar.aep.spigot.cmd._MoneyCommandExecutor;
 import main.java.me.avankziar.aep.spigot.cmd.eco.ARGEcoDeleteLog;
 import main.java.me.avankziar.aep.spigot.cmd.eco.ARGEcoPlayer;
 import main.java.me.avankziar.aep.spigot.cmd.eco.ARGEcoReComment;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Accept;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Amount;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Cancel;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Create;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Info;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Inherit;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_List;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Pause;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Payback;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Reject;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Remit;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Repay;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Send;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Time;
-import main.java.me.avankziar.aep.spigot.cmd.loan.ARGLoan_Transfer;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyFreeze;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyGive;
 import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyGiveConsole;
@@ -66,15 +49,6 @@ import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLogger
 import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings_Other;
 import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings_Text;
 import main.java.me.avankziar.aep.spigot.cmd.money.trend.ARGMoneyTrendLog;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.ARGStandingOrder_Amount;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.ARGStandingOrder_Cancel;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.ARGStandingOrder_Create;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.ARGStandingOrder_Delete;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.ARGStandingOrder_Info;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.ARGStandingOrder_List;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.ARGStandingOrder_Pause;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.ARGStandingOrder_Repeatingtime;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.ARGStandingOrder_Starttime;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
@@ -84,18 +58,14 @@ import main.java.me.avankziar.aep.spigot.database.MysqlSetup;
 import main.java.me.avankziar.aep.spigot.database.YamlHandler;
 import main.java.me.avankziar.aep.spigot.database.YamlManager;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
-import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.handler.KeyHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.hook.ChestShopHook;
 import main.java.me.avankziar.aep.spigot.hook.HeadDatabaseHook;
 import main.java.me.avankziar.aep.spigot.hook.JobsHook;
 import main.java.me.avankziar.aep.spigot.hook.QuickShopHook;
-import main.java.me.avankziar.aep.spigot.listener.LoggerListener;
 import main.java.me.avankziar.aep.spigot.listener.PlayerListener;
 import main.java.me.avankziar.aep.spigot.listenerhandler.LoggerSettingsListenerHandler;
 import main.java.me.avankziar.aep.spigot.object.AEPSettings;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 
 public class AdvancedEconomyPlus extends JavaPlugin
 {
@@ -114,15 +84,11 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	private static LoggerApi loggerApi;
 	
-	private ArrayList<String> players = new ArrayList<>();
-	
 	private ArrayList<CommandConstructor> commandTree;
 	private ArrayList<BaseConstructor> helpList;
 	private LinkedHashMap<String, ArgumentModule> argumentMap;
 	public static String baseCommandI = "eco"; //Pfad angabe + ürspungliches Commandname
 	public static String baseCommandII = "money";
-	public static String baseCommandIII = "bank";
-	public static String baseCommandIV = "loan";
 	public static String baseCommandV = "standingorder";
 	
 	public static String infoCommandPath = "CmdEco";
@@ -164,7 +130,6 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
 			return;
 		}
-		AEPSettings.initSettings(plugin);
 		loggerApi = new LoggerApi(this);
 		new BungeeBridge(this);
 		backgroundTask = new BackgroundTask(this);
@@ -176,7 +141,8 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		setupBstats();
 		ConfigHandler.init(plugin);
 		//setupExtraPermission(); ADDME
-		//new CurrencyCommandSetup(plugin).setupCommandCurrency();
+		new CurrencyCommandSetup(plugin).setupCommand();
+		//ADDME Spieler, welche über dem Überfälligen Zeit (Nr.2) sind, sollen gelöscht werden.
 	}
 	
 	public void onDisable()
@@ -250,23 +216,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	}
 	
 	private void setupCommandTree()
-	{
-		LinkedHashMap<Integer, ArrayList<String>> playerMapI = new LinkedHashMap<>();
-		LinkedHashMap<Integer, ArrayList<String>> playerMapII = new LinkedHashMap<>();
-		LinkedHashMap<Integer, ArrayList<String>> playerMapIII = new LinkedHashMap<>();
-		LinkedHashMap<Integer, ArrayList<String>> playerMapIV = new LinkedHashMap<>();
-		LinkedHashMap<Integer, ArrayList<String>> playerMapV = new LinkedHashMap<>();
-		
-		setupPlayers();
-		ArrayList<String> playerarray = getPlayers();
-		
-		Collections.sort(playerarray);
-		playerMapI.put(1, playerarray);
-		playerMapII.put(2, playerarray);
-		playerMapIII.put(3, playerarray);
-		playerMapIV.put(4, playerarray);
-		playerMapV.put(5, playerarray);
-		
+	{		
 		/*LinkedHashMap<Integer, ArrayList<String>> lhmmode = new LinkedHashMap<>(); 
 		List<PluginUser.Mode> modes = new ArrayList<PluginUser.Mode>(EnumSet.allOf(PluginUser.Mode.class));
 		ArrayList<String> modeList = new ArrayList<String>();
@@ -281,10 +231,10 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				deletelog, player, recomment);
 		
 		registerCommand(eco.getPath(), eco.getName());
-		getCommand(eco.getName()).setExecutor(new EcoCommandExecutor(plugin, eco));
+		getCommand(eco.getName()).setExecutor(new AepCommandExecutor(plugin, eco));
 		getCommand(eco.getName()).setTabCompleter(new TABCompletion(plugin));
 		
-		addingHelps(
+		addingCommandHelps(
 				eco, 
 					deletelog, player, recomment);
 		
@@ -326,10 +276,10 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			LoggerSettingsHandler.loggerSettingsTextCommandString = loggersettings_text.getCommandString();
 			
 			registerCommand(money.getPath(), money.getName());
-			getCommand(money.getName()).setExecutor(new MoneyCommandExecutor(plugin, money));
+			getCommand(money.getName()).setExecutor(new _MoneyCommandExecutor(plugin, money));
 			getCommand(money.getName()).setTabCompleter(new TABCompletion(plugin));
 			
-			addingHelps(
+			addingCommandHelps(
 					money,
 						actionlog, trendlog,
 						loggersettings, loggersettings_gui, loggersettings_other, loggersettings_text,
@@ -355,118 +305,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			new ARGMoneyToggle(plugin, toggle);
 			new ARGMoneyTop(plugin, top);
 			new ARGMoneyTrendLog(plugin, trendlog);
-		}
-		
-		if(AEPSettings.settings.isBank())
-		{
-			log.info("Activate BankAccounts...");
-			//CommandConstructor bank = new CommandConstructor(plugin, baseCommandIII, false);	
-			
-			//registerCommand(bank.getPath(), bank.getName());
-			//getCommand(bank.getName()).setExecutor(new BankCommandExecutor(plugin, bank));
-			//getCommand(bank.getName()).setTabCompleter(new TABCompletion(plugin));
-		}
-		
-		if(AEPSettings.settings.isLoanRepayment())
-		{
-			log.info("Activate Loans...");
-			ArgumentConstructor loan_accept = new ArgumentConstructor(yamlHandler, baseCommandIV+"_accept", 0, 0, 1, false, null);
-			ArgumentConstructor loan_amount = new ArgumentConstructor(yamlHandler, baseCommandIV+"_amount", 0, 3, 3, false, null);
-			ArgumentConstructor loan_cancel = new ArgumentConstructor(yamlHandler, baseCommandIV+"_cancel", 0, 0, 0, false, null);
-			ArgumentConstructor loan_create = new ArgumentConstructor(yamlHandler, baseCommandIV+"_create", 0, 3, 3, false, playerMapIII);
-			ArgumentConstructor loan_info = new ArgumentConstructor(yamlHandler, baseCommandIV+"_info", 0, 1, 1, false, null);
-			ArgumentConstructor loan_inherit = new ArgumentConstructor(yamlHandler, baseCommandIV+"_inherit", 0, 3, 3, false, playerMapIII);
-			ArgumentConstructor loan_list = new ArgumentConstructor(yamlHandler, baseCommandIV+"_list", 0, 0, 1, false, null);
-			ArgumentConstructor loan_pause = new ArgumentConstructor(yamlHandler, baseCommandIV+"_pause", 0, 1, 1, false, null);
-			ArgumentConstructor loan_payback = new ArgumentConstructor(yamlHandler, baseCommandIV+"_payback", 0, 1, 1, false, null);
-			ArgumentConstructor loan_reject = new ArgumentConstructor(yamlHandler, baseCommandIV+"_reject", 0, 0, 0, false, null);
-			ArgumentConstructor loan_remit = new ArgumentConstructor(yamlHandler, baseCommandIV+"_remit", 0, 1, 2, false, null);
-			ArgumentConstructor loan_repay = new ArgumentConstructor(yamlHandler, baseCommandIV+"_repay", 0, 2, 3, false, null);
-			ArgumentConstructor loan_send = new ArgumentConstructor(yamlHandler, baseCommandIV+"_send", 0, 1, 1, false, null);
-			ArgumentConstructor loan_time = new ArgumentConstructor(yamlHandler, baseCommandIV+"_time", 0, 3, 3, false, null);
-			ArgumentConstructor loan_transfer = new ArgumentConstructor(yamlHandler, baseCommandIV+"_transfer", 0, 3, 3, false, playerMapIII);
-					
-			CommandConstructor loan = new CommandConstructor(plugin, baseCommandIV, false,
-					loan_accept, loan_amount, loan_cancel, loan_create, loan_info, loan_inherit, 
-					loan_list, loan_pause, loan_payback, loan_reject, loan_remit, loan_repay, loan_send, loan_time, loan_transfer);	
-			
-			registerCommand(loan.getPath(), loan.getName());
-			getCommand(loan.getName()).setExecutor(new LoanCommandExecutor(plugin, loan));
-			getCommand(loan.getName()).setTabCompleter(new TABCompletion(plugin));
-			
-			addingHelps(
-				loan, loan_accept, loan_amount, loan_cancel, loan_create, loan_info, loan_inherit, loan_list,
-					loan_pause, loan_payback, loan_reject, loan_remit, loan_repay, loan_send, loan_time, loan_transfer);
-			
-			AEPSettings.settings.addCommands(KeyHandler.L_ACCEPT, loan_accept.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.L_INFO, loan_info.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.L_REJECT, loan_reject.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.L_REMIT, loan_remit.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.L_REPAY, loan_repay.getCommandString());
-			
-			new ARGLoan_Accept(plugin, loan_accept);
-			new ARGLoan_Amount(plugin, loan_amount);
-			new ARGLoan_Cancel(plugin, loan_cancel);
-			new ARGLoan_Create(plugin, loan_create);
-			new ARGLoan_Info(plugin, loan_info);
-			new ARGLoan_Inherit(plugin, loan_inherit);
-			new ARGLoan_List(plugin, loan_list);
-			new ARGLoan_Pause(plugin, loan_pause);
-			new ARGLoan_Payback(plugin, loan_payback);
-			new ARGLoan_Reject(plugin, loan_reject);
-			new ARGLoan_Remit(plugin, loan_remit);
-			new ARGLoan_Repay(plugin, loan_repay);
-			new ARGLoan_Send(plugin, loan_send);
-			new ARGLoan_Time(plugin, loan_time);
-			new ARGLoan_Transfer(plugin, loan_transfer);
-		}
-		
-		if(AEPSettings.settings.isStandingOrder())
-		{
-			log.info("Activate StandingOrder...");
-			LinkedHashMap<Integer, ArrayList<String>> playerMapII_III = new LinkedHashMap<>();			
-			playerMapII_III.put(2, playerarray);
-			playerMapII_III.put(3, playerarray);
-			
-			ArgumentConstructor standingorder_amount = new ArgumentConstructor(yamlHandler, baseCommandV+"_amount", 0, 1, 1, false, null);
-			ArgumentConstructor standingorder_cancel = new ArgumentConstructor(yamlHandler, baseCommandV+"_cancel", 0, 0, 0, false, null);
-			ArgumentConstructor standingorder_create = new ArgumentConstructor(yamlHandler, baseCommandV+"_create", 0, 3, 3, false, playerMapII_III);
-			ArgumentConstructor standingorder_delete = new ArgumentConstructor(yamlHandler, baseCommandV+"_delete", 0, 1, 1, false, null);
-			ArgumentConstructor standingorder_info = new ArgumentConstructor(yamlHandler, baseCommandV+"_info", 0, 0, 1, false, null);
-			ArgumentConstructor standingorder_list = new ArgumentConstructor(yamlHandler, baseCommandV+"_list", 0, 0, 2, false, playerMapII);
-			ArgumentConstructor standingorder_pause = new ArgumentConstructor(yamlHandler, baseCommandV+"_pause", 0, 1, 1, false, null);
-			ArgumentConstructor standingorder_rt = new ArgumentConstructor(yamlHandler, baseCommandV+"_repeatingtime", 0, 1, 1, false, null);
-			ArgumentConstructor standingorder_st = new ArgumentConstructor(yamlHandler, baseCommandV+"_starttime", 0, 1, 1, false, null);
-			
-			CommandConstructor standingorder = new CommandConstructor(plugin, baseCommandV, false,
-					standingorder_amount, standingorder_cancel, standingorder_create, standingorder_delete, standingorder_info,
-					standingorder_list, standingorder_pause, standingorder_rt, standingorder_st);
-			
-			AEPSettings.settings.addCommands(KeyHandler.SO_AMOUNT, standingorder_amount.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.SO_INFO, standingorder_info.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.SO_DELETE, standingorder_delete.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.SO_CANCEL, standingorder_cancel.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.SO_STARTTIME, standingorder_st.getCommandString());
-			AEPSettings.settings.addCommands(KeyHandler.SO_REPEATINGTIME, standingorder_rt.getCommandString());
-			
-			registerCommand(standingorder.getPath(), standingorder.getName());
-			getCommand(standingorder.getName()).setExecutor(new StandingOrderCommandExecutor(plugin, standingorder));
-			getCommand(standingorder.getName()).setTabCompleter(new TABCompletion(plugin));
-			
-			addingHelps(
-				standingorder, standingorder_amount, standingorder_cancel, standingorder_create, standingorder_delete,
-					standingorder_info, standingorder_list, standingorder_pause, standingorder_rt, standingorder_st);
-			
-			new ARGStandingOrder_Amount(plugin, standingorder_amount);
-			new ARGStandingOrder_Cancel(plugin, standingorder_cancel);
-			new ARGStandingOrder_Create(plugin, standingorder_create);
-			new ARGStandingOrder_Delete(plugin, standingorder_delete);
-			new ARGStandingOrder_Info(plugin, standingorder_info);
-			new ARGStandingOrder_List(plugin, standingorder_list);
-			new ARGStandingOrder_Pause(plugin, standingorder_pause);
-			new ARGStandingOrder_Repeatingtime(plugin, standingorder_rt);
-			new ARGStandingOrder_Starttime(plugin, standingorder_st);
-		}
+		}		
 	}
 	
 	public void setupListener()
@@ -497,12 +336,12 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		}
 	}
 	
-	public ArrayList<BaseConstructor> getHelpList()
+	public ArrayList<BaseConstructor> getCommandHelpList()
 	{
 		return helpList;
 	}
 	
-	public void addingHelps(BaseConstructor... objects)
+	public void addingCommandHelps(BaseConstructor... objects)
 	{
 		for(BaseConstructor bc : objects)
 		{
@@ -546,30 +385,6 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	public LinkedHashMap<String, ArgumentModule> getArgumentMap()
 	{
 		return argumentMap;
-	}
-	
-	public ArrayList<String> getPlayers()
-	{
-		return players;
-	}
-
-	public void setPlayers(ArrayList<String> players)
-	{
-		this.players = players;
-	}
-	
-	public void setupPlayers()
-	{
-		ArrayList<OLD_AEPUser> cu = ConvertHandler.convertListIOLD(
-				plugin.getMysqlHandler().getTop(MysqlHandler.Type.PLAYER,
-						"`id`", 0,
-						plugin.getMysqlHandler().lastID(MysqlHandler.Type.PLAYER)));
-		ArrayList<String> cus = new ArrayList<>();
-		for(OLD_AEPUser chus : cu) 
-		{
-			cus.add(chus.getName());	
-		}
-		setPlayers(cus);
 	}
 	
 	public void registerCommand(String... aliases) 

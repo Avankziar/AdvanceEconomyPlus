@@ -62,15 +62,28 @@ Build 4 ========================================================================
     UUID, Currency, AccountID, Category
     - Die Defaultaccounts sind die, die für alle internen normalen abläufe zuständig sind.
   - Datenbank wo per accountID und uuid die rechte hinterlegt sind
++ Änderung aller Transaktionsbefehle von <VonSpieler> <ZuSpieler> in <VonSpielername> <VonAccountname> <Zuspielername> <ZuAccountname>
++ Alle Transaktionsbefehle sind nun asynchron.
 + ActionLog LocateDateTime in long (Unix) geändert.
 + ActionLog String kategorie hinzugefügt.
 + LoggerHandler alle Methoden mit EconomyLogger in ActionLog geändert.
-+ ActionLoggerEvent long unxitime AND String kategorie hinzugefügt.
++ ActionLoggerEvent und TrendLoggerEvent entfernt, da sie nun über IFH laufen.
 + LoggerSettings %uuid% is now %accountName%
++ ActionLog & TrendLog aller Methoden (Log, Grafik, Diagramm etc.) sind Teilasynchron. Bedeutet, das Gui ist synchron, die Ausgabe aller Daten asynchron.
++ StandingOrder Spieleraccounts in richtige Accounts geändert.
++ StandingOrder Eigentümer, AmountPaidToTax hinzugefügt.
++ StandingOrder Amount, optionales Argument [id] hinzugefügt.
++ StandingOrder Repeatingtime, optionales Argument [id] hinzugefügt.
++ Alle StandingOrderbefehle sind nun asynchron.
++ Alle Loanbefehl sind nun asynchron.
++ Loan Spieleraccounts in richtige Accounts geändert.
++ Loan create, nicht optionales Argument [debtorname] hinzugefügt.
   
   Todo:
+  - Die Commands.yml komplett überarbeiten, siehe CurrencyCommandSetup
   - MysqlTabellen Setup schreiben
   - MysqlTabellen TableXY schreiben
+  - Die mysqlsetup überarbeiten um wörter mit _ zu trennen.
   - Mysql den desc aus den methoden nehmen.
   - Im Joinlistener, den Spieler regestrieren und seine Konten erstellen. sollten alte Konten vorhanden sein, diese convertieren.
   - ActionLog mit einer category versehen, Object, wie MysqlTabelle
@@ -92,6 +105,9 @@ Build 4 ========================================================================
   - LoggerSettings query ändern
   - LoggerSettings adding %account_owner_name%, %account_owner_type%
   - LoggerSettings Slot 3 => AccountID, Slot 5 => Category für die Dateien ändern
+  - Standingorder BackgroundTask löschfunktion, wenn dies Abgebrochen wurde nach x Tagen oder pausiert nach y Tagen. Configwerte
+  - Configwerte, wieviel man an Geld verliert beim Tod.
+  - IFH ToBungee einbauen.
 
 Build 3 ============================================================================================================================
 - +CommandTree eingebungen und dahingehend umgeschrieben. Bedeutet Befehle und Permission sind änderbar.

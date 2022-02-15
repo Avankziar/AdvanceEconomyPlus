@@ -30,7 +30,8 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 		PLAYERDATA("aepPlayerData"),
 		ACCOUNT("aepAccount"),
 		DEFAULTACCOUNT("aepDefaultAccount"),
-		ACCOUNTMANAGEMENT("aepAccountManagement");
+		ACCOUNTMANAGEMENT("aepAccountManagement"),
+		QUICKPAYACCOUNT("aepQuickPayAccount");
 		
 		private Type(String value)
 		{
@@ -329,7 +330,7 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 		return 0;
 	}
 	
-	public int getCount(Type type, String orderByColumn, String whereColumn, Object... whereObject)
+	public int getCount(Type type, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -339,7 +340,7 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 			try 
 			{
 				String sql = " SELECT count(*) FROM `"+type.getValue()
-						+"` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC";
+						+"` WHERE "+whereColumn;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -353,6 +354,54 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 		        while (result.next()) 
 		        {
 		        	return result.getInt(1);
+		        }
+		    } catch (SQLException e) 
+			{
+				  e.printStackTrace();
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedStatement != null) 
+		    		  {
+		    			  preparedStatement.close();
+		    		  }
+		    	  } catch (Exception e) {
+		    		  e.printStackTrace();
+		    	  }
+		      }
+		}
+		return 0;
+	}
+	
+	public double getSum(Type type, String whereColumn, Object... whereObject)
+	{
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
+		{
+			try 
+			{
+				String sql = " SELECT sum("+whereColumn+") FROM `"+type.getValue()
+						+"` WHERE 1";
+		        preparedStatement = conn.prepareStatement(sql);
+		        int i = 1;
+		        for(Object o : whereObject)
+		        {
+		        	preparedStatement.setObject(i, o);
+		        	i++;
+		        }
+		        
+		        result = preparedStatement.executeQuery();
+		        MysqlHandler.addRows(QueryType.READ, result.getMetaData().getColumnCount());
+		        while (result.next()) 
+		        {
+		        	return result.getDouble(1);
 		        }
 		    } catch (SQLException e) 
 			{

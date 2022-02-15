@@ -1,5 +1,6 @@
 package main.java.me.avankziar.aep.spigot.cmd.cst.transaction;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -14,24 +15,27 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
+import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
+import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
-import main.java.me.avankziar.aep.spigot.object.CommandStructurType;
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
 import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 
-public class TakeConsole implements CommandExecutor
+public class TakeConsole extends ArgumentModule implements CommandExecutor
 {
 	private AdvancedEconomyPlus plugin;
 	private CommandConstructor cc;
 	private ArgumentConstructor ac;
 	private CommandStructurType cst;
 	
-	public TakeConsole(AdvancedEconomyPlus plugin, CommandConstructor cc, ArgumentConstructor ac, CommandStructurType cst)
+	public TakeConsole(CommandConstructor cc, ArgumentConstructor ac, CommandStructurType cst)
 	{
-		this.plugin = plugin;
+		super(ac);
+		this.plugin = BaseConstructor.getPlugin();
 		this.cc = cc;
 		this.ac = ac;
 		this.cst = cst;
@@ -46,10 +50,9 @@ public class TakeConsole implements CommandExecutor
 			return false;
 		}
 		ConsoleCommandSender sender = (ConsoleCommandSender) senders;
-		String cmdString;
 		if(cst == CommandStructurType.SINGLE)
 		{
-			cmdString = cc.getCommandString();
+			String cmdString = cc.getCommandString();
 			int zero = 0;
 			int one = 1;
 			int two = 2;
@@ -64,9 +67,22 @@ public class TakeConsole implements CommandExecutor
 					middlePart(sender, cmdString, args, zero, one, two, three, four);
 				}
 			}.runTaskAsynchronously(plugin);
-		} else
+		}
+		return true;
+	}
+	
+	@Override
+	public void run(CommandSender senders, String[] args) throws IOException
+	{
+		if(!(senders instanceof ConsoleCommandSender))
 		{
-			cmdString = ac.getCommandString();
+			senders.sendMessage("Cmd only for Console!");
+			return;
+		}
+		ConsoleCommandSender sender = (ConsoleCommandSender) senders;
+		if(cst == CommandStructurType.NESTED)
+		{
+			String cmdString = ac.getCommandString();
 			int zero = 0+1;
 			int one = 1+1;
 			int two = 2+1;
@@ -82,9 +98,11 @@ public class TakeConsole implements CommandExecutor
 				}
 			}.runTaskAsynchronously(plugin);
 		}
-		return true;
 	}
 	
+	/*
+	 * takeconsole <Player> <AccountName> <amount> [category] [comment...]
+	 */
 	private void middlePart(ConsoleCommandSender sender, String cmdString, String[] args,
 			int zero, int one, int two, int three, int four)
 	{
@@ -92,7 +110,7 @@ public class TakeConsole implements CommandExecutor
 		{
 			sender.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
-					.replace("%cmd%", cc.getCommandString())
+					.replace("%cmd%", cmdString)
 					.replace("%amount%", three+" - "+four)));
 			return;
 		}
@@ -168,6 +186,7 @@ public class TakeConsole implements CommandExecutor
 				}
 				catStart++;
 			}
+			comment = sb.toString();
 		}
 		endpart(sender, from, voids, category, comment, amount);
 	}

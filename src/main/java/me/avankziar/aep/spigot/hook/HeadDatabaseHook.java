@@ -1,18 +1,10 @@
 package main.java.me.avankziar.aep.spigot.hook;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
-import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
-import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import me.arcaniax.hdb.api.PlayerClickHeadEvent;
 
 public class HeadDatabaseHook implements Listener
@@ -43,6 +35,8 @@ public class HeadDatabaseHook implements Listener
 				itemname = is.getItemMeta().getDisplayName();
 			}
 		}
+		//FIXME 
+		/*
 		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
 				LocalDateTime.now(),
 				playeruuid, plugin.getYamlHandler().getLang().getString("HeadDatabase.UUID"),
@@ -54,5 +48,6 @@ public class HeadDatabaseHook implements Listener
 				.replace("%head%", itemname)));
 		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
 				LocalDate.now(), playeruuid, amount, _AEPUserHandler_OLD.getEcoPlayer(UUID.fromString(playeruuid)).getBalance()));
+		*/
 	}
 }

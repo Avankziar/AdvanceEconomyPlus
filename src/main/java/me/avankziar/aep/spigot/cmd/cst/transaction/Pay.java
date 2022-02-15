@@ -1,5 +1,6 @@
 package main.java.me.avankziar.aep.spigot.cmd.cst.transaction;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -16,9 +17,11 @@ import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyHandler;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
+import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
+import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.object.TaxationCase;
 import main.java.me.avankziar.aep.spigot.object.TaxationSet;
 import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
@@ -27,17 +30,19 @@ import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
 import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 
-public class Pay implements CommandExecutor
+public class Pay extends ArgumentModule implements CommandExecutor
 {
 	private AdvancedEconomyPlus plugin;
 	private CommandConstructor cc;
 	private ArgumentConstructor ac;
 	private CommandStructurType cst;
 	
-	public Pay(AdvancedEconomyPlus plugin, CommandConstructor cc, ArgumentConstructor ac, CommandStructurType cst)
+	public Pay(CommandConstructor cc, ArgumentConstructor ac, CommandStructurType cst)
 	{
-		this.plugin = plugin;
+		super(ac);
+		this.plugin = BaseConstructor.getPlugin();
 		this.cc = cc;
 		this.ac = ac;
 		this.cst = cst;
@@ -66,47 +71,66 @@ public class Pay implements CommandExecutor
 			int two = 2;
 			int three = 3;
 			int four = 4;
+			int five = 5;
 			new BukkitRunnable()
 			{
 				@Override
 				public void run()
 				{
-					middlePart(player, cmdString, args, zero, one, two, three, four);
-				}
-			}.runTaskAsynchronously(plugin);
-		} else
-		{
-			if(!player.hasPermission(ac.getPermission()))
-			{
-				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
-				return false;
-			}
-			int zero = 0+1;
-			int one = 1+1;
-			int two = 2+1;
-			int three = 3+1;
-			int four = 4+1;
-			cmdString = ac.getCommandString();
-			new BukkitRunnable()
-			{
-				@Override
-				public void run()
-				{
-					middlePart(player, cmdString, args, zero, one, two, three, four);
+					middlePart(player, cmdString, args, zero, one, two, three, four, five);
 				}
 			}.runTaskAsynchronously(plugin);
 		}
 		return true;
 	}
 	
+	@Override
+	public void run(CommandSender sender, String[] args) throws IOException
+	{
+		if(!(sender instanceof Player))
+		{
+			sender.sendMessage("Cmd only for Players!");
+			return;
+		}
+		Player player = (Player) sender;
+		if(cst == CommandStructurType.NESTED)
+		{
+			if(!player.hasPermission(ac.getPermission()))
+			{
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+				return;
+			}
+			int zero = 0+1;
+			int one = 1+1;
+			int two = 2+1;
+			int three = 3+1;
+			int four = 4+1;
+			int five = 5+1;
+			String cmdString = ac.getCommandString();
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					middlePart(player, cmdString, args, zero, one, two, three, four, five);
+				}
+			}.runTaskAsynchronously(plugin);
+		}
+	}
+	
+	/*
+	 * pay <amount> <ToPlayer> <ToAccountname> [category] [comment...]
+	 * pay <FromAccountname(Own)> <amount> <ToAccountName(Own)> [category] [comment...]
+	 * pay <FromPlayer> <FromAccountName> <amount> <ToPlayer> <ToAccountname> [category] [comment...]
+	 */
 	private void middlePart(Player player, String cmdString, String[] args,
-			int zero, int one, int two, int three, int four)
+			int zero, int one, int two, int three, int four, int five)
 	{
 		if(args.length < three)
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
-					.replace("%cmd%", cc.getCommandString())
+					.replace("%cmd%", cmdString)
 					.replace("%amount%", three+" - "+four)));
 			return;
 		}
@@ -139,7 +163,7 @@ public class Pay implements CommandExecutor
 						plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
 				return;
 			}
-			from = plugin.getIFHApi().getAccount(fromuser.getShortPayAccountID());
+			from = plugin.getIFHApi().getAccount(plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), player.getUniqueId()));
 			if(from == null)
 			{
 				player.sendMessage(ChatApi.tl(
@@ -164,9 +188,9 @@ public class Pay implements CommandExecutor
 						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
 				return;
 			}
-		} else if(MatchApi.isDouble(args[one]))
+		} else if(MatchApi.isDouble(args[two]))
 		{
-			if(args.length < four)
+			if(args.length < five)
 			{
 				player.sendMessage(ChatApi.tl(
 						plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
@@ -174,12 +198,13 @@ public class Pay implements CommandExecutor
 						.replace("%amount%", String.valueOf(four))));
 				return;
 			}
-			fromAcName = args[zero];
-			as = args[one];
-			toName = args[two];
-			toAcName = args[three];
+			fromName = args[zero];
+			fromAcName = args[one];
+			as = args[two];
+			toName = args[three];
+			toAcName = args[four];
 			amount = Double.parseDouble(as);
-			catStart = four;
+			catStart = five;
 			from = plugin.getIFHApi().getAccount(
 					new EconomyEntity(EconomyEntity.EconomyType.PLAYER, fromuuid, fromName), fromAcName);
 			if(from == null)
@@ -206,12 +231,12 @@ public class Pay implements CommandExecutor
 						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
 				return;
 			}
-		} else if(MatchApi.isDouble(args[two]))
+		} else if(MatchApi.isDouble(args[one]))
 		{
 			fromAcName = args[zero];
 			toName = player.getName();
-			toAcName = args[one];
-			as = args[two];
+			as = args[one];
+			toAcName = args[two];			
 			amount = Double.parseDouble(as);
 			from = plugin.getIFHApi().getAccount(
 					new EconomyEntity(EconomyEntity.EconomyType.PLAYER, fromuuid, fromName), fromAcName);
@@ -263,6 +288,7 @@ public class Pay implements CommandExecutor
 				}
 				catStart++;
 			}
+			comment = sb.toString();
 		}
 		endpart(player, from, to, tax, category, comment, amount);
 	}

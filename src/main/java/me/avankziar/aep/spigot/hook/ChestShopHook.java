@@ -1,10 +1,7 @@
 package main.java.me.avankziar.aep.spigot.hook;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,11 +10,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.Acrobot.Breeze.Utils.MaterialUtil;
 import com.Acrobot.ChestShop.Events.TransactionEvent;
-import com.Acrobot.ChestShop.Events.TransactionEvent.TransactionType;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.events.ActionLoggerEvent;
-import main.java.me.avankziar.aep.spigot.events.TrendLoggerEvent;
 import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 
@@ -69,6 +63,8 @@ public class ChestShopHook implements Listener
                 itemQuantities += item.getAmount();
             }
         }
+      //FIXME
+      		/*
 		if(event.getTransactionType() == TransactionType.BUY)
 		{
 			Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
@@ -129,6 +125,7 @@ public class ChestShopHook implements Listener
 					amount,
 					balanceclient));
 		}
+		*/
 	}
 
 }
