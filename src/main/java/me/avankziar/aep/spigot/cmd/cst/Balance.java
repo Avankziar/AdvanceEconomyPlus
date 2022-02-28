@@ -212,7 +212,7 @@ public class Balance implements CommandExecutor
 			ArrayList<BaseComponent> list = new ArrayList<>();
 			if(a.getOwner() != null &&
 					(a.getOwner().toString().equals(player.getUniqueId().toString())
-					|| player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_ACCOUNTMANAGEMENT))
+					|| player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACCOUNTMANAGEMENT))
 					|| plugin.getIFHApi().canManageAccount(a, 
 							UUID.fromString(uuid), AccountManagementType.CAN_ADMINISTRATE_ACCOUNT)))
 			{

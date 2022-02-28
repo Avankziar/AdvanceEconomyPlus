@@ -1,37 +1,39 @@
 package main.java.me.avankziar.aep.spigot.cmd.cet.account;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
-import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
-import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
+import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
+import main.java.me.avankziar.aep.spigot.object.ne_w.DefaultAccount;
+import main.java.me.avankziar.aep.spigot.object.ne_w.QuickPayAccount;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
 
 public class Accounts extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public Accounts(AdvancedEconomyPlus plugin, ArgumentConstructor ac)
+	public Accounts(ArgumentConstructor ac)
 	{
-		super(plugin, ac);
-		this.plugin = plugin;
+		super(ac);
+		this.plugin = BaseConstructor.getPlugin();
 		this.ac = ac;
 	}
 	
@@ -49,197 +51,144 @@ public class Accounts extends ArgumentModule
 			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 			return;
 		}
-		if(args.length > 2) //FIXME Die zahl stimmt nicht
+		if(args.length > 1)
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("OtherCmd")));
 			return;
 		}
-		int zero = 0+1;
-		int one = 1+1;
-		int two = 2+1;
-		int three = 3+1;
-		int four = 4+1;
-		int five = 5+1;
-		String cmdString = ac.getCommandString();
 		new BukkitRunnable()
 		{
 			@Override
 			public void run()
 			{
-				middlePart(player, cmdString, args, zero, one, two, three, four, five);
+				try
+				{
+					middlePart(player, args);
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}.runTaskAsynchronously(plugin);
 	}
 	
 	/*
-	 * 
+	 * aep account
 	 */
-	private void middlePart(Player player, String cmdString, String[] args,
-			int zero, int one, int two, int three, int four, int five)
+	private void middlePart(Player player, String[] args) throws IOException
 	{
-		if(args.length < three)
+		String playername = player.getName();
+		AEPUser aepu = (AEPUser) plugin.getMysqlHandler().getData(
+				MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", playername);
+		if(aepu == null)
 		{
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
-					.replace("%cmd%", cmdString)
-					.replace("%amount%", three+" - "+four)));
+					plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
 			return;
 		}
-		String fromName = player.getName();
-		UUID fromuuid = player.getUniqueId();
-		String fromAcName = null;
-		Account from = null;
-		
-		String toName = player.getName();
-		UUID touuid = player.getUniqueId();
-		String toAcName = null;
-		Account to = null;
-		
-		String category = null;
-		String comment = null;
-		String as = null;
-		double amount = 0.0;
-		int catStart = three;
-		if(MatchApi.isDouble(args[zero]))
+		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
+		ArrayList<BaseComponent> m1 = new ArrayList<>();
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Player.Headline")));
+		msg.add(m1);
+		LinkedHashMap<Integer, ArrayList<AccountManagementType>> accountIDs = new LinkedHashMap<>();
+		ArrayList<AccountManagement> aml = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
+				MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`player_uuid` = ?", aepu.getUUID().toString()));
+		for(AccountManagement am : aml)
 		{
-			as = args[zero];
-			toName = args[one];
-			toAcName = args[two];
-			amount = Double.parseDouble(as);
-			AEPUser fromuser = (AEPUser) plugin.getMysqlHandler().getData(
-					MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", fromuuid.toString());
-			if(fromuser == null)
+			if(accountIDs.containsKey(am.getAccountID()))
 			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
-				return;
-			}
-			from = plugin.getIFHApi().getAccount(fromuser.getShortPayAccountID());
-			if(from == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.ShortPayAccountDontExist")));
-				return;
-			}
-			touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.PLAYER);
-			if(touuid == null)
-			{
-				touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.ENTITY);
-				if(touuid == null)
+				ArrayList<AccountManagementType> amt = accountIDs.get(am.getAccountID());
+				if(!amt.contains(am.getMaganagementType()))
 				{
-					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getLang().getString("EntityNotExist")));
-					return;
+					amt.add(am.getMaganagementType());
 				}
-			}	
-			to = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, touuid, toName), toAcName);
-			if(to == null)
+				accountIDs.put(am.getAccountID(), amt);
+			} else
 			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
-				return;
+				ArrayList<AccountManagementType> amt = new ArrayList<>();
+				amt.add(am.getMaganagementType());
+				accountIDs.put(am.getAccountID(), amt);
 			}
-		} else if(MatchApi.isDouble(args[two]))
-		{
-			if(args.length < five)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
-						.replace("%cmd%", cmdString.trim())
-						.replace("%amount%", String.valueOf(four))));
-				return;
-			}
-			fromName = args[zero];
-			fromAcName = args[one];
-			as = args[two];
-			toName = args[three];
-			toAcName = args[four];
-			amount = Double.parseDouble(as);
-			catStart = five;
-			from = plugin.getIFHApi().getAccount(
-					new EconomyEntity(EconomyEntity.EconomyType.PLAYER, fromuuid, fromName), fromAcName);
-			if(from == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.StartAccountDontExist")));
-				return;
-			}
-			touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.PLAYER);
-			if(touuid == null)
-			{
-				touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.ENTITY);
-				if(touuid == null)
-				{
-					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getLang().getString("EntityNotExist")));
-					return;
-				}
-			}	
-			to = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, touuid, toName), toAcName);
-			if(to == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
-				return;
-			}
-		} else if(MatchApi.isDouble(args[one]))
-		{
-			fromAcName = args[zero];
-			toName = player.getName();
-			as = args[one];
-			toAcName = args[two];			
-			amount = Double.parseDouble(as);
-			from = plugin.getIFHApi().getAccount(
-					new EconomyEntity(EconomyEntity.EconomyType.PLAYER, fromuuid, fromName), fromAcName);
-			if(from == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.StartAccountDontExist")));
-				return;
-			}
-			to = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, touuid, toName), toAcName);
-			if(to == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
-				return;
-			}
-		} else
-		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("NoNumber")
-					.replace("%args%", args[zero]+"/"+args[one]+"/"+args[two])));
-			return;
 		}
-		if(!MatchApi.isPositivNumber(amount))
+		ArrayList<BaseComponent> ml = new ArrayList<>();
+		for(Entry<Integer, ArrayList<AccountManagementType>> e : accountIDs.entrySet())
 		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("NumberIsNegativ")
-					.replace("%args%", as)));
-			return;
-		}
-		if(!from.getCurrency().toString().equalsIgnoreCase(to.getCurrency().getUniqueName()))
-		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("Cmd.Pay.NotSameCurrency")));
-			return;
-		}
-		Account tax = plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.TAX, from.getCurrency());
-		if(args.length >= catStart+2)
-		{
-			category = args[catStart];
-			catStart++;
+			Account ac = plugin.getIFHApi().getAccount(e.getKey());
+			if(ac == null)
+			{
+				plugin.getIFHApi().removeManagementTypeFromAccount(e.getKey());
+				continue;
+			}
+			ArrayList<AccountManagementType> amt = e.getValue();
 			StringBuilder sb = new StringBuilder();
-			while(catStart < args.length)
+			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountID")
+					.replace("%id%", String.valueOf(ac.getID())));
+			sb.append("~!~");
+			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountOwner")
+					.replace("%owner%", ac.getOwner().getName()));
+			sb.append("~!~");
+			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountBalance")
+					.replace("%balance%", plugin.getIFHApi().format(ac.getBalance(), ac.getCurrency())));
+			sb.append("~!~");
+			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountTypeAndCategory")
+					.replace("%type%", ac.getType().toString())
+					.replace("%category%", ac.getCategory().toString()));
+			sb.append("~!~");
+			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountPredefined")
+					.replace("%predefined%", String.valueOf(ac.isPredefinedAccount())));
+			sb.append("~!~");
+			DefaultAccount dacc = (DefaultAccount) plugin.getMysqlHandler().getData(MysqlHandler.Type.DEFAULTACCOUNT,
+					"`player_uuid` = ? AND `account_category` = ? AND `account_currency` = ?",
+					aepu.getUUID().toString(), ac.getCategory().toString(), ac.getCurrency().getUniqueName());
+			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountDefault")
+					.replace("%default%", String.valueOf(dacc != null)));
+			sb.append("~!~");
+			QuickPayAccount qpa = (QuickPayAccount) plugin.getMysqlHandler().getData(MysqlHandler.Type.QUICKPAYACCOUNT,
+					"`player_uuid` = ? AND `account_id` = ?", aepu.getUUID().toString(), ac.getID());
+			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountQuickPay")
+					.replace("%quickpay%", String.valueOf(qpa != null)));
+			sb.append("~!~");
+			if(amt.contains(AccountManagementType.CAN_SET_OWNERSHIP))
 			{
-				sb.append(args[catStart]);
-				if(catStart+1 != args.length)
-				{
-					sb.append(" ");
-				}
-				catStart++;
+				sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player."+AccountManagementType.CAN_SET_OWNERSHIP));
+				sb.append("~!~");
 			}
+			if(amt.contains(AccountManagementType.CAN_ADMINISTRATE_ACCOUNT))
+			{
+				sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player."+AccountManagementType.CAN_ADMINISTRATE_ACCOUNT));
+				sb.append("~!~");
+			}
+			if(amt.contains(AccountManagementType.CAN_WITHDRAW))
+			{
+				sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player."+AccountManagementType.CAN_WITHDRAW));
+				sb.append("~!~");
+			}
+			if(amt.contains(AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT))
+			{
+				sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player."+AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT));
+				sb.append("~!~");
+			}
+			if(amt.contains(AccountManagementType.CAN_SEE_LOG))
+			{
+				sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player."+AccountManagementType.CAN_SEE_LOG));
+				sb.append("~!~");
+			}
+			if(amt.contains(AccountManagementType.CAN_SEE_BALANCE))
+			{
+				sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player."+AccountManagementType.CAN_SEE_BALANCE));
+				sb.append("~!~");
+			}
+			if(amt.contains(AccountManagementType.CAN_RECEIVES_NOTIFICATIONS))
+			{
+				sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player."+AccountManagementType.CAN_RECEIVES_NOTIFICATIONS));
+				sb.append("~!~");
+			}
+			sb.delete(sb.length()-3, sb.length());
+			ml.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountColor")
+					.replace("%account%", ac.getAccountName()), Action.SHOW_TEXT, sb.toString()));
+			ml.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountSeperator")));
 		}
-		endpart(player, from, to, tax, category, comment, amount);
+		msg.add(ml);
+		return;
 	}
 }

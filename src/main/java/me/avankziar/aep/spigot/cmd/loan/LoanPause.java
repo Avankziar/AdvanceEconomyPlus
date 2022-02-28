@@ -1,7 +1,5 @@
 package main.java.me.avankziar.aep.spigot.cmd.loan;
 
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,16 +7,13 @@ import org.bukkit.entity.Player;
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
-import main.java.me.avankziar.aep.spigot.assistance.Utility;
+import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
+import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm.Type;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
-import main.java.me.avankziar.aep.spigot.object.AEPSettings;
 
 public class LoanPause extends ArgumentModule
 {
@@ -46,71 +41,55 @@ public class LoanPause extends ArgumentModule
 		id = Integer.parseInt(ids);
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanDontExist")));
 			return;
 		}
 		LoanRepayment dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
-		if(!dr.getLoanOwner().equals(player.getUniqueId().toString())
-				&& !player.hasPermission(Utility.PERM_BYPASS_LOAN_PAUSE))
+		if(!dr.getOwner().equals(player.getUniqueId().toString())
+				&& !player.hasPermission(ExtraPerm.get(Type.BYPASS_LOAN)))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.NotLoanOwner")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.NotLoanOwner")));
 			return;
 		}
 		if(dr.isForgiven())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyForgiven")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanAlreadyForgiven")));
 			return;
 		}
 		if(dr.isFinished())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyPaidOff")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanAlreadyPaidOff")));
 			return;
 		}
 		if(dr.isPaused())
 		{
 			dr.setPaused(false);
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-			String msg = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Pause.Unpaused")
+			String msg = ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Pause.Unpaused")
 					.replace("%name%", dr.getName())
 					.replace("%player%", player.getName()));
 			player.sendMessage(msg);
-			OLD_AEPUser fromplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getFrom());
-			boolean bungee = AEPSettings.settings.isBungee();
-			if(fromplayer.isMoneyPlayerFlow())
+			if(Bukkit.getPlayer(dr.getDebtor()) != null)
 			{
-				if(bungee)
-				{
-					BungeeBridge.sendBungeeMessage(player, fromplayer.getUUID(), msg, false, "");
-				} else
-				{
-					if(Bukkit.getPlayer(UUID.fromString(fromplayer.getUUID())) != null)
-					{
-						Bukkit.getPlayer(UUID.fromString(fromplayer.getUUID())).sendMessage(msg);
-					}
-				}
+				Bukkit.getPlayer(dr.getDebtor()).sendMessage(msg);
+			} else
+			{
+				//BungeeBridge.sendBungeeMessage(player, fromplayer.getUUID(), msg, false, "");
 			}
 		} else
 		{
 			dr.setPaused(true);
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-			String msg = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Pause.Paused")
+			String msg = ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Pause.Paused")
 					.replace("%name%", dr.getName())
 					.replace("%player%", player.getName()));
 			player.sendMessage(msg);
-			OLD_AEPUser fromplayer = _AEPUserHandler_OLD.getEcoPlayer(dr.getFrom());
-			boolean bungee = AEPSettings.settings.isBungee();
-			if(fromplayer.isMoneyPlayerFlow())
+			if(Bukkit.getPlayer(dr.getDebtor()) != null)
 			{
-				if(bungee)
-				{
-					BungeeBridge.sendBungeeMessage(player, fromplayer.getUUID(), msg, false, "");
-				} else
-				{
-					if(Bukkit.getPlayer(UUID.fromString(fromplayer.getUUID())) != null)
-					{
-						Bukkit.getPlayer(UUID.fromString(fromplayer.getUUID())).sendMessage(msg);
-					}
-				}
+				Bukkit.getPlayer(dr.getDebtor()).sendMessage(msg);
+			} else
+			{
+				//BungeeBridge.sendBungeeMessage(player, fromplayer.getUUID(), msg, false, "");
 			}
 		}
 		return;

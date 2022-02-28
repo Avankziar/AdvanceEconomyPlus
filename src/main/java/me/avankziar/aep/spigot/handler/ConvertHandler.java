@@ -13,10 +13,33 @@ import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
 import main.java.me.avankziar.aep.spigot.object.ne_w.DefaultAccount;
+import main.java.me.avankziar.aep.spigot.object.ne_w.EntityData;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 
 public class ConvertHandler
 {
+	public static ArrayList<EconomyEntity> convertList0(ArrayList<?> list)
+	{
+		ArrayList<EconomyEntity> el = new ArrayList<>();
+		for(Object o : list)
+		{
+			if(o instanceof EntityData)
+			{
+				EntityData e = (EntityData) o;
+				el.add(new EconomyEntity(e.getType(), e.getUUID(), e.getName()));
+			} else if(o instanceof AEPUser)
+			{
+				AEPUser e = (AEPUser) o;
+				el.add(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, e.getUUID(), e.getName()));
+			} else
+			{
+				return null;
+			}
+		}
+		return el;
+	}
+	
 	public static ArrayList<OLD_AEPUser> convertListIOLD(ArrayList<?> list)
 	{
 		ArrayList<OLD_AEPUser> el = new ArrayList<>();

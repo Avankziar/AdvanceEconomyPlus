@@ -5,24 +5,23 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -337,7 +336,7 @@ public class VaultApi implements Economy
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
 					plugin.getYamlHandler().getLang().getString("NoPlayerAccount"));
 		}
-		/*if(AEPSettings.settings.isLoanRepayment())
+		if(ConfigHandler.isLoanRetakeEnabled())
 		{
 			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN,
 					"`from_player` = ? AND `forgiven` = ? AND `paused` = ? AND `finished` = ? AND `endtime` < ?",
@@ -361,7 +360,7 @@ public class VaultApi implements Economy
 					}
 				}.runTaskLater(plugin, 20L*2);
 			}
-		}*/
+		}
 		account.setBalance(account.getBalance()+amount);
 		double b = account.getBalance();
 		plugin.getIFHApi().saveAccount(account);
@@ -490,53 +489,78 @@ public class VaultApi implements Economy
 		return withdrawPlayer(player, amount);
 	}
 	
-	protected void retakeForLoan(LoanRepayment dr, double sum) //TODO muss ich schauen, wie ich es ändern.
+	protected void retakeForLoan(LoanRepayment lr, double amount) //TODO muss ich schauen, wie ich es ändern.
 	{
-		String from = Utility.convertUUIDToName(dr.getFrom(), EconomyType.PLAYER);
-		String to = Utility.convertUUIDToName(dr.getTo(), EconomyType.PLAYER);
-		OLD_AEPUser ecofrom = _AEPUserHandler_OLD.getEcoPlayer(dr.getFrom());
-		OLD_AEPUser ecoto = _AEPUserHandler_OLD.getEcoPlayer(dr.getTo());
+		Account from = plugin.getIFHApi().getAccount(lr.getAccountFromID());
+		Account to = plugin.getIFHApi().getAccount(lr.getAccountToID());
 		if(from == null || to == null)
 		{
 			return;
 		}
-		EconomyResponse er = AdvancedEconomyPlus.getVault().withdrawPlayer(
-				Bukkit.getOfflinePlayer(UUID.fromString(dr.getFrom())), sum);
-		if(!er.transactionSuccess())
+		String category = plugin.getYamlHandler().getLang().getString("LoanRepayment.CategoryII", null);
+		String comment = plugin.getYamlHandler().getLang().getString("LoanRepayment.CommentII", null);
+		if(comment != null)
 		{
-			return;
+			comment = comment.replace("%name%", lr.getName())
+					.replace("%totalpaid%", plugin.getIFHApi().format(
+							lr.getAmountPaidSoFar()+lr.getLoanAmount(), from.getCurrency()))
+					.replace("%waitingamount%", plugin.getIFHApi().format(
+							lr.getTotalAmount()-lr.getAmountPaidSoFar()-lr.getLoanAmount(), from.getCurrency()));
 		}
-		EconomyResponse err = AdvancedEconomyPlus.getVault().depositPlayer(
-				Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), sum);	
-		if(!err.transactionSuccess())
-		{
-			AdvancedEconomyPlus.getVault().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getFrom())), sum);
-			return;
-		}
-		double totalamountPaidSoFar = dr.getAmountPaidSoFar()+sum;
-		dr.setAmountPaidSoFar(totalamountPaidSoFar);
-		if(dr.getTotalAmount() <= dr.getAmountPaidSoFar())
-		{
-			dr.setFinished(true);
-		}
-		plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-		//FIXME
-		/*
-		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
-				LocalDateTime.now(), dr.getFrom(), dr.getTo(),
-				from, to, plugin.getYamlHandler().getLang().getString("LoanRepayment.Orderer"), dr.getAmountRatio(), 
-				ActionLoggerEvent.Type.DEPOSIT_WITHDRAW, 
-				plugin.getYamlHandler().getLang().getString("LoanRepayment.Comment").replace("%name%", dr.getName())));
-		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-				LocalDate.now(), dr.getFrom(), -dr.getAmountRatio(), ecofrom.getBalance()));
-		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(LocalDate.now(), dr.getTo(), dr.getAmountRatio(), ecoto.getBalance()));
-		*/
+		Account tax = plugin.getIFHApi().getDefaultAccount(to.getOwner().getUUID(), AccountCategory.TAX, to.getCurrency());
+		double taxation = lr.getTaxInDecimal();
+		boolean taxAreExclusive = (lr.getLoanAmount()+lr.getLoanAmount()*lr.getInterest()+lr.getLoanAmount()*taxation) > lr.getTotalAmount() ? true : false;
 		
-		Player player = Bukkit.getPlayer(ecofrom.getUUID());
-		if(player != null)
+		EconomyAction ea = null;
+		if(from.getCurrency().getUniqueName().equals(to.getCurrency().getUniqueName()))
 		{
-			player.sendMessage(plugin.getYamlHandler().getLang().getString(""));
+			if(tax == null && category != null)
+			{
+				ea = plugin.getIFHApi().transaction(
+						from, to, amount,
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			} else if(tax != null && category != null)
+			{
+				ea = plugin.getIFHApi().transaction(
+						from, to, amount,
+						taxation, taxAreExclusive, tax, 
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			}
+			if(!ea.isSuccess())
+			{
+				return;
+			}
+			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, lr, "`id` = ?", lr.getId());
+		} else
+		{
+			if(!from.getCurrency().isExchangeable() || !to.getCurrency().isExchangeable())
+			{
+				return;
+			}
+			Account taxII = plugin.getIFHApi().getDefaultAccount(to.getOwner().getUUID(), AccountCategory.TAX, to.getCurrency());
+			if(tax == null && taxII == null && category != null)
+			{
+				ea = plugin.getIFHApi().exchangeCurrencies(
+						from, to, amount,
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			} else if(tax != null && taxII == null && category != null)
+			{
+				ea = plugin.getIFHApi().exchangeCurrencies(
+						from, to, amount,
+						taxation, taxAreExclusive, tax, taxII,
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			}
+			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, lr, "`id` = ?", lr.getId());
 		}
+		
+		lr.setAmountPaidSoFar(lr.getAmountPaidSoFar()+lr.getAmountRatio()-lr.getTaxInDecimal()*lr.getAmountRatio());
+		lr.setAmountPaidToTax(lr.getAmountPaidToTax()+lr.getTaxInDecimal()*lr.getAmountRatio());
+		
+		if(lr.getTotalAmount() <= lr.getAmountPaidSoFar()+lr.getAmountPaidToTax())
+		{
+			lr.setFinished(true);
+		}
+		plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, lr, "`id` = ?", lr.getId());
 	}
 
 }

@@ -1,12 +1,11 @@
 package main.java.me.avankziar.aep.spigot.hook;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -16,6 +15,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.LoggerApi;
+import main.java.me.avankziar.aep.spigot.object.ActionLogger;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 
 public class JobsHook implements Listener
 {
@@ -36,23 +41,23 @@ public class JobsHook implements Listener
 			return;
 		}
 		String jobname = event.getJob().getName();
-		String playeruuid = event.getPlayer().getUniqueId().toString();
+		String puuid = event.getPlayer().getUniqueId().toString();
 		double amount = event.getAmount();
 		if(joblist.containsKey(jobname))
 		{
 			HashMap<String,Double> playerlist = joblist.get(jobname);
-			if(playerlist.containsKey(playeruuid))
+			if(playerlist.containsKey(puuid))
 			{
-				double value = playerlist.get(playeruuid)+amount;
-				playerlist.replace(playeruuid, value);
+				double value = playerlist.get(puuid)+amount;
+				playerlist.replace(puuid, value);
 			} else
 			{
-				playerlist.put(playeruuid, amount);
+				playerlist.put(puuid, amount);
 			}
 		} else
 		{
 			HashMap<String, Double> playermap = new HashMap<String,Double>();
-			playermap.put(playeruuid, amount);
+			playermap.put(puuid, amount);
 			joblist.put(jobname, playermap);
 		}
 	}
@@ -65,7 +70,7 @@ public class JobsHook implements Listener
 	
 	public void runTask()
 	{
-		List<String> times = plugin.getYamlHandler().getConfig().getStringList("JobsRebornHookTaskTimer");
+		List<String> times = plugin.getYamlHandler().getConfig().getStringList("JobsReborn.HookTaskTimer");
 		new BukkitRunnable()
 		{
 			
@@ -88,28 +93,24 @@ public class JobsHook implements Listener
 			HashMap<String,Double> playerlist = joblist.get(job);
 			for(String playeruuid : playerlist.keySet())
 			{
-				OfflinePlayer op = Bukkit.getOfflinePlayer(UUID.fromString(playeruuid));
-				String playername = op.getName();
-				double value = playerlist.get(playeruuid);
-				if(value > 0.0)
+				UUID puuid = UUID.fromString(playeruuid);
+				double amount = playerlist.get(playeruuid);
+				if(amount > 0.0)
 				{
-					//FIXME 
-					/*
-					Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
-							LocalDateTime.now(),
-							plugin.getYamlHandler().getLang().getString("JobsRebornHook.UUID"),
-							playeruuid,
-							plugin.getYamlHandler().getLang().getString("JobsRebornHook.Name"),
-							playername,
-							plugin.getYamlHandler().getLang().getString("JobsRebornHook.Orderer"),
-							value,
-							ActionLoggerEvent.Type.GIVEN,
-							plugin.getYamlHandler().getLang().getString("JobsRebornHook.Comment")
-							.replace("%job%", job)));
-					Bukkit.getPluginManager().callEvent(
-							new TrendLoggerEvent(LocalDate.now(), playeruuid, value, _AEPUserHandler_OLD.getEcoPlayer(op).getBalance()));
-					playerlist.replace(playeruuid, 0.0);
-					*/
+					String category = plugin.getYamlHandler().getLang().getString("JobsRebornHook.Category");
+					String comment = plugin.getYamlHandler().getLang().getString("JobsRebornHook.Comment")
+							.replace("%job%", job);
+					Account to = plugin.getIFHApi().getDefaultAccount(puuid, AccountCategory.JOB, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+					if(to == null)
+					{
+						to = plugin.getIFHApi().getDefaultAccount(puuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+					}
+					LoggerApi.addActionLogger(new ActionLogger(
+							0,
+							System.currentTimeMillis(),
+							-1, to.getID(),
+							-1, OrdererType.PLAYER, puuid, null, amount, amount, 0.0, category, comment));
+					LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());
 				}
 			}
 		}
@@ -124,27 +125,24 @@ public class JobsHook implements Listener
 			{
 				if(playeruuid.equals(playerUUID))
 				{
-					OfflinePlayer op = Bukkit.getOfflinePlayer(UUID.fromString(playeruuid));
-					String playername = op.getName();
-					double value = playerlist.get(playeruuid);
-					if(value > 0.0)
+					UUID puuid = UUID.fromString(playeruuid);
+					double amount = playerlist.get(playeruuid);
+					if(amount > 0.0)
 					{
-						//FIXME 
-						/*
-						Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
-								LocalDateTime.now(),
-								plugin.getYamlHandler().getLang().getString("JobsRebornHook.UUID"),
-								playeruuid,
-								plugin.getYamlHandler().getLang().getString("JobsRebornHook.Name"),
-								playername,
-								plugin.getYamlHandler().getLang().getString("JobsRebornHook.Orderer"),
-								value,
-								ActionLoggerEvent.Type.GIVEN,
-								plugin.getYamlHandler().getLang().getString("JobsRebornHook.Comment")
-								.replace("%job%", job)));
-						Bukkit.getPluginManager().callEvent(
-								new TrendLoggerEvent(LocalDate.now(), playeruuid, value, _AEPUserHandler_OLD.getEcoPlayer(op).getBalance()));
-						*/
+						String category = plugin.getYamlHandler().getLang().getString("JobsRebornHook.Category");
+						String comment = plugin.getYamlHandler().getLang().getString("JobsRebornHook.Comment")
+								.replace("%job%", job);
+						Account to = plugin.getIFHApi().getDefaultAccount(puuid, AccountCategory.JOB, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+						if(to == null)
+						{
+							to = plugin.getIFHApi().getDefaultAccount(puuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+						}
+						LoggerApi.addActionLogger(new ActionLogger(
+								0,
+								System.currentTimeMillis(),
+								-1, to.getID(),
+								-1, OrdererType.PLAYER, puuid, null, amount, amount, 0.0, category, comment));
+						LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());
 						playerlist.replace(playeruuid, 0.0);
 					}
 				}

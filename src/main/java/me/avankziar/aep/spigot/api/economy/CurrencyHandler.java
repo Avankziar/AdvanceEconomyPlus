@@ -1,7 +1,9 @@
 package main.java.me.avankziar.aep.spigot.api.economy;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,9 +11,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.object.TaxationCase;
 import main.java.me.avankziar.aep.spigot.object.TaxationSet;
+import main.java.me.avankziar.aep.spigot.object.ne_w.EntityData;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.Currency;
 import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyGradation;
@@ -166,6 +173,78 @@ public class CurrencyHandler
 				.sorted(Map.Entry.comparingByKey())
 				.forEachOrdered(x -> sorted.put(x.getKey(), x.getValue()));
 			plugin.getIFHApi().defaultSIPrefix.put(uniquename, sorted);
+		}
+	}
+	
+	public void registerServerAndEntityAccountIfNotExist()
+	{
+		EconomyType et = EconomyType.SERVER;
+		for(String sp : plugin.getYamlHandler().getConfig().getStringList("CreateEconomyEntityIfNotExist.Server"))
+		{
+			String[] split = sp.split(";");
+			String s = split[0];
+			EconomyEntity ee = plugin.getIFHApi().getEntity(s, et);
+			if(ee == null)
+			{
+				ee = new EconomyEntity(et, null, s).generateUUID();
+				plugin.getMysqlHandler().create(Type.ENTITYDATA, new EntityData(ee.getUUID(), s, ee.getType()));
+			}
+			List<AccountCategory> cat = new ArrayList<AccountCategory>(EnumSet.allOf(AccountCategory.class));
+			for(EconomyCurrency ec : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
+			{
+				for(AccountCategory c : cat)
+				{
+					Account ac = plugin.getIFHApi().getDefaultAccount(ee.getUUID(), c, ec);
+					if(ac == null)
+					{
+						ac = new Account(s+c.toString(), AccountType.BANK, c, ec, ee, 0, true);
+						plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
+						plugin.getIFHApi().setDefaultAccount(ee.getUUID(), ac, c);
+					}
+				}
+			}
+			if(split.length == 2)
+			{
+				boolean b = Boolean.parseBoolean(split[1]);
+				if(b)
+				{
+					plugin.getIFHApi().accountHandler.defaultServer = ee;
+				}
+			}
+		}
+		et = EconomyType.ENTITY;
+		for(String sp : plugin.getYamlHandler().getConfig().getStringList("CreateEconomyEntityIfNotExist.Entity"))
+		{
+			String[] split = sp.split(";");
+			String s = split[0];
+			EconomyEntity ee = plugin.getIFHApi().getEntity(s, EconomyType.SERVER);
+			if(ee == null)
+			{
+				ee = new EconomyEntity(EconomyType.SERVER, null, s).generateUUID();
+				plugin.getMysqlHandler().create(Type.ENTITYDATA, new EntityData(ee.getUUID(), s, ee.getType()));
+			}
+			List<AccountCategory> cat = new ArrayList<AccountCategory>(EnumSet.allOf(AccountCategory.class));
+			for(EconomyCurrency ec : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
+			{
+				for(AccountCategory c : cat)
+				{
+					Account ac = plugin.getIFHApi().getDefaultAccount(ee.getUUID(), c, ec);
+					if(ac == null)
+					{
+						ac = new Account(s+c.toString(), AccountType.BANK, c, ec, ee, 0, true);
+						plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
+						plugin.getIFHApi().setDefaultAccount(ee.getUUID(), ac, c);
+					}
+				}
+			}
+			if(split.length == 2)
+			{
+				boolean b = Boolean.parseBoolean(split[1]);
+				if(b)
+				{
+					plugin.getIFHApi().accountHandler.defaultEntity = ee;
+				}
+			}
 		}
 	}
 	

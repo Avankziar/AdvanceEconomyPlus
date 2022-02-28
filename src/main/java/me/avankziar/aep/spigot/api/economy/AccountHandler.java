@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
+import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
 import main.java.me.avankziar.aep.spigot.object.ne_w.DefaultAccount;
@@ -18,20 +23,121 @@ import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 
 public class AccountHandler
 {
 	private AdvancedEconomyPlus plugin;
+	protected EconomyEntity defaultServer;
+	protected EconomyEntity defaultEntity;
 	
 	public AccountHandler(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
 	}
 	
-	public static void createAllCurrencyAccounts(Player player)
+	public static void createAllCurrencyAccounts(Player player, boolean convert)
 	{
-		//ADDME
+		AdvancedEconomyPlus plugin = AdvancedEconomyPlus.getPlugin();
+		for(EconomyCurrency ec : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
+		{
+			EconomyEntity.EconomyType eeet = EconomyType.PLAYER;
+			EconomyEntity ee = new EconomyEntity(eeet, player.getUniqueId(), player.getName());
+			YamlConfiguration y = plugin.getYamlHandler().getCurrency(ec.getUniqueName());
+			if(y.getBoolean("WhenPlayerFirstJoin.CreateWallets", false))
+			{
+				AccountType at = AccountType.WALLET;
+				for(String a : y.getStringList("WhenPlayerFirstJoin.WalletsToCreate"))
+				{
+					String[] s = a.split(";");
+					if(s.length < 3)
+					{
+						continue;
+					}
+					AccountCategory acy = AccountCategory.valueOf(s[0]);
+					String acname = acy == AccountCategory.MAIN ? player.getName() : acy.toString().toLowerCase(); 
+					boolean defaultac = MatchApi.isBoolean(s[1]) ? Boolean.valueOf(s[1]) : false;
+					double startamount = MatchApi.isDouble(s[2]) ? Double.parseDouble(s[2]) : 0.0;
+					ArrayList<AccountManagementType> amtl = new ArrayList<>();
+					for(int i = 3; i < s.length; i++)
+					{
+						try
+						{
+							AccountManagementType amt = AccountManagementType.valueOf(s[i]);
+							amtl.add(amt);
+						} catch(Exception e)
+						{
+							continue;
+						}
+					}
+					if(convert && acy == AccountCategory.MAIN)
+					{
+						OLD_AEPUser old = _AEPUserHandler_OLD.getEcoPlayer(player);
+						if(old != null)
+						{
+							startamount += old.getBalance();
+							plugin.getMysqlHandler().deleteData(Type.OLDPLAYER, "`id` = ?", old.getId());
+						}
+					}
+					Account ac = new Account(acname, at, acy, ec, ee, startamount, defaultac);
+					if(plugin.getIFHApi().existAccount(ee.getUUID(), ec, ac.getType(), acy, eeet))
+					{
+						continue;
+					}
+					plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
+					for(AccountManagementType amt : amtl)
+					{
+						if(!plugin.getIFHApi().canManageAccount(ac, ee.getUUID(), amt))
+						{
+							plugin.getIFHApi().addManagementTypeToAccount(ac, ee.getUUID(), amt);
+						}
+					}
+				}
+			}
+			if(y.getBoolean("WhenPlayerFirstJoin.CreateBanks", false))
+			{
+				AccountType at = AccountType.BANK;
+				for(String a : y.getStringList("WhenPlayerFirstJoin.BanksToCreate"))
+				{
+					String[] s = a.split(";");
+					if(s.length < 3)
+					{
+						continue;
+					}
+					AccountCategory acy = AccountCategory.valueOf(s[0]);
+					String acname = acy == AccountCategory.MAIN ? player.getName() : acy.toString().toLowerCase(); 
+					boolean defaultac = MatchApi.isBoolean(s[1]) ? Boolean.valueOf(s[1]) : false;
+					double startamount = MatchApi.isDouble(s[2]) ? Double.parseDouble(s[2]) : 0.0;
+					ArrayList<AccountManagementType> amtl = new ArrayList<>();
+					for(int i = 3; i < s.length; i++)
+					{
+						try
+						{
+							AccountManagementType amt = AccountManagementType.valueOf(s[i]);
+							amtl.add(amt);
+						} catch(Exception e)
+						{
+							continue;
+						}
+					}
+					Account ac = new Account(acname, at, acy, ec, ee, startamount, defaultac);
+					if(plugin.getIFHApi().existAccount(ee.getUUID(), ec, ac.getType(), acy, eeet))
+					{
+						continue;
+					}
+					plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
+					for(AccountManagementType amt : amtl)
+					{
+						if(!plugin.getIFHApi().canManageAccount(ac, ee.getUUID(), amt))
+						{
+							plugin.getIFHApi().addManagementTypeToAccount(ac, ee.getUUID(), amt);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public EconomyEntity getEntity(UUID uuid)
@@ -55,6 +161,46 @@ public class AccountHandler
 		}
 		return null;
 	}
+	
+	public EconomyEntity getEntity(UUID uuid, EconomyEntity.EconomyType type)
+	{
+		EconomyEntity ee = null;
+		switch(type)
+		{
+		case ENTITY:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.ENTITYDATA, "`entity_uuid` = ? AND `entity_type` = ?", uuid.toString(), EconomyEntity.EconomyType.SERVER.toString()))
+			{
+				EntityData ed = (EntityData) plugin.getMysqlHandler().getData(MysqlHandler.Type.ENTITYDATA,
+						"`entity_uuid` = ? AND `entity_type` = ?", uuid.toString(), EconomyEntity.EconomyType.SERVER.toString());
+				if(ed != null)
+				{
+					ee = new EconomyEntity(EconomyEntity.EconomyType.ENTITY, ed.getUUID(), ed.getName());
+				}
+			}
+			break;
+		case PLAYER:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", uuid.toString()))
+			{
+				AEPUser user = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", uuid.toString());
+				if(user != null)
+				{
+					ee = new EconomyEntity(EconomyEntity.EconomyType.PLAYER, user.getUUID(), user.getName());
+				}
+			}
+			break;
+		case SERVER:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.ENTITYDATA, "`entity_uuid` = ? AND `entity_type` = ?", uuid.toString(), EconomyEntity.EconomyType.ENTITY.toString()))
+			{
+				EntityData ed = (EntityData) plugin.getMysqlHandler().getData(MysqlHandler.Type.ENTITYDATA,
+						"`entity_uuid` = ? AND `entity_type` = ?", uuid.toString(), EconomyEntity.EconomyType.ENTITY.toString());
+				if(ed != null)
+				{
+					ee = new EconomyEntity(EconomyEntity.EconomyType.SERVER, ed.getUUID(), ed.getName());
+				}
+			}
+		}
+		return ee;
+	}
 
 	public EconomyEntity getEntity(String name)
 	{
@@ -76,6 +222,75 @@ public class AccountHandler
 			return ed == null ? null : new EconomyEntity(EconomyEntity.EconomyType.ENTITY, ed.getUUID(), name);
 		}
 		return null;
+	}
+	
+	public EconomyEntity getEntity(String name, EconomyEntity.EconomyType type)
+	{
+		EconomyEntity ee = null;
+		switch(type)
+		{
+		case ENTITY:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.ENTITYDATA, "`entity_name` = ? AND `entity_type` = ?", name, EconomyEntity.EconomyType.SERVER.toString()))
+			{
+				EntityData ed = (EntityData) plugin.getMysqlHandler().getData(MysqlHandler.Type.ENTITYDATA,
+						"`entity_name` = ? AND `entity_type` = ?", name, EconomyEntity.EconomyType.SERVER.toString());
+				if(ed != null)
+				{
+					ee = new EconomyEntity(EconomyEntity.EconomyType.ENTITY, ed.getUUID(), ed.getName());
+				}
+			}
+			break;
+		case PLAYER:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", name))
+			{
+				AEPUser user = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", name);
+				if(user != null)
+				{
+					ee = new EconomyEntity(EconomyEntity.EconomyType.PLAYER, user.getUUID(), user.getName());
+				}
+			}
+			break;
+		case SERVER:
+			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.ENTITYDATA, "`entity_name` = ? AND `entity_type` = ?", name, EconomyEntity.EconomyType.ENTITY.toString()))
+			{
+				EntityData ed = (EntityData) plugin.getMysqlHandler().getData(MysqlHandler.Type.ENTITYDATA,
+						"`entity_name` = ? AND `entity_type` = ?", name, EconomyEntity.EconomyType.ENTITY.toString());
+				if(ed != null)
+				{
+					ee = new EconomyEntity(EconomyEntity.EconomyType.SERVER, ed.getUUID(), ed.getName());
+				}
+			}
+		}
+		return ee;
+	}
+	
+	public ArrayList<EconomyEntity> getEntitys(EconomyEntity.EconomyType type)
+	{
+		try
+		{
+			switch(type)
+			{
+			case ENTITY:
+			case SERVER:
+				return ConvertHandler.convertList0(plugin.getMysqlHandler().getAllListAt(Type.ENTITYDATA, "`id` ASC", "`entity_type` = ?", type.toString()));
+			case PLAYER:
+				return ConvertHandler.convertList0(plugin.getMysqlHandler().getAllListAt(Type.ACCOUNT, "`id` ASC", "1"));
+			}
+		} catch(Exception e)
+		{
+			return new ArrayList<>();
+		}
+		return new ArrayList<>();
+	}
+	
+	public EconomyEntity getDefaultServer()
+	{
+		return defaultServer;
+	}
+	
+	public EconomyEntity getDefaultEntity() 
+	{
+		return defaultEntity;
 	}
 	
 	public boolean existAccount(UUID uuid, String accountName)

@@ -6,7 +6,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -27,29 +29,7 @@ import main.java.me.avankziar.aep.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.bstats.Metrics;
-import main.java.me.avankziar.aep.spigot.cmd.AepCommandExecutor;
-import main.java.me.avankziar.aep.spigot.cmd.TABCompletion;
-import main.java.me.avankziar.aep.spigot.cmd._MoneyCommandExecutor;
-import main.java.me.avankziar.aep.spigot.cmd.eco.ARGEcoDeleteLog;
-import main.java.me.avankziar.aep.spigot.cmd.eco.ARGEcoPlayer;
-import main.java.me.avankziar.aep.spigot.cmd.eco.ARGEcoReComment;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyFreeze;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyGive;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyGiveConsole;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyPay;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneySet;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneySetConsole;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTake;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTakeConsole;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyToggle;
-import main.java.me.avankziar.aep.spigot.cmd.money.ARGMoneyTop;
-import main.java.me.avankziar.aep.spigot.cmd.money.action.ARGMoneyActionLog;
-import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings;
-import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings_GUI;
-import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings_Other;
-import main.java.me.avankziar.aep.spigot.cmd.money.loggersettings.ARGMoneyLoggerSettings_Text;
-import main.java.me.avankziar.aep.spigot.cmd.money.trend.ARGMoneyTrendLog;
-import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
+import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
@@ -58,14 +38,14 @@ import main.java.me.avankziar.aep.spigot.database.MysqlSetup;
 import main.java.me.avankziar.aep.spigot.database.YamlHandler;
 import main.java.me.avankziar.aep.spigot.database.YamlManager;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
-import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.hook.ChestShopHook;
 import main.java.me.avankziar.aep.spigot.hook.HeadDatabaseHook;
 import main.java.me.avankziar.aep.spigot.hook.JobsHook;
 import main.java.me.avankziar.aep.spigot.hook.QuickShopHook;
+import main.java.me.avankziar.aep.spigot.listener.GuiPayListener;
 import main.java.me.avankziar.aep.spigot.listener.PlayerListener;
 import main.java.me.avankziar.aep.spigot.listenerhandler.LoggerSettingsListenerHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPSettings;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 
 public class AdvancedEconomyPlus extends JavaPlugin
 {
@@ -81,6 +61,8 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	private static VaultApi vaultApi;
 	private static IFHApi ifhApi;
+	
+	public static boolean isPapiRegistered = false;
 	
 	private static LoggerApi loggerApi;
 	
@@ -136,13 +118,12 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		setupIFH();
 		setupVault();
 		setupStrings();
-		setupCommandTree();
 		setupListener();
 		setupBstats();
 		ConfigHandler.init(plugin);
-		//setupExtraPermission(); ADDME
+		setupExtraPermission();
 		new CurrencyCommandSetup(plugin).setupCommand();
-		//ADDME Spieler, welche über dem Überfälligen Zeit (Nr.2) sind, sollen gelöscht werden.
+		setupPlaceholderAPI();
 	}
 	
 	public void onDisable()
@@ -215,124 +196,41 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		infoCommand += plugin.getYamlHandler().getCom().getString(baseCommandI+".Name");
 	}
 	
-	private void setupCommandTree()
-	{		
-		/*LinkedHashMap<Integer, ArrayList<String>> lhmmode = new LinkedHashMap<>(); 
-		List<PluginUser.Mode> modes = new ArrayList<PluginUser.Mode>(EnumSet.allOf(PluginUser.Mode.class));
-		ArrayList<String> modeList = new ArrayList<String>();
-		for(PluginUser.Mode m : modes) {modeList.add(m.toString());}
-		lhmmode.put(1, modeList);*/
-		
-		ArgumentConstructor deletelog = new ArgumentConstructor(yamlHandler, baseCommandI+"_deletelog", 0, 1, 1, false, null);
-		ArgumentConstructor player = new ArgumentConstructor(yamlHandler, baseCommandI+"_player", 0, 1, 1, false, playerMapI);
-		ArgumentConstructor recomment = new ArgumentConstructor(yamlHandler, baseCommandI+"_recomment", 0, 2, 999, false, null);
-		
-		CommandConstructor eco = new CommandConstructor(plugin, baseCommandI, false,
-				deletelog, player, recomment);
-		
-		registerCommand(eco.getPath(), eco.getName());
-		getCommand(eco.getName()).setExecutor(new AepCommandExecutor(plugin, eco));
-		getCommand(eco.getName()).setTabCompleter(new TABCompletion(plugin));
-		
-		addingCommandHelps(
-				eco, 
-					deletelog, player, recomment);
-		
-		new ARGEcoDeleteLog(plugin, deletelog);
-		new ARGEcoPlayer(plugin, player);
-		new ARGEcoReComment(plugin, recomment);
-		
-		if(AEPSettings.settings.isPlayerAccount()) //FIXME Existiert nicht mehr
-		{
-			log.info("Activate PlayerAccounts...");
-			ArgumentConstructor actionlog = new ArgumentConstructor(yamlHandler, baseCommandII+"_actionlog", 0, 0, 2, false, playerMapII);
-			
-			ArgumentConstructor freeze = new ArgumentConstructor(yamlHandler, baseCommandII+"_freeze", 0, 1, 1, false, playerMapI);
-			ArgumentConstructor give = new ArgumentConstructor(yamlHandler, baseCommandII+"_give", 0, 2, 999, false, playerMapI);
-			ArgumentConstructor giveconsole = new ArgumentConstructor(yamlHandler, baseCommandII+"_giveconsole", 0, 4, 999, true, playerMapI);
-			
-			ArgumentConstructor loggersettings_gui = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings_gui", 1, 1, 4, false, null);
-			ArgumentConstructor loggersettings_other = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings_other", 1, 2, 2, false, null);
-			ArgumentConstructor loggersettings_text = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings_text", 1, 2, 999, false, null);
-			ArgumentConstructor loggersettings = new ArgumentConstructor(yamlHandler, baseCommandII+"_loggersettings", 0, 0, 0, false, null,
-					loggersettings_gui, loggersettings_other, loggersettings_text);
-			
-			ArgumentConstructor pay = new ArgumentConstructor(yamlHandler, baseCommandII+"_pay", 0, 2, 999, false, playerMapI);
-			ArgumentConstructor set = new ArgumentConstructor(yamlHandler, baseCommandII+"_set", 0, 2, 999, false, playerMapI);
-			ArgumentConstructor setconsole = new ArgumentConstructor(yamlHandler, baseCommandII+"_setconsole", 0, 4, 999, true, playerMapI);
-			
-			ArgumentConstructor take = new ArgumentConstructor(yamlHandler, baseCommandII+"_take", 0, 2, 999, true, playerMapI);
-			ArgumentConstructor takeconsole = new ArgumentConstructor(yamlHandler, baseCommandII+"_takeconsole", 0, 4, 999, true, playerMapI);
-			ArgumentConstructor toggle = new ArgumentConstructor(yamlHandler, baseCommandII+"_toggle", 0, 0, 0, false, null);
-			ArgumentConstructor top = new ArgumentConstructor(yamlHandler, baseCommandII+"_top", 0, 0, 1, false, null);
-			
-			ArgumentConstructor trendlog = new ArgumentConstructor(yamlHandler, baseCommandII+"_trendlog", 0, 0, 2, false, playerMapII);
-			
-			CommandConstructor money = new CommandConstructor(plugin, baseCommandII, false,
-					freeze, give, giveconsole, loggersettings, pay, set, setconsole, take, takeconsole, toggle, top,
-					actionlog, trendlog);
-			
-			LoggerSettingsHandler.loggerSettingsCommandString = loggersettings_gui.getCommandString();
-			LoggerSettingsHandler.loggerSettingsTextCommandString = loggersettings_text.getCommandString();
-			
-			registerCommand(money.getPath(), money.getName());
-			getCommand(money.getName()).setExecutor(new _MoneyCommandExecutor(plugin, money));
-			getCommand(money.getName()).setTabCompleter(new TABCompletion(plugin));
-			
-			addingCommandHelps(
-					money,
-						actionlog, trendlog,
-						loggersettings, loggersettings_gui, loggersettings_other, loggersettings_text,
-						freeze, give, giveconsole, pay, set, setconsole, take, takeconsole, toggle, top);
-			
-			new ARGMoneyActionLog(plugin, actionlog);		
-			
-			new ARGMoneyFreeze(plugin, freeze);
-			//new ARGMoneyGetTotal(plugin);
-			new ARGMoneyGive(plugin, give);
-			new ARGMoneyGiveConsole(plugin, giveconsole);
-			
-			new ARGMoneyLoggerSettings(plugin, loggersettings);
-			new ARGMoneyLoggerSettings_GUI(plugin, loggersettings_gui);
-			new ARGMoneyLoggerSettings_Other(plugin, loggersettings_other);
-			new ARGMoneyLoggerSettings_Text(plugin, loggersettings_text);
-			
-			new ARGMoneyPay(plugin, pay);
-			new ARGMoneySet(plugin, set);
-			new ARGMoneySetConsole(plugin, setconsole);
-			new ARGMoneyTake(plugin, take);
-			new ARGMoneyTakeConsole(plugin, takeconsole);
-			new ARGMoneyToggle(plugin, toggle);
-			new ARGMoneyTop(plugin, top);
-			new ARGMoneyTrendLog(plugin, trendlog);
-		}		
-	}
-	
 	public void setupListener()
 	{
 		PluginManager pm = getServer().getPluginManager();
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "advancedeconomy:spigottobungee");
 		pm.registerEvents(new PlayerListener(plugin), plugin);
 		pm.registerEvents(new LoggerSettingsListenerHandler(plugin), plugin);
-		if(existHook("ChestShop"))
+		pm.registerEvents(new GuiPayListener(plugin), plugin);
+		if(existHook("ChestShop") && plugin.getYamlHandler().getConfig().getBoolean("ChestShop.EnableHook", false))
 		{
 			log.info(pluginName+" hook with ChestShop");
 			pm.registerEvents(new ChestShopHook(plugin), plugin);
 		}
-		if(existHook("HeadDatabase"))
+		if(existHook("HeadDatabase") && plugin.getYamlHandler().getConfig().getBoolean("HeadDatabase.EnableHook", false))
 		{
 			log.info(pluginName+" hook with HeadDatabase");
 			pm.registerEvents(new HeadDatabaseHook(plugin), plugin);
 		}
-		if(existHook("Jobs"))
+		if(existHook("Jobs") && plugin.getYamlHandler().getConfig().getBoolean("JobsReborn.EnableHook", false))
 		{
 			log.info(pluginName+" hook with JobsReborn");
 			pm.registerEvents(new JobsHook(plugin), plugin);
 		}
-		if(existHook("QuickShop"))
+		if(existHook("QuickShop") && plugin.getYamlHandler().getConfig().getBoolean("QuickShop.EnableHook", false))
 		{
 			log.info(pluginName+" hook with QuickShop");
 			pm.registerEvents(new QuickShopHook(plugin), plugin);
+		}
+	}
+	
+	public void setupExtraPermission()
+	{
+		List<ExtraPerm.Type> list = new ArrayList<ExtraPerm.Type>(EnumSet.allOf(ExtraPerm.Type.class));
+		for(ExtraPerm.Type ept : list)
+		{
+			ExtraPerm.set(ept, plugin.getYamlHandler().getCom().getString("Bypass."+ept.toString().replace("_", "")));
 		}
 	}
 	
@@ -497,6 +395,16 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			return false;
 		}
 		return true;
+	}
+	
+	private boolean setupPlaceholderAPI()
+	{
+		if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+		{
+            new main.java.me.avankziar.aep.spigot.hook.PAPIHook(plugin).register();
+            return true;
+		}
+		return false;
 	}
 	
 	public void setupBstats()

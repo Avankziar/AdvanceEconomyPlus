@@ -1,7 +1,9 @@
 package main.java.me.avankziar.aep.spigot.cmd.cet.account;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,25 +11,30 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.assistance.Utility;
+import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
+import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
+import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 
 public class AccountOpen extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public AccountOpen(AdvancedEconomyPlus plugin, ArgumentConstructor ac)
+	public AccountOpen(ArgumentConstructor ac)
 	{
-		super(plugin, ac);
-		this.plugin = plugin;
+		super(ac);
+		this.plugin = BaseConstructor.getPlugin();
 		this.ac = ac;
 	}
 	
@@ -45,192 +52,141 @@ public class AccountOpen extends ArgumentModule
 			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 			return;
 		}
-		int zero = 0+1;
-		int one = 1+1;
-		int two = 2+1;
-		int three = 3+1;
-		int four = 4+1;
-		int five = 5+1;
-		String cmdString = ac.getCommandString();
 		new BukkitRunnable()
 		{
 			@Override
 			public void run()
 			{
-				middlePart(player, cmdString, args, zero, one, two, three, four, five);
+				middlePart(player, args);
 			}
 		}.runTaskAsynchronously(plugin);
 	}
 	
 	/*
-	 * 
+	 * aep account open <currencyuniquename> <Spielername/Entity/Server> <Accountname> <AccountCategory> [AccountType] [EconomyEntityType]
 	 */
-	private void middlePart(Player player, String cmdString, String[] args,
-			int zero, int one, int two, int three, int four, int five)
+	private void middlePart(Player player, String[] args)
 	{
-		if(args.length < three)
+		String cur = args[2];
+		String ename = args[3];
+		String acname = args[4];
+		String accat = args[5];
+		
+		EconomyCurrency ec = plugin.getIFHApi().getCurrency(cur);
+		if(ec == null)
 		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
-					.replace("%cmd%", cmdString)
-					.replace("%amount%", three+" - "+four)));
+			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.CurrencyDontExist")
+					.replace("%currency%", cur)));
 			return;
 		}
-		String fromName = player.getName();
-		UUID fromuuid = player.getUniqueId();
-		String fromAcName = null;
-		Account from = null;
-		
-		String toName = player.getName();
-		UUID touuid = player.getUniqueId();
-		String toAcName = null;
-		Account to = null;
-		
-		String category = null;
-		String comment = null;
-		String as = null;
-		double amount = 0.0;
-		int catStart = three;
-		if(MatchApi.isDouble(args[zero]))
+		EconomyEntity.EconomyType eeet = EconomyType.PLAYER;
+		if(args.length >= 8)
 		{
-			as = args[zero];
-			toName = args[one];
-			toAcName = args[two];
-			amount = Double.parseDouble(as);
-			AEPUser fromuser = (AEPUser) plugin.getMysqlHandler().getData(
-					MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", fromuuid.toString());
-			if(fromuser == null)
+			try
 			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
+				eeet = EconomyType.valueOf(args[7]);
+			} catch(Exception e)
+			{
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.EconomyTypeIncorrect")
+						.replace("%eeet%", args[7])));
 				return;
 			}
-			from = plugin.getIFHApi().getAccount(fromuser.getShortPayAccountID());
-			if(from == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.ShortPayAccountDontExist")));
-				return;
-			}
-			touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.PLAYER);
-			if(touuid == null)
-			{
-				touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.ENTITY);
-				if(touuid == null)
-				{
-					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getLang().getString("EntityNotExist")));
-					return;
-				}
-			}	
-			to = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, touuid, toName), toAcName);
-			if(to == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
-				return;
-			}
-		} else if(MatchApi.isDouble(args[two]))
+		}
+		EconomyEntity ee = null;
+		if(eeet == EconomyType.PLAYER)
 		{
-			if(args.length < five)
+			ee = plugin.getIFHApi().getEntity(ename, eeet);
+			if(ee == null)
 			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
-						.replace("%cmd%", cmdString.trim())
-						.replace("%amount%", String.valueOf(four))));
-				return;
-			}
-			fromName = args[zero];
-			fromAcName = args[one];
-			as = args[two];
-			toName = args[three];
-			toAcName = args[four];
-			amount = Double.parseDouble(as);
-			catStart = five;
-			from = plugin.getIFHApi().getAccount(
-					new EconomyEntity(EconomyEntity.EconomyType.PLAYER, fromuuid, fromName), fromAcName);
-			if(from == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.StartAccountDontExist")));
-				return;
-			}
-			touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.PLAYER);
-			if(touuid == null)
-			{
-				touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.ENTITY);
-				if(touuid == null)
-				{
-					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getLang().getString("EntityNotExist")));
-					return;
-				}
-			}	
-			to = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, touuid, toName), toAcName);
-			if(to == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
-				return;
-			}
-		} else if(MatchApi.isDouble(args[one]))
-		{
-			fromAcName = args[zero];
-			toName = player.getName();
-			as = args[one];
-			toAcName = args[two];			
-			amount = Double.parseDouble(as);
-			from = plugin.getIFHApi().getAccount(
-					new EconomyEntity(EconomyEntity.EconomyType.PLAYER, fromuuid, fromName), fromAcName);
-			if(from == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.StartAccountDontExist")));
-				return;
-			}
-			to = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, touuid, toName), toAcName);
-			if(to == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("EntityNotExist")));
 				return;
 			}
 		} else
 		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("NoNumber")
-					.replace("%args%", args[zero]+"/"+args[one]+"/"+args[two])));
-			return;
-		}
-		if(!MatchApi.isPositivNumber(amount))
-		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("NumberIsNegativ")
-					.replace("%args%", as)));
-			return;
-		}
-		if(!from.getCurrency().toString().equalsIgnoreCase(to.getCurrency().getUniqueName()))
-		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("Cmd.Pay.NotSameCurrency")));
-			return;
-		}
-		Account tax = plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.TAX, from.getCurrency());
-		if(args.length >= catStart+2)
-		{
-			category = args[catStart];
-			catStart++;
-			StringBuilder sb = new StringBuilder();
-			while(catStart < args.length)
+			ee = plugin.getIFHApi().getEntity(ename, eeet);
+			if(ee == null)
 			{
-				sb.append(args[catStart]);
-				if(catStart+1 != args.length)
-				{
-					sb.append(" ");
-				}
-				catStart++;
+				ee = new EconomyEntity(eeet, null, ename).generateUUID();
 			}
 		}
-		endpart(player, from, to, tax, category, comment, amount);
+		if(!ee.getUUID().toString().equals(player.getUniqueId().toString()))
+		{
+			if(!player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACCOUNTOPEN)))
+			{
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.YouCannotOpenAAccountForSomeone")));
+				return;
+			}
+		}
+		AccountType act = AccountType.WALLET;
+		if(args.length >= 7)
+		{
+			try
+			{
+				act = AccountType.valueOf(args[6]);
+			} catch(Exception e)
+			{
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.AccountTypeIncorrect")
+						.replace("%act%", args[6])));
+				return;
+			}
+		}
+		AccountCategory acc = AccountCategory.MAIN;
+		try
+		{
+			acc = AccountCategory.valueOf(accat);
+		} catch(Exception e)
+		{
+			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.AccountCategoryIncorrect")
+					.replace("%acc%", accat)));
+			return;
+		}
+		if(plugin.getIFHApi().existAccount(ee.getUUID(), acname, ec, act, acc, eeet))
+		{
+			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.AccountAlreadyExist")));
+			return;
+		}
+		if(ee.getUUID().toString().equals(player.getUniqueId().toString()))
+		{
+			if(!countAccounts(player, act))
+			{
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.TooManyAccount")));
+				return;
+			}
+		}		
+		Account ac = new Account(0, acname, act, acc, ec, ee, 0, false);
+		plugin.getMysqlHandler().create(MysqlHandler.Type.ACCOUNT, ac);
+		List<AccountManagementType> atms = new ArrayList<AccountManagementType>(EnumSet.allOf(AccountManagementType.class));
+		ac = plugin.getIFHApi().getAccount(ee, acname, act, acc, ec);
+		for(AccountManagementType atm : atms)
+		{
+			AccountManagement am = new AccountManagement(ac.getID(), ee.getUUID(), atm);
+			if(!plugin.getIFHApi().canManageAccount(ac, ee.getUUID(), atm))
+			{
+				plugin.getMysqlHandler().create(Type.ACCOUNTMANAGEMENT, am);
+			}
+		}
+		player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.AccountOpen")
+				.replace("%acid%", String.valueOf(ac.getID()))
+				.replace("%acowner%", ee.getName())
+				.replace("%eeet%", eeet.toString())
+				.replace("%acname%", ac.getAccountName())
+				.replace("%act%", ee.getType().toString())
+				.replace("%acc%", act.toString())
+				.replace("%ec%", ec.getUniqueName())
+				));
+		return;
+	}
+	
+	private boolean countAccounts(Player player, AccountType act)
+	{
+		int c = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNT, "`account_predefined` = ?", false);
+		for(int i = 500; i > 0; i--)
+		{
+			if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+act.toString().toLowerCase()+"."+i))
+			{
+				return c < i;
+			}
+		}
+		return false;
 	}
 }

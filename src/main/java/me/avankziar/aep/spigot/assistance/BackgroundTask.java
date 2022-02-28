@@ -9,12 +9,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 import main.java.me.avankziar.aep.spigot.object.TaxationCase;
 import main.java.me.avankziar.aep.spigot.object.TaxationSet;
+import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
@@ -45,7 +47,72 @@ public class BackgroundTask
 			ConfigHandler.debug(dbm1, "StandingOrder Task Timer activate...");
 			runStandingOrderPayment();
 		}
+		int deletedays = plugin.getYamlHandler().getConfig().getInt("Do.DeleteAccountsDaysAfterOverdue", 30);
+		if(deletedays > 0)
+		{
+			runPlayerDataDelete(deletedays);
+		}
 		return true;
+	}
+	
+	public void runPlayerDataDelete(int deletedays)
+	{
+		int days = plugin.getYamlHandler().getConfig().getInt("Do.OverdueTimeInDays", 90);
+		long deletedate = System.currentTimeMillis()-((long) days+(long) deletedays)*1000*60*60*24;
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				ArrayList<AEPUser> user = new ArrayList<>();
+				try
+				{
+					user = ConvertHandler.convertListI(plugin.getMysqlHandler().getAllListAt(Type.PLAYERDATA, "`id` ASC", "`unixtime` < ?", deletedate));
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+					return;
+				}
+				int uCount = 0;
+				int acCount = 0;
+				int acmCount = 0;
+				int acdCount = 0;
+				int acqCount = 0;
+				for(AEPUser u : user)
+				{
+					acCount += plugin.getMysqlHandler().getCount(Type.ACCOUNT, "`owner_uuid` = ?", u.getUUID().toString());
+					ArrayList<Account> acs = new ArrayList<>();
+					try
+					{
+						acs = ConvertHandler.convertListII(
+								plugin.getMysqlHandler().getAllListAt(Type.ACCOUNT, "`id` = ?", "`owner_uuid` = ?", u.getUUID().toString()));
+					} catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+					for(Account ac : acs)
+					{
+						acmCount += plugin.getMysqlHandler().getCount(Type.ACCOUNTMANAGEMENT, "`account_id` = ?", ac.getID());
+						plugin.getMysqlHandler().deleteData(Type.ACCOUNTMANAGEMENT, "`account_id` = ?", ac.getID());
+						acdCount += plugin.getMysqlHandler().getCount(Type.DEFAULTACCOUNT, "`account_id` = ?", ac.getID());
+						plugin.getMysqlHandler().deleteData(Type.DEFAULTACCOUNT, "`account_id` = ?", ac.getID());
+						acqCount += plugin.getMysqlHandler().getCount(Type.QUICKPAYACCOUNT, "`account_id` = ?", ac.getID());
+						plugin.getMysqlHandler().deleteData(Type.QUICKPAYACCOUNT, "`account_id` = ?", ac.getID());
+					}
+					plugin.getMysqlHandler().deleteData(Type.ACCOUNT, "`owner_uuid` = ?", u.getUUID().toString());
+				}
+				uCount += plugin.getMysqlHandler().getCount(Type.PLAYERDATA, "`unixtime` < ?", deletedate);
+				plugin.getMysqlHandler().deleteData(Type.PLAYERDATA, "`unixtime` < ?", deletedate);
+				AdvancedEconomyPlus.log.info("==========AEP Database DeleteTask==========");
+				AdvancedEconomyPlus.log.info("Deleted User: "+uCount);
+				AdvancedEconomyPlus.log.info("Deleted Account: "+acCount);
+				AdvancedEconomyPlus.log.info("Deleted AccountManagement: "+acmCount);
+				AdvancedEconomyPlus.log.info("Deleted DefaultAccount: "+acdCount);
+				AdvancedEconomyPlus.log.info("Deleted QuickPayAccount: "+acqCount);
+				AdvancedEconomyPlus.log.info("===========================================");
+			}
+		}.runTaskAsynchronously(plugin);
+		
 	}
 	
 	public void runDebtRepayment()
@@ -99,7 +166,7 @@ public class BackgroundTask
 					double amount = lr.getAmountRatio();
 					Account tax = plugin.getIFHApi().getDefaultAccount(to.getOwner().getUUID(), AccountCategory.TAX, to.getCurrency());
 					double taxation = lr.getTaxInDecimal();
-					boolean taxAreExclusive = (amount+amount*lr.getInterest()+amount*taxation) > lr.getTotalAmount() ? true : false;
+					boolean taxAreExclusive = (lr.getLoanAmount()+lr.getLoanAmount()*lr.getInterest()+lr.getLoanAmount()*taxation) > lr.getTotalAmount() ? true : false;
 					
 					EconomyAction ea = null;
 					if(from.getCurrency().getUniqueName().equals(to.getCurrency().getUniqueName()))

@@ -12,6 +12,7 @@ import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm.Type;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
+import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler.Methode;
@@ -27,10 +28,10 @@ public class LoggerSettingsGui extends ArgumentModule
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public LoggerSettingsGui(AdvancedEconomyPlus plugin, ArgumentConstructor ac)
+	public LoggerSettingsGui(ArgumentConstructor ac)
 	{
-		super(plugin, ac);
-		this.plugin = plugin;
+		super(ac);
+		this.plugin = BaseConstructor.getPlugin();
 		this.ac = ac;
 	}
 	

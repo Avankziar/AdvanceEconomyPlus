@@ -10,13 +10,15 @@ import org.bukkit.entity.Player;
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
+import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
+import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm.Type;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
 
 public class LoanTransfer extends ArgumentModule
@@ -35,6 +37,7 @@ public class LoanTransfer extends ArgumentModule
 		Player player = (Player) sender;
 		String ids = args[1];
 		int id = 0;
+		String acid = args[2];
 		if(!MatchApi.isInteger(ids))
 		{
 			player.sendMessage(ChatApi.tl(
@@ -43,26 +46,41 @@ public class LoanTransfer extends ArgumentModule
 			return;
 		}
 		id = Integer.parseInt(ids);
+		if(!MatchApi.isInteger(acid))
+		{
+			player.sendMessage(ChatApi.tl(
+					plugin.getYamlHandler().getLang().getString("NoNumber")
+					.replace("%args%", ids)));
+			return;
+		}
+		Account ac = plugin.getIFHApi().getAccount(Integer.parseInt(acid));
+		if(ac == null)
+		{
+			player.sendMessage(ChatApi.tl(
+					plugin.getYamlHandler().getLang().getString("Cmd.AccountDontExist")
+					.replace("%account%", acid)));
+			return;
+		}
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanDontExist")));
 			return;
 		}
-		LoanRepayment dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
-		if(dr.isForgiven())
+		LoanRepayment lr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
+		if(lr.isForgiven())
 		{
-			player.sendMessage(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyForgiven"));
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanAlreadyForgiven"));
 			return;
 		}
-		if(dr.isFinished())
+		if(lr.isFinished())
 		{
-			player.sendMessage(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyPaidOff"));
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanAlreadyPaidOff"));
 			return;
 		}
-		if(!dr.getLoanOwner().equals(player.getUniqueId().toString())
-				&& !player.hasPermission(Utility.PERM_BYPASS_LOAN_TRANSFER))
+		if(!lr.getOwner().toString().equals(player.getUniqueId().toString())
+				&& !player.hasPermission(ExtraPerm.get(Type.BYPASS_LOAN)))
 		{
-			player.sendMessage(plugin.getYamlHandler().getLang().getString("CmdLoan.NotLoanOwner"));
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.Loan.NotLoanOwner"));
 			return;
 		}
 		String othername = args[3];
@@ -72,27 +90,24 @@ public class LoanTransfer extends ArgumentModule
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 			return;
 		}
-		dr.setTo(otheruuid.toString());
-		dr.setLoanOwner(otheruuid.toString());
-		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Transfer.YouHasTransfered")
+		lr.setAccountToID(ac.getID());
+		lr.setOwner(otheruuid);
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Transfer.YouHasTransfered")
 				.replace("%player%", othername)
-				.replace("%name%", dr.getName())
+				.replace("%name%", lr.getName())
 				.replace("%id%", String.valueOf(id))));
-		String toomessage = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Transfer.YouHasBecomeLoanOwner")
+		String toomessage = ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Transfer.YouHasBecomeLoanOwner")
 				.replace("%player%", player.getName())
-				.replace("%name%", dr.getName())
+				.replace("%name%", lr.getName())
 				.replace("%id%", String.valueOf(id)));
 		if(Bukkit.getPlayer(otheruuid) == null)
 		{
-			BungeeBridge.sendBungeeMessage(player, otheruuid.toString(), toomessage, false, "");
+			//BungeeBridge.sendBungeeMessage(player, otheruuid.toString(), toomessage, false, "");
 		} else
 		{
-			if(Bukkit.getPlayer(UUID.fromString(otheruuid.toString())) != null)
-			{
-				Bukkit.getPlayer(UUID.fromString(otheruuid.toString())).sendMessage(toomessage);
-			}
+			Bukkit.getPlayer(otheruuid.toString()).sendMessage(toomessage);
 		}
-		plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", id);
+		plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, lr, "`id` = ?", id);
 		return;
 	}
 }

@@ -27,7 +27,7 @@ public interface OLDTableI
 		if (conn != null) {
 			try 
 			{
-				String sql = "INSERT INTO `" + MysqlHandler.Type.PLAYER.getValue()
+				String sql = "INSERT INTO `" + MysqlHandler.Type.OLDPLAYER.getValue()
 						+ "`(`player_uuid`, `player_name`, `balance`, `bankaccountlist`,"
 						+ " `moneyplayerflow`, `moneybankflow`, `generalmessage`, `pendinginvite`, `frozen`) " 
 						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -82,7 +82,7 @@ public interface OLDTableI
 		{
 			try 
 			{
-				String data = "UPDATE `" + MysqlHandler.Type.PLAYER.getValue()
+				String data = "UPDATE `" + MysqlHandler.Type.OLDPLAYER.getValue()
 						+ "` SET `player_uuid` = ?, `player_name` = ?, `balance` = ?,"
 						+ " `bankaccountlist` = ?, `moneyplayerflow` = ?, `moneybankflow` = ?, `generalmessage` = ?,"
 						+ " `pendinginvite` = ?, `frozen` = ?" 
@@ -132,7 +132,7 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYER.getValue() 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue() 
 						+ "` WHERE "+whereColumn+" LIMIT 1";
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -196,7 +196,7 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYER.getValue()
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue()
 						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -261,7 +261,7 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYER.getValue() 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue() 
 						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
@@ -322,7 +322,7 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYER.getValue()
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue()
 						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;

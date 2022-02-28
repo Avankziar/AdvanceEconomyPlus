@@ -1,6 +1,8 @@
 package main.java.me.avankziar.aep.spigot.hook;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,10 +14,14 @@ import org.maxgamer.quickshop.event.ShopSuccessPurchaseEvent;
 import org.maxgamer.quickshop.shop.Shop;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.LoggerApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
-import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
+import main.java.me.avankziar.aep.spigot.object.ActionLogger;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 
 public class QuickShopHook implements Listener
 {
@@ -31,109 +37,89 @@ public class QuickShopHook implements Listener
 	{
 		Shop shop = event.getShop();
 		Player player = event.getPlayer();
-		String clientuuid = player.getUniqueId().toString();
-		String clientname = player.getName();
-		String owneruuid = shop.getOwner().toString();
-		String ownername = Utility.convertUUIDToName(owneruuid, EconomyType.PLAYER);
-		if(owneruuid == null)
+		UUID cuuid = player.getUniqueId();
+		String cname = player.getName();
+		UUID ouuid = shop.getOwner();
+		String oname = Utility.convertUUIDToName(ouuid.toString(), EconomyType.PLAYER);
+		if(oname == null)
 		{
-			ownername = "none";
+			ouuid = plugin.getIFHApi().getDefaultServer().getUUID();
+			oname = plugin.getIFHApi().getDefaultServer().getName();
 		}
-		OLD_AEPUser owner = _AEPUserHandler_OLD.getEcoPlayer(owneruuid);
-        OLD_AEPUser client = _AEPUserHandler_OLD.getEcoPlayer(clientuuid);
         
-        Double balanceowner = 0.0; //TODO bank
-        Double balanceclient = 0.0;
-        
-        if(owner != null) 
-        {
-        	balanceowner = owner.getBalance();
-        }
-        if(client != null)
-        {
-        	balanceclient = client.getBalance();
-        }
-        
-		int quantity = event.getAmount();
+		int itemQuantities = event.getAmount();
 		double amount = event.getBalance();
 		ItemStack is = shop.getItem();
-		String isname = null;
+		String itemId = null;
 		if(is.hasItemMeta())
 		{
 			ItemMeta im = is.getItemMeta();
 			if(im.hasDisplayName())
 			{
-				isname = im.getDisplayName();
+				itemId = im.getDisplayName();
 			}
 		}
-		if(isname == null)
+		if(itemId == null)
 		{
-			isname = is.getType().toString();
+			itemId = is.getType().toString();
 		}
+		String category = plugin.getYamlHandler().getLang().getString("QuickShopHook.Category");
 
-		//FIXME 
-		/*
 		if(shop.isBuying())
 		{
-			Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
-					LocalDateTime.now(),
-					clientuuid, 
-					owneruuid,
-					clientname, 
-					ownername,
-					clientuuid, 
-					amount, 
-					ActionLoggerEvent.Type.DEPOSIT_WITHDRAW,
-					plugin.getYamlHandler().getLang().getString("QuickShopHook.Buy")
-					.replace("%amount%", String.valueOf(quantity))
-					.replace("%item%", isname)
-					.replace("%player%", clientname)));
-			Bukkit.getPluginManager().callEvent(
-					new TrendLoggerEvent(
-					LocalDate.now(), 
-					owneruuid, 
-					amount, 
-					_AEPUserHandler_OLD.getEcoPlayer(
-							owneruuid)
-					.getBalance()));
-			Bukkit.getPluginManager().callEvent(
-					new TrendLoggerEvent(
-					LocalDate.now(), 
-					clientuuid,
-					-amount,
-					_AEPUserHandler_OLD.getEcoPlayer(
-							clientuuid)
-					.getBalance()));
-		} else 
+			String comment = plugin.getYamlHandler().getLang().getString("QuickShopHook.Buy")
+					.replace("%amount%", String.valueOf(itemQuantities))
+					.replace("%item%", itemId)
+					.replace("%player%", oname);
+			Account from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.SHOP, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+			if(from == null)
+			{
+				from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+			}
+			Account to = plugin.getIFHApi().getDefaultAccount(ouuid, AccountCategory.SHOP, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+			if(to == null)
+			{
+				to = plugin.getIFHApi().getDefaultAccount(ouuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+			}
+			if(from == null || to == null)
+			{
+				return;
+			}
+			LoggerApi.addActionLogger(new ActionLogger(
+					0,
+					System.currentTimeMillis(),
+					from.getID(), to.getID(),
+					-1, OrdererType.PLAYER, cuuid, null, amount, amount, 0.0, category, comment));
+			LoggerApi.addTrendLogger(LocalDate.now(), from.getID(), -amount, from.getBalance());
+			LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());
+		} else
 		{
-			Bukkit.getPluginManager().callEvent(
-					new ActionLoggerEvent(
-					LocalDateTime.now(),
-					owneruuid, 
-					clientuuid,
-					ownername, 
-					clientname,
-					clientuuid, 
-					amount, 
-					ActionLoggerEvent.Type.DEPOSIT_WITHDRAW,
-					plugin.getYamlHandler().getLang().getString("QuickShopHook.Sell")
-					.replace("%amount%", String.valueOf(quantity))
-					.replace("%item%", isname)
-					.replace("%player%", ownername)));
-			Bukkit.getPluginManager().callEvent(
-					new TrendLoggerEvent(
-					LocalDate.now(), 
-					owneruuid, 
-					-amount, 
-					balanceowner));
-			Bukkit.getPluginManager().callEvent(
-					new TrendLoggerEvent(
-					LocalDate.now(), 
-					clientuuid, 
-					amount,
-					balanceclient));
+			String comment = plugin.getYamlHandler().getLang().getString("QuickShopHook.Sell")
+					.replace("%amount%", String.valueOf(itemQuantities))
+					.replace("%item%", itemId)
+					.replace("%player%", cname);
+			Account from = plugin.getIFHApi().getDefaultAccount(ouuid, AccountCategory.SHOP, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+			if(from == null)
+			{
+				from = plugin.getIFHApi().getDefaultAccount(ouuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+			}
+			Account to = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.SHOP, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+			if(to == null)
+			{
+				to = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+			}
+			if(from == null || to == null)
+			{
+				return;
+			}
+			LoggerApi.addActionLogger(new ActionLogger(
+					0,
+					System.currentTimeMillis(),
+					from.getID(), to.getID(),
+					-1, OrdererType.PLAYER, cuuid, null, amount, amount, 0.0, category, comment));
+			LoggerApi.addTrendLogger(LocalDate.now(), from.getID(), -amount, from.getBalance());
+			LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());
 		}
-		*/
 	}
 
 }

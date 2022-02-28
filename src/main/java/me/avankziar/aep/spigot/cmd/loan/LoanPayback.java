@@ -1,7 +1,6 @@
 package main.java.me.avankziar.aep.spigot.cmd.loan;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -10,16 +9,17 @@ import org.bukkit.entity.Player;
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
-import main.java.me.avankziar.aep.spigot.object.AEPSettings;
-import net.milkbowl.vault.economy.EconomyResponse;
+import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 
 public class LoanPayback extends ArgumentModule
 {
@@ -35,11 +35,6 @@ public class LoanPayback extends ArgumentModule
 	public void run(CommandSender sender, String[] args) throws IOException
 	{
 		Player player = (Player) sender;
-		if(!AEPSettings.settings.isLoanRepayment())
-		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoLoan")));
-			return;
-		}
 		String ids = args[1];
 		int id = 0;
 		if(!MatchApi.isInteger(ids))
@@ -51,56 +46,119 @@ public class LoanPayback extends ArgumentModule
 		id = Integer.parseInt(ids);
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanDontExist")));
 			return;
 		}
-		LoanRepayment dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
-		if(dr.isForgiven())
+		LoanRepayment lr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
+		if(lr.isForgiven())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyForgiven")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanAlreadyForgiven")));
 			return;
 		}
-		if(dr.isFinished())
+		if(lr.isFinished())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyPaidOff")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanAlreadyPaidOff")));
 			return;
 		}
-		double payback = dr.getTotalAmount() - dr.getAmountPaidSoFar();
+		double payback = lr.getTotalAmount() - lr.getAmountPaidSoFar();
 		if(payback <= 0)
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Payback.IsAlreadyPaidOff")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Payback.IsAlreadyPaidOff")));
 			return;
 		}
-		dr.setAmountPaidSoFar(dr.getTotalAmount());
-		dr.setFinished(true);
-		EconomyResponse er = AdvancedEconomyPlus.getVault().depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString(dr.getTo())), payback);
-		if(!er.transactionSuccess())
+		Account from = plugin.getIFHApi().getAccount(lr.getAccountFromID());
+		Account to = plugin.getIFHApi().getAccount(lr.getAccountToID());
+		if(from == null || to == null)
 		{
-			player.sendMessage(ChatApi.tl(er.errorMessage));
+			player.sendMessage(ChatApi.tl(
+					plugin.getYamlHandler().getLang().getString("Cmd.AccountDontExist")
+					.replace("%account%", from == null ? String.valueOf(lr.getAccountFromID()) : String.valueOf(lr.getAccountToID()))));
 			return;
 		}
-		String othername = Utility.convertUUIDToName(dr.getTo(), EconomyType.PLAYER);
+		String category = plugin.getYamlHandler().getLang().getString("LoanRepayment.CategoryII", null);
+		String comment = plugin.getYamlHandler().getLang().getString("LoanRepayment.CommentIII", null);
+		if(comment != null)
+		{
+			comment = comment
+					.replace("%name%", lr.getName())
+					.replace("%payback%", plugin.getIFHApi().format(payback, from.getCurrency()));
+		}
+		Account tax = plugin.getIFHApi().getDefaultAccount(to.getOwner().getUUID(), AccountCategory.TAX, to.getCurrency());
+		double taxation = lr.getTaxInDecimal();
+		boolean taxAreExclusive = (lr.getLoanAmount()+lr.getLoanAmount()*lr.getInterest()+lr.getLoanAmount()*taxation) > lr.getTotalAmount() ? true : false;
+		
+		EconomyAction ea = null;
+		if(from.getCurrency().getUniqueName().equals(to.getCurrency().getUniqueName()))
+		{
+			if(tax == null && category != null)
+			{
+				ea = plugin.getIFHApi().transaction(
+						from, to, payback,
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			} else if(tax != null && category != null)
+			{
+				ea = plugin.getIFHApi().transaction(
+						from, to, payback,
+						taxation, taxAreExclusive, tax, 
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			}
+			if(!ea.isSuccess())
+			{
+				
+				return;
+			}
+			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, lr, "`id` = ?", lr.getId());
+		} else
+		{
+			if(!from.getCurrency().isExchangeable())
+			{
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Exchange.CurrencyDontAllowExchange")
+						.replace("%currency%", from.getCurrency().getUniqueName())));
+				return;
+			}
+			if(!to.getCurrency().isExchangeable())
+			{
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Exchange.CurrencyDontAllowExchange")
+						.replace("%currency%", to.getCurrency().getUniqueName())));
+				return;
+			}
+			Account taxII = plugin.getIFHApi().getDefaultAccount(to.getOwner().getUUID(), AccountCategory.TAX, to.getCurrency());
+			if(tax == null && taxII == null && category != null)
+			{
+				ea = plugin.getIFHApi().exchangeCurrencies(
+						from, to, payback,
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			} else if(tax != null && taxII == null && category != null)
+			{
+				ea = plugin.getIFHApi().exchangeCurrencies(
+						from, to, payback,
+						taxation, taxAreExclusive, tax, taxII,
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			}
+			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, lr, "`id` = ?", lr.getId());
+		}
+		lr.setLastTime(System.currentTimeMillis());
+		lr.setAmountPaidSoFar(lr.getTotalAmount());
+		lr.setFinished(true);
+		String othername = Utility.convertUUIDToName(lr.getOwner().toString(), EconomyType.PLAYER);
 		if(othername == null)
 		{
 			othername = "/";
 		}
-		String message = ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Payback.IsPayedBack")
+		String message = ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Payback.IsPayedBack")
 				.replace("%player%", player.getName())
 				.replace("%to%", othername)
-				.replace("%name%", dr.getName())
+				.replace("%name%", lr.getName())
 				.replace("%id%", String.valueOf(id)));
 		player.sendMessage(message);
-		if(AEPSettings.settings.isBungee())
+		if(Bukkit.getPlayer(lr.getOwner()) != null)
 		{
-			BungeeBridge.sendBungeeMessage(player, dr.getTo(), message, false, "");
+			Bukkit.getPlayer(lr.getOwner()).sendMessage(message);
 		} else
 		{
-			if(Bukkit.getPlayer(UUID.fromString(dr.getTo())) != null)
-			{
-				Bukkit.getPlayer(UUID.fromString(dr.getTo())).sendMessage(message);
-			}
+			//BungeeBridge.sendBungeeMessage(player, lr.getTo(), message, false, "");
 		}
-		plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", id);
+		plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, lr, "`id` = ?", id);
 		return;
 	}
 }

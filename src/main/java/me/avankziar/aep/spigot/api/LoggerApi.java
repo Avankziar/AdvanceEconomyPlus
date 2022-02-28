@@ -103,7 +103,7 @@ public class LoggerApi
 					"`dates` = ? AND `account_id` = ?", ConvertHandler.serialised(date), accountID);
 		} else
 		{
-			trendLogger = new TrendLogger(date, newtype, accountID, relativeAmountChange, balance-relativeAmountChange, balance);
+			trendLogger = new TrendLogger(date, newtype, accountID, relativeAmountChange, balance+relativeAmountChange, balance);
 			plugin.getMysqlHandler().create(Type.TREND, trendLogger);
 		}
 	}

@@ -10,6 +10,7 @@ import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
+import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
@@ -20,10 +21,10 @@ public class LoggerSettingsOther extends ArgumentModule
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
 	
-	public LoggerSettingsOther(AdvancedEconomyPlus plugin, ArgumentConstructor ac)
+	public LoggerSettingsOther(ArgumentConstructor ac)
 	{
-		super(plugin, ac);
-		this.plugin = plugin;
+		super(ac);
+		this.plugin = BaseConstructor.getPlugin();
 		this.ac = ac;
 	}
 	

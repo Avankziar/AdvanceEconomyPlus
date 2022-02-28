@@ -6,6 +6,9 @@ public class ExtraPerm
 {
 	public enum Type
 	{
+		COUNT_ACCOUNT,
+		BYPASS_JOINLISTENER,
+		BYPASS_ACCOUNTOPEN,
 		BYPASS_ACCOUNTMANAGEMENT,
 		BYPASS_ACTIONLOG_OTHER,
 		BYPASS_TRENDLOG_OTHER,
@@ -16,7 +19,7 @@ public class ExtraPerm
 		BYPASS_LOAN,
 	}
 	
-	public static LinkedHashMap<Type, String> map = new LinkedHashMap<>();
+	private static LinkedHashMap<Type, String> map = new LinkedHashMap<>();
 	
 	public static void set(Type t, String s)
 	{

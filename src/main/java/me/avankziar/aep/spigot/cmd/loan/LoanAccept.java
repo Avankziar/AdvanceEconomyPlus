@@ -98,19 +98,37 @@ public class LoanAccept extends ArgumentModule
 		double taxation = ts != null ? ts.getTaxInPercent() : 0.0;
 		boolean taxAreExclusive = ts != null ? ts.isTaxAreExclusive() : true;
 		EconomyAction ea = null;
-		if(tax == null && category == null)
+		if(from.getCurrency().getUniqueName().equals(to.getCurrency().getUniqueName()))
 		{
-			ea = plugin.getIFHApi().transaction(from, to, amount);
-		} else if(tax == null && category != null)
+			if(tax == null && category == null)
+			{
+				ea = plugin.getIFHApi().transaction(from, to, amount);
+			} else if(tax == null && category != null)
+			{
+				ea = plugin.getIFHApi().transaction(from, to, amount, OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+			} else if(tax != null && category == null)
+			{
+				ea = plugin.getIFHApi().transaction(from, to, amount, taxation, taxAreExclusive, tax);
+			} else if(tax != null && category != null)
+			{
+				ea = plugin.getIFHApi().transaction(from, to, amount, taxation, taxAreExclusive, tax, 
+						OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+			}
+		} else
 		{
-			ea = plugin.getIFHApi().transaction(from, to, amount, OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
-		} else if(tax != null && category == null)
-		{
-			ea = plugin.getIFHApi().transaction(from, to, amount, taxation, taxAreExclusive, tax);
-		} else if(tax != null && category != null)
-		{
-			ea = plugin.getIFHApi().transaction(from, to, amount, taxation, taxAreExclusive, tax, 
-					OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+			Account taxII = plugin.getIFHApi().getDefaultAccount(from.getOwner().getUUID(), AccountCategory.TAX, from.getCurrency());
+			if(tax == null && taxII == null && category != null)
+			{
+				ea = plugin.getIFHApi().exchangeCurrencies(
+						from, to, amount,
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			} else if(tax != null && taxII == null && category != null)
+			{
+				ea = plugin.getIFHApi().exchangeCurrencies(
+						from, to, amount,
+						taxation, taxAreExclusive, taxII, tax,
+						OrdererType.PLAYER, lr.getDebtor().toString(), category, comment);
+			}
 		}
 		if(!ea.isSuccess())
 		{

@@ -13,18 +13,18 @@ public class _AEPUserHandler_OLD
 	public static OLD_AEPUser getEcoPlayer(UUID playeruuid)
 	{
 		return (OLD_AEPUser) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
-				MysqlHandler.Type.PLAYER, "`player_uuid` = ?", playeruuid.toString());
+				MysqlHandler.Type.OLDPLAYER, "`player_uuid` = ?", playeruuid.toString());
 	}
 	
 	public static OLD_AEPUser getEcoPlayer(String playername)
 	{
 		return (OLD_AEPUser) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
-				MysqlHandler.Type.PLAYER, "`player_name` = ?", playername);
+				MysqlHandler.Type.OLDPLAYER, "`player_name` = ?", playername);
 	}
 	
 	public static OLD_AEPUser getEcoPlayer(OfflinePlayer player)
 	{
 		return (OLD_AEPUser) AdvancedEconomyPlus.getPlugin().getMysqlHandler().getData(
-				MysqlHandler.Type.PLAYER, "`player_uuid` = ?", player.getUniqueId().toString());
+				MysqlHandler.Type.OLDPLAYER, "`player_uuid` = ?", player.getUniqueId().toString());
 	}
 }

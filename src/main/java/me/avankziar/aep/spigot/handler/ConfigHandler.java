@@ -86,6 +86,11 @@ public class ConfigHandler
 		return false;
 	}
 	
+	public static boolean isLoanRetakeEnabled()
+	{
+		return yh.getConfig().getBoolean("Loan.RetakePayment", false);
+	}
+	
 	public static double getStandingOrderValueProtection(String currencyuniquename)
 	{
 		double d = 0.0;

@@ -234,8 +234,8 @@ public class LogHandler
 					&& al.getOrdererUUID() != null 
 					&& player.getUniqueId().toString().equals(al.getOrdererUUID().toString())
 					) 
-					|| player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_RECOMMENT))
-					|| player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_DELETELOG)))
+					|| player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_RECOMMENT))
+					|| player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_DELETELOG)))
 			{
 				m2.add(ChatApi.tctl(" | "));
 				if(
@@ -244,7 +244,7 @@ public class LogHandler
 						&& al.getOrdererUUID() != null 
 						&& player.getUniqueId().toString().equals(al.getOrdererUUID().toString())
 						)
-						||player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_RECOMMENT)))
+						||player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_RECOMMENT)))
 				{
 					m2.addAll(ChatApiSmall.generateTextComponentII(
 							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Edit")
@@ -252,7 +252,7 @@ public class LogHandler
 							.replace("%id%", String.valueOf(al.getId())),
 							map));
 				}
-				if(player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_DELETELOG)))
+				if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_DELETELOG)))
 				{
 					m2.addAll(ChatApiSmall.generateTextComponentII(
 							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Delete")

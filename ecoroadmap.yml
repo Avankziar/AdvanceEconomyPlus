@@ -78,6 +78,15 @@ Build 4 ========================================================================
 + Alle Loanbefehl sind nun asynchron.
 + Loan Spieleraccounts in richtige Accounts geändert.
 + Loan create, nicht optionales Argument [debtorname] hinzugefügt.
++ Loan inherit, nicht optionale Argument [Accountid] hinzugefügt.
++ Loan remit wurde in Loan forgive umbenannt.
++ Loan transfer, nicht optionale Argument [Accountid] hinzugefügt.
++ PlaceHolderAPI einbinden
++ Alle Account Befehle hinzugefügt
++ /aep deleteallplayeraccounts <Spielername> hinzugefügt. Löscht alle Accounts des Spielers und den Spieler selber.
++ Wenn Spieleraccounts über dem Overdue + Löschungsdatum sind, werden sie nach dem Serverrestart gelöscht mit Consolenmeldung.
++ Wenn Do.DeleteAccountsDaysAfterOverdue in der Config kleiner 0 ist, wird die Löschung NICHT ausgeführt.
++ Um Accounts eröffnen zu können, muss wird die CountPerm aep.countaccount.<accounttype>.<anzahl> genutzt werden.
   
   Todo:
   - Die Commands.yml komplett überarbeiten, siehe CurrencyCommandSetup
@@ -88,7 +97,6 @@ Build 4 ========================================================================
   - Im Joinlistener, den Spieler regestrieren und seine Konten erstellen. sollten alte Konten vorhanden sein, diese convertieren.
   - ActionLog mit einer category versehen, Object, wie MysqlTabelle
   - Mysql Performance in allen Tabellen hinzufügen. Siehe scc
-  - PlaceHolderAPI einbinden
   - Config Value einbauen um Überweisungen auf Cooldown zu halten.
   - Steuer Config Werte für Überweisungen, Bankkonten dauer.
   - Permission für alle AccountCategory machen, um sie als DefaultAccounts machen können.
@@ -108,6 +116,8 @@ Build 4 ========================================================================
   - Standingorder BackgroundTask löschfunktion, wenn dies Abgebrochen wurde nach x Tagen oder pausiert nach y Tagen. Configwerte
   - Configwerte, wieviel man an Geld verliert beim Tod.
   - IFH ToBungee einbauen.
+  - Perms einbauen um zu definieren, wieviele Accounts man für welchen typ, für welchen Kategorie erstellen darf.
+  - Tablisten für Pay befehle für alle Spieler eine listen anlegen mit deren Accountnamen.
 
 Build 3 ============================================================================================================================
 - +CommandTree eingebungen und dahingehend umgeschrieben. Bedeutet Befehle und Permission sind änderbar.

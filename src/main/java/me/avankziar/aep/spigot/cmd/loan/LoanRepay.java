@@ -1,7 +1,5 @@
 package main.java.me.avankziar.aep.spigot.cmd.loan;
 
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,7 +7,6 @@ import org.bukkit.entity.Player;
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
@@ -59,33 +56,29 @@ public class LoanRepay extends ArgumentModule
 		amount = Double.parseDouble(amounts);
 		if(!plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN, "`id` = ?", id))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanDontExist")));
 			return;
 		}
 		LoanRepayment dr = (LoanRepayment) plugin.getMysqlHandler().getData(MysqlHandler.Type.LOAN, "`id` = ?", id);
 		if(dr.isFinished())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyPaidOff")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanAlreadyPaidOff")));
 			return;
 		}
 		if(dr.isForgiven())
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.LoanAlreadyForgiven")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.LoanAlreadyForgiven")));
 			return;
 		}
-		if(!dr.getFrom().equals(player.getUniqueId().toString()))
-		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Repay.IsNotYourLoan")));
-		}
-		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getLang().getString("CmdLoan.ConfirmTerm")))
+		if(!confirm.equalsIgnoreCase(plugin.getYamlHandler().getLang().getString("Cmd.Loan.ConfirmTerm")))
 		{
 			
 			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("CmdLoan.Accept.PleaseConfirm")
+					plugin.getYamlHandler().getLang().getString("Cmd.Loan.Accept.PleaseConfirm")
 					.replace("%repaycmd%", CommandSuggest.get(null, CommandExecuteType.LOAN_REPAY).trim()+" %id% %amount% "
 							.replace("%id%", ids)
 							.replace("%amount%", amounts)
-							+" "+plugin.getYamlHandler().getLang().getString("CmdLoan.ConfirmTerm"))));
+							+" "+plugin.getYamlHandler().getLang().getString("Cmd.Loan.ConfirmTerm"))));
 			return;
 		}
 		double dif = dr.getTotalAmount()-dr.getAmountPaidSoFar();
@@ -96,7 +89,7 @@ public class LoanRepay extends ArgumentModule
 			dr.setFinished(true);
 			recieved = dif;
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Repay.RepayMoreThanNeeded")
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Repay.RepayMoreThanNeeded")
 					.replace("%name%", dr.getName())
 					.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 					.replace("%amount%", amounts)
@@ -106,24 +99,21 @@ public class LoanRepay extends ArgumentModule
 			dr.addPayment(amount);
 			recieved = amount;
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.LOAN, dr, "`id` = ?", dr.getId());
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdLoan.Repay.RepayedAmount")
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Repay.RepayedAmount")
 					.replace("%name%", dr.getName())
 					.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 					.replace("%amount%", amounts)));
 		}
-		String message = plugin.getYamlHandler().getLang().getString("CmdLoan.Repay.RepayRecieved")
+		String message = plugin.getYamlHandler().getLang().getString("Cmd.Loan.Repay.RepayRecieved")
 				.replace("%name%", dr.getName())
 				.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
 				.replace("%amount%", String.valueOf(AdvancedEconomyPlus.getVault().format(recieved)));
-		if(Bukkit.getPlayer(UUID.fromString(dr.getTo())) == null)
+		if(Bukkit.getPlayer(dr.getOwner()) == null)
 		{
-			BungeeBridge.sendBungeeMessage(player, dr.getTo(), message, false, "");
+			//BungeeBridge.sendBungeeMessage(player, dr.getTo(), message, false, "");
 		} else
 		{
-			if(Bukkit.getPlayer(UUID.fromString(dr.getTo())) != null)
-			{
-				Bukkit.getPlayer(UUID.fromString(dr.getTo())).sendMessage(message);
-			}
+			Bukkit.getPlayer(dr.getOwner()).sendMessage(message);
 		}
 		return;
 	}

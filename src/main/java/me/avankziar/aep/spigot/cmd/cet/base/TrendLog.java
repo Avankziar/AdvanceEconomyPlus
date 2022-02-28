@@ -141,7 +141,7 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 		{
 			if(!args[zero].equals(player.getName()))
 			{
-				if(!player.hasPermission(ExtraPerm.map.get(ExtraPerm.Type.BYPASS_ACTIONLOG_OTHER)))
+				if(!player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACTIONLOG_OTHER)))
 				{
 					player.sendMessage(ChatApi.tl(
 							plugin.getYamlHandler().getLang().getString("NoPermission")));

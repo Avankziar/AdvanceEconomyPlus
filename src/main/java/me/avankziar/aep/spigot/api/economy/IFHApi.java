@@ -278,16 +278,48 @@ public class IFHApi implements Economy
 		return qpa != null ? qpa.getAccountID() : -1;
 	}
 	
+	
+	
 	@Override
 	public EconomyEntity getEntity(UUID uuid)
 	{
 		return accountHandler.getEntity(uuid);
+	}
+	
+	@Override
+	public EconomyEntity getEntity(UUID uuid, EconomyEntity.EconomyType type)
+	{
+		return accountHandler.getEntity(uuid, type);
 	}
 
 	@Override
 	public EconomyEntity getEntity(String name)
 	{
 		return accountHandler.getEntity(name);
+	}
+	
+	@Override
+	public EconomyEntity getEntity(String name, EconomyEntity.EconomyType type)
+	{
+		return accountHandler.getEntity(name, type);
+	}
+	
+	@Override
+	public ArrayList<EconomyEntity> getEntitys(EconomyEntity.EconomyType type)
+	{
+		return accountHandler.getEntitys(type);
+	}
+	
+	@Override
+	public EconomyEntity getDefaultServer()
+	{
+		return accountHandler.getDefaultServer();
+	}
+	
+	@Override
+	public EconomyEntity getDefaultEntity() 
+	{
+		return accountHandler.getDefaultEntity();
 	}
 	
 	@Override

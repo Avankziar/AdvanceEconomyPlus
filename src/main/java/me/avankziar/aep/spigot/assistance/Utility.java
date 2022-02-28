@@ -109,7 +109,7 @@ public class Utility
 		case PLAYER:
 			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", name))
 			{
-				return ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYER, "`player_name` = ?", name)).getUUID();
+				return ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.OLDPLAYER, "`player_name` = ?", name)).getUUID();
 			}
 			break;
 		}

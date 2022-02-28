@@ -12,9 +12,17 @@ import main.java.me.avankziar.aep.spigot.cmd.LoanCommandExecutor;
 import main.java.me.avankziar.aep.spigot.cmd.StandingOrderCommandExecutor;
 import main.java.me.avankziar.aep.spigot.cmd.TABCompletion;
 import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountClose;
+import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountManage;
+import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountOpen;
+import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountOverdue;
+import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountSetDefault;
+import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountSetName;
+import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountSetOwner;
+import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountSetQuickPay;
 import main.java.me.avankziar.aep.spigot.cmd.cet.account.Accounts;
 import main.java.me.avankziar.aep.spigot.cmd.cet.base.ActionLog;
 import main.java.me.avankziar.aep.spigot.cmd.cet.base.BankNotification;
+import main.java.me.avankziar.aep.spigot.cmd.cet.base.DeleteAllPlayerAccounts;
 import main.java.me.avankziar.aep.spigot.cmd.cet.base.DeleteLog;
 import main.java.me.avankziar.aep.spigot.cmd.cet.base.GetTotal;
 import main.java.me.avankziar.aep.spigot.cmd.cet.base.Players;
@@ -30,6 +38,7 @@ import main.java.me.avankziar.aep.spigot.cmd.cst.Balance;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Give;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.GiveConsole;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Pay;
+import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.PayThroughGui;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Set;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.SetConsole;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Take;
@@ -44,7 +53,7 @@ import main.java.me.avankziar.aep.spigot.cmd.loan.LoanList;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanPause;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanPayback;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanReject;
-import main.java.me.avankziar.aep.spigot.cmd.loan.LoanRemit;
+import main.java.me.avankziar.aep.spigot.cmd.loan.LoanForgive;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanRepay;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanSend;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanTime;
@@ -164,7 +173,6 @@ public class CurrencyCommandSetup
 					break;
 				}
 				plugin.getCommand(cmd.getName()).setTabCompleter(new TABCompletion());
-				CommandSuggest.set(null, cet, cmd.getCommandString());
 			}
 			
 		}
@@ -252,8 +260,13 @@ public class CurrencyCommandSetup
 		new DeleteLog(deletelog);
 		arglist.add(deletelog);
 		
+		ArgumentConstructor deleteallplayeraccounts = new ArgumentConstructor(
+				CommandExecuteType.DELETEALLPLAYERACCOUNTS, "aep_deleteallplayeraccounts", 0, 1, 1, false, null);
+		new DeleteAllPlayerAccounts(deleteallplayeraccounts);
+		arglist.add(deleteallplayeraccounts);
+		
 		ArgumentConstructor player = new ArgumentConstructor(
-				CommandExecuteType.PLAYER, "aep_player", 0, 0, 1, false, null);
+				CommandExecuteType.PLAYER, "aep_player", 0, 0, 2, false, null);
 		new Players(player);
 		arglist.add(player);
 		
@@ -267,35 +280,56 @@ public class CurrencyCommandSetup
 	{
 		ArgumentConstructor lsgui = new ArgumentConstructor(
 				CommandExecuteType.LOGGERSETTINGS_GUI, "aep_loggersettings_gui", 1, 2, 5, false, null);
-		new LoggerSettingsGui(plugin, lsgui);
+		new LoggerSettingsGui(lsgui);
 		
 		ArgumentConstructor lsother = new ArgumentConstructor(
 				CommandExecuteType.LOGGERSETTINGS_OTHER, "aep_loggersettings_other", 1, 2, 2, false, null);
-		new LoggerSettingsOther(plugin, lsother);
+		new LoggerSettingsOther(lsother);
 		
 		ArgumentConstructor lstext = new ArgumentConstructor(
 				CommandExecuteType.LOGGERSETTINGS_TEXT, "aep_loggersettings_text", 1, 2, 999, false, null);
-		new LoggerSettingsText(plugin, lstext);
+		new LoggerSettingsText(lstext);
 		
 		ArgumentConstructor ls = new ArgumentConstructor(
 				CommandExecuteType.LOGGERSETTINGS, "aep_loggersettings", 0, 0, 0, false, null,
 				lstext, lsother, lsgui);
 		arglist.add(ls);
-		new LoggerSettings(plugin, ls);
+		new LoggerSettings(ls);
 	}
 	
 	private void addAccountArgumentConstructor(ArrayList<ArgumentConstructor> arglist)
 	{
-		ArgumentConstructor acclose = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_CLOSE, "", 0, 0, 0, false, null);
-		new AccountClose(plugin, acclose);
+		ArgumentConstructor accountclose = new ArgumentConstructor(
+				CommandExecuteType.ACCOUNT_CLOSE, "aep_account_close", 1, 2, 4, false, null);
+		ArgumentConstructor accountmanage = new ArgumentConstructor(
+				CommandExecuteType.ACCOUNT_MANAGE, "aep_account_manage", 1, 6, 6, false, null);
+		ArgumentConstructor accountopen = new ArgumentConstructor(
+				CommandExecuteType.ACCOUNT_OPEN, "aep_account_open", 1, 6, 8, false, null);
+		ArgumentConstructor accountoverdue = new ArgumentConstructor(
+				CommandExecuteType.ACCOUNT_OVERDUE, "aep_account_overdue", 1, 1, 1, false, null);
+		ArgumentConstructor accountsetdefault = new ArgumentConstructor(
+				CommandExecuteType.ACCOUNT_SETDEFAULT, "aep_account_setdefault", 1, 4, 4, false, null);
+		ArgumentConstructor accountsetname = new ArgumentConstructor(
+				CommandExecuteType.ACCOUNT_SETNAME, "aep_account_setname", 1, 5, 5, false, null);
+		ArgumentConstructor accountsetowner = new ArgumentConstructor(
+				CommandExecuteType.ACCOUNT_SETOWNER, "aep_account_setowner", 1, 5, 5, false, null);
+		ArgumentConstructor accountsetquickpay = new ArgumentConstructor(
+				CommandExecuteType.ACCOUNT_SETQUICKPAY, "aep_account_setquickpay", 1, 3, 3, false, null);
 		
 		ArgumentConstructor account = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT, "", 0, 0, 0, false, null,
-				acclose);
+				CommandExecuteType.ACCOUNT, "aep_account", 0, 0, 0, false, null,
+				accountclose, accountmanage, accountopen, accountoverdue, accountsetdefault, accountsetname,
+				accountsetowner, accountsetquickpay);
 		arglist.add(account);
-		new Accounts(plugin, account);
-		
+		new Accounts(account);
+		new AccountClose(accountclose);
+		new AccountManage(accountmanage);
+		new AccountOpen(accountopen);
+		new AccountOverdue(accountoverdue);
+		new AccountSetDefault(accountsetdefault);
+		new AccountSetName(accountsetname);
+		new AccountSetOwner(accountsetowner);
+		new AccountSetQuickPay(accountsetquickpay);
 	}
 	
 	private void addLoanArgumentConstructor()
@@ -305,41 +339,42 @@ public class CurrencyCommandSetup
 		ArgumentConstructor amount = new ArgumentConstructor(CommandExecuteType.LOAN_AMOUNT, bcmdIV+"_amount", 0, 3, 3, false, null);
 		ArgumentConstructor cancel = new ArgumentConstructor(CommandExecuteType.LOAN_CANCEL, bcmdIV+"_cancel", 0, 0, 0, false, null);
 		ArgumentConstructor create = new ArgumentConstructor(CommandExecuteType.LOAN_CREATE, bcmdIV+"_create", 0, 4, 4, false, pMapIII);
+		ArgumentConstructor forgive = new ArgumentConstructor(CommandExecuteType.LOAN_FORGIVE, bcmdIV+"_forgive", 0, 1, 2, false, null);
 		ArgumentConstructor info = new ArgumentConstructor(CommandExecuteType.LOAN_INFO, bcmdIV+"_info", 0, 1, 1, false, null);
-		ArgumentConstructor inherit = new ArgumentConstructor(CommandExecuteType.LOAN_INHERIT, bcmdIV+"_inherit", 0, 3, 3, false, pMapIII);
+		ArgumentConstructor inherit = new ArgumentConstructor(CommandExecuteType.LOAN_INHERIT, bcmdIV+"_inherit", 0, 4, 4, false, pMapIII);
 		ArgumentConstructor list = new ArgumentConstructor(CommandExecuteType.LOAN_LIST, bcmdIV+"_list", 0, 0, 1, false, null);
 		ArgumentConstructor pause = new ArgumentConstructor(CommandExecuteType.LOAN_PAUSE, bcmdIV+"_pause", 0, 1, 1, false, null);
 		ArgumentConstructor payback = new ArgumentConstructor(CommandExecuteType.LOAN_PAYBACK, bcmdIV+"_payback", 0, 1, 1, false, null);
 		ArgumentConstructor reject = new ArgumentConstructor(CommandExecuteType.LOAN_REJECT, bcmdIV+"_reject", 0, 0, 0, false, null);
-		ArgumentConstructor remit = new ArgumentConstructor(CommandExecuteType.LOAN_REMIT, bcmdIV+"_remit", 0, 1, 2, false, null);
+		
 		ArgumentConstructor repay = new ArgumentConstructor(CommandExecuteType.LOAN_REPAY, bcmdIV+"_repay", 0, 2, 3, false, null);
 		ArgumentConstructor send = new ArgumentConstructor(CommandExecuteType.LOAN_SEND, bcmdIV+"_send", 0, 1, 1, false, null);
 		ArgumentConstructor time = new ArgumentConstructor(CommandExecuteType.LOAN_TIME, bcmdIV+"_time", 0, 3, 3, false, null);
-		ArgumentConstructor transfer = new ArgumentConstructor(CommandExecuteType.LOAN_TRANSFER, bcmdIV+"_transfer", 0, 3, 3, false, pMapIII);
+		ArgumentConstructor transfer = new ArgumentConstructor(CommandExecuteType.LOAN_TRANSFER, bcmdIV+"_transfer", 0, 4, 4, false, pMapIII);
 				
 		CommandConstructor loan = new CommandConstructor(CommandExecuteType.LOAN, bcmdIV, false,
 				accept, amount, cancel, create, info, inherit, 
-				list, pause, payback, reject, remit, repay, send, time, transfer);	
+				list, pause, payback, reject, forgive, repay, send, time, transfer);	
 		
 		plugin.registerCommand(loan.getPath(), loan.getName());
 		plugin.getCommand(loan.getName()).setExecutor(new LoanCommandExecutor(loan));
 		plugin.getCommand(loan.getName()).setTabCompleter(new TABCompletion());
 		
-		new LoanAccept(plugin, accept);
-		new LoanAmount(plugin, amount);
-		new LoanCancel(plugin, cancel);
-		new LoanCreate(plugin, create);
-		new LoanInfo(plugin, info);
-		new LoanInherit(plugin, inherit);
-		new LoanList(plugin, list);
-		new LoanPause(plugin, pause);
-		new LoanPayback(plugin, payback);
-		new LoanReject(plugin, reject);
-		new LoanRemit(plugin, remit);
-		new LoanRepay(plugin, repay);
-		new LoanSend(plugin, send);
-		new LoanTime(plugin, time);
-		new LoanTransfer(plugin, transfer);
+		new LoanAccept(accept);
+		new LoanAmount(amount);
+		new LoanCancel(cancel);
+		new LoanCreate(create);
+		new LoanInfo(info);
+		new LoanInherit(inherit);
+		new LoanList(list);
+		new LoanPause(pause);
+		new LoanPayback(payback);
+		new LoanReject(reject);
+		new LoanForgive(forgive);
+		new LoanRepay(repay);
+		new LoanSend(send);
+		new LoanTime(time);
+		new LoanTransfer(transfer);
 	}
 	
 	private void addStandingOrderArgumentConstructor()
@@ -412,6 +447,9 @@ public class CurrencyCommandSetup
 			case PAY:
 				plugin.getCommand(cmd.getName()).setExecutor(new Pay(cmd, null, cst));
 				break;
+			case PAY_THROUGH_GUI:
+				plugin.getCommand(cmd.getName()).setExecutor(new PayThroughGui(cmd, null, cst));
+				break;
 			case GIVE:
 				plugin.getCommand(cmd.getName()).setExecutor(new Give(cmd, null, cst));
 				break;
@@ -434,7 +472,6 @@ public class CurrencyCommandSetup
 				break;
 			}
 			plugin.getCommand(cmd.getName()).setTabCompleter(new TABCompletion());
-			CommandSuggest.set(ec, cet, cmd.getCommandString());
 		}
 	}
 	
@@ -469,6 +506,10 @@ public class CurrencyCommandSetup
 			case PAY:
 				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, null);
 				new Pay(null, arg, cst);
+				break;
+			case PAY_THROUGH_GUI:
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, null);
+				new PayThroughGui(null, arg, cst);
 				break;
 			case GIVE:
 				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, null);

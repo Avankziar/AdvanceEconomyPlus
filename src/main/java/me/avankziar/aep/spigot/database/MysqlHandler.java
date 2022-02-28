@@ -19,12 +19,12 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 {
 	public enum Type
 	{
-		PLAYER("economyPlayerData"),
+		OLDPLAYER("economyPlayerData"),
 		ACTION("aepActionLogger"),
 		TREND("aepTrendLogger"),
-		STANDINGORDER("economyStandingOrder"),
-		LOAN("economyLoan"),
-		LOGGERSETTINGSPRESET("economyLoggerSettingsPreset"),
+		STANDINGORDER("aepStandingOrder"),
+		LOAN("aepLoan"),
+		LOGGERSETTINGSPRESET("aepLoggerSettingsPreset"),
 		//NEw stuff
 		ENTITYDATA("aepEntityData"),
 		PLAYERDATA("aepPlayerData"),
@@ -145,7 +145,7 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 	{
 		switch(type)
 		{
-		case PLAYER:
+		case OLDPLAYER:
 			return OLDTableI.super.createI(plugin, object);
 		case ACTION:
 			return TableIII.super.createIII(plugin, object);
@@ -165,7 +165,7 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 	{
 		switch(type)
 		{
-		case PLAYER:
+		case OLDPLAYER:
 			return OLDTableI.super.updateDataI(plugin, object, whereColumn, whereObject);
 		case ACTION:
 			return TableIII.super.updateDataIII(plugin, object, whereColumn, whereObject);
@@ -185,7 +185,7 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 	{
 		switch(type)
 		{
-		case PLAYER:
+		case OLDPLAYER:
 			return OLDTableI.super.getDataI(plugin, whereColumn, whereObject);
 		case ACTION:
 			return TableIII.super.getDataIII(plugin, whereColumn, whereObject);
@@ -430,7 +430,7 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 	{
 		switch(type)
 		{
-		case PLAYER:
+		case OLDPLAYER:
 			return OLDTableI.super.getListI(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
 		case ACTION:
 			return TableIII.super.getListIII(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
@@ -450,7 +450,7 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 	{
 		switch(type)
 		{
-		case PLAYER:
+		case OLDPLAYER:
 			return OLDTableI.super.getTopI(plugin, orderByColumn, start, end);
 		case ACTION:
 			return TableIII.super.getTopIII(plugin, orderByColumn, start, end);
@@ -471,7 +471,7 @@ public class MysqlHandler implements OLDTableI, TableIII, TableIV, TableV, Table
 	{
 		switch(type)
 		{
-		case PLAYER:
+		case OLDPLAYER:
 			return OLDTableI.super.getAllListAtI(plugin, orderByColumn, whereColumn, whereObject);
 		case ACTION:
 			return TableIII.super.getAllListAtIII(plugin, orderByColumn, whereColumn, whereObject);

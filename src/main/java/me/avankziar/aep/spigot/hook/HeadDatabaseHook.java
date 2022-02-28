@@ -1,10 +1,19 @@
 package main.java.me.avankziar.aep.spigot.hook;
 
+import java.time.LocalDate;
+import java.util.UUID;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.LoggerApi;
+import main.java.me.avankziar.aep.spigot.object.ActionLogger;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 import me.arcaniax.hdb.api.PlayerClickHeadEvent;
 
 public class HeadDatabaseHook implements Listener
@@ -23,8 +32,7 @@ public class HeadDatabaseHook implements Listener
 		{
 			return;
 		}
-		String playeruuid = event.getPlayer().getUniqueId().toString();
-		String playername = event.getPlayer().getName();
+		UUID cuuid = event.getPlayer().getUniqueId();
 		double amount = event.getPrice();
 		ItemStack is = event.getHead();
 		String itemname = is.getType().toString();
@@ -35,19 +43,30 @@ public class HeadDatabaseHook implements Listener
 				itemname = is.getItemMeta().getDisplayName();
 			}
 		}
-		//FIXME 
-		/*
-		Bukkit.getPluginManager().callEvent(new ActionLoggerEvent(
-				LocalDateTime.now(),
-				playeruuid, plugin.getYamlHandler().getLang().getString("HeadDatabase.UUID"),
-				playername, plugin.getYamlHandler().getLang().getString("HeadDatabase.Name"),
-				plugin.getYamlHandler().getLang().getString("HeadDatabase.Orderer"),
-				amount, 
-				ActionLoggerEvent.Type.TAKEN,
-				plugin.getYamlHandler().getLang().getString("HeadDatabase.Comment")
-				.replace("%head%", itemname)));
-		Bukkit.getPluginManager().callEvent(new TrendLoggerEvent(
-				LocalDate.now(), playeruuid, amount, _AEPUserHandler_OLD.getEcoPlayer(UUID.fromString(playeruuid)).getBalance()));
-		*/
+		String category = plugin.getYamlHandler().getLang().getString("HeadDatabase.Category");
+
+		String comment = plugin.getYamlHandler().getLang().getString("HeadDatabase.Comment")
+				.replace("%head%", itemname);
+		Account from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.SHOP, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+		if(from == null)
+		{
+			from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+		}
+		Account to = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.VOID);
+		if(to == null)
+		{
+			to = plugin.getIFHApi().getDefaultAccount(plugin.getIFHApi().getDefaultServer().getUUID(), AccountCategory.VOID);
+		}
+		if(from == null || to == null)
+		{
+			return;
+		}
+		LoggerApi.addActionLogger(new ActionLogger(
+				0,
+				System.currentTimeMillis(),
+				from.getID(), to.getID(),
+				-1, OrdererType.PLAYER, cuuid, null, amount, amount, 0.0, category, comment));
+		LoggerApi.addTrendLogger(LocalDate.now(), from.getID(), -amount, from.getBalance());
+		LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());
 	}
 }

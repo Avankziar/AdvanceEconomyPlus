@@ -68,11 +68,12 @@ public class Players extends ArgumentModule
 	}
 	
 	/*
-	 * aep recomment <id> <category> <comment...>
+	 * aep players [playername] [true]
 	 */
 	private void middlePart(Player player, String[] args) throws IOException
 	{
 		String playername = player.getName();
+		boolean onlycheckhisaccounts = false;
 		if(args.length >= 2)
 		{
 			playername = args[1];
@@ -119,6 +120,12 @@ public class Players extends ArgumentModule
 				continue;
 			}
 			ArrayList<AccountManagementType> amt = e.getValue();
+			if(onlycheckhisaccounts 
+					&& ac.getOwner().getUUID().toString() != aepu.getUUID().toString()
+					&& !amt.contains(AccountManagementType.CAN_WITHDRAW))
+			{
+				continue;
+			}
 			StringBuilder sb = new StringBuilder();
 			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountID")
 					.replace("%id%", String.valueOf(ac.getID())));
@@ -129,7 +136,8 @@ public class Players extends ArgumentModule
 			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountBalance")
 					.replace("%balance%", plugin.getIFHApi().format(ac.getBalance(), ac.getCurrency())));
 			sb.append("~!~");
-			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountCategory")
+			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountTypeAndCategory")
+					.replace("%type%", ac.getType().toString())
 					.replace("%category%", ac.getCategory().toString()));
 			sb.append("~!~");
 			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountPredefined")
