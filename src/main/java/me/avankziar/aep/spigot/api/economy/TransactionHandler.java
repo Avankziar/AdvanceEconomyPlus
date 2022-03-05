@@ -4,18 +4,18 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
+import main.java.me.avankziar.aep.general.objects.ActionLogger;
+import main.java.me.avankziar.aep.general.objects.TaxationCase;
+import main.java.me.avankziar.aep.general.objects.TaxationSet;
+import main.java.me.avankziar.aep.general.objects.TrendLogger;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.LoggerApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger;
-import main.java.me.avankziar.aep.spigot.object.TaxationCase;
-import main.java.me.avankziar.aep.spigot.object.TaxationSet;
-import main.java.me.avankziar.aep.spigot.object.TrendLogger;
+import main.java.me.avankziar.ifh.general.economy.account.AccountType;
+import main.java.me.avankziar.ifh.general.economy.action.EconomyAction;
+import main.java.me.avankziar.ifh.general.economy.action.EconomyAction.ErrorMessageType;
+import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
-import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
-import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction.ErrorMessageType;
-import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 import main.java.me.avankziar.ifh.spigot.economy.subinterfaces.CurrencyHandling.Exchange;
 import main.java.me.avankziar.ifh.spigot.economy.subinterfaces.CurrencyHandling.Exchange.TaxToCurrency;
 

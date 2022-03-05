@@ -15,8 +15,8 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
 
 public class AccountClose extends ArgumentModule
 {

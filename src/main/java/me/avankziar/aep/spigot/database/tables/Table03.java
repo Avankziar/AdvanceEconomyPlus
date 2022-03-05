@@ -15,12 +15,12 @@ import java.util.UUID;
 
 import org.json.simple.JSONValue;
 
+import main.java.me.avankziar.aep.general.objects.ActionLogger;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger;
-import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
 
 public interface Table03
 {	

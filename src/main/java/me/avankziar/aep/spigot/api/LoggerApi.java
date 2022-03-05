@@ -3,11 +3,11 @@ package main.java.me.avankziar.aep.spigot.api;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import main.java.me.avankziar.aep.general.objects.ActionLogger;
+import main.java.me.avankziar.aep.general.objects.TrendLogger;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger;
-import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 
 public class LoggerApi
 {

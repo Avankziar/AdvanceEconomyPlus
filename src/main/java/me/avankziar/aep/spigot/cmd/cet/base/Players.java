@@ -10,18 +10,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.AEPUser;
+import main.java.me.avankziar.aep.general.objects.AccountManagement;
+import main.java.me.avankziar.aep.general.objects.DefaultAccount;
+import main.java.me.avankziar.aep.general.objects.QuickPayAccount;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.AccountManagement;
-import main.java.me.avankziar.aep.spigot.object.DefaultAccount;
-import main.java.me.avankziar.aep.spigot.object.QuickPayAccount;
+import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 

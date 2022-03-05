@@ -6,11 +6,11 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import main.java.me.avankziar.aep.general.objects.AEPUser;
+import main.java.me.avankziar.aep.general.objects.EntityData;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.EntityData;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
 
 public class Utility
 {

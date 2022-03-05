@@ -1,8 +1,8 @@
-package main.java.me.avankziar.aep.spigot.object;
+package main.java.me.avankziar.aep.general.objects;
 
 import java.util.UUID;
 
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
+import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 
 public class AccountManagement
 {

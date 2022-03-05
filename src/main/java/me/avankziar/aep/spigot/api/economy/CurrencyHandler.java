@@ -8,24 +8,24 @@ import java.util.Map;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import main.java.me.avankziar.aep.general.objects.EntityData;
+import main.java.me.avankziar.aep.general.objects.TaxationCase;
+import main.java.me.avankziar.aep.general.objects.TaxationSet;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.aep.spigot.object.EntityData;
-import main.java.me.avankziar.aep.spigot.object.TaxationCase;
-import main.java.me.avankziar.aep.spigot.object.TaxationSet;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.AccountType;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
+import main.java.me.avankziar.ifh.general.economy.currency.SIPrefix;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.Currency;
 import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyGradation;
-import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 import main.java.me.avankziar.ifh.spigot.economy.currency.Gradation;
-import main.java.me.avankziar.ifh.spigot.economy.currency.SIPrefix;
 
 public class CurrencyHandler
 {

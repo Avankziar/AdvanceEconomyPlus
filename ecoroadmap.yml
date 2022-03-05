@@ -95,7 +95,7 @@ Build 4 ========================================================================
 + StandingOrder.DeleteAfterIsCancelledOrPausedInDays löscht beim ServerStart alle StandingOrders wo die letzte Zahl länger als x Tage ist.
   Ist der Wert kleiner 0, ist die Funktion deaktiviert.
 + IFH MessageToBungee als Consumer installiert. Ersetzt den vorherigen Bungeepart zur Nachrichtenkomunikation bei Transaktionen.
-+
++ IFH Bungee Economy implementiert. Somit könne Plugins auf dem Bungee direkt Economy Aktion durchführen.
     
   Todo:
   - Config Value einbauen um Überweisungen auf Cooldown zu halten.

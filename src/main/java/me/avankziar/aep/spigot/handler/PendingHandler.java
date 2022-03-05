@@ -2,8 +2,8 @@ package main.java.me.avankziar.aep.spigot.handler;
 
 import java.util.LinkedHashMap;
 
-import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.StandingOrder;
+import main.java.me.avankziar.aep.general.objects.LoanRepayment;
+import main.java.me.avankziar.aep.general.objects.StandingOrder;
 
 public class PendingHandler
 {

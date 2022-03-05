@@ -16,8 +16,8 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.PayThroughGui;
 import main.java.me.avankziar.aep.spigot.object.subs.GuiPay;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 
 public class GuiPayListener implements Listener
 {

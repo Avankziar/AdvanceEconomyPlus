@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.StandingOrder;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.assistance.ChatApiSmall;
 import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
@@ -15,7 +16,6 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
 import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
-import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 
 public class StandingOrderStarttime extends ArgumentModule

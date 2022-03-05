@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.StandingOrder;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
@@ -14,9 +15,8 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
-import main.java.me.avankziar.aep.spigot.object.StandingOrder;
+import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
 import net.md_5.bungee.api.chat.ClickEvent;
 
 public class StandingOrderCreate extends ArgumentModule

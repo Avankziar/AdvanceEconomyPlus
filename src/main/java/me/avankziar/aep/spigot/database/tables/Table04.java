@@ -13,10 +13,10 @@ import java.util.Map;
 
 import org.json.simple.JSONValue;
 
+import main.java.me.avankziar.aep.general.objects.TrendLogger;
+import main.java.me.avankziar.aep.general.objects.TrendLogger.Type;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.TrendLogger;
-import main.java.me.avankziar.aep.spigot.object.TrendLogger.Type;
 
 public interface Table04
 {

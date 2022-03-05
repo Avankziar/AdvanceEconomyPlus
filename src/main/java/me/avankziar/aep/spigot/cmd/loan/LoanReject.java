@@ -5,15 +5,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
-import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
 
 public class LoanReject extends ArgumentModule
 {
@@ -44,8 +43,10 @@ public class LoanReject extends ArgumentModule
 		String tomsgII  = ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Reject.isCancelled"));
 		if(Bukkit.getPlayer(lr.getOwner()) == null)
 		{
-			BungeeBridge.sendBungeeMessage(player, lr.getOwner().toString(), tomsg, false, "");
-			BungeeBridge.sendBungeeMessage(player, lr.getOwner().toString(), tomsgII, false, "");
+			if(plugin.getMtB() != null)
+			{
+				plugin.getMtB().sendMessage(lr.getOwner(), tomsg, tomsgII);
+			}
 		} else
 		{
 			if(Bukkit.getPlayer(lr.getOwner()) != null)

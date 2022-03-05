@@ -19,11 +19,11 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.action.EconomyAction;
+import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
-import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
-import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 
 public class SetConsole extends ArgumentModule implements CommandExecutor
 {

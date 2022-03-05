@@ -13,6 +13,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import main.java.me.avankziar.aep.general.objects.AEPUser;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.api.economy.AccountHandler;
@@ -21,13 +22,12 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.ifh.general.assistance.ChatApi;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.AccountType;
+import main.java.me.avankziar.ifh.general.economy.action.EconomyAction;
+import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
-import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
-import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 

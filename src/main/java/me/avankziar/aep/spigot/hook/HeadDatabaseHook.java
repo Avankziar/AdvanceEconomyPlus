@@ -7,13 +7,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
+import main.java.me.avankziar.aep.general.objects.ActionLogger;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.LoggerApi;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
-import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 import me.arcaniax.hdb.api.PlayerClickHeadEvent;
 
 public class HeadDatabaseHook implements Listener

@@ -7,24 +7,24 @@ import java.util.UUID;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import main.java.me.avankziar.aep.general.objects.AEPUser;
+import main.java.me.avankziar.aep.general.objects.AccountManagement;
+import main.java.me.avankziar.aep.general.objects.DefaultAccount;
+import main.java.me.avankziar.aep.general.objects.EntityData;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.AccountManagement;
-import main.java.me.avankziar.aep.spigot.object.DefaultAccount;
-import main.java.me.avankziar.aep.spigot.object.EntityData;
 import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
+import main.java.me.avankziar.ifh.general.economy.account.AccountType;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
-import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 
 public class AccountHandler

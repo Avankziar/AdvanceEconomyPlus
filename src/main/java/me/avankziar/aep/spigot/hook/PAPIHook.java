@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 

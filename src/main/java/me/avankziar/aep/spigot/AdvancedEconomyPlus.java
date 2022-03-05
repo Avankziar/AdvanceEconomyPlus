@@ -28,7 +28,6 @@ import main.java.me.avankziar.aep.spigot.api.economy.CurrencyCommandSetup;
 import main.java.me.avankziar.aep.spigot.api.economy.IFHApi;
 import main.java.me.avankziar.aep.spigot.api.economy.VaultApi;
 import main.java.me.avankziar.aep.spigot.assistance.BackgroundTask;
-import main.java.me.avankziar.aep.spigot.assistance.BungeeBridge;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.bstats.Metrics;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
@@ -116,7 +115,6 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			return;
 		}
 		loggerApi = new LoggerApi(this);
-		new BungeeBridge(this);
 		backgroundTask = new BackgroundTask(this);
 		setupIFH();
 		setupVault();
@@ -203,7 +201,6 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	public void setupListener()
 	{
 		PluginManager pm = getServer().getPluginManager();
-		getServer().getMessenger().registerOutgoingPluginChannel(this, "advancedeconomy:spigottobungee");
 		pm.registerEvents(new PlayerListener(plugin), plugin);
 		pm.registerEvents(new LoggerSettingsListenerHandler(plugin), plugin);
 		pm.registerEvents(new GuiPayListener(plugin), plugin);

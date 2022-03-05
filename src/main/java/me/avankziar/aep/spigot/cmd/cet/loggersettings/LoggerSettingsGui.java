@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.AEPUser;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
@@ -16,12 +17,11 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler.Methode;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
-import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 
 public class LoggerSettingsGui extends ArgumentModule
 {

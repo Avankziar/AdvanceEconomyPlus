@@ -10,18 +10,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import main.java.me.avankziar.aep.general.objects.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
-import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.AccountType;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.general.economy.action.EconomyAction;
+import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
-import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
-import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 

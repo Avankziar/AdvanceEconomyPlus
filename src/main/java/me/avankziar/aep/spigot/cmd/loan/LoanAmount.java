@@ -6,6 +6,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.LoanRepayment;
+import main.java.me.avankziar.aep.general.objects.TaxationCase;
+import main.java.me.avankziar.aep.general.objects.TaxationSet;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyHandler;
@@ -13,9 +16,6 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.handler.PendingHandler;
-import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
-import main.java.me.avankziar.aep.spigot.object.TaxationCase;
-import main.java.me.avankziar.aep.spigot.object.TaxationSet;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import net.md_5.bungee.api.chat.HoverEvent;
 

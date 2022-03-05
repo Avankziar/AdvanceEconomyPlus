@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import main.java.me.avankziar.aep.general.objects.AccountManagement;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.AccountManagement;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
+import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 
 public interface Table09
 {

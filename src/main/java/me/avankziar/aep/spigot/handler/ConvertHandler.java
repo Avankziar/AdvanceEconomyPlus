@@ -5,17 +5,17 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.AccountManagement;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger;
-import main.java.me.avankziar.aep.spigot.object.DefaultAccount;
-import main.java.me.avankziar.aep.spigot.object.EntityData;
-import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
+import main.java.me.avankziar.aep.general.objects.AEPUser;
+import main.java.me.avankziar.aep.general.objects.AccountManagement;
+import main.java.me.avankziar.aep.general.objects.ActionLogger;
+import main.java.me.avankziar.aep.general.objects.DefaultAccount;
+import main.java.me.avankziar.aep.general.objects.EntityData;
+import main.java.me.avankziar.aep.general.objects.LoanRepayment;
+import main.java.me.avankziar.aep.general.objects.StandingOrder;
+import main.java.me.avankziar.aep.general.objects.TrendLogger;
 import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
-import main.java.me.avankziar.aep.spigot.object.StandingOrder;
-import main.java.me.avankziar.aep.spigot.object.TrendLogger;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 
 public class ConvertHandler
 {

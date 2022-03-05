@@ -12,6 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.AEPUser;
+import main.java.me.avankziar.aep.general.objects.AccountManagement;
+import main.java.me.avankziar.aep.general.objects.TaxationCase;
+import main.java.me.avankziar.aep.general.objects.TaxationSet;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyHandler;
@@ -23,18 +27,14 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.AccountManagement;
-import main.java.me.avankziar.aep.spigot.object.TaxationCase;
-import main.java.me.avankziar.aep.spigot.object.TaxationSet;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
+import main.java.me.avankziar.ifh.general.economy.account.AccountType;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.action.EconomyAction;
+import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
-import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
-import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
-import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 
 public class Pay extends ArgumentModule implements CommandExecutor
 {

@@ -8,13 +8,13 @@ import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import main.java.me.avankziar.aep.general.objects.TaxationCase;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.Language.ISO639_2B;
-import main.java.me.avankziar.aep.spigot.object.TaxationCase;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 
 public class YamlManager
 {
@@ -2608,7 +2608,7 @@ public class YamlManager
 		}
 	}
 	
-	public void initCurrencyFile1()
+	public void initCurrencyFile()
 	{
 		LinkedHashMap<String, Language> currencyKey = new LinkedHashMap<>();
 		currencyKey.put("UniqueName"

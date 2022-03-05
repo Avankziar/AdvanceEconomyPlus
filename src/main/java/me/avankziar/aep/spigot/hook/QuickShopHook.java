@@ -13,15 +13,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.maxgamer.quickshop.event.ShopSuccessPurchaseEvent;
 import org.maxgamer.quickshop.shop.Shop;
 
+import main.java.me.avankziar.aep.general.objects.ActionLogger;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.LoggerApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
-import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
-import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 
 public class QuickShopHook implements Listener
 {

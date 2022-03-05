@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import main.java.me.avankziar.aep.general.objects.AEPUser;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.AepCommandExecutor;
 import main.java.me.avankziar.aep.spigot.cmd.LoanCommandExecutor;
@@ -76,12 +77,11 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.AccountType;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
-import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 
 public class CurrencyCommandSetup

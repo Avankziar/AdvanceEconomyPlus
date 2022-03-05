@@ -19,20 +19,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.ActionLogger;
+import main.java.me.avankziar.aep.general.objects.TrendLogger;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.Language.ISO639_2B;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.InventoryHandlerType;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.OrderType;
-import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import main.java.me.avankziar.aep.spigot.object.subs.ActionFilterSettings;
 import main.java.me.avankziar.aep.spigot.object.subs.TrendFilterSettings;
+import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
-import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
 
@@ -1228,7 +1229,7 @@ public class LoggerSettingsHandler
 					}
 				}
 				query = query.substring(0, query.length()-5);
-				if(plugin.getIFHApi().getEntity(player.getUniqueId(), EconomyEntity.EconomyType.PLAYER) == null)
+				if(plugin.getIFHApi().getEntity(player.getUniqueId(), EconomyType.PLAYER) == null)
 				{
 					player.sendMessage(ChatApi.tl(
 							plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
