@@ -18,7 +18,7 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger.Type;
 
-public interface TableIV
+public interface Table04
 {
 	default boolean createIV(AdvancedEconomyPlus plugin, Object object) 
 	{

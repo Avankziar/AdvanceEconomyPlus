@@ -6,41 +6,44 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.UUID;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
+import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 
-public interface OLDTableI
-{	
-	default boolean createIOLD(AdvancedEconomyPlus plugin, Object object) 
+public interface Table05
+{
+	default boolean createV(AdvancedEconomyPlus plugin, Object object) 
 	{
-		if(!(object instanceof OLD_AEPUser))
+		if(!(object instanceof StandingOrder))
 		{
 			return false;
 		}
-		OLD_AEPUser ep = (OLD_AEPUser) object;
+		StandingOrder ep = (StandingOrder) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) {
 			try 
 			{
-				String sql = "INSERT INTO `" + MysqlHandler.Type.OLDPLAYER.getValue()
-						+ "`(`player_uuid`, `player_name`, `balance`, `bankaccountlist`,"
-						+ " `moneyplayerflow`, `moneybankflow`, `generalmessage`, `pendinginvite`, `frozen`) " 
-						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String sql = "INSERT INTO `" + MysqlHandler.Type.STANDINGORDER.getValue() 
+						+ "`(`standing_order_name`, `owner_uuid`, `from_account`, `to_account`,"
+						+ " `amount`, `amount_paid_so_far`, `amount_paid_to_tax`,"
+						+ " `start_time`, `repeating_time`, `last_time`, `cancelled`, `paused`) " 
+						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
-		        preparedStatement.setString(1, ep.getUUID());
-		        preparedStatement.setString(2, ep.getName());
-		        preparedStatement.setDouble(3, ep.getBalance());
-		        preparedStatement.setString(4, String.join(";", ep.getBankAccountNumber()));
-		        preparedStatement.setBoolean(5, ep.isMoneyBankFlow());
-		        preparedStatement.setBoolean(6, ep.isMoneyPlayerFlow());
-		        preparedStatement.setBoolean(7, ep.isGeneralMessage());
-		        preparedStatement.setString(8, ep.getPendingInvite());
-		        preparedStatement.setBoolean(9, ep.isFrozen());
+				preparedStatement.setString(1, ep.getName());
+		        preparedStatement.setString(2, ep.getOwner().toString());
+		        preparedStatement.setInt(3, ep.getAccountFrom());
+		        preparedStatement.setInt(4, ep.getAccountTo());
+		        preparedStatement.setDouble(5, ep.getAmount());
+		        preparedStatement.setDouble(6, ep.getAmountPaidSoFar());
+		        preparedStatement.setDouble(7, ep.getAmountPaidToTax());
+		        preparedStatement.setLong(8, ep.getStartTime());
+		        preparedStatement.setLong(9, ep.getRepeatingTime());
+		        preparedStatement.setLong(10, ep.getLastTime());
+		        preparedStatement.setBoolean(11, ep.isCancelled());
+		        preparedStatement.setBoolean(12, ep.isPaused());
 		        
 		        preparedStatement.executeUpdate();
 		        return true;
@@ -65,9 +68,9 @@ public interface OLDTableI
 		return false;
 	}
 	
-	default boolean updateDataIOLD(AdvancedEconomyPlus plugin, Object object, String whereColumn, Object... whereObject) 
+	default boolean updateDataV(AdvancedEconomyPlus plugin, Object object, String whereColumn, Object... whereObject) 
 	{
-		if(!(object instanceof OLD_AEPUser))
+		if(!(object instanceof StandingOrder))
 		{
 			return false;
 		}
@@ -75,29 +78,32 @@ public interface OLDTableI
 		{
 			return false;
 		}
-		OLD_AEPUser ep = (OLD_AEPUser) object;
+		StandingOrder ep = (StandingOrder) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
 			{
-				String data = "UPDATE `" + MysqlHandler.Type.OLDPLAYER.getValue()
-						+ "` SET `player_uuid` = ?, `player_name` = ?, `balance` = ?,"
-						+ " `bankaccountlist` = ?, `moneyplayerflow` = ?, `moneybankflow` = ?, `generalmessage` = ?,"
-						+ " `pendinginvite` = ?, `frozen` = ?" 
+				String data = "UPDATE `" + MysqlHandler.Type.STANDINGORDER.getValue() 
+						+ "` SET `standing_order_name` = ?, `owner_uuid` = ?, `from_account` = ?, `to_account` = ?,"
+						+ " `amount` = ?, `amount_paid_so_far` = ?, `amount_paid_to_tax` = ?," 
+						+ " `start_time` = ?, `repeating_time` = ?, `last_time` = ?, `cancelled` = ?, `paused` = ?" 
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
-				preparedStatement.setString(1, ep.getUUID());
-		        preparedStatement.setString(2, ep.getName());
-		        preparedStatement.setDouble(3, ep.getBalance());
-		        preparedStatement.setString(4, String.join(";", ep.getBankAccountNumber()));
-		        preparedStatement.setBoolean(5, ep.isMoneyPlayerFlow());
-		        preparedStatement.setBoolean(6, ep.isMoneyBankFlow());
-		        preparedStatement.setBoolean(7, ep.isGeneralMessage());
-		        preparedStatement.setString(8, ep.getPendingInvite());
-		        preparedStatement.setBoolean(9, ep.isFrozen());
-		        int i = 10;
+				preparedStatement.setString(1, ep.getName());
+		        preparedStatement.setString(2, ep.getOwner().toString());
+		        preparedStatement.setInt(3, ep.getAccountFrom());
+		        preparedStatement.setInt(4, ep.getAccountTo());
+		        preparedStatement.setDouble(5, ep.getAmount());
+		        preparedStatement.setDouble(6, ep.getAmountPaidSoFar());
+		        preparedStatement.setDouble(7, ep.getAmountPaidToTax());
+		        preparedStatement.setLong(8, ep.getStartTime());
+		        preparedStatement.setLong(9, ep.getRepeatingTime());
+		        preparedStatement.setLong(10, ep.getLastTime());
+		        preparedStatement.setBoolean(11, ep.isCancelled());
+		        preparedStatement.setBoolean(12, ep.isPaused());
+		        int i = 13;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -123,7 +129,7 @@ public interface OLDTableI
         return false;
 	}
 	
-	default Object getDataIOLD(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
+	default Object getDataV(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -132,7 +138,7 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue() 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue()  
 						+ "` WHERE "+whereColumn+" LIMIT 1";
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -145,22 +151,20 @@ public interface OLDTableI
 		        result = preparedStatement.executeQuery();
 		        while (result.next()) 
 		        {
-		        	String bankacc = result.getString("bankaccountlist");
-		        	List<String> lists = new ArrayList<>();
-		        	if(bankacc != null)
-		        	{
-		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
-		        	}
-		        	return new OLD_AEPUser(result.getInt("id"),
-		        			result.getString("player_uuid"),
-		        			result.getString("player_name"),
-		        			result.getDouble("balance"),
-		        			lists,
-		        			result.getBoolean("moneyplayerflow"),
-		        			result.getBoolean("moneybankflow"),
-		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"),
-		        			result.getBoolean("frozen"));
+		        	return new StandingOrder(
+		        			result.getInt("id"),
+		        			result.getString("standing_order_name"),
+		        			UUID.fromString(result.getString("owner_uuid")),
+		        			result.getInt("from_account"), 
+		        			result.getInt("to_account"),
+		        			result.getDouble("amount"), 
+		        			result.getDouble("amount_paid_so_far"),
+		        			result.getDouble("amount_paid_to_tax"),
+		        			result.getLong("start_time"), 
+		        			result.getLong("repeating_time"), 
+		        			result.getLong("last_time"), 
+		        			result.getBoolean("cancelled"), 
+		        			result.getBoolean("paused"));
 		        }
 		    } catch (SQLException e) 
 			{
@@ -186,7 +190,7 @@ public interface OLDTableI
 		return null;
 	}
 	
-	default ArrayList<OLD_AEPUser> getListIOLD(AdvancedEconomyPlus plugin, String orderByColumn,
+	default ArrayList<StandingOrder> getListV(AdvancedEconomyPlus plugin, String orderByColumn,
 			int start, int end, String whereColumn, Object...whereObject)
 	{
 		PreparedStatement preparedStatement = null;
@@ -196,7 +200,7 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue()
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue() 
 						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -206,25 +210,23 @@ public interface OLDTableI
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<OLD_AEPUser> list = new ArrayList<OLD_AEPUser>();
+		        ArrayList<StandingOrder> list = new ArrayList<StandingOrder>();
 		        while (result.next()) 
 		        {
-		        	String bankacc = result.getString("bankaccountlist");
-		        	List<String> lists = new ArrayList<>();
-		        	if(bankacc != null)
-		        	{
-		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
-		        	}
-		        	OLD_AEPUser ep = new OLD_AEPUser(result.getInt("id"),
-		        			result.getString("player_uuid"),
-		        			result.getString("player_name"),
-		        			result.getDouble("balance"),
-		        			lists,
-		        			result.getBoolean("moneyplayerflow"),
-		        			result.getBoolean("moneybankflow"),
-		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"),
-		        			result.getBoolean("frozen"));
+		        	StandingOrder ep = new StandingOrder(
+		        			result.getInt("id"),
+		        			result.getString("standing_order_name"),
+		        			UUID.fromString(result.getString("owner_uuid")),
+		        			result.getInt("from_account"), 
+		        			result.getInt("to_account"),
+		        			result.getDouble("amount"), 
+		        			result.getDouble("amount_paid_so_far"),
+		        			result.getDouble("amount_paid_to_tax"),
+		        			result.getLong("start_time"), 
+		        			result.getLong("repeating_time"), 
+		        			result.getLong("last_time"), 
+		        			result.getBoolean("cancelled"), 
+		        			result.getBoolean("paused"));
 		        	list.add(ep);
 		        }
 		        return list;
@@ -252,7 +254,7 @@ public interface OLDTableI
 		return null;
 	}
 	
-	default ArrayList<OLD_AEPUser> getTopIOLD(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
+	default ArrayList<StandingOrder> getTopV(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -261,30 +263,28 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue() 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue()  
 						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();
-		        ArrayList<OLD_AEPUser> list = new ArrayList<OLD_AEPUser>();
+		        ArrayList<StandingOrder> list = new ArrayList<StandingOrder>();
 		        while (result.next()) 
 		        {
-		        	String bankacc = result.getString("bankaccountlist");
-		        	List<String> lists = new ArrayList<>();
-		        	if(bankacc != null)
-		        	{
-		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
-		        	}
-		        	OLD_AEPUser ep = new OLD_AEPUser(result.getInt("id"),
-		        			result.getString("player_uuid"),
-		        			result.getString("player_name"),
-		        			result.getDouble("balance"),
-		        			lists,
-		        			result.getBoolean("moneyplayerflow"),
-		        			result.getBoolean("moneybankflow"),
-		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"),
-		        			result.getBoolean("frozen"));
+		        	StandingOrder ep = new StandingOrder(
+		        			result.getInt("id"),
+		        			result.getString("standing_order_name"),
+		        			UUID.fromString(result.getString("owner_uuid")),
+		        			result.getInt("from_account"), 
+		        			result.getInt("to_account"),
+		        			result.getDouble("amount"), 
+		        			result.getDouble("amount_paid_so_far"),
+		        			result.getDouble("amount_paid_to_tax"),
+		        			result.getLong("start_time"), 
+		        			result.getLong("repeating_time"), 
+		        			result.getLong("last_time"), 
+		        			result.getBoolean("cancelled"), 
+		        			result.getBoolean("paused"));
 		        	list.add(ep);
 		        }
 		        return list;
@@ -312,7 +312,7 @@ public interface OLDTableI
 		return null;
 	}
 	
-	default ArrayList<OLD_AEPUser> getAllListAtIOLD(AdvancedEconomyPlus plugin, String orderByColumn,
+	default ArrayList<StandingOrder> getAllListAtV(AdvancedEconomyPlus plugin, String orderByColumn,
 			String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
@@ -322,7 +322,7 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue()
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue() 
 						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -332,25 +332,23 @@ public interface OLDTableI
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<OLD_AEPUser> list = new ArrayList<OLD_AEPUser>();
+		        ArrayList<StandingOrder> list = new ArrayList<StandingOrder>();
 		        while (result.next()) 
 		        {
-		        	String bankacc = result.getString("bankaccountlist");
-		        	List<String> lists = new ArrayList<>();
-		        	if(bankacc != null)
-		        	{
-		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
-		        	}
-		        	OLD_AEPUser ep = new OLD_AEPUser(result.getInt("id"),
-		        			result.getString("player_uuid"),
-		        			result.getString("player_name"),
-		        			result.getDouble("balance"),
-		        			lists,
-		        			result.getBoolean("moneyplayerflow"),
-		        			result.getBoolean("moneybankflow"),
-		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"),
-		        			result.getBoolean("frozen"));
+		        	StandingOrder ep = new StandingOrder(
+		        			result.getInt("id"),
+		        			result.getString("standing_order_name"),
+		        			UUID.fromString(result.getString("owner_uuid")),
+		        			result.getInt("from_account"), 
+		        			result.getInt("to_account"),
+		        			result.getDouble("amount"), 
+		        			result.getDouble("amount_paid_so_far"),
+		        			result.getDouble("amount_paid_to_tax"),
+		        			result.getLong("start_time"), 
+		        			result.getLong("repeating_time"), 
+		        			result.getLong("last_time"), 
+		        			result.getBoolean("cancelled"), 
+		        			result.getBoolean("paused"));
 		        	list.add(ep);
 		        }
 		        return list;

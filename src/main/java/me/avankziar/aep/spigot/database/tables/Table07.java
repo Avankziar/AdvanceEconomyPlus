@@ -13,10 +13,8 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.InventoryHandlerType;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.OrderType;
-import main.java.me.avankziar.aep.spigot.object.subs.ActionFilterSettings;
-import main.java.me.avankziar.aep.spigot.object.subs.TrendFilterSettings;
 
-public interface TableVII
+public interface Table07
 {
 	default boolean createVII(AdvancedEconomyPlus plugin, Object object) 
 	{
@@ -31,16 +29,15 @@ public interface TableVII
 			try 
 			{
 				String sql = "INSERT INTO `" + MysqlHandler.Type.LOGGERSETTINGSPRESET.getValue() 
-						+ "`(`slotid`, `player_uuid`, `banknumber`,"
+						+ "`(`slotid`, `player_uuid`, `account_id`,"
 						+ " `isaction`, `inventoryhandlertype`, `isdescending`,"
 						+ " `ordertype`, `minimum`, `maximum`," 
-						+ " `from_value`, `to_value`, `orderer`,"
-						+ " `comment`, `firststand`, `laststand`)"
+						+ " `category`, `orderer`, `comment`, `firststand`, `laststand`)"
 						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.setInt(1, ep.getSlotid());
-		        preparedStatement.setString(2, ep.getUuid().toString());
-		        preparedStatement.setString(3, ep.getBankNumber());
+		        preparedStatement.setString(2, ep.getOwner().toString());
+		        preparedStatement.setInt(3, ep.getAccountID());
 		        preparedStatement.setBoolean(4, ep.isAction());
 		        preparedStatement.setString(5, ep.getInventoryHandlerType().toString());
 		        preparedStatement.setBoolean(6, ep.isDescending());
@@ -51,16 +48,15 @@ public interface TableVII
 		        if(max == null) {max = 0.0;}
 		        preparedStatement.setDouble(8, min);
 		        preparedStatement.setDouble(9, max);
-		        preparedStatement.setString(10, ep.getActionFilter().getFrom());
-		        preparedStatement.setString(11, ep.getActionFilter().getTo());
-		        preparedStatement.setString(12, ep.getActionFilter().getOrderer());
-		        preparedStatement.setString(13, ep.getActionFilter().getComment());
+		        preparedStatement.setString(10, ep.getActionFilter().getCategory());
+		        preparedStatement.setString(11, ep.getActionFilter().getOrderer());
+		        preparedStatement.setString(12, ep.getActionFilter().getComment());
 		        Double firststand = ep.getTrendfFilter().getFirstStand();
 		        if(firststand == null) {firststand = 0.0;}
 		        Double laststand = ep.getTrendfFilter().getLastStand();
 		        if(laststand == null) {laststand = 0.0;}
-		        preparedStatement.setDouble(14, firststand);
-		        preparedStatement.setDouble(15, laststand);
+		        preparedStatement.setDouble(13, firststand);
+		        preparedStatement.setDouble(14, laststand);
 		        
 		        preparedStatement.executeUpdate();
 		        return true;
@@ -103,29 +99,36 @@ public interface TableVII
 			try 
 			{
 				String data = "UPDATE `" + MysqlHandler.Type.LOGGERSETTINGSPRESET.getValue()
-						+ "` SET `slotid` = ?, `player_uuid` = ?, `banknumber` = ?,"
+						+ "` SET `slotid` = ?, `player_uuid` = ?, `account_id` = ?,"
 						+ " `isaction` = ?, `inventoryhandlertype` = ?, `isdescending` = ?,"
 						+ " `ordertype` = ?, `minimum` = ?, `maximum` = ?," 
-						+ " `from_value` = ?, `to_value` = ?, `orderer` = ?,"
+						+ " `category` = ?, `orderer` = ?,"
 						+ " `comment` = ?, `firststand` = ?, `laststand` = ? "
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
 				preparedStatement.setInt(1, ep.getSlotid());
-		        preparedStatement.setString(2, ep.getUuid().toString());
-		        preparedStatement.setString(3, ep.getBankNumber());
+		        preparedStatement.setString(2, ep.getOwner().toString());
+		        preparedStatement.setInt(3, ep.getAccountID());
 		        preparedStatement.setBoolean(4, ep.isAction());
 		        preparedStatement.setString(5, ep.getInventoryHandlerType().toString());
 		        preparedStatement.setBoolean(6, ep.isDescending());
 		        preparedStatement.setString(7, ep.getOrderType().toString());
-		        preparedStatement.setDouble(8, ep.getMin());
-		        preparedStatement.setDouble(9, ep.getMax());
-		        preparedStatement.setString(10, ep.getActionFilter().getFrom());
-		        preparedStatement.setString(11, ep.getActionFilter().getTo());
-		        preparedStatement.setString(12, ep.getActionFilter().getOrderer());
-		        preparedStatement.setString(13, ep.getActionFilter().getComment());
-		        preparedStatement.setDouble(14, ep.getTrendfFilter().getFirstStand());
-		        preparedStatement.setDouble(15, ep.getTrendfFilter().getLastStand());
-		        int i = 16;
+		        Double min = ep.getMin();
+		        if(min == null) {min = 0.0;}
+		        Double max = ep.getMax();
+		        if(max == null) {max = 0.0;}
+		        preparedStatement.setDouble(8, min);
+		        preparedStatement.setDouble(9, max);
+		        preparedStatement.setString(10, ep.getActionFilter().getCategory());
+		        preparedStatement.setString(11, ep.getActionFilter().getOrderer());
+		        preparedStatement.setString(12, ep.getActionFilter().getComment());
+		        Double firststand = ep.getTrendfFilter().getFirstStand();
+		        if(firststand == null) {firststand = 0.0;}
+		        Double laststand = ep.getTrendfFilter().getLastStand();
+		        if(laststand == null) {laststand = 0.0;}
+		        preparedStatement.setDouble(13, firststand);
+		        preparedStatement.setDouble(14, laststand);
+		        int i = 15;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -174,42 +177,20 @@ public interface TableVII
 		        while (result.next()) 
 		        {
 		        	LoggerSettings ep = new LoggerSettings(
+		        			result.getInt("slotid"),
 		        			UUID.fromString(result.getString("player_uuid")),
-		        			result.getString("banknumber"),
-		        			0);
-		        	ep.setAction(result.getBoolean("isaction"));
-		        	ActionFilterSettings afs = new ActionFilterSettings();
-		        	afs.setComment(result.getString("comment"));
-		        	afs.setFrom(result.getString("from_value"));
-		        	afs.setOrderer(result.getString("orderer"));
-		        	afs.setTo(result.getString("to_value"));
-		        	ep.setActionFilter(afs);
-		        	ep.setDescending(result.getBoolean("isdescending"));
-		        	ep.setInventoryHandlerType(InventoryHandlerType.valueOf(result.getString("inventoryhandlertype")));
-		        	Double min = result.getDouble("minimum");
-		        	if(min != 0.0)
-		        	{
-		        		ep.setMin(min);
-		        	}
-		        	Double max = result.getDouble("maximum");
-		        	if(max != 0.0)
-		        	{
-		        		ep.setMax(max);
-		        	}
-		        	ep.setOrderType(OrderType.valueOf(result.getString("ordertype")));
-		        	ep.setSlotid(result.getInt("slotid"));
-		        	TrendFilterSettings tfs = new TrendFilterSettings();
-		        	Double firstStand = result.getDouble("firststand");
-		        	if(firstStand != 0.0)
-		        	{
-		        		tfs.setFirstStand(firstStand);
-		        	}
-		        	Double lastStand = result.getDouble("laststand");
-		        	if(lastStand != 0.0)
-		        	{
-		        		tfs.setLastStand(lastStand);
-		        	}
-		        	ep.setTrendfFilter(tfs);
+		        			result.getInt("account_id"),
+		        			result.getBoolean("isaction"),
+		        			InventoryHandlerType.valueOf(result.getString("inventoryhandlertype")),
+		        			result.getBoolean("isdescending"),
+		        			OrderType.valueOf(result.getString("ordertype")),
+		        			Double.valueOf(result.getDouble("minimum")),
+		        			Double.valueOf(result.getDouble("maximum")),
+		        			result.getString("category"),
+		        			result.getString("orderer"),
+		        			result.getString("comment"),
+		        			result.getDouble("firststand"),
+		        			result.getDouble("laststand"));
 		        	return ep;
 		        }
 		    } catch (SQLException e) 
@@ -260,42 +241,20 @@ public interface TableVII
 		        while (result.next()) 
 		        {
 		        	LoggerSettings ep = new LoggerSettings(
+		        			result.getInt("slotid"),
 		        			UUID.fromString(result.getString("player_uuid")),
-		        			result.getString("banknumber"),
-		        			0);
-		        	ep.setAction(result.getBoolean("isaction"));
-		        	ActionFilterSettings afs = new ActionFilterSettings();
-		        	afs.setComment(result.getString("comment"));
-		        	afs.setFrom(result.getString("from_value"));
-		        	afs.setOrderer(result.getString("orderer"));
-		        	afs.setTo(result.getString("to_value"));
-		        	ep.setActionFilter(afs);
-		        	ep.setDescending(result.getBoolean("isdescending"));
-		        	ep.setInventoryHandlerType(InventoryHandlerType.valueOf(result.getString("inventoryhandlertype")));
-		        	Double min = result.getDouble("minimum");
-		        	if(min != 0.0)
-		        	{
-		        		ep.setMin(min);
-		        	}
-		        	Double max = result.getDouble("maximum");
-		        	if(max != 0.0)
-		        	{
-		        		ep.setMax(max);
-		        	}
-		        	ep.setOrderType(OrderType.valueOf(result.getString("ordertype")));
-		        	ep.setSlotid(result.getInt("slotid"));
-		        	TrendFilterSettings tfs = new TrendFilterSettings();
-		        	Double firstStand = result.getDouble("firststand");
-		        	if(firstStand != 0.0)
-		        	{
-		        		tfs.setFirstStand(firstStand);
-		        	}
-		        	Double lastStand = result.getDouble("laststand");
-		        	if(lastStand != 0.0)
-		        	{
-		        		tfs.setLastStand(lastStand);
-		        	}
-		        	ep.setTrendfFilter(tfs);
+		        			result.getInt("account_id"),
+		        			result.getBoolean("isaction"),
+		        			InventoryHandlerType.valueOf(result.getString("inventoryhandlertype")),
+		        			result.getBoolean("isdescending"),
+		        			OrderType.valueOf(result.getString("ordertype")),
+		        			Double.valueOf(result.getDouble("minimum")),
+		        			Double.valueOf(result.getDouble("maximum")),
+		        			result.getString("category"),
+		        			result.getString("orderer"),
+		        			result.getString("comment"),
+		        			result.getDouble("firststand"),
+		        			result.getDouble("laststand"));
 		        	list.add(ep);
 		        }
 		        return list;
@@ -341,42 +300,20 @@ public interface TableVII
 		        while (result.next()) 
 		        {
 		        	LoggerSettings ep = new LoggerSettings(
+		        			result.getInt("slotid"),
 		        			UUID.fromString(result.getString("player_uuid")),
-		        			result.getString("banknumber"),
-		        			0);
-		        	ep.setAction(result.getBoolean("isaction"));
-		        	ActionFilterSettings afs = new ActionFilterSettings();
-		        	afs.setComment(result.getString("comment"));
-		        	afs.setFrom(result.getString("from_value"));
-		        	afs.setOrderer(result.getString("orderer"));
-		        	afs.setTo(result.getString("to_value"));
-		        	ep.setActionFilter(afs);
-		        	ep.setDescending(result.getBoolean("isdescending"));
-		        	ep.setInventoryHandlerType(InventoryHandlerType.valueOf(result.getString("inventoryhandlertype")));
-		        	Double min = result.getDouble("minimum");
-		        	if(min != 0.0)
-		        	{
-		        		ep.setMin(min);
-		        	}
-		        	Double max = result.getDouble("maximum");
-		        	if(max != 0.0)
-		        	{
-		        		ep.setMax(max);
-		        	}
-		        	ep.setOrderType(OrderType.valueOf(result.getString("ordertype")));
-		        	TrendFilterSettings tfs = new TrendFilterSettings();
-		        	ep.setSlotid(result.getInt("slotid"));
-		        	Double firstStand = result.getDouble("firststand");
-		        	if(firstStand != 0.0)
-		        	{
-		        		tfs.setFirstStand(firstStand);
-		        	}
-		        	Double lastStand = result.getDouble("laststand");
-		        	if(lastStand != 0.0)
-		        	{
-		        		tfs.setLastStand(lastStand);
-		        	}
-		        	ep.setTrendfFilter(tfs);
+		        			result.getInt("account_id"),
+		        			result.getBoolean("isaction"),
+		        			InventoryHandlerType.valueOf(result.getString("inventoryhandlertype")),
+		        			result.getBoolean("isdescending"),
+		        			OrderType.valueOf(result.getString("ordertype")),
+		        			Double.valueOf(result.getDouble("minimum")),
+		        			Double.valueOf(result.getDouble("maximum")),
+		        			result.getString("category"),
+		        			result.getString("orderer"),
+		        			result.getString("comment"),
+		        			result.getDouble("firststand"),
+		        			result.getDouble("laststand"));
 		        	list.add(ep);
 		        }
 		        return list;
@@ -428,42 +365,20 @@ public interface TableVII
 		        while (result.next()) 
 		        {
 		        	LoggerSettings ep = new LoggerSettings(
+		        			result.getInt("slotid"),
 		        			UUID.fromString(result.getString("player_uuid")),
-		        			result.getString("banknumber"),
-		        			0);
-		        	ep.setAction(result.getBoolean("isaction"));
-		        	ActionFilterSettings afs = new ActionFilterSettings();
-		        	afs.setComment(result.getString("comment"));
-		        	afs.setFrom(result.getString("from_value"));
-		        	afs.setOrderer(result.getString("orderer"));
-		        	afs.setTo(result.getString("to_value"));
-		        	ep.setActionFilter(afs);
-		        	ep.setDescending(result.getBoolean("isdescending"));
-		        	ep.setInventoryHandlerType(InventoryHandlerType.valueOf(result.getString("inventoryhandlertype")));
-		        	Double min = result.getDouble("minimum");
-		        	if(min != 0.0)
-		        	{
-		        		ep.setMin(min);
-		        	}
-		        	Double max = result.getDouble("maximum");
-		        	if(max != 0.0)
-		        	{
-		        		ep.setMax(max);
-		        	}
-		        	ep.setOrderType(OrderType.valueOf(result.getString("ordertype")));
-		        	ep.setSlotid(result.getInt("slotid"));
-		        	TrendFilterSettings tfs = new TrendFilterSettings();
-		        	Double firstStand = result.getDouble("firststand");
-		        	if(firstStand != 0.0)
-		        	{
-		        		tfs.setFirstStand(firstStand);
-		        	}
-		        	Double lastStand = result.getDouble("laststand");
-		        	if(lastStand != 0.0)
-		        	{
-		        		tfs.setLastStand(lastStand);
-		        	}
-		        	ep.setTrendfFilter(tfs);
+		        			result.getInt("account_id"),
+		        			result.getBoolean("isaction"),
+		        			InventoryHandlerType.valueOf(result.getString("inventoryhandlertype")),
+		        			result.getBoolean("isdescending"),
+		        			OrderType.valueOf(result.getString("ordertype")),
+		        			Double.valueOf(result.getDouble("minimum")),
+		        			Double.valueOf(result.getDouble("maximum")),
+		        			result.getString("category"),
+		        			result.getString("orderer"),
+		        			result.getString("comment"),
+		        			result.getDouble("firststand"),
+		        			result.getDouble("laststand"));
 		        	list.add(ep);
 		        }
 		        return list;

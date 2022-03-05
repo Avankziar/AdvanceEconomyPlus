@@ -1,4 +1,4 @@
-package main.java.me.avankziar.aep.spigot.object.ne_w;
+package main.java.me.avankziar.aep.spigot.object;
 
 import java.util.UUID;
 

@@ -22,7 +22,7 @@ import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 
-public interface TableIII
+public interface Table03
 {	
 	default boolean createIII(AdvancedEconomyPlus plugin, Object object) 
 	{
@@ -117,7 +117,7 @@ public interface TableIII
 		        preparedStatement.setDouble(10, el.getAmountToTax());
 		        preparedStatement.setString(11, el.getCategory());
 		        preparedStatement.setString(12, el.getComment());
-		        int i = 11;
+		        int i = 13;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -170,7 +170,7 @@ public interface TableIII
 		        			result.getLong("unixtime"),
 		        			result.getInt("from_account_id"), 
 		        			result.getInt("to_account_id"),
-		        			result.getInt("fax_account_id"),
+		        			result.getInt("tax_account_id"),
 		        			OrdererType.valueOf(result.getString("orderer_type")),
 		        			UUID.fromString(result.getString("orderer_uuid")),
 		        			result.getString("orderer_plugin"),
@@ -232,7 +232,7 @@ public interface TableIII
 		        			result.getLong("unixtime"),
 		        			result.getInt("from_account_id"), 
 		        			result.getInt("to_account_id"),
-		        			result.getInt("fax_account_id"),
+		        			result.getInt("tax_account_id"),
 		        			OrdererType.valueOf(result.getString("orderer_type")),
 		        			UUID.fromString(result.getString("orderer_uuid")),
 		        			result.getString("orderer_plugin"),
@@ -290,7 +290,7 @@ public interface TableIII
 		        			result.getLong("unixtime"),
 		        			result.getInt("from_account_id"), 
 		        			result.getInt("to_account_id"),
-		        			result.getInt("fax_account_id"),
+		        			result.getInt("tax_account_id"),
 		        			OrdererType.valueOf(result.getString("orderer_type")),
 		        			UUID.fromString(result.getString("orderer_uuid")),
 		        			result.getString("orderer_plugin"),
@@ -355,7 +355,7 @@ public interface TableIII
 		        			result.getLong("unixtime"),
 		        			result.getInt("from_account_id"), 
 		        			result.getInt("to_account_id"),
-		        			result.getInt("fax_account_id"),
+		        			result.getInt("tax_account_id"),
 		        			OrdererType.valueOf(result.getString("orderer_type")),
 		        			UUID.fromString(result.getString("orderer_uuid")),
 		        			result.getString("orderer_plugin"),
@@ -423,7 +423,7 @@ public interface TableIII
 			        			result.getLong("unixtime"),
 			        			result.getInt("from_account_id"), 
 			        			result.getInt("to_account_id"),
-			        			result.getInt("fax_account_id"),
+			        			result.getInt("tax_account_id"),
 			        			OrdererType.valueOf(result.getString("orderer_type")),
 			        			UUID.fromString(result.getString("orderer_uuid")),
 			        			result.getString("orderer_plugin"),

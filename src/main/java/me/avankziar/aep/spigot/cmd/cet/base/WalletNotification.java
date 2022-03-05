@@ -17,7 +17,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 
 public class WalletNotification extends ArgumentModule implements CommandExecutor
 {

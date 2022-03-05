@@ -28,10 +28,10 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.listener.GuiPayListener;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.AccountManagement;
 import main.java.me.avankziar.aep.spigot.object.TaxationCase;
 import main.java.me.avankziar.aep.spigot.object.TaxationSet;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
 import main.java.me.avankziar.aep.spigot.object.subs.GuiPay;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
@@ -357,6 +357,6 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		{
 			player.sendMessage(ChatApi.tl(s));
 		}
-		//ADDME Other Owner toAccount | Sound? | Moneyflow beachten
+		Pay.sendToOther(plugin, to, list);
 	}
 }

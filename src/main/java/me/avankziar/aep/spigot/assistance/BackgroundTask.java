@@ -1,26 +1,31 @@
 package main.java.me.avankziar.aep.spigot.assistance;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.object.StandingOrder;
 import main.java.me.avankziar.aep.spigot.object.TaxationCase;
 import main.java.me.avankziar.aep.spigot.object.TaxationSet;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
 import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
 import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 
 public class BackgroundTask
 {
@@ -46,13 +51,261 @@ public class BackgroundTask
 		{
 			ConfigHandler.debug(dbm1, "StandingOrder Task Timer activate...");
 			runStandingOrderPayment();
+			runStandingOrderCleanUp();
 		}
 		int deletedays = plugin.getYamlHandler().getConfig().getInt("Do.DeleteAccountsDaysAfterOverdue", 30);
 		if(deletedays > 0)
 		{
 			runPlayerDataDelete(deletedays);
 		}
+		runAccountManagementFee();
+		runAccountInterest();
+		runLogCleanTask();
 		return true;
+	}
+	
+	public void runLogCleanTask()
+	{
+		int deletedays = plugin.getYamlHandler().getConfig().getInt("Do.DeleteLogsAfterDays", 365);
+		if(deletedays < 0)
+		{
+			return;
+		}
+		long time = System.currentTimeMillis()-deletedays*1000*60*60*24;
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				final int acount = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACTION, "`unixtime` < ?", time);
+				final int tcount = plugin.getMysqlHandler().getCount(MysqlHandler.Type.TREND, "`dates` < ?", time);
+				plugin.getMysqlHandler().deleteData(MysqlHandler.Type.ACTION, "`unixtime` < ?", time);
+				plugin.getMysqlHandler().deleteData(MysqlHandler.Type.TREND, "`dates` < ?", time);
+				AdvancedEconomyPlus.log.info("==========AEP Database DeleteTask==========");
+				AdvancedEconomyPlus.log.info("Deleted Actionlog: "+acount);
+				AdvancedEconomyPlus.log.info("Deleted Trendlog: "+tcount);
+				AdvancedEconomyPlus.log.info("===========================================");
+			}
+		}.runTaskAsynchronously(plugin);
+	}
+	
+	//Better reading quality than compact code
+	public void runAccountManagementFee()
+	{
+		String l = plugin.getYamlHandler().getConfig().getString("Do.Bankaccount.TimeToWithdrawAccountManagementFees", "7-11:00");
+		final LocalDateTime ldt = LocalDateTime.parse(l, DateTimeFormatter.ofPattern("e-HH:mm"));
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				LocalDateTime lt = LocalDateTime.now();
+				if(lt.getDayOfWeek().getValue() != ldt.getDayOfWeek().getValue() 
+						&& lt.getHour() != ldt.getHour() && lt.getMinute() != ldt.getMinute())
+				{
+					return;
+				}
+				String categoryI = plugin.getYamlHandler().getLang().getString("Bankaccount.AccountManagementFees.CategoryI");
+				String commentI = plugin.getYamlHandler().getLang().getString("Bankaccount.AccountManagementFees.CommentI");
+				for(String eca : plugin.getYamlHandler().getConfig().getStringList("Do.Bankaccount.AccountManagementFeesAsLumpSum"))
+				{
+					String[] sp = eca.split(";");
+					if(sp.length != 3)
+					{
+						continue;
+					}
+					if(!MatchApi.isDouble(sp[1]))
+					{
+						continue;
+					}	
+					EconomyCurrency ec = plugin.getIFHApi().getCurrency(sp[0]);
+					double amount = Double.parseDouble(sp[1]);
+					if(amount < 0.0)
+					{
+						continue;
+					}
+					AccountCategory acc;
+					try
+					{
+						acc = AccountCategory.valueOf(sp[2]);
+					} catch(Exception e)
+					{
+						continue;
+					}
+					new BukkitRunnable()
+					{
+						int start = 0;
+						int quantity = 10;
+						@Override
+						public void run()
+						{
+							ArrayList<Account> aclist = ConvertHandler.convertListII(
+									plugin.getMysqlHandler().getList(
+											MysqlHandler.Type.ACCOUNT, "`id` ASC", start, quantity, 
+											"`account_type` = ? AND `account_category` = ? AND `account_currency` = ?",
+											AccountType.BANK.toString(), acc.toString(), ec.getUniqueName()));
+							if(aclist.isEmpty())
+							{
+								cancel();
+								return;
+							}
+							for(Account ac : aclist)
+							{
+								Account tax = plugin.getIFHApi().getDefaultAccount(ac.getOwner().getUUID(), AccountCategory.TAX, ec);
+								if(tax == null)
+								{
+									plugin.getIFHApi().withdraw(
+											ac, amount,
+											OrdererType.PLAYER, ac.getOwner().getUUID().toString(), categoryI, commentI);
+								} else if(tax != null)
+								{
+									plugin.getIFHApi().transaction(
+											ac, tax, amount,
+											OrdererType.PLAYER, ac.getOwner().getUUID().toString(), categoryI, commentI);
+								}
+							}
+							start += 10;
+						}
+					}.runTaskTimerAsynchronously(plugin, 20, 20*2);
+				}
+				String categoryII = plugin.getYamlHandler().getLang().getString("Bankaccount.AccountManagementFees.CategoryII");
+				String commentII = plugin.getYamlHandler().getLang().getString("Bankaccount.AccountManagementFees.CommentII");
+				for(String eca : plugin.getYamlHandler().getConfig().getStringList("Do.Bankaccount.AccountManagementFeesAsPercent"))
+				{
+					String[] sp = eca.split(";");
+					if(sp.length != 3)
+					{
+						continue;
+					}
+					if(!MatchApi.isDouble(sp[1]))
+					{
+						continue;
+					}	
+					EconomyCurrency ec = plugin.getIFHApi().getCurrency(sp[0]);
+					double amount = Double.parseDouble(sp[1])/100.0;
+					if(amount < 0.0 || amount > 100.0)
+					{
+						continue;
+					}
+					AccountCategory acc;
+					try
+					{
+						acc = AccountCategory.valueOf(sp[2]);
+					} catch(Exception e)
+					{
+						continue;
+					}
+					new BukkitRunnable()
+					{
+						int start = 0;
+						int quantity = 10;
+						@Override
+						public void run()
+						{
+							ArrayList<Account> aclist = ConvertHandler.convertListII(
+									plugin.getMysqlHandler().getList(
+											MysqlHandler.Type.ACCOUNT, "`id` ASC", start, quantity, 
+											"`account_type` = ? AND `account_category` = ? AND `account_currency` = ?",
+											AccountType.BANK.toString(), acc.toString(), ec.getUniqueName()));
+							if(aclist.isEmpty())
+							{
+								cancel();
+								return;
+							}
+							for(Account ac : aclist)
+							{
+								Account tax = plugin.getIFHApi().getDefaultAccount(ac.getOwner().getUUID(), AccountCategory.TAX, ec);
+								if(tax == null)
+								{
+									plugin.getIFHApi().withdraw(
+											ac, ac.getBalance()*amount,
+											OrdererType.PLAYER, ac.getOwner().getUUID().toString(), categoryII, commentII);
+								} else if(tax != null)
+								{
+									plugin.getIFHApi().transaction(
+											ac, tax, ac.getBalance()*amount,
+											OrdererType.PLAYER, ac.getOwner().getUUID().toString(), categoryII, commentII);
+								}
+							}
+							start += 10;
+						}
+					}.runTaskTimerAsynchronously(plugin, 20, 20*2);
+				}
+			}
+		}.runTaskTimerAsynchronously(plugin, 0, 20*60);
+	}
+	
+	public void runAccountInterest()
+	{
+		String l = plugin.getYamlHandler().getConfig().getString("Do.Bankaccount.TimeToDepositInterest", "7-11:00");
+		final LocalDateTime ldt = LocalDateTime.parse(l, DateTimeFormatter.ofPattern("e-HH:mm"));
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				LocalDateTime lt = LocalDateTime.now();
+				if(lt.getDayOfWeek().getValue() != ldt.getDayOfWeek().getValue() 
+						&& lt.getHour() != ldt.getHour() && lt.getMinute() != ldt.getMinute())
+				{
+					return;
+				}
+				String categoryI = plugin.getYamlHandler().getLang().getString("Bankaccount.AccountManagementFees.CategoryI");
+				String commentI = plugin.getYamlHandler().getLang().getString("Bankaccount.AccountManagementFees.CommentI");
+				for(String eca : plugin.getYamlHandler().getConfig().getStringList("Do.Bankaccount.InterestAsPercent"))
+				{
+					String[] sp = eca.split(";");
+					if(sp.length != 3)
+					{
+						continue;
+					}
+					if(!MatchApi.isDouble(sp[1]))
+					{
+						continue;
+					}	
+					EconomyCurrency ec = plugin.getIFHApi().getCurrency(sp[0]);
+					double amount = Double.parseDouble(sp[1])/100.0;
+					if(amount < 0.0)
+					{
+						continue;
+					}
+					AccountCategory acc;
+					try
+					{
+						acc = AccountCategory.valueOf(sp[2]);
+					} catch(Exception e)
+					{
+						continue;
+					}
+					new BukkitRunnable()
+					{
+						int start = 0;
+						int quantity = 10;
+						@Override
+						public void run()
+						{
+							ArrayList<Account> aclist = ConvertHandler.convertListII(
+									plugin.getMysqlHandler().getList(
+											MysqlHandler.Type.ACCOUNT, "`id` ASC", start, quantity, 
+											"`account_type` = ? AND `account_category` = ? AND `account_currency` = ?",
+											AccountType.BANK.toString(), acc.toString(), ec.getUniqueName()));
+							if(aclist.isEmpty())
+							{
+								cancel();
+								return;
+							}
+							for(Account ac : aclist)
+							{
+								plugin.getIFHApi().deposit(
+										ac, ac.getBalance()*amount,
+										OrdererType.PLAYER, ac.getOwner().getUUID().toString(), categoryI, commentI);
+							}
+							start += 10;
+						}
+					}.runTaskTimerAsynchronously(plugin, 20, 20*2);
+				}
+			}
+		}.runTaskTimerAsynchronously(plugin, 0, 20*60);
 	}
 	
 	public void runPlayerDataDelete(int deletedays)
@@ -71,6 +324,10 @@ public class BackgroundTask
 				} catch (IOException e)
 				{
 					e.printStackTrace();
+					return;
+				}
+				if(user.isEmpty())
+				{
 					return;
 				}
 				int uCount = 0;
@@ -339,5 +596,33 @@ public class BackgroundTask
 				ConfigHandler.debug(dbm3, "> LOOP-END");
 			}
 		}.runTaskTimerAsynchronously(plugin, 5L, 20L*repeat);
+	}
+	
+	public void runStandingOrderCleanUp()
+	{
+		long deleteafter = System.currentTimeMillis()
+				-plugin.getYamlHandler().getConfig().getInt("StandingOrder.DeleteAfterIsCancelledOrPausedInDays", 120)*1000*60*60*24;
+		if(deleteafter < 0)
+		{
+			return;
+		}
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				final int count = plugin.getMysqlHandler().getCount(MysqlHandler.Type.STANDINGORDER, 
+						"(`cancelled` = ? OR `paused` = ?) AND `last_time` < ", true, true, deleteafter);
+				if(count <= 0)
+				{
+					return;
+				}
+				plugin.getMysqlHandler().deleteData(MysqlHandler.Type.STANDINGORDER, 
+						"(`cancelled` = ? OR `paused` = ?) AND `last_time` < ", true, true, deleteafter);
+				AdvancedEconomyPlus.log.info("==========AEP Database DeleteTask==========");
+				AdvancedEconomyPlus.log.info("Deleted StandingOrder: "+count);
+				AdvancedEconomyPlus.log.info("===========================================");				
+			}
+		}.runTaskAsynchronously(plugin);
 	}
 }

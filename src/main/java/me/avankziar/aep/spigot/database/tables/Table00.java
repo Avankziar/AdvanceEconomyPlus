@@ -6,40 +6,34 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.StandingOrder;
+import main.java.me.avankziar.aep.spigot.object.EntityData;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 
-public interface TableV
-{
-	default boolean createV(AdvancedEconomyPlus plugin, Object object) 
+public interface Table00
+{	
+	default boolean create0(AdvancedEconomyPlus plugin, Object object) 
 	{
-		if(!(object instanceof StandingOrder))
+		if(!(object instanceof EntityData))
 		{
 			return false;
 		}
-		StandingOrder ep = (StandingOrder) object;
+		EntityData el = (EntityData) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) {
 			try 
 			{
-				String sql = "INSERT INTO `" + MysqlHandler.Type.STANDINGORDER.getValue() 
-						+ "`(`standing_order_name`, `from_player`, `to_player`, `amount`, `amountpaidsofar`,"
-						+ " `starttime`, `repeatingtime`, `lasttime`, `cancelled`, `paused`) " 
-						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String sql = "INSERT INTO `" + MysqlHandler.Type.ENTITYDATA.getValue()
+						+ "`(`entity_uuid`, `entity_name`, `entity_type`) " 
+						+ "VALUES(?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
-				preparedStatement.setString(1, ep.getName());
-		        preparedStatement.setString(2, ep.getFrom());
-		        preparedStatement.setString(3, ep.getTo());
-		        preparedStatement.setDouble(4, ep.getAmount());
-		        preparedStatement.setDouble(5, ep.getAmountPaidSoFar());
-		        preparedStatement.setLong(6, ep.getStartTime());
-		        preparedStatement.setLong(7, ep.getRepeatingTime());
-		        preparedStatement.setLong(8, ep.getLastTime());
-		        preparedStatement.setBoolean(9, ep.isCancelled());
-		        preparedStatement.setBoolean(10, ep.isPaused());
+		        preparedStatement.setString(1, el.getUUID().toString());
+		        preparedStatement.setString(2, el.getName());
+		        preparedStatement.setString(3, el.getType().toString());
 		        
 		        preparedStatement.executeUpdate();
 		        return true;
@@ -64,9 +58,9 @@ public interface TableV
 		return false;
 	}
 	
-	default boolean updateDataV(AdvancedEconomyPlus plugin, Object object, String whereColumn, Object... whereObject) 
+	default boolean updateData0(AdvancedEconomyPlus plugin, Object object, String whereColumn, Object... whereObject) 
 	{
-		if(!(object instanceof StandingOrder))
+		if(!(object instanceof EntityData))
 		{
 			return false;
 		}
@@ -74,29 +68,22 @@ public interface TableV
 		{
 			return false;
 		}
-		StandingOrder ep = (StandingOrder) object;
+		EntityData el = (EntityData) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
 			{
-				String data = "UPDATE `" + MysqlHandler.Type.STANDINGORDER.getValue() 
-						+ "` SET `standing_order_name` = ?, `from_player` = ?, `to_player` = ?, `amount` = ?, `amountpaidsofar` = ?," 
-						+ " `starttime` = ?, `repeatingtime` = ?, `lasttime` = ?, `cancelled` = ?, `paused` = ?" 
+				String data = "UPDATE `" + MysqlHandler.Type.ENTITYDATA.getValue()
+						+ "` SET `entity_uuid` = ?,"
+						+ " `entity_name` = ?, `entity_type` = ? = ?"
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
-				preparedStatement.setString(1, ep.getName());
-				preparedStatement.setString(2, ep.getFrom());
-		        preparedStatement.setString(3, ep.getTo());
-		        preparedStatement.setDouble(4, ep.getAmount());
-		        preparedStatement.setDouble(5, ep.getAmountPaidSoFar());
-		        preparedStatement.setLong(6, ep.getStartTime());
-		        preparedStatement.setLong(7, ep.getRepeatingTime());
-		        preparedStatement.setLong(8, ep.getLastTime());
-		        preparedStatement.setBoolean(9, ep.isCancelled());
-		        preparedStatement.setBoolean(10, ep.isPaused());
-		        int i = 11;
+				preparedStatement.setString(1, el.getUUID().toString());
+		        preparedStatement.setString(2, el.getName());
+		        preparedStatement.setString(3, el.getType().toString());
+		        int i = 4;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -122,7 +109,7 @@ public interface TableV
         return false;
 	}
 	
-	default Object getDataV(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
+	default Object getData0(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -131,7 +118,7 @@ public interface TableV
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue()  
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.ENTITYDATA.getValue() 
 						+ "` WHERE "+whereColumn+" LIMIT 1";
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -144,18 +131,10 @@ public interface TableV
 		        result = preparedStatement.executeQuery();
 		        while (result.next()) 
 		        {
-		        	return new StandingOrder(
-		        			result.getInt("id"),
-		        			result.getString("standing_order_name"),
-		        			result.getString("from_player"), 
-		        			result.getString("to_player"),
-		        			result.getDouble("amount"), 
-		        			result.getDouble("amountpaidsofar"), 
-		        			result.getLong("starttime"), 
-		        			result.getLong("repeatingtime"), 
-		        			result.getLong("lasttime"), 
-		        			result.getBoolean("cancelled"), 
-		        			result.getBoolean("paused"));
+		        	return new EntityData(
+		        			UUID.fromString(result.getString("entity_uuid")),
+		        			result.getString("entity_name"),
+		        			EconomyEntity.EconomyType.valueOf(result.getString("entity_type")));
 		        }
 		    } catch (SQLException e) 
 			{
@@ -181,8 +160,8 @@ public interface TableV
 		return null;
 	}
 	
-	default ArrayList<StandingOrder> getListV(AdvancedEconomyPlus plugin, String orderByColumn,
-			int start, int end, String whereColumn, Object...whereObject)
+	default ArrayList<EntityData> getList0(AdvancedEconomyPlus plugin, String orderByColumn,
+			int start, int end, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -190,9 +169,9 @@ public interface TableV
 		if (conn != null) 
 		{
 			try 
-			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue() 
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+			{
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.ENTITYDATA.getValue() 
+					+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -201,22 +180,14 @@ public interface TableV
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<StandingOrder> list = new ArrayList<StandingOrder>();
+		        ArrayList<EntityData> list = new ArrayList<>();
 		        while (result.next()) 
 		        {
-		        	StandingOrder ep = new StandingOrder(
-		        			result.getInt("id"),
-		        			result.getString("standing_order_name"),
-		        			result.getString("from_player"), 
-		        			result.getString("to_player"),
-		        			result.getDouble("amount"), 
-		        			result.getDouble("amountpaidsofar"), 
-		        			result.getLong("starttime"), 
-		        			result.getLong("repeatingtime"), 
-		        			result.getLong("lasttime"), 
-		        			result.getBoolean("cancelled"), 
-		        			result.getBoolean("paused"));
-		        	list.add(ep);
+		        	EntityData el = new EntityData(
+		        			UUID.fromString(result.getString("entity_uuid")),
+		        			result.getString("entity_name"),
+		        			EconomyEntity.EconomyType.valueOf(result.getString("entity_type")));
+		        	list.add(el);
 		        }
 		        return list;
 		    } catch (SQLException e) 
@@ -243,7 +214,7 @@ public interface TableV
 		return null;
 	}
 	
-	default ArrayList<StandingOrder> getTopV(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
+	default ArrayList<EntityData> getTop0(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -252,27 +223,19 @@ public interface TableV
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue()  
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.ENTITYDATA.getValue() 
 						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();
-		        ArrayList<StandingOrder> list = new ArrayList<StandingOrder>();
+		        ArrayList<EntityData> list = new ArrayList<EntityData>();
 		        while (result.next()) 
 		        {
-		        	StandingOrder ep = new StandingOrder(
-		        			result.getInt("id"),
-		        			result.getString("standing_order_name"),
-		        			result.getString("from_player"), 
-		        			result.getString("to_player"),
-		        			result.getDouble("amount"), 
-		        			result.getDouble("amountpaidsofar"), 
-		        			result.getLong("starttime"), 
-		        			result.getLong("repeatingtime"), 
-		        			result.getLong("lasttime"), 
-		        			result.getBoolean("cancelled"), 
-		        			result.getBoolean("paused"));
-		        	list.add(ep);
+		        	EntityData el = new EntityData(
+		        			UUID.fromString(result.getString("entity_uuid")),
+		        			result.getString("entity_name"),
+		        			EconomyEntity.EconomyType.valueOf(result.getString("entity_type")));
+		        	list.add(el);
 		        }
 		        return list;
 		    } catch (SQLException e) 
@@ -299,7 +262,7 @@ public interface TableV
 		return null;
 	}
 	
-	default ArrayList<StandingOrder> getAllListAtV(AdvancedEconomyPlus plugin, String orderByColumn,
+	default ArrayList<EntityData> getAllListAt0(AdvancedEconomyPlus plugin, String orderByColumn,
 			String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
@@ -308,9 +271,10 @@ public interface TableV
 		if (conn != null) 
 		{
 			try 
-			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue() 
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
+			{
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.ENTITYDATA.getValue()
+				+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
+				
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -319,22 +283,14 @@ public interface TableV
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<StandingOrder> list = new ArrayList<StandingOrder>();
+		        ArrayList<EntityData> list = new ArrayList<EntityData>();
 		        while (result.next()) 
 		        {
-		        	StandingOrder ep = new StandingOrder(
-		        			result.getInt("id"),
-		        			result.getString("standing_order_name"),
-		        			result.getString("from_player"), 
-		        			result.getString("to_player"),
-		        			result.getDouble("amount"), 
-		        			result.getDouble("amountpaidsofar"), 
-		        			result.getLong("starttime"), 
-		        			result.getLong("repeatingtime"), 
-		        			result.getLong("lasttime"), 
-		        			result.getBoolean("cancelled"), 
-		        			result.getBoolean("paused"));
-		        	list.add(ep);
+		        	EntityData el = new EntityData(
+		        			UUID.fromString(result.getString("entity_uuid")),
+		        			result.getString("entity_name"),
+		        			EconomyEntity.EconomyType.valueOf(result.getString("entity_type")));
+		        	list.add(el);
 		        }
 		        return list;
 		    } catch (SQLException e) 

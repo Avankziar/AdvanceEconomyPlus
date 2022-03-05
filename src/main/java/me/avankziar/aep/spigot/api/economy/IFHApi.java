@@ -13,11 +13,10 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.ne_w.QuickPayAccount;
+import main.java.me.avankziar.aep.spigot.object.QuickPayAccount;
 import main.java.me.avankziar.ifh.spigot.economy.Economy;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
@@ -700,13 +699,13 @@ public class IFHApi implements Economy
 		return transactionHandler.withdraw(holder, amount, taxInPercent, taxAreExclusive, taxDepot, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment);
 	}
 	
-	@Override
+	/*@Override
 	public EconomyAction withdraw(Account holder, double amount, LinkedHashMap<ItemStack, Double> possibleItemsWithRelatedValue,
 			double taxInPercent, boolean taxAreExclusive, Account taxDepot,
 			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
 	{
 		return transactionHandler.withdraw(holder, amount, possibleItemsWithRelatedValue, taxInPercent, taxAreExclusive, taxDepot, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment);
-	}
+	}*/
 	
 	
 	@Override

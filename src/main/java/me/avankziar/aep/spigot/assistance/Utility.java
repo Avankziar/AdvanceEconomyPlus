@@ -8,8 +8,8 @@ import java.util.UUID;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
-import main.java.me.avankziar.aep.spigot.object.ne_w.EntityData;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.EntityData;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 
 public class Utility

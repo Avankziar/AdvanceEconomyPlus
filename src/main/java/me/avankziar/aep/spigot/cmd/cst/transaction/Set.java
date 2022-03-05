@@ -264,6 +264,6 @@ public class Set extends ArgumentModule implements CommandExecutor
 		{
 			player.sendMessage(ChatApi.tl(s));
 		}
-		//ADDME Other Owner toAccount | Sound? | Moneyflow beachten
+		Pay.sendToOther(plugin, from, list);
 	}
 }

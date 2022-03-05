@@ -191,16 +191,19 @@ public class YamlManager
 		configKeys.put("Enable.CurrencyMayUseStandingOrder"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"dollar",
-				"taller"}));
+				"taler"}));
 		configKeys.put("Enable.CurrencyMayUseLoanRepayment"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"dollar",
-				"taller"}));
-		
+				"talerDummy"}));
+		configKeys.put("Enable.PlayerCanDeletePredefineAccount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"dollar;false",
+				"taler;false"}));
 		configKeys.put("Load.Currencies"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"dollar",
-				"taler"})); //ADDME
+				"taler"}));
 		//Servername,true(DefaultServerEntity)
 		configKeys.put("CreateEconomyEntityIfNotExist.Server"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -209,8 +212,8 @@ public class YamlManager
 		//Entity(NPc, whatever)name,true(DefaultEntityEntity)
 		configKeys.put("CreateEconomyEntityIfNotExist.Entity"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"Mike",
-				"King_Cobra"}));
+				"Mike;true",
+				"King_Cobra;false"}));
 		configKeys.put("Do.Default.WalletMoneyFlowNotification"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
@@ -233,6 +236,31 @@ public class YamlManager
 		configKeys.put("Do.DeleteAccountsDaysAfterOverdue"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				30}));
+		configKeys.put("Do.DeleteLogsAfterDays"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				365}));
+		configKeys.put("Do.OnDeath.MoneyInWalletLostInPercent"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"dollar;500.0",
+				"taler;100.0"}));
+		configKeys.put("Do.Bankaccount.TimeToWithdrawAccountManagementFees"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"7-11:00"}));
+		configKeys.put("Do.Bankaccount.AccountManagementFeesAsLumpSum"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"dollar;500.0;MAIN",
+				"taler;100.0;MAIN"}));
+		configKeys.put("Do.Bankaccount.AccountManagementFeesAsPercent"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"dollar;1.0;MAIN",
+				"taler;1.0;MAIN"}));
+		configKeys.put("Do.Bankaccount.TimeToDepositInterest"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"7-11:00"}));
+		configKeys.put("Do.Bankaccount.InterestAsPercent"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"dollar;0.1;SAVING",
+				"taler;0.12;SAVING"}));
 		configKeys.put("TrendLogger.ValueIsStabil"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				1000.0}));
@@ -243,6 +271,11 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"x"}));
 		
+		configKeys.put("Cost.OpenAccount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"dollar;BANK;SAVING;1000.0",
+				"taler;BANK;SAVING;5000.0"}));
+		
 		configKeys.put("StandingOrder.TimeSpamProtection"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"dollar;00-00:15",
@@ -251,10 +284,13 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"dollar;500.0",
 				"taler;500.0"}));
-		configKeys.put("StandingOrder.DoPaymenTask"
+		configKeys.put("StandingOrder.DoPaymentTask"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));
 		configKeys.put("StandingOrder.RepeatTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				180}));
+		configKeys.put("StandingOrder.DeleteAfterIsCancelledOrPausedInDays"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				180}));
 		configKeys.put("Loan.RepaymentRepeatTime"
@@ -372,16 +408,19 @@ public class YamlManager
 		List<ExtraPerm.Type> list = new ArrayList<ExtraPerm.Type>(EnumSet.allOf(ExtraPerm.Type.class));
 		for(ExtraPerm.Type ept : list)
 		{
-			if(ept == ExtraPerm.Type.COUNT_ACCOUNT)
+			switch(ept)
 			{
+			case CAN_SETDEFAULTACCOUNT:
+			case COUNT_ACCOUNT:
 				commandsKeys.put("Bypass."+ept.toString().replace("_", "")
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"aep."+ept.toString().toLowerCase().replace("_", "")+"."}));
-			} else
-			{
+						, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+						"aep."+ept.toString().toLowerCase().replace("_", "")+"."}));
+				break;
+			default:
 				commandsKeys.put("Bypass."+ept.toString().replace("_", "")
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"aep."+ept.toString().toLowerCase().replace("_", "")}));
+						, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+						"aep."+ept.toString().toLowerCase().replace("_", "")}));
+				break;
 			}
 		}
 	}
@@ -842,6 +881,15 @@ public class YamlManager
 				"&eZinsen können nicht kleiner oder gleich -100 % sein!",
 				"&eInterest cannot be less than or equal to -100 %!"}));
 		
+		languageKeys.put("AccountOpen.Category"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Accounteröffnung",
+				"Accountopening"}));
+		languageKeys.put("AccountOpen.Comment"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eEröffnung des Accounts &f%accountname%(%owner%|%accounttype%|%accountcategory%)",
+				"&eAccount opening &f%accountname%(%owner%|%accounttype%|%accountcategory%)"}));
+		
 		languageKeys.put("StandingOrder.Category"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"Dauerauftrag",
@@ -871,6 +919,32 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eKredit &f%name%~!~&eRückzahlung der noch fälligen &f%payback%&e.",
 				"&eLoan &f%name%~!~&eRepayment of the &f%payback% &estill due."}));
+		
+		languageKeys.put("OnDeath.Category"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Spielertod",
+				"Playerdeath"}));
+		languageKeys.put("OnDeath.Comment"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cGeldverlust wegen des Todes des Spielers.",
+				"&cLoss of money due to the death of the player."}));
+		
+		languageKeys.put("Bankaccount.AccountManagementFees.CategoryI"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Kontoführungsgebühren",
+				"AccountManagementFees"}));
+		languageKeys.put("Bankaccount.AccountManagementFees.CommentI"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cKontoführungsgebühren für das Bankkonto als Pauschalbetrag.",
+				"&cBank account maintenance fees as a lump sum."}));
+		languageKeys.put("Bankaccount.AccountManagementFees.CategoryII"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Kontoführungsgebühren",
+				"AccountManagementFees"}));
+		languageKeys.put("Bankaccount.AccountManagementFees.CommentII"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cKontoführungsgebühren für das Bankkonto als Prozentbetrag.",
+				"&cBank account maintenance fees as a percentamount."}));
 		
 		languageKeys.put("ChestShopHook.Category"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -923,15 +997,21 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cAchtung! &eEs sind &f%amount% &eSpieler schon länger als &f%days% &enicht aktiv. Wenn diese vererbt werden soll, setzte bitte einen neuen Eigentümer. &cBedenke, die Löschfunktion ist nicht aktiv!",
 				"&cAttention. &eThere are &f%amount% &eplayers longer than &f%days% &enot active. If they should be inherited, please set a new owner. &cRemember, the delete function is not active!"}));
+		languageKeys.put("DeathListener.MoneyLost"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cAchtung! &eDu bist gerade gestorben. Alle &fBrieftaschen &eAccount(&f%account%) &everlieren ein Teil ihres Inhaltes!",
+				"&cAttention. &eYou just died. All &fwallets &eAccount(&f%account%) &elose a part of their contents!"}));
+		languageKeys.put("DeathListener.Hover"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cVerluste aufgerechnet pro Währung:",
+				"&cLosses offset per currency:"}));
 		
 		//INFO:language
-		//langEco_OLD();
 		langTransactionHandler();
 		langVaultApi();
 		langLog();
 		langCurrency();
 		langCmd();
-		//langMoney_OLD();
 		langLoan();
 		langStandingOrder();
 		
@@ -939,62 +1019,6 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"",
 				""}));*/
-	}
-	
-	private void langEco_OLD()
-	{
-		String base = "CmdEco.";
-		languageKeys.put(base+"BaseInfo.Headline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=====&7[&2Economy &bInfo&7]&e=====",
-				"&e=====&7[&2Economy &bInfo&7]&e====="}));
-		languageKeys.put(base+"BaseInfo.Next"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e&nnächste Seite &e==>",
-				"&e&nnext page &e==>"}));
-		languageKeys.put(base+"BaseInfo.Past"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e<== &nvorherige Seite",
-				"&e<== &nprevious page"}));
-		
-		languageKeys.put(base+"DeleteLog.LogNotExist"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDer Log-Eintrag existiert nicht!",
-				"&cThe log entry does not exist!"}));
-		languageKeys.put(base+"DeleteLog.LogWasDeleted"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDer Log-Eintrag Nummer %id% wurde &cgelöscht&e!",
-				"&eThe log entry number %id% was &cdeleted&e!"}));
-		
-		languageKeys.put(base+"Player.Headline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=====&7[&2Economy &b%player%&7]&e=====",
-				"&e=====&7[&2Economy &b%player%&7]&e====="}));
-		languageKeys.put(base+"Player.UUID"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eSpielerUUID: &f%uuid%",
-				"&ePlayerUUID: &f%uuid%"}));
-		languageKeys.put(base+"Player.Balance"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eGuthaben: &6%balance% &2%currency%",
-				"&eBalance: &6%balance% &2%currency%"}));
-		languageKeys.put(base+"Player.BankAccount"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eZugehörige Bankkonten: &f%bankaccount%",
-				"&eRelated bank accounts: &f%bankaccount%"}));
-		
-		languageKeys.put(base+"ReComment.NoOrderer"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDu bist nicht der Auftraggeber des Logs!",
-				"&cYou are not order of the log!"}));
-		languageKeys.put(base+"ReComment.LogNotExist"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDer Log-Eintrag existiert nicht!",
-				"&cThe log entry does not exist!"}));
-		languageKeys.put(base+"ReComment.CommentWasChange"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDie Notiz vom Log &f#%id% &ewurde geändert in: &r%category% &b- &r%comment%",
-				"&eThe note from log &f#%id% &was changed to: &r%category% &b- &r%comment%"}));
 	}
 	
 	private void langTransactionHandler()
@@ -1132,8 +1156,7 @@ public class YamlManager
 				+ "&6>> "
 				+ "%tocolor%%toaccountID%:%toaccountname%~hover@SHOW_TEXT@Log.ActionLog.ToAccountHover "
 				+ ": "
-				+ "&a%format%~hover@SHOW_TEXT@Log.ActionLog.ElseHover",
-				""}));
+				+ "&a%format%~hover@SHOW_TEXT@Log.ActionLog.ElseHover"}));
 		languageKeys.put(base+"ActionLog.Positive"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&a",
@@ -1149,20 +1172,25 @@ public class YamlManager
 		languageKeys.put(base+"ActionLog.FromAccountHover"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&bEigentümer:+%fromaccountowner%",
-				""}));
+				"&bOwner:+%fromaccountowner%"}));
 		languageKeys.put(base+"ActionLog.ToAccountHover"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&bEigentümer:+%toaccountowner%",
-				""}));
+				"&bOwner:+%toaccountowner%"}));
 		languageKeys.put(base+"ActionLog.ElseHover"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&bAuftraggeber: &f%orderer%~!~"
-				+ "&bKategory: %category%~!~"
+				+ "&bKategorie: %category%~!~"
 				+ "&bNotiz: %comment%~!~"
 				+ "&bAbgezogener Betrag: %withdraw%"
 				+ "&bSteuerbetrag: %tax%"
 				+ "&bEingezahlter Betrag: %deposit%",
-				""}));
+				"&bOrderer: &f%orderer%~!~"
+				+ "&bCategory: %category%~!~"
+				+ "&bComment: %comment%~!~"
+				+ "&bWithdraw amount: %withdraw%"
+				+ "&bTax amount: %tax%"
+				+ "&bDeposit amount: %deposit%"}));
 		languageKeys.put(base+"ActionLog.Edit"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&2✏~click@SUGGEST_COMMAND@%cmd%+%id%+~hover@SHOW_TEXT@Log.ActionLog.HoverRecomment",
@@ -1233,7 +1261,7 @@ public class YamlManager
 		languageKeys.put(base+"Grafic.NotEnoughValues"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cEs gibt nicht genügend Werte für diese Seitenzahl!",
-				""}));
+				"&cThere are not enough values for this number of pages!"}));
 		languageKeys.put(base+"Grafic.Headline"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&e=====&7[&2Economy &bTrendgrafik: &f%accountname%&7 | Log-Anzahl: %amount%&7]&e=====",
@@ -1334,6 +1362,14 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu kannst keinen Account für jemanden anderes erstellen.",
 				"&cYou cannot create an account for someone else."}));
+		languageKeys.put(base+"Account.Open.OpenCostExistButNoMainAccount"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu kannst keinen Account erstellen, da die Erstellung Geld kosten, jedoch kann es von keinem Account der Kategorie MAIN abgezogen werden!",
+				"&cYou can not create an account, because the creation cost money, but it can not be deducted from any account of the category MAIN!"}));
+		languageKeys.put(base+"Account.Open.NotEnoughMoney"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast die Accounteröffnung nicht genug Geld. Benötigt sind &r%format%&c.",
+				"&cYou do not have the account opening enough money. Needed are &r%format%&c."}));
 		languageKeys.put(base+"Account.Open.AccountOpen"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDer Account &f%acid% | %acowner% | %eeet% | %acname% | %act% | %acc% | %ec% &ewurde erstellt.",
@@ -1358,6 +1394,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu kannst diesen Account nicht als DefaultAccount setzten!",
 				"&cYou can not set this account as DefaultAccount!"}));
+		languageKeys.put(base+"Account.SetDefault.CannotSetAsDefaultPerPerm"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu könntest diesen Account zwar als DefaultAccount setzten, jedoch hast du für diese AccountCategory die Permission nicht!",
+				"&cYou could set this account as DefaultAccount, but you dont have the permission for this AccountCategory!"}));
 		languageKeys.put(base+"Account.SetDefault.IsAlreadyADefaultAccount"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDer Account &f%acname%(%acowner%) &cist schon ein DefaultAccount in der Kategorie &f%cat%&c!",
@@ -1436,31 +1476,31 @@ public class YamlManager
 		languageKeys.put(base+"Player."+AccountManagementType.CAN_ADMINISTRATE_ACCOUNT.toString()
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c◆ - Kann den Account administrieren.",
-				""}));
+				"&c◆ - Can administer the account."}));
 		languageKeys.put(base+"Player."+AccountManagementType.CAN_SET_OWNERSHIP.toString()
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c● - Kann den Account einem anderen Spieler übertragen.",
-				""}));
+				"&c● - Can transfer the account to another player."}));
 		languageKeys.put(base+"Player."+AccountManagementType.CAN_WITHDRAW.toString()
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c◈ - Kann Geld vom Account abheben.",
-				""}));
+				"&c◈ - Can withdraw money from the account."}));
 		languageKeys.put(base+"Player."+AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT.toString()
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c◉ - Kann diesen Account als Default in seiner Kategorie setzten.",
-				""}));
+				"&c◉ - Can set this account as default in its category."}));
 		languageKeys.put(base+"Player."+AccountManagementType.CAN_SEE_LOG.toString()
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c◌ - Kann den Account Action und Trendlog einsehen.",
-				""}));
+				"&c◌ - Can view the account action and trend log."}));
 		languageKeys.put(base+"Player."+AccountManagementType.CAN_SEE_BALANCE.toString()
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c▢ - Kann den Kontostand einsehen.",
-				""}));
+				"&c▢ - Can view the account balance."}));
 		languageKeys.put(base+"Player."+AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&c◬ - Kann Benachrichtungen erhalten, wenn Geldtransaktionen durchgeführt werden.",
-				""}));
+				"&c◬ - Can receive notifications when money transactions are made."}));
 		
 		languageKeys.put(base+"ReComment.NoOrderer"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
@@ -1593,19 +1633,19 @@ public class YamlManager
 		languageKeys.put(base+"WalletNotification.Deactive"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu bekommst nun keine Benachrichtigung, wenn Transaktionen auf Accounts(Wallet) stattfinden, auf den du Benachrichtigungsrechte hast.",
-				""}));
+				"&eYou will now not receive notifications when transactions take place on accounts (wallet) to which you have notification rights."}));
 		languageKeys.put(base+"WalletNotification.Active"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu bekommst nun Benachrichtigung, wenn Transaktionen auf Accounts(Wallet) stattfinden, auf den du Benachrichtigungsrechte hast.",
-				""}));
+				"&eYou will now receive notification when transactions take place on accounts (wallet) to which you have notification rights."}));
 		languageKeys.put(base+"BankNotification.Deactive"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu bekommst nun keine Benachrichtigung, wenn Transaktionen auf Accounts(Bank) stattfinden, auf den du Benachrichtigungsrechte hast.",
-				""}));
+				"&eYou will now not receive notifications when transactions take place on accounts (bank) to which you have notification rights."}));
 		languageKeys.put(base+"BankNotification.Active"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDu bekommst nun Benachrichtigung, wenn Transaktionen auf Accounts(Bank) stattfinden, auf den du Benachrichtigungsrechte hast.",
-				""}));
+				"&eYou will now receive notifications when transactions take place on accounts (bank) to which you have notification rights."}));
 		languageKeys.put(base+"Top.NotEnoughValues"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cEs gibt nicht genügend Werte für diese Seitenzahl!",
@@ -1621,7 +1661,7 @@ public class YamlManager
 		languageKeys.put("Cmd.GetTotal.PreLine"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eIm Geldsystem befindet sich folgende Mengen:",
-				""}));
+				"&eThe following quantities are in the monetary system:"}));
 		languageKeys.put("Cmd.GetTotal.Line"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&6%currency%&b: %format%",
@@ -1638,339 +1678,6 @@ public class YamlManager
 				"&cAccountname: &f%acn%",
 				"&cAccountCategory: &f%acc%",
 				"&cAccountType: &f%act%"}));
-		languageKeys.put("Cmd.Pay."
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"",
-				""}));
-		languageKeys.put("Cmd.Pay."
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"",
-				""}));
-	}
-	
-	private void langMoney_OLD()
-	{
-		String base = "CmdMoney.";
-		languageKeys.put(base+"PlayerBalance"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[%time%] &eDein Guthaben: &6%balance% &2%currency%",
-				"&7[%time%] &eYour balance: &6%balance% &2%currency%"}));
-		languageKeys.put(base+"PlayerDeposit"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&f%amount% &e%currency% wurden auf %name% überwiesen. Aktuelles Guthaben: &2%balance%",
-				"&f%amount% &e%currency% were transferred to %name%. Current balance: &2%balance%"}));
-		languageKeys.put(base+"PlayerWithDraw"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&f%amount% &e%currency% wurden vom %name% abgezogen. Aktuelles Guthaben: &2%balance%",
-				"&f%amount% &e%currency% were deducted from the %name%. Current balance: &2%balance%"}));
-		languageKeys.put(base+"BankPay.DepositWithDraw"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&6%amount% &2%currency% &ewurden von &6%name1% &ean &6%number2%&f|&6%name2% &eüberwiesen. &eAktuelles Guthaben von &6%name%&e: &2%balance%",
-				"&6%amount% &2%currency% &ewere transferred from &6%name1% &eto &6%number2%&f|&6%name2% &e. &eCurrent balance of &6%name%&e: &2%balance%"}));
-		
-		base = "CmdMoney.BarChart.";
-		languageKeys.put(base+"Headline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=======&7[&2Economy &bBarChart: &f%player%&7 | Log-Anzahl: %amount%&7]&e=======",
-				"&e=======&7[&2Economy &bBarChart: &f%player%&7 | Log-Quantity: %amount%&7]&e======="}));
-		languageKeys.put(base+"Infoline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&aEinnahmen &7[in %-Anteil vom Jahr] &e| &cAusgaben &7[in %-Anteil vom Jahr]",
-				"&aIncome &7[in % share of year] &e| &cExpenditure &7[in % share of year]"}));
-		languageKeys.put(base+"HoverMessage"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&aEinnahmen in Monat = &f%positivvalue% %currency%~!~&aProzentualer Anteil der Einnahmen = &f%percentP% %~!~&cAusgaben im Monat = &f%negativvalue% %currency%~!~&cProzentualer Anteil der Ausgaben = &f%percentN% %~!~&eGesamtveränderung im Monat = &r%totalvalue% %currency%",
-				"&aIncome in month = &f%positivevalue% %currency%~!~&aPercentage share of income = &f%percentP% %~!~&cExpenditure in month = &f%negativevalue% %currency%~!~&cPercentage share of expenditure = &f%percentN% %~!~&eTotal change in month = &r%totalvalue% %currency%"}));
-		languageKeys.put(base+"HoverMessageII"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&aEinnahmen in letzten Jahr = &f%positivvalue% %currency%~!~&cAusgaben im letzten Jahr = &f%negativvalue% %currency%~!~&eGesamtveränderung im letzten Jahr = &r%totalvalue% %currency%",
-				"&aIncome in last year = &f%positivevalue% %currency%~!~&cExpenditure in last year = &f%negativevalue% %currency%~!~&eTotal change in last year = &r%totalvalue% %currency%"}));
-		languageKeys.put(base+"Month"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e -    %month%    - &r",
-				"&e -    %month%    - &r"}));
-		languageKeys.put(base+"LastYear"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e - Letztes Jahr - &r",
-				"&e -  Last Year  - &r"}));
-		
-		base = "CmdMoney.";
-		languageKeys.put(base+"Give.DepositWithDraw"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&6%amount% &2%currency% &ewurden vom &6%name1% &ean &6%name2% &eüberwiesen.",
-				"&6%amount% &2%currency% &ewere transferred from &6%name1% &eto &6%name2%&e."}));
-		languageKeys.put(base+"Give.DepositWithDrawBalance"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eAktuelles Guthaben von &6%name%&e: &6%balance% &2%currency%",
-				"&eCurrent balance of &6%name%&e: &6%balance% &2%currency%"}));
-		
-		base = "CmdMoney.Log.";
-		languageKeys.put(base+"Headline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=======&7[&2Economy &bLog: &f%name%&7 | Log-Anzahl: %amount%&7]&e=======",
-				"&e=======&7[&2Economy &bLog: &f%name%&7 | Log-Quantity: %amount%&7]&e======="}));
-		languageKeys.put(base+"LoggerBToPPositivAll"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
-				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
-		languageKeys.put(base+"LoggerBToPPositivDelete"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
-				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
-		languageKeys.put(base+"LoggerBToPPositivRe"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment",
-				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment"}));
-		languageKeys.put(base+"LoggerBToPPositiv"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote",
-				"&7[&e%date%&7]+&7%fromnumber%&f|&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote"}));
-		languageKeys.put(base+"LoggerPToBNegativAll"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
-		languageKeys.put(base+"LoggerPToBNegativDelete"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
-		languageKeys.put(base+"LoggerPToBNegativRe"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment",
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment"}));
-		languageKeys.put(base+"LoggerPToBNegativ"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote",
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%tonumber%&f|&7%toname%&b:+&c%amount% &6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote"}));
-		languageKeys.put(base+"LoggerPToPNegativAll"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
-		languageKeys.put(base+"LoggerPToPNegativDelete"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
-		languageKeys.put(base+"LoggerPToPNegativRe"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment",
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment"}));
-		languageKeys.put(base+"LoggerPToPNegativ"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote",
-				"&7[&e%date%&7]+&c%fromname%+&6>>+&7%toname%&b:+&c%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote"}));
-		languageKeys.put(base+"LoggerPToPPositivAll"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
-				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
-		languageKeys.put(base+"LoggerPToPPositivDelete"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete",
-				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &c✖~click@RUN_COMMAND@/econ+deletelog+%id%~hover@SHOW_TEXT@CmdMoney.Log.HoverDelete"}));
-		languageKeys.put(base+"LoggerPToPPositivRe"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment",
-				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote | &2✏~click@SUGGEST_COMMAND@/econ+recomment+%id%+~hover@SHOW_TEXT@CmdMoney.Log.HoverRecomment"}));
-		languageKeys.put(base+"LoggerPToPPositiv"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote",
-				"&7[&e%date%&7]+&7%fromname%+&6>>+&a%toname%&b:+&a%amount%+&6%currency%~hover@SHOW_TEXT@CmdMoney.Log.LoggerOrdererNote"}));
-		languageKeys.put(base+"LoggerOrdererNote"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&bAuftraggeber: &f%orderer%~!~&bNotiz: &r%comment%",
-				"&bOrderer: &f%orderer%~!~&bComment: &r%comment%"}));
-		languageKeys.put(base+"HoverDelete"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eKlicke hier um dem den Log-Eintrag zu löschen!",
-				"&eClick here to delete the log entry!"}));
-		languageKeys.put(base+"HoverRecomment"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eKlicke hier um die Notiz des Log-Eintrages zu ändern.",
-				"&eClick here to change the note of the log entry."}));
-		languageKeys.put(base+"Next"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e&nnächste Seite &e==>",
-				"&e&nnext page &e==>"}));
-		languageKeys.put(base+"Past"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e<== &nvorherige Seite",
-				"&e<== &nprevious page"}));
-		languageKeys.put(base+"NoLoggerSettingsFound"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDu hast keinen LoggerSetting ausgewählt!",
-				"&cYou have not selected a LoggerSetting!"}));
-		languageKeys.put(base+"NoOtherLoggerSettingsFound"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDer Spieler hat keinen LoggerSetting ausgewählt!",
-				"&cThe player has not selected a LoggerSetting!"}));
-		languageKeys.put(base+"LoggerSettingsTextSuggest"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eKlicke hier auf die Nachricht, um einen Befehlsvorschlag zu erhalten. Tippe dann dein Suchtext ein und drücke &b>Enter<",
-				"&eClick here on the message to get a command suggestion. Then type in your search text and press &b>Enter<"}));
-		languageKeys.put(base+"LoggerSettingsTextOnlyThroughGUI"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cBitte den Befehl nur nutzten, wenn man durch die GUI aufgefordert wird!",
-				"&cPlease use this command only when prompted by the GUI!"}));
-		languageKeys.put(base+"LoggerSettingsJSONOutput"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&6Klicke hier um die JSON-Ausgabe zu kopieren.",
-				"&eClick here to copy the JSON output"}));
-		languageKeys.put(base+"LoggerSettingsJSONWebsiteText"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eBitte gebe nun die Ausgabe in einen Json-CSV Konverter ein oder klicke auf &f>hier<&e. Danach downloade einfach die Datei und öffne sie in Excel.",
-				"&eNow please enter the output into a Json-CSV converter or click &f>here<&e. After that just download the file and open it in excel."}));
-		languageKeys.put(base+"LoggerSettingsJSONWebsite"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"http://convertcsv.com/json-to-csv.htm",
-				"http://convertcsv.com/json-to-csv.htm"}));
-		
-		base = "CmdMoney.Freeze.";
-		languageKeys.put(base+"YouFrozenSomeone"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDu hast das Spielerkonto von &f%player% &eeingefroren! &cAchtung! Externe Plugins können bei schlechter Abfrage zu Fehlern führen!",
-				"&eYou have frozen the player account of %player%! &cAttention! External plugins can lead to errors if the query is bad!"}));
-		languageKeys.put(base+"YourAccountWasFrozen"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDein Spielerkonto wurden von &f%player% &ceingefroren! Du kannst nun keine Geld-Transaktion ausführen!",
-				"&cYour player account has been frozen by %player%! You can now not perform any money related activities!"}));
-		languageKeys.put(base+"YouDefrozenSomeone"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDu hast das Spielerkonto von &f%player% &ewieder freigegeben! Der Spieler kann nun wieder Geld-Transaktion ausführen!",
-				"&eYou have released the player account of %player% again! The player can now carry out money-related activities again!"}));
-		languageKeys.put(base+"YourAccountWasDefrozen"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&aDer Spieler &f%player% &ahat dein Spielerkonto wieder freigegeben! Dir ist es nun wieder erlaubt Geld-Transaktion durchführen!",
-				"'&aThe player &f%player% &has released your account again! You are now allowed to pursue activities concerning money again!"}));
-		languageKeys.put(base+"TheAccountIsFrozen"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDas Spielerkonto ist eingefroren!",
-				"&cThe player account is frozen! You can not transfer money to it!"}));
-		languageKeys.put(base+"YourAccountIsFrozen"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDein Spielerkonto ist eingefroren!",
-				"&cYour account is frozen! You can nott transfer money to anyone!"}));
-		
-		base = "CmdMoney.Pay.";
-		languageKeys.put(base+"NotEnoughBalance"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&f%amount% &e%currency% &cübersteigt dein Guthaben!",
-				"&f%amount% &e%currency% &cexceeds your balance!"}));
-		languageKeys.put(base+"SelfPay"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7Du steckst das Geld von der einen Tasche in die andere!",
-				"&7You put the money from one pocket in the other!"}));
-		languageKeys.put(base+"DepositWithDraw"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&6%amount% &2%currency% &ewurden von &6%name1% &ean &6%name2% &eüberwiesen.",
-				"&6%amount% &2%currency% &ewere transferred from &6%name1% &eto &6%name2%&e."}));
-		languageKeys.put(base+"DepositWithDrawBalance"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eAktuelles Guthaben von &6%name%&e: &6%balance% &2%currency%",
-				"&eCurrent balance of &6%name%&e: &6%balance% &2%currency%"}));
-		base = "CmdMoney.";
-		languageKeys.put(base+"Set.BalanceIsSet"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eGuthaben von &f%name% &eauf %amount% &2%currency% &egesetzt.",
-				"&eBalance from &f%name% &to %amount% &2%currency% &set."}));
-		
-		
-		
-		base = "CmdMoney.";
-		languageKeys.put(base+"Take.DepositWithDraw"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&6%amount% &2%currency% &ewurde von &6%name1% &ean &6%name2% &eüberwiesen.",
-				"&6%amount% &2%currency% &ewas transferred from &6%name1% &eto &6%name2%&e."}));
-		languageKeys.put(base+"Take.DepositWithDrawBalance"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eAktuelles Guthaben von &6%name%&e: &6%balance% &2%currency%",
-				"&eCurrent balance of &6%name%&e: &6%balance% &2%currency%"}));
-		languageKeys.put(base+"Take.NoFullAmount"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cAchtung, der Spieler hatte nicht die erforderlichen &f%amount% &2%currency%! Die Transaktion wurde nicht durchgeführt!",
-				"&cAttention, the player did not have the required &f%amount% &2%currency%! The transaction was not completed!"}));
-		
-		languageKeys.put(base+"Toggle.SetOn"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eNachrichten die das Spielerkonto betreffen, werden nun &aangezeigt&e!",
-				"&eMessages concerning the player account are now &adisplayed&e!"}));
-		languageKeys.put(base+"Toggle.SetOff"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eNachrichten die das Spielerkonto betreffen, werden nun &causgeblendet&e!",
-				"&eMessages concerning the player account are now &chidden&e!"}));
-		
-		languageKeys.put(base+"Top.NotEnoughValues"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cEs gibt nicht genügend Werte für diese Seitenzahl!",
-				"&cThere are not enough values for this page number!"}));
-		languageKeys.put(base+"Top.Headline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=======&7[&2Economy &bTop &eSeite %page%&7]&e=======",
-				"&e=======&7[&2Economy &bTop &epage %page%&7]&e======="}));
-		languageKeys.put(base+"Top.TopLine"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e%place%. &b%player%: &6%balance% &2%currency%",
-				"&e%place%. &b%player%: &6%balance% &2%currency%"}));
-		
-		languageKeys.put(base+"TrendDiagram.NotEnoughValues"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cEs gibt nicht genügend Werte für diese Seitenzahl!",
-				"&cThere are not enough values for this page number!"}));
-		languageKeys.put(base+"TrendDiagram.Headline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=====&7[&2Economy &bTrenddiagramm: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
-				"&e=====&7[&2Economy &bTrenddiagram: &f%name%&7 | Log-Quantity: %amount%&7]&e====="}));
-		languageKeys.put(base+"TrendDiagram.HeadlineII"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=====&7[&2Economy &bAktiondiagramm: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
-				"&e=====&7[&2Economy &bActiondiagram: &f%player%&7 | Log-Quantity: %amount%&7]&e====="}));
-		languageKeys.put(base+"TrendDiagram.Infoline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cMin %min% &f)|( &aMax %max% &f>> &6Mittelwert/line: &e%median%",
-				"&cMin %min% &f)|( &aMax %max% &f>> &6average value/line: &e%median%"}));
-		languageKeys.put(base+"TrendDiagram.Positiv"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"Relative Änderung: &a%relativ% &f| &a%percent% %",
-				"Relative change: &a%relativ% &f| &a%percent% %"}));
-		languageKeys.put(base+"TrendDiagram.Negativ"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"Relative Änderung: &c%relativ% &f| &c%percent% %",
-				"Relative change: &c%relativ% &f| &c%percent% %"}));
-		
-		languageKeys.put(base+"TrendGrafic.NotEnoughValues"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cEs gibt nicht genügend Werte für diese Seitenzahl!",
-				""}));
-		languageKeys.put(base+"TrendGrafic.Headline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=====&7[&2Economy &bTrendgrafik: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
-				"&e=====&7[&2Economy &bTrendgrafic: &f%player%&7 | Log-Quantity: %amount%&7]&e====="}));
-		languageKeys.put(base+"TrendGrafic.HeadlineII"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=====&7[&2Economy &bAktiongrafik: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
-				"&e=====&7[&2Economy &bActiongrafic: &f%player%&7 | Log-Quantity: %amount%&7]&e====="}));
-		
-		languageKeys.put(base+"TrendLog.Headline"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&e=====&7[&2Economy &bTrendLog: &f%player%&7 | Log-Anzahl: %amount%&7]&e=====",
-				"&e=====&7[&2Economy &bTrendLog: &f%player%&7 | Log-Quantity: %amount%&7]&e====="}));
-		languageKeys.put(base+"TrendLog.ChangeNegativ"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7] &a%first% &fbis &c%last%",
-				"&7[&e%date%&7] &a%first% &fto &c%last%"}));
-		languageKeys.put(base+"TrendLog.ChangeNeutral"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7] &b%first% &fbis &b%last%",
-				"&7[&e%date%&7] &b%first% &fto &b%last%"}));
-		languageKeys.put(base+"TrendLog.ChangePositiv"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&7[&e%date%&7] &c%first% &fbis &a%last%",
-				"&7[&e%date%&7] &c%first% &fto &a%last%"}));
-		languageKeys.put(base+"TrendLog.Positiv"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"Relative Änderung: &a%relativ%",
-				"Relative change: &a%relativ%"}));
-		languageKeys.put(base+"TrendLog.Negativ"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"Relative Änderung: &c%relativ%",
-				"Relative change: &c%relativ%"}));
 	}
 	
 	private void langLoan()
@@ -2984,16 +2691,33 @@ public class YamlManager
 		//CommandExecuteType;commands.yml Path
 		currencyKey.put("Commands.SINGLE"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				CommandExecuteType.BALANCE.toString()+";balance",
 				CommandExecuteType.PAY.toString()+";pay",
-				CommandExecuteType.GIVE.toString()+";give"})); //ADDME
+				CommandExecuteType.PAY_THROUGH_GUI.toString()+";paythroughgui",
+				CommandExecuteType.GIVE.toString()+";give",
+				CommandExecuteType.GIVE_CONSOLE.toString()+";giveconsole",
+				CommandExecuteType.TAKE.toString()+";take",
+				CommandExecuteType.TAKE_CONSOLE.toString()+";takeconsole",
+				CommandExecuteType.SET.toString()+";set",
+				CommandExecuteType.SET_CONSOLE.toString()+";setconsole"}));
 		currencyKey.put("Commands.NESTED"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				CommandExecuteType.BALANCE.toString()+";money",
 				CommandExecuteType.PAY.toString()+";money_pay",
-				CommandExecuteType.GIVE.toString()+";money_give"}));
+				CommandExecuteType.PAY_THROUGH_GUI.toString()+";money_paythroughgui",
+				CommandExecuteType.GIVE.toString()+";money_give",
+				CommandExecuteType.GIVE_CONSOLE.toString()+";money_giveconsole",
+				CommandExecuteType.TAKE.toString()+";money_take",
+				CommandExecuteType.TAKE_CONSOLE.toString()+";money_takeconsole",
+				CommandExecuteType.SET.toString()+";money_set",
+				CommandExecuteType.SET_CONSOLE.toString()+";money_setconsole"}));
 		currencyKey.put("Taxation"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				TaxationCase.TRANSACTION_BETWEEN_PLAYERS.toString()+";false;"+0.01,
-				TaxationCase.CURRENCY_EXCHANGE.toString()+";false;"+0.05})); //ADDME
+				TaxationCase.CURRENCY_EXCHANGE.toString()+";false;"+0.05,
+				TaxationCase.LOANLENDING+";false;"+0.01,
+				TaxationCase.LOANREPAYING+";false;"+0.01,
+				TaxationCase.STANDINGORDER+";false;"+0.01}));
 		currencyKey.put("Format.GradationQuantity"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				1}));
@@ -3105,16 +2829,33 @@ public class YamlManager
 		//CommandExecuteType;commands.yml Path
 		currencyKeyII.put("Commands.SINGLE"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				CommandExecuteType.BALANCE.toString()+";balance",
 				CommandExecuteType.PAY.toString()+";pay",
-				CommandExecuteType.GIVE.toString()+";give"})); //ADDME
+				CommandExecuteType.PAY_THROUGH_GUI.toString()+";paythroughgui",
+				CommandExecuteType.GIVE.toString()+";give",
+				CommandExecuteType.GIVE_CONSOLE.toString()+";giveconsole",
+				CommandExecuteType.TAKE.toString()+";take",
+				CommandExecuteType.TAKE_CONSOLE.toString()+";takeconsole",
+				CommandExecuteType.SET.toString()+";set",
+				CommandExecuteType.SET_CONSOLE.toString()+";setconsole"}));
 		currencyKeyII.put("Commands.NESTED"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				CommandExecuteType.BALANCE.toString()+";money",
 				CommandExecuteType.PAY.toString()+";money_pay",
-				CommandExecuteType.GIVE.toString()+";money_give"}));
+				CommandExecuteType.PAY_THROUGH_GUI.toString()+";money_paythroughgui",
+				CommandExecuteType.GIVE.toString()+";money_give",
+				CommandExecuteType.GIVE_CONSOLE.toString()+";money_giveconsole",
+				CommandExecuteType.TAKE.toString()+";money_take",
+				CommandExecuteType.TAKE_CONSOLE.toString()+";money_takeconsole",
+				CommandExecuteType.SET.toString()+";money_set",
+				CommandExecuteType.SET_CONSOLE.toString()+";money_setconsole"}));
 		currencyKeyII.put("Taxation"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				TaxationCase.TRANSACTION_BETWEEN_PLAYERS.toString()+";false;"+0.01,
-				TaxationCase.CURRENCY_EXCHANGE.toString()+";false;"+0.05})); //ADDME
+				TaxationCase.CURRENCY_EXCHANGE.toString()+";false;"+0.05,
+				TaxationCase.LOANLENDING+";false;"+0.01,
+				TaxationCase.LOANREPAYING+";false;"+0.01,
+				TaxationCase.STANDINGORDER+";false;"+0.01}));
 		currencyKeyII.put("Format.GradationQuantity"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				1}));

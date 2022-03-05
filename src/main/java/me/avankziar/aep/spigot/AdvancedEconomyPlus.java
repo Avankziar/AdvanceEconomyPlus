@@ -17,9 +17,11 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.spigot.api.LoggerApi;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyCommandSetup;
@@ -45,7 +47,7 @@ import main.java.me.avankziar.aep.spigot.hook.QuickShopHook;
 import main.java.me.avankziar.aep.spigot.listener.GuiPayListener;
 import main.java.me.avankziar.aep.spigot.listener.PlayerListener;
 import main.java.me.avankziar.aep.spigot.listenerhandler.LoggerSettingsListenerHandler;
-import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee;
 
 public class AdvancedEconomyPlus extends JavaPlugin
 {
@@ -61,6 +63,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	private static VaultApi vaultApi;
 	private static IFHApi ifhApi;
+	private static MessageToBungee mtb = null;
 	
 	public static boolean isPapiRegistered = false;
 	
@@ -124,6 +127,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		setupExtraPermission();
 		new CurrencyCommandSetup(plugin).setupCommand();
 		setupPlaceholderAPI();
+		setupMessageToBungee();
 	}
 	
 	public void onDisable()
@@ -386,6 +390,41 @@ public class AdvancedEconomyPlus extends JavaPlugin
         ServicePriority.Normal);
     	log.info(pluginName + " detected InterfaceHub >>> Economy.class is provided!");
 		return false;
+	}
+	
+	private void setupMessageToBungee() 
+	{
+        if (Bukkit.getPluginManager().getPlugin("InterfaceHub") == null) 
+        {
+            return;
+        }
+        new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+			    if(i == 20)
+			    {
+				cancel();
+				return;
+			    }
+			    RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee> rsp = 
+	                             getServer().getServicesManager().getRegistration(MessageToBungee.class);
+			    if (rsp == null) 
+			    {
+	                        i++;
+			        return;
+			    }
+			    mtb = rsp.getProvider();
+			    cancel();
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+	}
+	
+	public MessageToBungee getMtB()
+	{
+		return mtb;
 	}
 	
 	public boolean existHook(String externPluginName)

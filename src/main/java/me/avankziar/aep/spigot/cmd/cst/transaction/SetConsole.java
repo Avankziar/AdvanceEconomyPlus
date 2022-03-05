@@ -251,6 +251,6 @@ public class SetConsole extends ArgumentModule implements CommandExecutor
 		{
 			sender.sendMessage(ChatApi.tl(s));
 		}
-		//ADDME Other Owner toAccount | Sound? | Moneyflow beachten
+		Pay.sendToOther(plugin, from, list);
 	}
 }

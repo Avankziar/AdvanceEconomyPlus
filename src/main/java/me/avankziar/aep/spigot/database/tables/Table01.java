@@ -6,41 +6,36 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.UUID;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 
-public interface OLDTableI
+public interface Table01
 {	
-	default boolean createIOLD(AdvancedEconomyPlus plugin, Object object) 
+	default boolean createI(AdvancedEconomyPlus plugin, Object object) 
 	{
-		if(!(object instanceof OLD_AEPUser))
+		if(!(object instanceof AEPUser))
 		{
 			return false;
 		}
-		OLD_AEPUser ep = (OLD_AEPUser) object;
+		AEPUser el = (AEPUser) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) {
 			try 
 			{
-				String sql = "INSERT INTO `" + MysqlHandler.Type.OLDPLAYER.getValue()
-						+ "`(`player_uuid`, `player_name`, `balance`, `bankaccountlist`,"
-						+ " `moneyplayerflow`, `moneybankflow`, `generalmessage`, `pendinginvite`, `frozen`) " 
-						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String sql = "INSERT INTO `" + MysqlHandler.Type.PLAYERDATA.getValue()
+						+ "`(`player_uuid`, `player_name`, `wallet_moneyflow_notification`, `bank_moneyflow_notification`,"
+						+ " `unixtime`) " 
+						+ "VALUES(?, ?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
-		        preparedStatement.setString(1, ep.getUUID());
-		        preparedStatement.setString(2, ep.getName());
-		        preparedStatement.setDouble(3, ep.getBalance());
-		        preparedStatement.setString(4, String.join(";", ep.getBankAccountNumber()));
-		        preparedStatement.setBoolean(5, ep.isMoneyBankFlow());
-		        preparedStatement.setBoolean(6, ep.isMoneyPlayerFlow());
-		        preparedStatement.setBoolean(7, ep.isGeneralMessage());
-		        preparedStatement.setString(8, ep.getPendingInvite());
-		        preparedStatement.setBoolean(9, ep.isFrozen());
+		        preparedStatement.setString(1, el.getUUID().toString());
+		        preparedStatement.setString(2, el.getName());
+		        preparedStatement.setBoolean(3, el.isWalletMoneyFlowNotification());
+		        preparedStatement.setBoolean(4, el.isBankMoneyFlowNotification());
+		        preparedStatement.setLong(5, el.getLastTimeLogin());
 		        
 		        preparedStatement.executeUpdate();
 		        return true;
@@ -65,9 +60,9 @@ public interface OLDTableI
 		return false;
 	}
 	
-	default boolean updateDataIOLD(AdvancedEconomyPlus plugin, Object object, String whereColumn, Object... whereObject) 
+	default boolean updateDataI(AdvancedEconomyPlus plugin, Object object, String whereColumn, Object... whereObject) 
 	{
-		if(!(object instanceof OLD_AEPUser))
+		if(!(object instanceof AEPUser))
 		{
 			return false;
 		}
@@ -75,29 +70,24 @@ public interface OLDTableI
 		{
 			return false;
 		}
-		OLD_AEPUser ep = (OLD_AEPUser) object;
+		AEPUser el = (AEPUser) object;
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
 		if (conn != null) 
 		{
 			try 
 			{
-				String data = "UPDATE `" + MysqlHandler.Type.OLDPLAYER.getValue()
-						+ "` SET `player_uuid` = ?, `player_name` = ?, `balance` = ?,"
-						+ " `bankaccountlist` = ?, `moneyplayerflow` = ?, `moneybankflow` = ?, `generalmessage` = ?,"
-						+ " `pendinginvite` = ?, `frozen` = ?" 
+				String data = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
+						+ "` SET `player_uuid` = ?, `player_name` = ?, `wallet_moneyflow_notification` = ?, `bank_moneyflow_notification`, = ?"
+						+ " `unixtime` = ?"
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
-				preparedStatement.setString(1, ep.getUUID());
-		        preparedStatement.setString(2, ep.getName());
-		        preparedStatement.setDouble(3, ep.getBalance());
-		        preparedStatement.setString(4, String.join(";", ep.getBankAccountNumber()));
-		        preparedStatement.setBoolean(5, ep.isMoneyPlayerFlow());
-		        preparedStatement.setBoolean(6, ep.isMoneyBankFlow());
-		        preparedStatement.setBoolean(7, ep.isGeneralMessage());
-		        preparedStatement.setString(8, ep.getPendingInvite());
-		        preparedStatement.setBoolean(9, ep.isFrozen());
-		        int i = 10;
+				preparedStatement.setString(1, el.getUUID().toString());
+		        preparedStatement.setString(2, el.getName());
+		        preparedStatement.setBoolean(3, el.isWalletMoneyFlowNotification());
+		        preparedStatement.setBoolean(4, el.isBankMoneyFlowNotification());
+		        preparedStatement.setLong(5, el.getLastTimeLogin());
+		        int i = 6;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -123,7 +113,7 @@ public interface OLDTableI
         return false;
 	}
 	
-	default Object getDataIOLD(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
+	default Object getDataI(AdvancedEconomyPlus plugin, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -132,7 +122,7 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue() 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYERDATA.getValue() 
 						+ "` WHERE "+whereColumn+" LIMIT 1";
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
@@ -145,22 +135,12 @@ public interface OLDTableI
 		        result = preparedStatement.executeQuery();
 		        while (result.next()) 
 		        {
-		        	String bankacc = result.getString("bankaccountlist");
-		        	List<String> lists = new ArrayList<>();
-		        	if(bankacc != null)
-		        	{
-		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
-		        	}
-		        	return new OLD_AEPUser(result.getInt("id"),
-		        			result.getString("player_uuid"),
+		        	return new AEPUser(
+		        			UUID.fromString(result.getString("player_uuid")),
 		        			result.getString("player_name"),
-		        			result.getDouble("balance"),
-		        			lists,
-		        			result.getBoolean("moneyplayerflow"),
-		        			result.getBoolean("moneybankflow"),
-		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"),
-		        			result.getBoolean("frozen"));
+		        			result.getBoolean("wallet_moneyflow_notification"), 
+		        			result.getBoolean("bank_moneyflow_notification"),
+		        			result.getLong("unixtime"));
 		        }
 		    } catch (SQLException e) 
 			{
@@ -186,8 +166,8 @@ public interface OLDTableI
 		return null;
 	}
 	
-	default ArrayList<OLD_AEPUser> getListIOLD(AdvancedEconomyPlus plugin, String orderByColumn,
-			int start, int end, String whereColumn, Object...whereObject)
+	default ArrayList<AEPUser> getListI(AdvancedEconomyPlus plugin, String orderByColumn,
+			int start, int end, String whereColumn, Object... whereObject)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -195,9 +175,9 @@ public interface OLDTableI
 		if (conn != null) 
 		{
 			try 
-			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue()
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+			{
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYERDATA.getValue() 
+					+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -206,26 +186,16 @@ public interface OLDTableI
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<OLD_AEPUser> list = new ArrayList<OLD_AEPUser>();
+		        ArrayList<AEPUser> list = new ArrayList<>();
 		        while (result.next()) 
 		        {
-		        	String bankacc = result.getString("bankaccountlist");
-		        	List<String> lists = new ArrayList<>();
-		        	if(bankacc != null)
-		        	{
-		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
-		        	}
-		        	OLD_AEPUser ep = new OLD_AEPUser(result.getInt("id"),
-		        			result.getString("player_uuid"),
+		        	AEPUser el = new AEPUser(
+		        			UUID.fromString(result.getString("player_uuid")),
 		        			result.getString("player_name"),
-		        			result.getDouble("balance"),
-		        			lists,
-		        			result.getBoolean("moneyplayerflow"),
-		        			result.getBoolean("moneybankflow"),
-		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"),
-		        			result.getBoolean("frozen"));
-		        	list.add(ep);
+		        			result.getBoolean("wallet_moneyflow_notification"), 
+		        			result.getBoolean("bank_moneyflow_notification"),
+		        			result.getLong("unixtime"));
+		        	list.add(el);
 		        }
 		        return list;
 		    } catch (SQLException e) 
@@ -252,7 +222,7 @@ public interface OLDTableI
 		return null;
 	}
 	
-	default ArrayList<OLD_AEPUser> getTopIOLD(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
+	default ArrayList<AEPUser> getTopI(AdvancedEconomyPlus plugin, String orderByColumn, int start, int end)
 	{
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -261,31 +231,21 @@ public interface OLDTableI
 		{
 			try 
 			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue() 
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYERDATA.getValue() 
 						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();
-		        ArrayList<OLD_AEPUser> list = new ArrayList<OLD_AEPUser>();
+		        ArrayList<AEPUser> list = new ArrayList<AEPUser>();
 		        while (result.next()) 
 		        {
-		        	String bankacc = result.getString("bankaccountlist");
-		        	List<String> lists = new ArrayList<>();
-		        	if(bankacc != null)
-		        	{
-		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
-		        	}
-		        	OLD_AEPUser ep = new OLD_AEPUser(result.getInt("id"),
-		        			result.getString("player_uuid"),
+		        	AEPUser el = new AEPUser(
+		        			UUID.fromString(result.getString("player_uuid")),
 		        			result.getString("player_name"),
-		        			result.getDouble("balance"),
-		        			lists,
-		        			result.getBoolean("moneyplayerflow"),
-		        			result.getBoolean("moneybankflow"),
-		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"),
-		        			result.getBoolean("frozen"));
-		        	list.add(ep);
+		        			result.getBoolean("wallet_moneyflow_notification"), 
+		        			result.getBoolean("bank_moneyflow_notification"),
+		        			result.getLong("unixtime"));
+		        	list.add(el);
 		        }
 		        return list;
 		    } catch (SQLException e) 
@@ -312,7 +272,7 @@ public interface OLDTableI
 		return null;
 	}
 	
-	default ArrayList<OLD_AEPUser> getAllListAtIOLD(AdvancedEconomyPlus plugin, String orderByColumn,
+	default ArrayList<AEPUser> getAllListAtI(AdvancedEconomyPlus plugin, String orderByColumn,
 			String whereColumn, Object...whereObject) throws IOException
 	{
 		PreparedStatement preparedStatement = null;
@@ -321,9 +281,10 @@ public interface OLDTableI
 		if (conn != null) 
 		{
 			try 
-			{			
-				String sql = "SELECT * FROM `" + MysqlHandler.Type.OLDPLAYER.getValue()
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
+			{
+				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYERDATA.getValue()
+				+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn;
+				
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -332,26 +293,16 @@ public interface OLDTableI
 		        	i++;
 		        }
 		        result = preparedStatement.executeQuery();
-		        ArrayList<OLD_AEPUser> list = new ArrayList<OLD_AEPUser>();
+		        ArrayList<AEPUser> list = new ArrayList<AEPUser>();
 		        while (result.next()) 
 		        {
-		        	String bankacc = result.getString("bankaccountlist");
-		        	List<String> lists = new ArrayList<>();
-		        	if(bankacc != null)
-		        	{
-		        		lists = Arrays.asList(result.getString("bankaccountlist").split(";"));
-		        	}
-		        	OLD_AEPUser ep = new OLD_AEPUser(result.getInt("id"),
-		        			result.getString("player_uuid"),
+		        	AEPUser el = new AEPUser(
+		        			UUID.fromString(result.getString("player_uuid")),
 		        			result.getString("player_name"),
-		        			result.getDouble("balance"),
-		        			lists,
-		        			result.getBoolean("moneyplayerflow"),
-		        			result.getBoolean("moneybankflow"),
-		        			result.getBoolean("generalmessage"),
-		        			result.getString("pendinginvite"),
-		        			result.getBoolean("frozen"));
-		        	list.add(ep);
+		        			result.getBoolean("wallet_moneyflow_notification"), 
+		        			result.getBoolean("bank_moneyflow_notification"),
+		        			result.getLong("unixtime"));
+		        	list.add(el);
 		        }
 		        return list;
 		    } catch (SQLException e) 

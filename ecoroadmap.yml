@@ -1,5 +1,4 @@
 Future ==============================================================================================================================
-- Banksystem
 - PersonAktien:
   - Jeder Spieler hat x-Anzahl Aktien(Perm). Jede unverkaufte Aktie hat eine Rendite von y-%. Jede Verkaufte(n) Aktien haben ein festgelegte
     Rendite, die zum Verkauf bestanden haben.
@@ -21,24 +20,12 @@ Future =========================================================================
   - der eigene maximale Leihbetrag kann sich pro abgezahlten Kredit um x erhöhen.
   - Der maximale Zinssatz kann sich pro abgezahlten Krefit um x verringern bis zum absoluten minimum maximalen Leihbetrag.
   - Man kann per Config festlegen, Ob und wieviel Geld man überweisen kann, falls man einen laufenden Kredit hat.
-  - Man kann per Config festlegen, ob und wiehoch man neue StandingsOrder erstellen kann. 
-- Tresorsystem (vaults). Dabei wird in ersten GUI jeweils die eigentlichen Vaults angezeigt, bei klick auf die Vaults
-  öffnet sich dann die eigentliche Vault. Spieler haben eine mindestanzahl von freien Vaults, sowie haben vaults einen
-  vordefinierten Anzahl an freien slots- Vaults können bis zu 54 Slots haben, welche kaufbar sein sollen.
-  Vaults haben einen Eigentümer, sowie eine Mitgliederlist, welcher der Eigentümer einstellen kann.
-  Es muss einstellbar sein, wo die Vaults aufgerufen werden dürfen, aka in Welten oder im Umkreis einer Location.
-  Es sollte so abfragbar sein, dass man entweder pro Spieler (UUID) oder für externe Sachen (Gilde etc.) (SchlüsselString Bspw. njuadwcwi215)
-  angeben muss. So kann man für die Api es besser aufteilen. Eventuell auf für BANKEN so machen.
-- Befehle einführen, welche den Spieler ermöglichen, anderen Spielern das Recht zu geben, ihre Logs etc anzuschauen.
+  - Man kann per Config festlegen, ob und wiehoch man neue StandingsOrder erstellen kann
 - Einstellen, dass falls Mechaniken nicht genutzt werden, die in Ingame Hilfe und TabComplet nicht angezeigt werden.
-- Steuern:
-  - Transaktionsteuer
-  - Playerkonto- & Bankkontosteuer. Einstellbar Zeiteinheit und Betrag, sowie wenn Prozentual dann die Prozente.
 - Neue Mysql mit Tagensdaten, wieviel Geld ins und aus dem System gegangen ist. Mit Grafik oder ähnlich arbeiten.
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
 - LoadBefore Essential
 - mysql struktur änderung bezüglich Orderby und DESC
-- Cleanup system für user und loggersystem einbauen.
   
 - BungeeCord Geldunterstützung anbieten.
 - Waren in der ger.yml Rechtschreibfeher beim Loggersetting drin
@@ -46,22 +33,21 @@ Future =========================================================================
       die GUI aufgefordert wird!'
 	 LoggerSettingsTextSuggest: '&eKlicke hier auf die Nachricht, um einen Befehlsvorschlag
       zu erhalten. Tippe dann deinen Suchtext ein und drücke &b>Enter<'
-- Bungee wie Spigot MysqlSetup connection und Reconnection treiber updaten, siehe Scc
 - Loggersetting spawnen nicht in englisch.
+- Mysql Performance in allen Tabellen hinzufügen. Siehe scc
 
 Build 4 =============================================================================================================================
-- Mysql:
-  - Datenbank wo nur SpielerUUID, Spielername enthalten sind. Wegen der ConvertUUIDToPlayername
-  - Datenbank wo alle Accounts sind, egal ob wallets oder bankaccounts, auch die von Entitys oder server.
-    - Accountnamen sind NICHT global einzigartig. Sie sind NUR einzigartig beim Spieler selber, sodass er keine zwei account haben kann,
-      die gleich heißen.
-    - Accounts werden bei cmd anhand der id oder accountname sowie spielername gefunden.
-    - Accounts werden intern anhand des uuid, des accounttyps und der accountcategory (default = MAIN) ausgesucht
-  - Datenbank wo alle Default Account (Wallets wie Bankaccounts) für alle existierenden Währungen vorhanden sind.
-    Sie sind per Category abrufbar und einstellbar.
-    UUID, Currency, AccountID, Category
-    - Die Defaultaccounts sind die, die für alle internen normalen abläufe zuständig sind.
-  - Datenbank wo per accountID und uuid die rechte hinterlegt sind
++ Mysql:
+  + Datenbank hinzugefügt für:
+    + Entitys und Server
+    + Spielerdaten (überarbeitete Version)
+    + Accounts
+    + AccountManagement
+    + DefaultAccounts
+    + QuickpayAccounts
++ Wenn Spieler zum ersten Mal joinen nachdem AEP installiert worden ist, werden alle Accounts jeder Währung anhand derer Dateien erstellt.
+  Sollte vorher schon AEP installiert worden sein und der Spieler hatte einen alten Account gehabt, wird dieser convertiert und das Geld dem
+  ersten neuen Account angerechnet.
 + Änderung aller Transaktionsbefehle von <VonSpieler> <ZuSpieler> in <VonSpielername> <VonAccountname> <Zuspielername> <ZuAccountname>
 + Alle Transaktionsbefehle sind nun asynchron.
 + ActionLog LocateDateTime in long (Unix) geändert.
@@ -87,36 +73,37 @@ Build 4 ========================================================================
 + Wenn Spieleraccounts über dem Overdue + Löschungsdatum sind, werden sie nach dem Serverrestart gelöscht mit Consolenmeldung.
 + Wenn Do.DeleteAccountsDaysAfterOverdue in der Config kleiner 0 ist, wird die Löschung NICHT ausgeführt.
 + Um Accounts eröffnen zu können, muss wird die CountPerm aep.countaccount.<accounttype>.<anzahl> genutzt werden.
-  
++ Zurzeit werden nur Digitale Währungen unterstützt.
++ Vault ist weiterhin unterstützt, jedoch wird dringend geraten besser IFH Economy unterstützte Plugins zu nutzen.
++ Falls AEP schon installiert war, wird beim ersten join vom Spieler alte Konten konvertiert.
++ Do.OnDeath.MoneyInWalletLostInPercent regelt, wieviel Spieler an Geld verlieren, in Prozent, auf allen Konten vom Typ Wallet.
+  Wenn Wert kleiner 0, Mechanik deaktiviert.
++ Do.Bankaccount.TimeToWithdrawAccountManagementFees definiert an welchem Tag in der Woche
+  (Erste Zahl vor dem Bindestrich, dabei ist 1 == Montag und 7 == Sonntag), um welche Uhrzeit die Kontoführungsgebühren
+  abgezogen werden. Nur für den AccountType = Bank.
+  + Do.Bankaccount.AccountManagementFeesAsLumpSum definiert, bei welcher Währung, wieviel als Pauschalbetrag von den Accounts mit der jeweiligen
+    AccountKategorie abgezogen werden soll. Ist die Währung oder die AccountKategorie nicht valide wird es übersprungen sowie auch, wenn der Betrag
+    kleiner als 0.0 ist.
+  + Do.Bankaccount.AccountManagementFeesAsPercent definiert, bei welcher Währung, wieviel als Prozentbetrag von den Accounts mit der jeweilgen
+    AccountKategorie abgezogen werden soll. Ist die Währung oder die AccountKategorie nicht valide wird es übersprungen sowie auch, wenn der 
+    ProzentBetrag kleiner als 0.0 oder größer als 100.0 ist.
++ Do.Bankaccount.TimeToDepositInterest definiert an welchem Tag in der Woche
+  (Erste Zahl vor dem Bindestrich, dabei ist 1 == Montag und 7 == Sonntag), um welche Uhrzeit die Zinsen auf das Konto eingezahl wird.
+  Nur für den AccountType = Bank.
+  + Do.Bankaccount.InterestAsPercent definiert, bei welcher Währung, wieviel als Prozentbetrag an Zinsen an die Accounts gezahlt werden soll.
+    Ist die Währung oder die AccountKategorie nicht valide wird es übersprungen sowie auch, wenn der ProzentBetrag kleiner als 0.0 ist.
++ StandingOrder.DeleteAfterIsCancelledOrPausedInDays löscht beim ServerStart alle StandingOrders wo die letzte Zahl länger als x Tage ist.
+  Ist der Wert kleiner 0, ist die Funktion deaktiviert.
++ IFH MessageToBungee als Consumer installiert. Ersetzt den vorherigen Bungeepart zur Nachrichtenkomunikation bei Transaktionen.
++
+    
   Todo:
-  - Die Commands.yml komplett überarbeiten, siehe CurrencyCommandSetup
-  - MysqlTabellen Setup schreiben
-  - MysqlTabellen TableXY schreiben
-  - Die mysqlsetup überarbeiten um wörter mit _ zu trennen.
-  - Mysql den desc aus den methoden nehmen.
-  - Im Joinlistener, den Spieler regestrieren und seine Konten erstellen. sollten alte Konten vorhanden sein, diese convertieren.
-  - ActionLog mit einer category versehen, Object, wie MysqlTabelle
-  - Mysql Performance in allen Tabellen hinzufügen. Siehe scc
   - Config Value einbauen um Überweisungen auf Cooldown zu halten.
-  - Steuer Config Werte für Überweisungen, Bankkonten dauer.
-  - Permission für alle AccountCategory machen, um sie als DefaultAccounts machen können.
-    CountPerm für die Anzahl an Accounts Wallets wie Banks.
-  - Bei der Currency .yml einen Boolean ob bei einem Umtausch von dieser Währung zu einer anderen,
-    Steuern vorher (Diese Währung) oder nachher (die andere Währung) abgezogen werden soll.
-  - CurrenyConfig Wert einbauen, um definieren zu können, ob man selbst erstellte Accounts löschen kann.
-    Dazu ein boolean wert in der mysql für vordefinierte Accounts.
-  - CurrencyConfig eine Liste bauen, um zu definieren von welcher Category man Welche art von Account man erstellen darf, wie teuer die sind
-    und die Countpermission für die Anzahl an Accounts.
   - Permission festlegen um Währungen umzutauschen => <RestPerm>.<WährungVon>.<WährungZu>
   - Eventuell einen boolean bei den Transactionen einbauen, welches erlaubt das der Withdraw account in den Minus gehen kann.
-  - Beim Pay account noch das anstehende beachten in der klasse selbst
   - LoggerSettings query ändern
   - LoggerSettings adding %account_owner_name%, %account_owner_type%
   - LoggerSettings Slot 3 => AccountID, Slot 5 => Category für die Dateien ändern
-  - Standingorder BackgroundTask löschfunktion, wenn dies Abgebrochen wurde nach x Tagen oder pausiert nach y Tagen. Configwerte
-  - Configwerte, wieviel man an Geld verliert beim Tod.
-  - IFH ToBungee einbauen.
-  - Perms einbauen um zu definieren, wieviele Accounts man für welchen typ, für welchen Kategorie erstellen darf.
   - Tablisten für Pay befehle für alle Spieler eine listen anlegen mit deren Accountnamen.
 
 Build 3 ============================================================================================================================

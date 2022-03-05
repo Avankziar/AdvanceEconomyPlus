@@ -24,7 +24,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
+import main.java.me.avankziar.aep.spigot.object.AccountManagement;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;

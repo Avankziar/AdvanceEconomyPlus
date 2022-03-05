@@ -2,6 +2,7 @@ package main.java.me.avankziar.aep.spigot.api.economy;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -47,17 +48,18 @@ import main.java.me.avankziar.aep.spigot.cmd.loan.LoanAccept;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanAmount;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanCancel;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanCreate;
+import main.java.me.avankziar.aep.spigot.cmd.loan.LoanForgive;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanInfo;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanInherit;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanList;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanPause;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanPayback;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanReject;
-import main.java.me.avankziar.aep.spigot.cmd.loan.LoanForgive;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanRepay;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanSend;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanTime;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanTransfer;
+import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderAmount;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderCancel;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderCreate;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderDelete;
@@ -66,7 +68,6 @@ import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderList;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderPause;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderRepeatingtime;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderStarttime;
-import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderAmount;
 import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
@@ -75,7 +76,12 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
+import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.spigot.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 
 public class CurrencyCommandSetup
@@ -87,12 +93,13 @@ public class CurrencyCommandSetup
 	private LinkedHashMap<Integer, ArrayList<String>> pMapIII = new LinkedHashMap<>();
 	private LinkedHashMap<Integer, ArrayList<String>> pMapIV = new LinkedHashMap<>();
 	private LinkedHashMap<Integer, ArrayList<String>> pMapV = new LinkedHashMap<>();
+	private ArrayList<String> accountmap = new ArrayList<>();
 	
 	public CurrencyCommandSetup(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
 		setupPlayers();
-		playerarray = getPlayers();
+		setupAccount();
 		
 		Collections.sort(playerarray);
 		pMapI.put(1, playerarray);
@@ -261,12 +268,12 @@ public class CurrencyCommandSetup
 		arglist.add(deletelog);
 		
 		ArgumentConstructor deleteallplayeraccounts = new ArgumentConstructor(
-				CommandExecuteType.DELETEALLPLAYERACCOUNTS, "aep_deleteallplayeraccounts", 0, 1, 1, false, null);
+				CommandExecuteType.DELETEALLPLAYERACCOUNTS, "aep_deleteallplayeraccounts", 0, 1, 1, false, pMapI);
 		new DeleteAllPlayerAccounts(deleteallplayeraccounts);
 		arglist.add(deleteallplayeraccounts);
 		
 		ArgumentConstructor player = new ArgumentConstructor(
-				CommandExecuteType.PLAYER, "aep_player", 0, 0, 2, false, null);
+				CommandExecuteType.PLAYER, "aep_player", 0, 0, 2, false, pMapI);
 		new Players(player);
 		arglist.add(player);
 		
@@ -299,22 +306,58 @@ public class CurrencyCommandSetup
 	
 	private void addAccountArgumentConstructor(ArrayList<ArgumentConstructor> arglist)
 	{
+		LinkedHashMap<Integer, ArrayList<String>> pMapIIacc = pMapII;
+		pMapIIacc.put(3, accountmap);
+		LinkedHashMap<Integer, ArrayList<String>> pMapIIacc_p = pMapIIacc;
+		pMapIIacc_p.put(4, playerarray);
+		pMapIIacc_p.put(5, accountmap);
+		
+		LinkedHashMap<Integer, ArrayList<String>> ec_p_acn_acc_act_eeet = new LinkedHashMap<>();
+		ArrayList<String> ec = new ArrayList<>();
+		for(EconomyCurrency ecu : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
+		{
+			ec.add(ecu.getUniqueName());
+		}
+		ArrayList<String> acc = new ArrayList<>();
+		for(AccountCategory a : new ArrayList<AccountCategory>(EnumSet.allOf(AccountCategory.class)))
+		{
+			acc.add(a.toString());
+		}
+		ArrayList<String> act = new ArrayList<>();
+		for(AccountType a : new ArrayList<AccountType>(EnumSet.allOf(AccountType.class)))
+		{
+			act.add(a.toString());
+		}
+		ArrayList<String> eeet = new ArrayList<>();
+		for(EconomyEntity.EconomyType a : new ArrayList<EconomyEntity.EconomyType>(EnumSet.allOf(EconomyEntity.EconomyType.class)))
+		{
+			eeet.add(a.toString());
+		}
+		ec_p_acn_acc_act_eeet.put(2, ec);
+		ec_p_acn_acc_act_eeet.put(3, playerarray);
+		ec_p_acn_acc_act_eeet.put(4, accountmap);
+		ec_p_acn_acc_act_eeet.put(5, acc);
+		ec_p_acn_acc_act_eeet.put(6, act);
+		ec_p_acn_acc_act_eeet.put(7, eeet);
+		LinkedHashMap<Integer, ArrayList<String>> mapIIacc = new LinkedHashMap<>();
+		mapIIacc.put(2, accountmap);	
+		
 		ArgumentConstructor accountclose = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_CLOSE, "aep_account_close", 1, 2, 4, false, null);
+				CommandExecuteType.ACCOUNT_CLOSE, "aep_account_close", 1, 2, 4, false, pMapIIacc);
 		ArgumentConstructor accountmanage = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_MANAGE, "aep_account_manage", 1, 6, 6, false, null);
+				CommandExecuteType.ACCOUNT_MANAGE, "aep_account_manage", 1, 6, 6, false, pMapIIacc_p);
 		ArgumentConstructor accountopen = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_OPEN, "aep_account_open", 1, 6, 8, false, null);
+				CommandExecuteType.ACCOUNT_OPEN, "aep_account_open", 1, 6, 8, false, ec_p_acn_acc_act_eeet);
 		ArgumentConstructor accountoverdue = new ArgumentConstructor(
 				CommandExecuteType.ACCOUNT_OVERDUE, "aep_account_overdue", 1, 1, 1, false, null);
 		ArgumentConstructor accountsetdefault = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_SETDEFAULT, "aep_account_setdefault", 1, 4, 4, false, null);
+				CommandExecuteType.ACCOUNT_SETDEFAULT, "aep_account_setdefault", 1, 4, 4, false, pMapIIacc);
 		ArgumentConstructor accountsetname = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_SETNAME, "aep_account_setname", 1, 5, 5, false, null);
+				CommandExecuteType.ACCOUNT_SETNAME, "aep_account_setname", 1, 5, 5, false, pMapIIacc);
 		ArgumentConstructor accountsetowner = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_SETOWNER, "aep_account_setowner", 1, 5, 5, false, null);
+				CommandExecuteType.ACCOUNT_SETOWNER, "aep_account_setowner", 1, 5, 5, false, pMapIIacc_p);
 		ArgumentConstructor accountsetquickpay = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_SETQUICKPAY, "aep_account_setquickpay", 1, 3, 3, false, null);
+				CommandExecuteType.ACCOUNT_SETQUICKPAY, "aep_account_setquickpay", 1, 3, 3, false, mapIIacc);
 		
 		ArgumentConstructor account = new ArgumentConstructor(
 				CommandExecuteType.ACCOUNT, "aep_account", 0, 0, 0, false, null,
@@ -481,6 +524,16 @@ public class CurrencyCommandSetup
 		{
 			return;
 		}
+		LinkedHashMap<Integer, ArrayList<String>> map_p_acn_0_p_acn = new LinkedHashMap<>();
+		map_p_acn_0_p_acn.put(0, playerarray);
+		map_p_acn_0_p_acn.put(1, accountmap);
+		map_p_acn_0_p_acn.put(3, playerarray);
+		map_p_acn_0_p_acn.put(4, accountmap);
+		LinkedHashMap<Integer, ArrayList<String>> map_0_p = new LinkedHashMap<>();
+		map_0_p.put(1, playerarray);
+		LinkedHashMap<Integer, ArrayList<String>> map_p_acn = new LinkedHashMap<>();
+		map_p_acn.put(1, playerarray);
+		map_p_acn.put(2, accountmap);
 		ArrayList<ArgumentConstructor> arglist = new ArrayList<>();
 		CommandStructurType cst = CommandStructurType.NESTED;
 		for(String s : y.getStringList("Commands.NESTED"))
@@ -504,35 +557,35 @@ public class CurrencyCommandSetup
 			switch(cet)
 			{
 			case PAY:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, null);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, map_p_acn_0_p_acn);
 				new Pay(null, arg, cst);
 				break;
 			case PAY_THROUGH_GUI:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, null);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, map_0_p);
 				new PayThroughGui(null, arg, cst);
 				break;
 			case GIVE:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, null);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, map_p_acn);
 				new Give(null, arg, cst);
 				break;
 			case GIVE_CONSOLE:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, true, null);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, true, map_p_acn);
 				new GiveConsole(null, arg, cst);
 				break;
 			case SET:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, null);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, map_p_acn);
 				new Set(null, arg, cst);
 				break;
 			case SET_CONSOLE:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, true, null);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, true, map_p_acn);
 				new SetConsole(null, arg, cst);
 				break;
 			case TAKE:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, null);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, map_p_acn);
 				new Take(null, arg, cst);
 				break;
 			case TAKE_CONSOLE:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, true, null);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, true, map_p_acn);
 				new TakeConsole(null, arg, cst);
 				break;
 			default:
@@ -596,5 +649,21 @@ public class CurrencyCommandSetup
 	public void setPlayers(ArrayList<String> players)
 	{
 		this.playerarray = players;
+	}
+	
+	public void setupAccount()
+	{
+		ArrayList<Account> a = ConvertHandler.convertListII(plugin.getMysqlHandler().getTop(
+				MysqlHandler.Type.ACCOUNT, "`id` ASC", 0, plugin.getMysqlHandler().lastID(MysqlHandler.Type.ACCOUNT)));
+		ArrayList<String> ac = new ArrayList<>();
+		for(Account acc : a)
+		{
+			if(!ac.contains(acc.getAccountName()))
+			{
+				ac.add(acc.getAccountName());
+			}
+		}
+		Collections.sort(ac);
+		accountmap = ac;
 	}
 }

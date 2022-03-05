@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm.Type;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
@@ -82,12 +83,32 @@ public class AccountClose extends ArgumentModule
 		}
 		if(ac.isPredefinedAccount())
 		{
-			if(!player.hasPermission(ExtraPerm.get(Type.BYPASS_ACCOUNTMANAGEMENT)))
+			boolean canDeletePredefineAccount = false;
+			for(String unsp : plugin.getYamlHandler().getConfig().getStringList("Enable.PlayerCanDeletePredefineAccount"))
 			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Account.IsPredefine")));
-				return;
+				String[] sp = unsp.split(";");
+				if(sp.length != 2)
+				{
+					continue;
+				}
+				if(ac.getCurrency().getUniqueName().equals(sp[0]))
+				{
+					if(MatchApi.isBoolean(sp[1]))
+					{
+						canDeletePredefineAccount = Boolean.parseBoolean(sp[1]);
+						break;
+					}
+				}
 			}
+			if(!canDeletePredefineAccount)
+			{
+				if(!player.hasPermission(ExtraPerm.get(Type.BYPASS_ACCOUNTMANAGEMENT)))
+				{
+					player.sendMessage(ChatApi.tl(
+							plugin.getYamlHandler().getLang().getString("Cmd.Account.IsPredefine")));
+					return;
+				}
+			}			
 			if(!args[args.length-1].equalsIgnoreCase("confirm") && !args[args.length-1].equalsIgnoreCase("bestätigen"))
 			{
 				player.sendMessage(ChatApi.tl(

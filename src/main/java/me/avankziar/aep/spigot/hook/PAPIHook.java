@@ -58,6 +58,7 @@ public class PAPIHook extends PlaceholderExpansion
 	/*
 	 * [var] : balance(if nothing is specified), accountid, accountname, accountcategory, accounttype, 
 	 * <format> : withoutformat(if nothing is specified), withformat
+	 * playerbalance_<format>,<currencyuniquename>
 	 * defaultaccount_<format>,<accountcategory>,<currencyuniquename>,[var]
 	 * quickpayaccount_<format>,<currencyuniquename>,[var]
 	 * totalbalance_<format>,<currencyuniquename>
@@ -73,7 +74,20 @@ public class PAPIHook extends PlaceholderExpansion
 		}
 		final UUID uuid = player.getUniqueId();
 		
-		if(idf.startsWith("defaultaccount"))
+		if(idf.startsWith("playerbalance"))
+		{
+			String[] s = idf.split(",");
+			String[] t = s[0].split("_");
+			boolean withformat = t.length >= 2 ? t[1].equals("withformat") : false;
+			EconomyCurrency ecy = plugin.getIFHApi().getCurrency(s[2]);
+			if(ecy == null)
+			{
+				return null;
+			}
+			double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, "`owner_uuid` = ?`account_currency` = ?",
+					player.getUniqueId().toString(), ecy.getUniqueName());
+			return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
+		} else if(idf.startsWith("defaultaccount"))
 		{
 			String[] s = idf.split(",");
 			String var = "balance";

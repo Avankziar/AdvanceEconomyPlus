@@ -62,7 +62,7 @@ public class ConfigHandler
 	
 	public static boolean doStandingOrderPaymentTask()
 	{
-		return yh.getConfig().getBoolean("StandingOrder.DoPaymenTask", false);
+		return yh.getConfig().getBoolean("StandingOrder.DoPaymentTask", false);
 	}
 	
 	public static boolean isLoanEnabled()

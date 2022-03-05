@@ -27,7 +27,6 @@ import main.java.me.avankziar.aep.spigot.object.ActionLogger;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.InventoryHandlerType;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings.OrderType;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.aep.spigot.object.TrendLogger;
 import main.java.me.avankziar.aep.spigot.object.subs.ActionFilterSettings;
 import main.java.me.avankziar.aep.spigot.object.subs.TrendFilterSettings;
@@ -74,7 +73,7 @@ public class LoggerSettingsHandler
 		LoggerSettings fst = getLoggerSettings().get(uuid);
 		if(fst == null)
 		{
-			fst = new LoggerSettings(accountID, page);
+			fst = new LoggerSettings(accountID, player.getUniqueId(), page);
 			fst.setInventoryHandlerType(InventoryHandlerType.NORMAL);
 			getLoggerSettings().put(uuid, fst);
 		}
@@ -1229,10 +1228,8 @@ public class LoggerSettingsHandler
 					}
 				}
 				query = query.substring(0, query.length()-5);
-				OLD_AEPUser eco = _AEPUserHandler_OLD.getEcoPlayer(player.getUniqueId());
-				if(eco == null)
+				if(plugin.getIFHApi().getEntity(player.getUniqueId(), EconomyEntity.EconomyType.PLAYER) == null)
 				{
-					//Der Spieler existiert nicht!
 					player.sendMessage(ChatApi.tl(
 							plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 					return;

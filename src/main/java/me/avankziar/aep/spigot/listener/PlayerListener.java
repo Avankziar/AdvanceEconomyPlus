@@ -3,27 +3,68 @@ package main.java.me.avankziar.aep.spigot.listener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.UUID;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.api.economy.AccountHandler;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
+import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
 import main.java.me.avankziar.ifh.general.assistance.ChatApi;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
+import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
+import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
 
 public class PlayerListener implements Listener
 {
 	private AdvancedEconomyPlus plugin;
+	private LinkedHashMap<String, Double> onDeathWalletLostinPercent = new LinkedHashMap<>();
 	
 	public PlayerListener(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
+		for(String unsp : plugin.getYamlHandler().getConfig().getStringList("Do.OnDeath.MoneyInWalletLostInPercent"))
+		{
+			String[] sp = unsp.split(";");
+			if(sp.length != 2)
+			{
+				continue;
+			}
+			if(!MatchApi.isDouble(sp[1]))
+			{
+				continue;
+			}
+			EconomyCurrency ec = plugin.getIFHApi().getCurrency(sp[0]);
+			if(ec != null)
+			{
+				double a = Double.parseDouble(sp[1]);
+				if(a < 0.0)
+				{
+					continue;
+				}
+				if(a > 100.0)
+				{
+					a = 100.0;
+				}
+				onDeathWalletLostinPercent.put(ec.getUniqueName(), a);
+			}
+		}
 	}
 
 	@EventHandler
@@ -36,7 +77,8 @@ public class PlayerListener implements Listener
 			aepu = new AEPUser(event.getPlayer().getUniqueId(), event.getPlayer().getName(),
 					ConfigHandler.getDefaultMoneyFlowNotification(true),
 					ConfigHandler.getDefaultMoneyFlowNotification(false), System.currentTimeMillis());
-			AccountHandler.createAllCurrencyAccounts(event.getPlayer(), plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
+			AccountHandler.createAllCurrencyAccounts(event.getPlayer(), 
+					plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
 		} else
 		{
 			final String oldname = aepu.getName();
@@ -110,5 +152,85 @@ public class PlayerListener implements Listener
 			}
 		}
         return false;
+	}
+	
+	@EventHandler
+	public void onDeath(PlayerDeathEvent event)
+	{
+		if(onDeathWalletLostinPercent.isEmpty())
+		{
+			return;
+		}
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				final UUID uuid = event.getEntity().getUniqueId();
+				ArrayList<Account> acs = new ArrayList<>();
+				try
+				{
+					acs = ConvertHandler.convertListII(
+							plugin.getMysqlHandler().getAllListAt(Type.ACCOUNT, "`id` = ?", "`owner_uuid` = ? AND `account_type` = ?",
+									uuid.toString(), AccountType.WALLET.toString()));
+				} catch (Exception e)
+				{
+					return;
+				}
+				if(acs.isEmpty())
+				{
+					return;
+				}
+				final String category = plugin.getYamlHandler().getLang().getString("OnDeath.Category");
+				final String comment = plugin.getYamlHandler().getLang().getString("OnDeath.Comment");
+				int acCount = 0;
+				LinkedHashMap<String, Double> ecmap = new LinkedHashMap<>();
+				for(Account ac : acs)
+				{
+					acCount++;
+					Account voi = plugin.getIFHApi().getDefaultAccount(uuid, AccountCategory.VOID, ac.getCurrency());
+					Double aec = onDeathWalletLostinPercent.get(ac.getCurrency().getUniqueName());
+					if(aec == null)
+					{
+						continue;
+					}
+					EconomyAction ea = null;
+					if(voi != null)
+					{
+						ea = plugin.getIFHApi().transaction(
+								ac, voi, ac.getBalance()*(aec/100), 
+								OrdererType.PLAYER, uuid.toString(), category, comment);
+					} else
+					{
+						ea = plugin.getIFHApi().withdraw(
+								ac, ac.getBalance()*(aec/100), 
+								OrdererType.PLAYER, uuid.toString(), category, comment);
+					}
+					if(ea.isSuccess())
+					{
+						double count = 0;
+						if(ecmap.containsKey(ac.getCurrency().getUniqueName()))
+						{
+							count = ecmap.get(ac.getCurrency().getUniqueName())+ea.getWithDrawAmount();
+						} else
+						{
+							count = ea.getWithDrawAmount();
+						}
+						ecmap.put(ac.getCurrency().getUniqueName(), count);
+					}
+				}
+				StringBuilder sb = new StringBuilder();
+				sb.append(plugin.getYamlHandler().getLang().getString("DeathListener.Hover")+"~!~");
+				for(String ec : ecmap.keySet())
+				{
+					sb.append(plugin.getIFHApi().format(ecmap.get(ec), plugin.getIFHApi().getCurrency(ec))+"~!~");
+				}
+				event.getEntity().spigot().sendMessage(ChatApi.hoverEvent(
+						plugin.getYamlHandler().getLang().getString("DeathListener.MoneyLost")
+						.replace("%account%", String.valueOf(acCount)),
+						Action.SHOW_TEXT, comment));
+			}
+		}.runTaskAsynchronously(plugin);
+		
 	}
 }

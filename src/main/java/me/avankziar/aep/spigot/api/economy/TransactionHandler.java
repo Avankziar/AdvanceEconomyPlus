@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
-import org.bukkit.inventory.ItemStack;
-
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.LoggerApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
@@ -552,7 +550,7 @@ public class TransactionHandler
 		return ea;
 	}
 	
-	public EconomyAction withdraw(Account holder, double amount, LinkedHashMap<ItemStack, Double> possibleItemsWithRelatedValue,
+	/*public EconomyAction withdraw(Account holder, double amount, LinkedHashMap<ItemStack, Double> possibleItemsWithRelatedValue,
 			double taxInPercent, boolean taxAreExclusive, Account taxDepot,
 			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
 	{
@@ -565,7 +563,7 @@ public class TransactionHandler
 		final EconomyAction ea = new EconomyAction(0.0, 0.0, 0.0, false, "", ErrorMessageType.SUCCESS,
 				holder.getBalance(), 0.0);
 		return ea;
-	}
+	}*/
 	
 	public EconomyAction exchangeCurrencies(Account withdraw, Account deposit, double amount)
 	{

@@ -22,12 +22,15 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.object.AEPUser;
+import main.java.me.avankziar.aep.spigot.object.AccountManagement;
 import main.java.me.avankziar.aep.spigot.object.TaxationCase;
 import main.java.me.avankziar.aep.spigot.object.TaxationSet;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AEPUser;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
+import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
 import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
@@ -342,6 +345,51 @@ public class Pay extends ArgumentModule implements CommandExecutor
 		{
 			player.sendMessage(ChatApi.tl(s));
 		}
-		//ADDME Other Owner toAccount | Sound? | Moneyflow beachten
+		sendToOther(plugin, to, list);
+	}
+	
+	public static void sendToOther(AdvancedEconomyPlus plugin, Account to, ArrayList<String> list)
+	{
+		if(plugin.getMtB() != null)
+		{
+			ArrayList<AccountManagement> mana = new ArrayList<>();
+			try
+			{
+				mana = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
+						MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
+						to.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS));
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			if(mana.isEmpty())
+			{
+				return;
+			}
+			ArrayList<UUID> ul = new ArrayList<>();
+			for(AccountManagement acm : mana)
+			{
+				AEPUser u = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", acm.getUUID().toString());
+				if(u == null)
+				{
+					continue;
+				}
+				if(to.getType() == AccountType.BANK)
+				{
+					if(u.isBankMoneyFlowNotification())
+					{
+						ul.add(u.getUUID());
+					}
+				} else
+				{
+					if(u.isWalletMoneyFlowNotification())
+					{
+						ul.add(u.getUUID());
+					}
+				}
+			}
+			String[] la = list.toArray(new String[0]);
+			plugin.getMtB().sendMessage(ul, la);
+		}
 	}
 }

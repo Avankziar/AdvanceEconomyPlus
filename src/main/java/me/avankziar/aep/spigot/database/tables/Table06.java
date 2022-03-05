@@ -6,12 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.object.LoanRepayment;
 
-public interface TableVI
+public interface Table06
 {	
 	default boolean createVI(AdvancedEconomyPlus plugin, Object object) 
 	{
@@ -26,27 +27,35 @@ public interface TableVI
 			try 
 			{
 				String sql = "INSERT INTO `" + MysqlHandler.Type.LOAN.getValue() 
-						+ "`(`name`, `from_player`, `to_player`, `debtowner`,"
-						+ " `totalamount`, `amountratio`, `amountpaidsofar`, `interest`,"
-						+ " `starttime`, `repeatingtime`, `lasttime`, `endtime`,"
+						+ "`(`name`, `from_account`, `to_account`, `loan_owner`, `debtor`,"
+						+ " `total_amount`, `loan_amount`, `amount_ratio`, `tax_in_decimal`, `amount_paid_so_far`, `amount_paid_to_tax`, `interest`,"
+						+ " `start_time`, `repeating_time`, `last_time`, `end_time`,"
 						+ " `forgiven`, `paused`, `finished`) " 
-						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+						+ "VALUES("
+						+ "?, ?, ?, ?, ?, "
+						+ "?, ?, ?, ?, ?, "
+						+ "?, ?, ?, ?, ?, "
+						+ "?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.setString(1, ep.getName());
-		        preparedStatement.setString(2, ep.getFrom());
-		        preparedStatement.setString(3, ep.getTo());
-		        preparedStatement.setString(4, ep.getLoanOwner());
-		        preparedStatement.setDouble(5, ep.getTotalAmount());
-		        preparedStatement.setDouble(6, ep.getAmountRatio());
-		        preparedStatement.setDouble(7, ep.getAmountPaidSoFar());
-		        preparedStatement.setDouble(8, ep.getInterest());
-		        preparedStatement.setLong(9, ep.getStartTime());
-		        preparedStatement.setLong(10, ep.getRepeatingTime());
-		        preparedStatement.setLong(11, ep.getLastTime());
-		        preparedStatement.setLong(12, ep.getEndTime());
-		        preparedStatement.setBoolean(13, ep.isForgiven());
-		        preparedStatement.setBoolean(14, ep.isPaused());
-		        preparedStatement.setBoolean(15, ep.isFinished());
+		        preparedStatement.setInt(2, ep.getAccountFromID());
+		        preparedStatement.setInt(3, ep.getAccountToID());
+		        preparedStatement.setString(4, ep.getOwner().toString());
+		        preparedStatement.setString(5, ep.getDebtor().toString());
+		        preparedStatement.setDouble(6, ep.getTotalAmount());
+		        preparedStatement.setDouble(7, ep.getLoanAmount());
+		        preparedStatement.setDouble(8, ep.getAmountRatio());
+		        preparedStatement.setDouble(9, ep.getTaxInDecimal());
+		        preparedStatement.setDouble(10, ep.getAmountPaidSoFar());
+		        preparedStatement.setDouble(11, ep.getAmountPaidToTax());
+		        preparedStatement.setDouble(12, ep.getInterest());
+		        preparedStatement.setLong(13, ep.getStartTime());
+		        preparedStatement.setLong(14, ep.getRepeatingTime());
+		        preparedStatement.setLong(15, ep.getLastTime());
+		        preparedStatement.setLong(16, ep.getEndTime());
+		        preparedStatement.setBoolean(17, ep.isForgiven());
+		        preparedStatement.setBoolean(18, ep.isPaused());
+		        preparedStatement.setBoolean(19, ep.isFinished());
 		        
 		        preparedStatement.executeUpdate();
 		        return true;
@@ -89,28 +98,34 @@ public interface TableVI
 			try 
 			{
 				String data = "UPDATE `" + MysqlHandler.Type.LOAN.getValue()
-						+ "` SET `name` = ?, `from_player` = ?, `to_player` = ?, `debtowner` = ?," 
-						+ " `totalamount` = ?, `amountratio` = ?, `amountpaidsofar` = ?, `interest` = ?," 
-						+ " `starttime` = ?, `repeatingtime` = ?, `lasttime` = ?, `endtime` = ?," 
+						+ "` SET `name` = ?, `from_account` = ?, `to_account` = ?,"
+						+ " `loan_owner` = ?, `debtor` = ?," 
+						+ " `total_amount` = ?, `loan_amount` = ?, `amount_ratio` = ?, `tax_in_decimal` = ?,"
+						+ " `amount_paid_so_far` = ?, `amount_paid_to_tax` = ?, `interest` = ?," 
+						+ " `start_time` = ?, `repeating_time` = ?, `last_time` = ?, `end_time` = ?," 
 						+ " `forgiven` = ?, `paused` = ?, `finished` = ?" 
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
 				preparedStatement.setString(1, ep.getName());
-				preparedStatement.setString(2, ep.getFrom());
-		        preparedStatement.setString(3, ep.getTo());
-		        preparedStatement.setString(4, ep.getLoanOwner());
-		        preparedStatement.setDouble(5, ep.getTotalAmount());
-		        preparedStatement.setDouble(6, ep.getAmountRatio());
-		        preparedStatement.setDouble(7, ep.getAmountPaidSoFar());
-		        preparedStatement.setDouble(8, ep.getInterest());
-		        preparedStatement.setLong(9, ep.getStartTime());
-		        preparedStatement.setLong(10, ep.getRepeatingTime());
-		        preparedStatement.setLong(11, ep.getLastTime());
-		        preparedStatement.setLong(12, ep.getEndTime());
-		        preparedStatement.setBoolean(13, ep.isForgiven());
-		        preparedStatement.setBoolean(14, ep.isPaused());
-		        preparedStatement.setBoolean(15, ep.isFinished());
-		        int i = 16;
+		        preparedStatement.setInt(2, ep.getAccountFromID());
+		        preparedStatement.setInt(3, ep.getAccountToID());
+		        preparedStatement.setString(4, ep.getOwner().toString());
+		        preparedStatement.setString(5, ep.getDebtor().toString());
+		        preparedStatement.setDouble(6, ep.getTotalAmount());
+		        preparedStatement.setDouble(7, ep.getLoanAmount());
+		        preparedStatement.setDouble(8, ep.getAmountRatio());
+		        preparedStatement.setDouble(9, ep.getTaxInDecimal());
+		        preparedStatement.setDouble(10, ep.getAmountPaidSoFar());
+		        preparedStatement.setDouble(11, ep.getAmountPaidToTax());
+		        preparedStatement.setDouble(12, ep.getInterest());
+		        preparedStatement.setLong(13, ep.getStartTime());
+		        preparedStatement.setLong(14, ep.getRepeatingTime());
+		        preparedStatement.setLong(15, ep.getLastTime());
+		        preparedStatement.setLong(16, ep.getEndTime());
+		        preparedStatement.setBoolean(17, ep.isForgiven());
+		        preparedStatement.setBoolean(18, ep.isPaused());
+		        preparedStatement.setBoolean(19, ep.isFinished());
+		        int i = 20;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -161,17 +176,21 @@ public interface TableVI
 		        	return new LoanRepayment(
 		        			result.getInt("id"),
 		        			result.getString("name"),
-		        			result.getString("from_player"),
-		        			result.getString("to_player"), 
-		        			result.getString("debtowner"), 
+		        			result.getInt("from_account"),
+		        			result.getInt("to_account"), 
+		        			UUID.fromString(result.getString("loan_owner")),
+		        			UUID.fromString(result.getString("debtor")),
 		        			result.getDouble("totalamount"), 
-		        			result.getDouble("amountratio"), 
-		        			result.getDouble("amountpaidsofar"),
+		        			result.getDouble("loan_amount"), 
+		        			result.getDouble("amount_ratio"),
+		        			result.getDouble("tax_in_decimal"),
+		        			result.getDouble("amount_paid_so_far"),
+		        			result.getDouble("amount_paid_to_tax"),
 		        			result.getDouble("interest"),
-		        			result.getLong("starttime"), 
-		        			result.getLong("repeatingtime"), 
-		        			result.getLong("lasttime"), 
-		        			result.getLong("endtime"), 
+		        			result.getLong("start_time"), 
+		        			result.getLong("repeating_time"), 
+		        			result.getLong("last_time"), 
+		        			result.getLong("end_time"), 
 		        			result.getBoolean("forgiven"), 
 		        			result.getBoolean("paused"), 
 		        			result.getBoolean("finished"));
@@ -226,17 +245,21 @@ public interface TableVI
 		        	LoanRepayment ep = new LoanRepayment(
 		        			result.getInt("id"),
 		        			result.getString("name"),
-		        			result.getString("from_player"),
-		        			result.getString("to_player"), 
-		        			result.getString("debtowner"), 
+		        			result.getInt("from_account"),
+		        			result.getInt("to_account"), 
+		        			UUID.fromString(result.getString("loan_owner")),
+		        			UUID.fromString(result.getString("debtor")),
 		        			result.getDouble("totalamount"), 
-		        			result.getDouble("amountratio"), 
-		        			result.getDouble("amountpaidsofar"),
+		        			result.getDouble("loan_amount"), 
+		        			result.getDouble("amount_ratio"),
+		        			result.getDouble("tax_in_decimal"),
+		        			result.getDouble("amount_paid_so_far"),
+		        			result.getDouble("amount_paid_to_tax"),
 		        			result.getDouble("interest"),
-		        			result.getLong("starttime"), 
-		        			result.getLong("repeatingtime"), 
-		        			result.getLong("lasttime"), 
-		        			result.getLong("endtime"), 
+		        			result.getLong("start_time"), 
+		        			result.getLong("repeating_time"), 
+		        			result.getLong("last_time"), 
+		        			result.getLong("end_time"), 
 		        			result.getBoolean("forgiven"), 
 		        			result.getBoolean("paused"), 
 		        			result.getBoolean("finished"));
@@ -287,17 +310,21 @@ public interface TableVI
 		        	LoanRepayment ep = new LoanRepayment(
 		        			result.getInt("id"),
 		        			result.getString("name"),
-		        			result.getString("from_player"),
-		        			result.getString("to_player"), 
-		        			result.getString("debtowner"), 
+		        			result.getInt("from_account"),
+		        			result.getInt("to_account"), 
+		        			UUID.fromString(result.getString("loan_owner")),
+		        			UUID.fromString(result.getString("debtor")),
 		        			result.getDouble("totalamount"), 
-		        			result.getDouble("amountratio"), 
-		        			result.getDouble("amountpaidsofar"),
+		        			result.getDouble("loan_amount"), 
+		        			result.getDouble("amount_ratio"),
+		        			result.getDouble("tax_in_decimal"),
+		        			result.getDouble("amount_paid_so_far"),
+		        			result.getDouble("amount_paid_to_tax"),
 		        			result.getDouble("interest"),
-		        			result.getLong("starttime"), 
-		        			result.getLong("repeatingtime"), 
-		        			result.getLong("lasttime"), 
-		        			result.getLong("endtime"), 
+		        			result.getLong("start_time"), 
+		        			result.getLong("repeating_time"), 
+		        			result.getLong("last_time"), 
+		        			result.getLong("end_time"), 
 		        			result.getBoolean("forgiven"), 
 		        			result.getBoolean("paused"), 
 		        			result.getBoolean("finished"));
@@ -354,17 +381,21 @@ public interface TableVI
 		        	LoanRepayment ep = new LoanRepayment(
 		        			result.getInt("id"),
 		        			result.getString("name"),
-		        			result.getString("from_player"),
-		        			result.getString("to_player"), 
-		        			result.getString("debtowner"), 
+		        			result.getInt("from_account"),
+		        			result.getInt("to_account"), 
+		        			UUID.fromString(result.getString("loan_owner")),
+		        			UUID.fromString(result.getString("debtor")),
 		        			result.getDouble("totalamount"), 
-		        			result.getDouble("amountratio"), 
-		        			result.getDouble("amountpaidsofar"),
+		        			result.getDouble("loan_amount"), 
+		        			result.getDouble("amount_ratio"),
+		        			result.getDouble("tax_in_decimal"),
+		        			result.getDouble("amount_paid_so_far"),
+		        			result.getDouble("amount_paid_to_tax"),
 		        			result.getDouble("interest"),
-		        			result.getLong("starttime"), 
-		        			result.getLong("repeatingtime"), 
-		        			result.getLong("lasttime"), 
-		        			result.getLong("endtime"), 
+		        			result.getLong("start_time"), 
+		        			result.getLong("repeating_time"), 
+		        			result.getLong("last_time"), 
+		        			result.getLong("end_time"), 
 		        			result.getBoolean("forgiven"), 
 		        			result.getBoolean("paused"), 
 		        			result.getBoolean("finished"));

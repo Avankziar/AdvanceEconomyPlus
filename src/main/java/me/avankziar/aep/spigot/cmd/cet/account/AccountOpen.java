@@ -11,19 +11,22 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
-import main.java.me.avankziar.aep.spigot.object.ne_w.AccountManagement;
+import main.java.me.avankziar.aep.spigot.object.AccountManagement;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.spigot.economy.account.AccountType;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.account.EconomyEntity.EconomyType;
+import main.java.me.avankziar.ifh.spigot.economy.action.EconomyAction;
+import main.java.me.avankziar.ifh.spigot.economy.action.OrdererType;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 
 public class AccountOpen extends ArgumentModule
@@ -154,6 +157,76 @@ public class AccountOpen extends ArgumentModule
 			}
 		}		
 		Account ac = new Account(0, acname, act, acc, ec, ee, 0, false);
+		double amount = 0.0;
+		for(String unsp : plugin.getYamlHandler().getConfig().getStringList("Cost.OpenAccount"))
+		{
+			String[] sp = unsp.split(";");
+			if(sp.length != 4)
+			{
+				continue;
+			}
+			if(!ac.getCurrency().getUniqueName().equals(sp[0]))
+			{
+				continue;
+			}
+			AccountType acta;
+			AccountCategory acca;
+			try
+			{
+				acta = AccountType.valueOf(sp[1]);
+				acca = AccountCategory.valueOf(sp[2]);
+			} catch(Exception e)
+			{
+				continue;
+			}
+			if(ac.getType() != acta)
+			{
+				continue;
+			}
+			if(ac.getCategory() != acca)
+			{
+				continue;
+			}
+			if(MatchApi.isDouble(sp[3]))
+			{
+				amount = Double.parseDouble(sp[3]);
+				break;
+			}
+		}
+		if(amount > 0.0 && ee.getType() == EconomyType.PLAYER)
+		{
+			Account main = plugin.getIFHApi().getDefaultAccount(ee.getUUID(), AccountCategory.MAIN, ec);
+			if(main == null)
+			{
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.OpenCostExistButNoMainAccount")));
+				return;
+			}
+			Account tax = plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.TAX, ec);
+			String category = plugin.getYamlHandler().getLang().getString("AccountOpen.Category");
+			String comment = plugin.getYamlHandler().getLang().getString("AccountOpen.Comment")
+					.replace("%accountname%", ac.getAccountName())
+					.replace("%owner%", ac.getOwner().getName())
+					.replace("%accounttype%", ac.getType().toString())
+					.replace("%accountcategory%", ac.getCategory().toString());
+			EconomyAction ea = null;
+			if(tax == null)
+			{
+				ea = plugin.getIFHApi().withdraw(
+						ac, amount,
+						OrdererType.PLAYER, ac.getOwner().getUUID().toString(), category, comment);
+			} else if(tax != null)
+			{
+				ea = plugin.getIFHApi().transaction(
+						ac, tax, amount,
+						OrdererType.PLAYER, ac.getOwner().getUUID().toString(), category, comment);
+			}
+			if(!ea.isSuccess())
+			{
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.NotEnoughMoney")
+						.replace("%format%", plugin.getIFHApi().format(amount, ec))));
+				return;
+			}
+		}
 		plugin.getMysqlHandler().create(MysqlHandler.Type.ACCOUNT, ac);
 		List<AccountManagementType> atms = new ArrayList<AccountManagementType>(EnumSet.allOf(AccountManagementType.class));
 		ac = plugin.getIFHApi().getAccount(ee, acname, act, acc, ec);
