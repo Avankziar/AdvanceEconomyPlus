@@ -23,31 +23,35 @@ public class TransactionHandler
 {
 	private AdvancedEconomyPlus plugin;
 	
-	private final String IS_NOT_ENABLED;
-	private final String HAS_NO_WALLET_SUPPORT;
-	private final String HAS_NO_BANK_SUPPORT;
-	private final String AMOUNT_IS_NEGATIVE;
-	private final String DEPOSIT_ACCOUNT_NOT_EXIST;
-	private final String WITHDRAW_ACCOUNT_NOT_EXIST;
-	private final String CURRENCYS_ARE_NOT_THE_SAME;
-	private final String CURRENCYS_ARE_NOT_EXCHANGEABLE;
-	private final String TAX_ACCOUNT_DONT_EXIST;
-	private final String TAX_IS_NEGATIVE;
-	private final String TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT;
-	private final String WITHDRAW_HAS_NOT_ENOUGH;
-	private final String TA_SUCCESS;
-	private final String D_SUCCESS;
-	private final String W_SUCCESS;
-	private final String EX_SUCCESS;
+	private String IS_NOT_ENABLED;
+	private String HAS_NO_WALLET_SUPPORT;
+	private String HAS_NO_BANK_SUPPORT;
+	private String AMOUNT_IS_NEGATIVE;
+	private String DEPOSIT_ACCOUNT_NOT_EXIST;
+	private String WITHDRAW_ACCOUNT_NOT_EXIST;
+	private String CURRENCYS_ARE_NOT_THE_SAME;
+	private String CURRENCYS_ARE_NOT_EXCHANGEABLE;
+	private String TAX_ACCOUNT_DONT_EXIST;
+	private String TAX_IS_NEGATIVE;
+	private String TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT;
+	private String WITHDRAW_HAS_NOT_ENOUGH;
+	private String TA_SUCCESS;
+	private String D_SUCCESS;
+	private String W_SUCCESS;
+	private String EX_SUCCESS;
 	
-	private final String ACTIONLOG_TRANSACTION;
-	private final String ACTIONLOG_DEPOSIT;
-	private final String ACTIONLOG_WITHDRAW;
-	private final String ACTIONLOG_EXCHANGE;
+	private String ACTIONLOG_TRANSACTION;
+	private String ACTIONLOG_DEPOSIT;
+	private String ACTIONLOG_WITHDRAW;
+	private String ACTIONLOG_EXCHANGE;
 	
 	public TransactionHandler(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
+	}
+	
+	public void init()
+	{
 		String base = "TransactionHandler.";
 		IS_NOT_ENABLED = plugin.getYamlHandler().getLang().getString(base+"IS_NOT_ENABLED");
 		HAS_NO_WALLET_SUPPORT = plugin.getYamlHandler().getLang().getString(base+"HAS_NO_WALLET_SUPPORT");
@@ -78,8 +82,7 @@ public class TransactionHandler
 		{
 			return false;
 		}
-		return plugin.getMysqlHandler().exist(MysqlHandler.Type.ACCOUNT, 
-				"`id` = ?");
+		return plugin.getMysqlHandler().exist(MysqlHandler.Type.ACCOUNT, "`id` = ?", account.getID());
 	}
 	
 	private void saveAccount(Account... account)
@@ -98,59 +101,79 @@ public class TransactionHandler
 	{
 		if(!plugin.getIFHApi().isEnabled())
 		{
-			return new EconomyAction(amount, 0.0, 0.0, true, IS_NOT_ENABLED, ErrorMessageType.IS_NOT_ENABLED, 0.0, 0.0);
+			return new EconomyAction(amount, 0.0, 0.0, false, IS_NOT_ENABLED, ErrorMessageType.IS_NOT_ENABLED, 0.0, 0.0);
 		}
 		if(i == 1)
 		{
 			if(withdraw == null || !existAccount(withdraw))
 			{
-				return new EconomyAction(amount, 0.0, 0.0, true, WITHDRAW_ACCOUNT_NOT_EXIST, ErrorMessageType.WITHDRAW_ACCOUNT_DONT_EXIST, 0.0, 0.0);
+				return new EconomyAction(amount, 0.0, 0.0, false, WITHDRAW_ACCOUNT_NOT_EXIST, ErrorMessageType.WITHDRAW_ACCOUNT_DONT_EXIST, 0.0, 0.0);
+			}
+			if(!plugin.getIFHApi().hasWalletSupport() 
+					&& withdraw.getType() == AccountType.WALLET)
+			{
+				return new EconomyAction(amount, 0.0, 0.0, false, HAS_NO_WALLET_SUPPORT, ErrorMessageType.HAS_NO_WALLET_SUPPORT, 0.0, 0.0);
+			}
+			if(!plugin.getIFHApi().hasBankSupport() 
+					&& withdraw.getType() == AccountType.BANK)
+			{
+				return new EconomyAction(amount, 0.0, 0.0, false, HAS_NO_BANK_SUPPORT, ErrorMessageType.HAS_NO_BANK_SUPPORT, 0.0, 0.0);
 			}
 		} else if(i == 2)
 		{
 			if(deposit == null || !existAccount(deposit))
 			{
-				return new EconomyAction(amount, 0.0, 0.0, true, DEPOSIT_ACCOUNT_NOT_EXIST, ErrorMessageType.DEPOSIT_ACCOUNT_DONT_EXIST, 0.0, 0.0);
+				return new EconomyAction(amount, 0.0, 0.0, false, DEPOSIT_ACCOUNT_NOT_EXIST, ErrorMessageType.DEPOSIT_ACCOUNT_DONT_EXIST, 0.0, 0.0);
+			}
+			if(!plugin.getIFHApi().hasWalletSupport() 
+					&& deposit.getType() == AccountType.WALLET)
+			{
+				return new EconomyAction(amount, 0.0, 0.0, false, HAS_NO_WALLET_SUPPORT, ErrorMessageType.HAS_NO_WALLET_SUPPORT, 0.0, 0.0);
+			}
+			if(!plugin.getIFHApi().hasBankSupport() 
+					&& deposit.getType() == AccountType.BANK)
+			{
+				return new EconomyAction(amount, 0.0, 0.0, false, HAS_NO_BANK_SUPPORT, ErrorMessageType.HAS_NO_BANK_SUPPORT, 0.0, 0.0);
 			}
 		} else
 		{
 			if(withdraw == null || !existAccount(withdraw))
 			{
-				return new EconomyAction(amount, 0.0, 0.0, true, WITHDRAW_ACCOUNT_NOT_EXIST, ErrorMessageType.WITHDRAW_ACCOUNT_DONT_EXIST, 0.0, 0.0);
+				return new EconomyAction(amount, 0.0, 0.0, false, WITHDRAW_ACCOUNT_NOT_EXIST, ErrorMessageType.WITHDRAW_ACCOUNT_DONT_EXIST, 0.0, 0.0);
 			}
 			if(deposit == null || !existAccount(deposit))
 			{
-				return new EconomyAction(amount, 0.0, 0.0, true, DEPOSIT_ACCOUNT_NOT_EXIST, ErrorMessageType.DEPOSIT_ACCOUNT_DONT_EXIST, 0.0, 0.0);
+				return new EconomyAction(amount, 0.0, 0.0, false, DEPOSIT_ACCOUNT_NOT_EXIST, ErrorMessageType.DEPOSIT_ACCOUNT_DONT_EXIST, 0.0, 0.0);
 			}
-		}
-		if(!plugin.getIFHApi().hasWalletSupport() 
-				&& (withdraw.getType() == AccountType.WALLET
-				|| deposit.getType() == AccountType.WALLET))
-		{
-			return new EconomyAction(amount, 0.0, 0.0, true, HAS_NO_WALLET_SUPPORT, ErrorMessageType.HAS_NO_WALLET_SUPPORT, 0.0, 0.0);
-		}
-		if(!plugin.getIFHApi().hasBankSupport() 
-				&& (withdraw.getType() == AccountType.BANK
-				|| deposit.getType() == AccountType.BANK))
-		{
-			return new EconomyAction(amount, 0.0, 0.0, true, HAS_NO_BANK_SUPPORT, ErrorMessageType.HAS_NO_BANK_SUPPORT, 0.0, 0.0);
+			if(!plugin.getIFHApi().hasWalletSupport() 
+					&& (withdraw.getType() == AccountType.WALLET
+					|| deposit.getType() == AccountType.WALLET))
+			{
+				return new EconomyAction(amount, 0.0, 0.0, false, HAS_NO_WALLET_SUPPORT, ErrorMessageType.HAS_NO_WALLET_SUPPORT, 0.0, 0.0);
+			}
+			if(!plugin.getIFHApi().hasBankSupport() 
+					&& (withdraw.getType() == AccountType.BANK
+					|| deposit.getType() == AccountType.BANK))
+			{
+				return new EconomyAction(amount, 0.0, 0.0, false, HAS_NO_BANK_SUPPORT, ErrorMessageType.HAS_NO_BANK_SUPPORT, 0.0, 0.0);
+			}
+			if(normalCurrencyCheck)
+			{
+				if(!withdraw.getCurrency().getUniqueName().equals(deposit.getCurrency().getUniqueName()))
+				{
+					return new EconomyAction(amount, 0.0, 0.0, false, CURRENCYS_ARE_NOT_THE_SAME, ErrorMessageType.CURRENCYS_ARE_NOT_THE_SAME, withdraw.getBalance(), deposit.getBalance());
+				}
+			} else
+			{
+				if(!withdraw.getCurrency().isExchangeable() || !deposit.getCurrency().isExchangeable())
+				{
+					return new EconomyAction(amount, 0.0, 0.0, false, CURRENCYS_ARE_NOT_EXCHANGEABLE, ErrorMessageType.CURRENCYS_ARE_NOT_EXCHANGEABLE, withdraw.getBalance(), deposit.getBalance());
+				}
+			}
 		}
 		if(amount < 0.0)
 		{
-			return new EconomyAction(amount, 0.0, 0.0, true, AMOUNT_IS_NEGATIVE, ErrorMessageType.AMOUNT_IS_NEGATIVE, 0.0, 0.0);
-		}
-		if(normalCurrencyCheck)
-		{
-			if(!withdraw.getCurrency().getUniqueName().equals(deposit.getCurrency().getUniqueName()))
-			{
-				return new EconomyAction(amount, 0.0, 0.0, true, CURRENCYS_ARE_NOT_THE_SAME, ErrorMessageType.CURRENCYS_ARE_NOT_THE_SAME, withdraw.getBalance(), deposit.getBalance());
-			}
-		} else
-		{
-			if(!withdraw.getCurrency().isExchangeable() || !deposit.getCurrency().isExchangeable())
-			{
-				return new EconomyAction(amount, 0.0, 0.0, true, CURRENCYS_ARE_NOT_EXCHANGEABLE, ErrorMessageType.CURRENCYS_ARE_NOT_EXCHANGEABLE, withdraw.getBalance(), deposit.getBalance());
-			}
+			return new EconomyAction(amount, 0.0, 0.0, false, AMOUNT_IS_NEGATIVE, ErrorMessageType.AMOUNT_IS_NEGATIVE, 0.0, 0.0);
 		}
 		return null;
 	}
@@ -166,19 +189,19 @@ public class TransactionHandler
 		{
 			if(!existAccount(taxDepot))
 			{
-				return new EconomyAction(amount, 0.0, 0.0, true, TAX_ACCOUNT_DONT_EXIST, ErrorMessageType.TAX_ACCOUNT_DONT_EXIST, 0.0, 0.0);
+				return new EconomyAction(amount, 0.0, 0.0, false, TAX_ACCOUNT_DONT_EXIST, ErrorMessageType.TAX_ACCOUNT_DONT_EXIST, 0.0, 0.0);
 			}
 			if(!withdraw.getCurrency().getUniqueName().equals(taxDepot.getCurrency().getUniqueName()))
 			{
-				return new EconomyAction(amount, 0.0, 0.0, true, CURRENCYS_ARE_NOT_THE_SAME, ErrorMessageType.CURRENCYS_ARE_NOT_THE_SAME, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amount, 0.0, 0.0, false, CURRENCYS_ARE_NOT_THE_SAME, ErrorMessageType.CURRENCYS_ARE_NOT_THE_SAME, withdraw.getBalance(), deposit.getBalance());
 			}
 			if(taxInPercent < 0.0)
 			{
-				return new EconomyAction(amount, 0.0, 0.0, true, TAX_IS_NEGATIVE, ErrorMessageType.TAX_IS_NEGATIVE, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amount, 0.0, 0.0, false, TAX_IS_NEGATIVE, ErrorMessageType.TAX_IS_NEGATIVE, withdraw.getBalance(), deposit.getBalance());
 			}
 			if(taxInPercent >= 1.0 && !taxAreExclusive)
 			{
-				return new EconomyAction(amount, 0.0, 0.0, true, TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT, ErrorMessageType.TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amount, 0.0, 0.0, false, TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT, ErrorMessageType.TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT, withdraw.getBalance(), deposit.getBalance());
 			}
 			double amountToWithdraw = 0.0;
 			double amountToDeposit = 0.0;
@@ -192,15 +215,15 @@ public class TransactionHandler
 				amountToDeposit = amount - amount*taxInPercent;
 			}
 			double amountToTax = amountToWithdraw - amountToDeposit;
-			if(withdraw.getBalance() < amountToWithdraw)
+			if(withdraw != null && withdraw.getBalance() < amountToWithdraw)
 			{
-				return new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, false, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH, withdraw.getBalance(), deposit.getBalance());
 			}
 		} else
 		{
-			if(withdraw.getBalance() < amount)
+			if(withdraw != null && withdraw.getBalance() < amount)
 			{
-				return new EconomyAction(amount, 0.0, 0.0, true, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amount, 0.0, 0.0, false, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH, withdraw.getBalance(), deposit.getBalance());
 			}
 		}
 		return null;

@@ -86,7 +86,7 @@ public interface Table02
 			{
 				String data = "UPDATE `" + MysqlHandler.Type.ACCOUNT.getValue()
 						+ "` SET `account_name` = ?,"
-						+ " `account_type` = ?, `account_category` = ?, `account_currency`, = ?"
+						+ " `account_type` = ?, `account_category` = ?, `account_currency` = ?,"
 						+ " `account_predefined` = ?, `owner_uuid` = ?, `owner_type` = ?,"
 						+ " `owner_name` = ?, `balance` = ?"
 						+ " WHERE "+whereColumn;
@@ -255,7 +255,7 @@ public interface Table02
 			try 
 			{			
 				String sql = "SELECT * FROM `" + MysqlHandler.Type.ACCOUNT.getValue() 
-						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+						+ "` ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();

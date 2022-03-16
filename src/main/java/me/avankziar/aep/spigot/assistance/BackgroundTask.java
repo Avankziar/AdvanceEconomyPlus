@@ -2,6 +2,7 @@ package main.java.me.avankziar.aep.spigot.assistance;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -92,16 +93,16 @@ public class BackgroundTask
 	//Better reading quality than compact code
 	public void runAccountManagementFee()
 	{
-		String l = plugin.getYamlHandler().getConfig().getString("Do.Bankaccount.TimeToWithdrawAccountManagementFees", "7-11:00");
-		final LocalDateTime ldt = LocalDateTime.parse(l, DateTimeFormatter.ofPattern("e-HH:mm"));
+		String l = plugin.getYamlHandler().getConfig().getString("Do.Bankaccount.TimeToWithdrawAccountManagementFees", "SUNDAY-11:00");
+		TimeFormater tf = new TimeFormater(l);
 		new BukkitRunnable()
 		{
 			@Override
 			public void run()
 			{
 				LocalDateTime lt = LocalDateTime.now();
-				if(lt.getDayOfWeek().getValue() != ldt.getDayOfWeek().getValue() 
-						&& lt.getHour() != ldt.getHour() && lt.getMinute() != ldt.getMinute())
+				if(lt.getDayOfWeek().getValue() != tf.dayOfWeek.day 
+						&& lt.getHour() != tf.localTime.getHour() && lt.getMinute() != tf.localTime.getMinute())
 				{
 					return;
 				}
@@ -119,6 +120,10 @@ public class BackgroundTask
 						continue;
 					}	
 					EconomyCurrency ec = plugin.getIFHApi().getCurrency(sp[0]);
+					if(ec == null)
+					{
+						continue;
+					}
 					double amount = Double.parseDouble(sp[1]);
 					if(amount < 0.0)
 					{
@@ -182,6 +187,10 @@ public class BackgroundTask
 						continue;
 					}	
 					EconomyCurrency ec = plugin.getIFHApi().getCurrency(sp[0]);
+					if(ec == null)
+					{
+						continue;
+					}
 					double amount = Double.parseDouble(sp[1])/100.0;
 					if(amount < 0.0 || amount > 100.0)
 					{
@@ -237,16 +246,16 @@ public class BackgroundTask
 	
 	public void runAccountInterest()
 	{
-		String l = plugin.getYamlHandler().getConfig().getString("Do.Bankaccount.TimeToDepositInterest", "7-11:00");
-		final LocalDateTime ldt = LocalDateTime.parse(l, DateTimeFormatter.ofPattern("e-HH:mm"));
+		String l = plugin.getYamlHandler().getConfig().getString("Do.Bankaccount.TimeToDepositInterest", "SUNDAY-11:00");
+		TimeFormater tf = new TimeFormater(l);
 		new BukkitRunnable()
 		{
 			@Override
 			public void run()
 			{
 				LocalDateTime lt = LocalDateTime.now();
-				if(lt.getDayOfWeek().getValue() != ldt.getDayOfWeek().getValue() 
-						&& lt.getHour() != ldt.getHour() && lt.getMinute() != ldt.getMinute())
+				if(lt.getDayOfWeek().getValue() != tf.dayOfWeek.day 
+						&& lt.getHour() != tf.localTime.getHour() && lt.getMinute() != tf.localTime.getMinute())
 				{
 					return;
 				}
@@ -264,6 +273,10 @@ public class BackgroundTask
 						continue;
 					}	
 					EconomyCurrency ec = plugin.getIFHApi().getCurrency(sp[0]);
+					if(ec == null)
+					{
+						continue;
+					}
 					double amount = Double.parseDouble(sp[1])/100.0;
 					if(amount < 0.0)
 					{
@@ -310,7 +323,7 @@ public class BackgroundTask
 	
 	public void runPlayerDataDelete(int deletedays)
 	{
-		int days = plugin.getYamlHandler().getConfig().getInt("Do.OverdueTimeInDays", 90);
+		int days = plugin.getYamlHandler().getConfig().getInt("Do.OverdueTimeInDays", 180);
 		long deletedate = System.currentTimeMillis()-((long) days+(long) deletedays)*1000*60*60*24;
 		new BukkitRunnable()
 		{
@@ -385,7 +398,7 @@ public class BackgroundTask
 				try
 				{
 					list = ConvertHandler.convertListVI(plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.LOAN, "`id` ASC",
-										"`forgiven` = ? AND `paused` = ? AND `finished` = ? AND `endtime` > ?",
+										"`forgiven` = ? AND `paused` = ? AND `finished` = ? AND `end_time` > ?",
 										false, false, false, System.currentTimeMillis()+1000*60*60*30));
 				} catch (IOException e)
 				{
@@ -624,5 +637,57 @@ public class BackgroundTask
 				AdvancedEconomyPlus.log.info("===========================================");				
 			}
 		}.runTaskAsynchronously(plugin);
+	}
+	
+	public class TimeFormater
+	{
+		public LocalTime localTime;
+		public DayOfWeek dayOfWeek;
+		
+		public TimeFormater(String s)
+		{
+			String[] sp = s.split("-");
+			localTime = LocalTime.parse(sp[1], DateTimeFormatter.ofPattern("HH:mm"));
+			dayOfWeek = DayOfWeek.value(sp[0]);
+		}
+	}
+	
+	public enum DayOfWeek
+	{
+		MONDAY(1), TUESDAY(2), WEDNESDAY(3), THURSDAY(4), FRIDAY(5), SATURDAY(6), SUNDAY(7);
+		
+		private int day;
+		
+		DayOfWeek(int i)
+		{
+			day = i;
+		}
+
+		public static DayOfWeek value(String s)
+		{
+			if(s.equalsIgnoreCase(MONDAY.toString()))
+			{
+				return MONDAY;
+			} else if(s.equalsIgnoreCase(TUESDAY.toString()))
+			{
+				return TUESDAY;
+			} else if(s.equalsIgnoreCase(WEDNESDAY.toString()))
+			{
+				return WEDNESDAY;
+			} else if(s.equalsIgnoreCase(THURSDAY.toString()))
+			{
+				return THURSDAY;
+			} else if(s.equalsIgnoreCase(FRIDAY.toString()))
+			{
+				return FRIDAY;
+			} else if(s.equalsIgnoreCase(SATURDAY.toString()))
+			{
+				return SATURDAY;
+			} else if(s.equalsIgnoreCase(SUNDAY.toString()))
+			{
+				return SUNDAY;
+			}
+			return SUNDAY;
+		}
 	}
 }

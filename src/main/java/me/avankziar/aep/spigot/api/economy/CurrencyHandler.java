@@ -1,6 +1,7 @@
 package main.java.me.avankziar.aep.spigot.api.economy;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.general.economy.account.AccountType;
 import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
@@ -45,6 +47,8 @@ public class CurrencyHandler
 	
 	public static LinkedHashMap<String, LinkedHashMap<TaxationCase, TaxationSet>> taxationMap = new LinkedHashMap<>();
 	
+	private static String d1 = "currencyhandler";
+	
 	public CurrencyHandler(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
@@ -52,9 +56,11 @@ public class CurrencyHandler
 	
 	public void registerCurrencyFromFile(YamlConfiguration c)
 	{
+		ConfigHandler.debug(d1, "> registerCurrencyFromFile start : "+c.getCurrentPath());
 		if(c.get("UniqueName") == null 
 				|| c.get("Gradation.CurrencyType") == null)
 		{
+			ConfigHandler.debug(d1, "> c.get(UniqueName) == null");
 			return;
 		}
 		CurrencyType ct = CurrencyType.valueOf(c.getString("Gradation.CurrencyType", "DIGITAL"));
@@ -65,11 +71,16 @@ public class CurrencyHandler
 			ArrayList<Gradation> gr = new ArrayList<>();
 			for(int i = 1; i < 50; i++)
 			{
+				if(c.get("Gradation.DIGITAL."+i+".Plural") == null)
+				{
+					break;
+				}
+				int vtbg = c.getInt("Gradation.DIGITAL."+i+".ValueToBaseGradation", i) == 0 ? 1 : c.getInt("Gradation.DIGITAL."+i+".ValueToBaseGradation", i);
 				gr.add(new Gradation(
 							c.getString("Gradation.DIGITAL."+i+".Plural"),
 							c.getString("Gradation.DIGITAL."+i+".Singular"),
 							c.getString("Gradation.DIGITAL."+i+".Symbol"),
-							c.getInt("Gradation.DIGITAL."+i+".ValueToBaseGradation", i+1)));
+							vtbg));
 			}
 			if(!gr.isEmpty())
 			{
@@ -78,8 +89,8 @@ public class CurrencyHandler
 								c.getString("Gradation.DIGITAL.Base.Plural"),
 								c.getString("Gradation.DIGITAL.Base.Singular"),
 								c.getString("Gradation.DIGITAL.Base.Symbol"),
-								1),
-						(Gradation[]) gr.toArray());
+								0),
+						gr.toArray(new Gradation[0]));
 			} else
 			{
 				cg = new CurrencyGradation(
@@ -87,7 +98,7 @@ public class CurrencyHandler
 								c.getString("Gradation.DIGITAL.Base.Plural"),
 								c.getString("Gradation.DIGITAL.Base.Singular"),
 								c.getString("Gradation.DIGITAL.Base.Symbol"),
-								1));
+								0));
 			}
 			break;
 		case EXPERIENCE:
@@ -104,30 +115,33 @@ public class CurrencyHandler
 		String uniquename = c.getString("UniqueName");
 		if(c.get("Taxation") != null)
 		{
+			ConfigHandler.debug(d1, "> Taxation != null");
 			LinkedHashMap<TaxationCase, TaxationSet> map = new LinkedHashMap<>();
 			for(String s : c.getStringList("Taxation"))
 			{
 				String[] sp = s.split(";");
 				if(sp.length != 3)
 				{
+					ConfigHandler.debug(d1, "> sp.lenght != 3");
 					continue;
 				}
+				ConfigHandler.debug(d1, "> tc: "+sp[0]+" | boolean: '"+sp[1]+"'("+Boolean.parseBoolean(sp[1])+") | double: "+sp[2]);
 				try
 				{
 					TaxationCase tc = TaxationCase.valueOf(sp[0]);
-					if(!map.containsKey(tc) && Boolean.getBoolean(sp[1]) && MatchApi.isDouble(sp[2]))
+					if(!map.containsKey(tc) && MatchApi.isBoolean(sp[1]) && MatchApi.isDouble(sp[2]))
 					{
-						map.put(tc, new TaxationSet(Boolean.getBoolean(sp[1]), Double.parseDouble(sp[2])));
+						ConfigHandler.debug(d1, "> map.containsKey(tc) "+map.containsKey(tc)
+							+" || boolean "+Boolean.parseBoolean(sp[1])+" || MatchApi.isDouble "+MatchApi.isDouble(sp[2]));
+						map.put(tc, new TaxationSet(Boolean.parseBoolean(sp[1]), Double.parseDouble(sp[2])));
 					}
 				} catch(Exception e)
 				{
+					ConfigHandler.debug(d1, "> !tc.valueOf || !boolean || !MatchApi.isDouble");
 					continue;
 				}
 			}
-			if(!taxationMap.containsKey(uniquename))
-			{
-				taxationMap.put(uniquename, map);
-			}
+			CurrencyHandler.taxationMap.put(uniquename, map);
 		}
 		Currency cu = new Currency()
 				.setUnique(uniquename)
@@ -142,11 +156,11 @@ public class CurrencyHandler
 			defaultDigitalCurrency = cu.toCurrency();
 		}
 		plugin.getIFHApi().defaultGradationQuantity.put(uniquename, c.getInt("Format.GradationQuantity"));
-		plugin.getIFHApi().defaultUseSIPrefix.put(uniquename, c.getBoolean("UseSIPrefix"));
-		plugin.getIFHApi().defaultDecimalPlaces.put(uniquename, c.getInt("DecimalPlaces"));
-		plugin.getIFHApi().defaultUseSymbol.put(uniquename, c.getBoolean("UseSymbol"));
-		plugin.getIFHApi().defaultThousandSeperator.put(uniquename, c.getString("ThousandSeperator"));
-		plugin.getIFHApi().defaultDecimalSeperator.put(uniquename, c.getString("DecimalSeperator"));
+		plugin.getIFHApi().defaultUseSIPrefix.put(uniquename, c.getBoolean("Format.UseSIPrefix"));
+		plugin.getIFHApi().defaultDecimalPlaces.put(uniquename, c.getInt("Format.DecimalPlaces"));
+		plugin.getIFHApi().defaultUseSymbol.put(uniquename, c.getBoolean("Format.UseSymbol"));
+		plugin.getIFHApi().defaultThousandSeperator.put(uniquename, c.getString("Format.ThousandSeperator"));
+		plugin.getIFHApi().defaultDecimalSeperator.put(uniquename, c.getString("Format.DecimalSeperator"));
 		if(c.get("Format.SIPrefix") != null)
 		{
 			LinkedHashMap<Double, String> map = new LinkedHashMap<>();
@@ -170,7 +184,7 @@ public class CurrencyHandler
 			LinkedHashMap<Double, String> sorted = new LinkedHashMap<>();
 			map.entrySet()
 				.stream()
-				.sorted(Map.Entry.comparingByKey())
+				.sorted(Map.Entry.comparingByKey(Comparator.reverseOrder()))
 				.forEachOrdered(x -> sorted.put(x.getKey(), x.getValue()));
 			plugin.getIFHApi().defaultSIPrefix.put(uniquename, sorted);
 		}

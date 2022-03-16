@@ -19,43 +19,6 @@ public class Utility
 	public Utility(AdvancedEconomyPlus plugin)
 	{
 		Utility.plugin = plugin;
-		setPermissions();
-	}
-	
-	public static String
-	PERM_CMD_MONEY_LOGGERSETTINGSLOGOTHER = "",
-	PERM_BYPASS_RECOMMENT = "",
-	PERM_CMD_ECO_DELETELOG = "",
-	PERM_BYPASS_LOGOTHER = "",
-	PERM_BYPASS_STANDINGORDER_CREATE = "",
-	PERM_BYPASS_STANDINGORDER_INFO = "",
-	PERM_BYPASS_STANDINGORDER_DELETE = "",
-	PERM_BYPASS_STANDINGORDER_PAUSE = "",
-	PERM_BYPASS_STANDINGORDER_LIST = "",
-	PERM_BYPASS_LOAN_CREATE = "",
-	PERM_BYPASS_LOAN_FORGIVE = "",
-	PERM_BYPASS_LOAN_INFO = "",
-	PERM_BYPASS_LOAN_LIST = "",
-	PERM_BYPASS_LOAN_PAUSE = "",
-	PERM_BYPASS_LOAN_TRANSFER = "";
-	
-	public void setPermissions()
-	{
-		PERM_CMD_MONEY_LOGGERSETTINGSLOGOTHER = plugin.getYamlHandler().getCom().getString("Bypass.LoggerSettingsLogOther", "eco.cmd.money.filterlogother");
-		PERM_BYPASS_RECOMMENT = plugin.getYamlHandler().getCom().getString("Bypass.Recomment", "eco.cmd.bypass.recomment");
-		PERM_CMD_ECO_DELETELOG = plugin.getYamlHandler().getCom().getString("eco_deletelog.Permission", "eco.cmd.eco.deletelog");
-		PERM_BYPASS_LOGOTHER = plugin.getYamlHandler().getCom().getString("Bypass.LogOther", "eco.bypass.logother");
-		PERM_BYPASS_STANDINGORDER_CREATE = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderCreate", "eco.cmd.bypass.standingorder.create");
-		PERM_BYPASS_STANDINGORDER_INFO = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderInfo", "eco.cmd.bypass.standingorder.info");
-		PERM_BYPASS_STANDINGORDER_DELETE = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderDelete", "eco.cmd.bypass.standingorder.delete");
-		PERM_BYPASS_STANDINGORDER_PAUSE = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderPause", "eco.cmd.bypass.standingorder.pause");
-		PERM_BYPASS_STANDINGORDER_LIST = plugin.getYamlHandler().getCom().getString("Bypass.StandingOrderList", "eco.cmd.bypass.standingorder.list");
-		PERM_BYPASS_LOAN_CREATE = plugin.getYamlHandler().getCom().getString("Bypass.LoanCreate", "eco.cmd.bypass.loan.create");
-		PERM_BYPASS_LOAN_FORGIVE = plugin.getYamlHandler().getCom().getString("Bypass.LoanForgive", "eco.cmd.bypass.loan.forgive");
-		PERM_BYPASS_LOAN_INFO = plugin.getYamlHandler().getCom().getString("Bypass.LoanInfo", "eco.cmd.bypass.loan.info");
-		PERM_BYPASS_LOAN_LIST = plugin.getYamlHandler().getCom().getString("Bypass.LoanList", "eco.cmd.bypass.loan.list");
-		PERM_BYPASS_LOAN_PAUSE = plugin.getYamlHandler().getCom().getString("Bypass.LoanPause", "eco.cmd.bypass.loan.pause");
-		PERM_BYPASS_LOAN_TRANSFER = plugin.getYamlHandler().getCom().getString("Bypass.LoanTransfer", "eco.cmd.bypass.loan.transfer");
 	}
 	
 	public static double getNumberFormat(double d)//FIN
@@ -109,7 +72,7 @@ public class Utility
 		case PLAYER:
 			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", name))
 			{
-				return ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.OLDPLAYER, "`player_name` = ?", name)).getUUID();
+				return ((AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", name)).getUUID();
 			}
 			break;
 		}

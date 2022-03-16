@@ -1,19 +1,23 @@
 package main.java.me.avankziar.aep.spigot.cmd.cet.account;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.AccountManagement;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
+import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 
 public class AccountSetOwner extends ArgumentModule
@@ -48,7 +52,13 @@ public class AccountSetOwner extends ArgumentModule
 			@Override
 			public void run()
 			{
-				middlePart(player, args);
+				try
+				{
+					middlePart(player, args);
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}.runTaskAsynchronously(plugin);
 	}
@@ -56,7 +66,7 @@ public class AccountSetOwner extends ArgumentModule
 	/*
 	 * aep account setowner <playername> <accountname> <newowner>
 	 */
-	private void middlePart(Player player, String[] args)
+	private void middlePart(Player player, String[] args) throws IOException
 	{
 		EconomyEntity ee = plugin.getIFHApi().getEntity(args[2]);
 		String acname = args[3];
@@ -77,6 +87,10 @@ public class AccountSetOwner extends ArgumentModule
 			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Manage.YouCannotManageTheAccount")));
 			return;
 		}
+		ArrayList<AccountManagement> listAM = ConvertHandler.convertListIX(
+				plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.ACCOUNTMANAGEMENT,
+						"`id` ASC",
+						"`player_uuid` = ? `account_id` = ?", ac.getOwner().getUUID().toString(), ac.getID()));
 		final String oldname = ac.getAccountName();
 		ac.setOwner(nowner);
 		plugin.getMysqlHandler().updateData(MysqlHandler.Type.ACCOUNT, ac, "`id` = ?", ac.getID());
@@ -84,7 +98,18 @@ public class AccountSetOwner extends ArgumentModule
 				.replace("%acname%", oldname)
 				.replace("%acowner%", ac.getOwner().getName())
 				.replace("%newowner%", nowner.getName())
-				.replace("%newownertype%", nowner.getType().toString())));
+				.replace("%newownertype%", plugin.getIFHApi().getEconomyEntityType(ac.getOwner().getType()))));
+		if(nowner.getType() == EconomyType.PLAYER)
+		{
+			for(AccountManagement am : listAM)
+			{
+				if(!plugin.getIFHApi().canManageAccount(ac, nowner.getUUID(), am.getMaganagementType()))
+				{
+					plugin.getIFHApi().addManagementTypeToAccount(ac, nowner.getUUID(), am.getMaganagementType());
+					plugin.getIFHApi().removeManagementTypeFromAccount(ac, ee.getUUID(), am.getMaganagementType());
+				}
+			}
+		}
 		return;
 	}
 }

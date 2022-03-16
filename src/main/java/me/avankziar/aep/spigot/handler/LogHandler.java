@@ -32,11 +32,20 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 public class LogHandler
 {
+	private static String d1 = "trendlog";
+	
 	public static void pastNextPage(AdvancedEconomyPlus plugin, Player player, ArrayList<ArrayList<BaseComponent>> msg,
 			int page, boolean lastpage, String cmdstring, String playervalue, String accountName)
 	{
-		if(page==0 && lastpage)
+		ConfigHandler.debug(d1, "> pastNext Begin : "+msg.size());
+		if(page == 0 && lastpage)
 		{
+			for(List<BaseComponent> m : msg)
+			{
+				TextComponent n = ChatApi.tctl("");
+				n.setExtra(m);
+				player.spigot().sendMessage(n);
+			}
 			return;
 		}
 		int i = page+1;
@@ -80,6 +89,7 @@ public class LogHandler
 			}
 			pages.add(msg1);
 		}
+		ConfigHandler.debug(d1, "> pastNext sending : "+msg.size());
 		msg.add(pages);
 		for(List<BaseComponent> m : msg)
 		{
@@ -92,8 +102,14 @@ public class LogHandler
 	public static void pastNextPageLoggerSettings(AdvancedEconomyPlus plugin, Player player, ArrayList<ArrayList<BaseComponent>> msg,
 			int page, boolean lastpage, String cmdstring, String methode)
 	{
-		if(page==0 && lastpage)
+		if(page == 0 && lastpage)
 		{
+			for(List<BaseComponent> m : msg)
+			{
+				TextComponent n = ChatApi.tctl("");
+				n.setExtra(m);
+				player.spigot().sendMessage(n);
+			}
 			return;
 		}
 		int i = page+1;
@@ -142,10 +158,11 @@ public class LogHandler
 		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
 		ArrayList<BaseComponent> m1 = new ArrayList<>();
 		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.ActionLog.Headline")
-				.replace("%accountName%", ac.getAccountName())
-				.replace("%accountID%", String.valueOf(ac.getID()))
-				.replace("%accountOwner%", ac.getOwner().getName())
+				.replace("%accountname%", ac.getAccountName())
+				.replace("%accountid%", String.valueOf(ac.getID()))
+				.replace("%accountowner%", ac.getOwner().getName())
 				.replace("%amount%", String.valueOf(last))));
+		msg.add(m1);
 		for(ActionLogger al : list)
 		{
 			String orderer = "";
@@ -182,16 +199,26 @@ public class LogHandler
 				send = plugin.getIFHApi().getAccount(al.getFromAccountID());
 				rec = ac;
 			}
-			String withdraw = plugin.getIFHApi().format(al.getAmountToWithdraw(), send.getCurrency());
-			String deposit = plugin.getIFHApi().format(al.getAmountToDeposit(), rec.getCurrency());
-			map.put("%fromaccountid%", String.valueOf(send.getID()));
-			map.put("%fromaccountname%", send.getAccountName());
-			map.put("%fromaccountowner%", send.getOwner().getName());
-			map.put("%toaccountid%", String.valueOf(rec.getID()));
-			map.put("%toaccountname%", rec.getAccountName());
-			map.put("%toaccountowner%", rec.getOwner().getName());
+			String system = "System";
+			String withdraw = send != null ? plugin.getIFHApi().format(al.getAmountToWithdraw(), send.getCurrency()) : "0.0";
+			String deposit = rec != null ? plugin.getIFHApi().format(al.getAmountToDeposit(), rec.getCurrency()) : "0.0";
+			String saccid = String.valueOf(send != null ? send.getID() : system);
+			String saccn = send != null ? send.getAccountName() : system;
+			String sacco = send != null ? send.getOwner().getName() : system;
+			String raccid = String.valueOf(rec != null ? rec.getID() : system);
+			String raccn = rec != null ? rec.getAccountName() : system;
+			String racco = rec != null ? rec.getOwner().getName() : system;
+			String tax = send != null ? plugin.getIFHApi().format(al.getAmountToTax(), send.getCurrency())
+					: plugin.getIFHApi().format(al.getAmountToTax(), rec.getCurrency());
+			map.put("%fromaccountid%", saccid); 
+			//FIXME if send == null , do it as "System". && Config Boolean if "System" is not wanted
+			map.put("%fromaccountname%", saccn);
+			map.put("%fromaccountowner%", sacco);
+			map.put("%toaccountid%", raccid);
+			map.put("%toaccountname%", raccn);
+			map.put("%toaccountowner%", racco);
 			map.put("%withdraw%", withdraw);
-			map.put("%tax%", plugin.getIFHApi().format(al.getAmountToTax(), send.getCurrency()));
+			map.put("%tax%", tax);
 			map.put("%deposit%", deposit);
 			
 			ArrayList<BaseComponent> m2 = new ArrayList<>();
@@ -201,15 +228,14 @@ public class LogHandler
 						plugin.getYamlHandler().getLang().getString("Log.ActionLog.MainMessage")
 						.replace("%date%", TimeHandler.getTimeSlim(al.getUnixTime()))
 						.replace("%fromcolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Negative"))
-						.replace("%fromaccountid%", String.valueOf(send.getID()))
-						.replace("%fromaccountname%", send.getAccountName())
-						.replace("%fromaccountowner%", send.getOwner().getName())
+						.replace("%fromaccountid%", saccid)
+						.replace("%fromaccountname%", saccn)
+						.replace("%fromaccountowner%", sacco)
 						.replace("%tocolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Neutral"))
-						.replace("%toaccountid%", String.valueOf(rec.getID()))
-						.replace("%toaccountid%", String.valueOf(rec.getID()))
-						.replace("%toaccountname%", rec.getAccountName())
-						.replace("%toaccountowner%", rec.getOwner().getName())
-						.replace("%format%", withdraw),
+						.replace("%toaccountid%", raccid)
+						.replace("%toaccountname%", raccn)
+						.replace("%toaccountowner%", racco)
+						.replace("%format%", withdraw.replace(" ", "+")),
 						map));
 			} else
 			{
@@ -217,15 +243,14 @@ public class LogHandler
 						plugin.getYamlHandler().getLang().getString("Log.ActionLog.MainMessage")
 						.replace("%date%", TimeHandler.getTimeSlim(al.getUnixTime()))
 						.replace("%fromcolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Neutral"))
-						.replace("%fromaccountid%", String.valueOf(send.getID()))
-						.replace("%fromaccountname%", send.getAccountName())
-						.replace("%fromaccountowner%", send.getOwner().getName())
+						.replace("%fromaccountid%", saccid)
+						.replace("%fromaccountname%", saccn)
+						.replace("%fromaccountowner%", sacco)
 						.replace("%tocolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Positive"))
-						.replace("%toaccountid%", String.valueOf(rec.getID()))
-						.replace("%toaccountid%", String.valueOf(rec.getID()))
-						.replace("%toaccountname%", rec.getAccountName())
-						.replace("%toaccountowner%", rec.getOwner().getName())
-						.replace("%format%", deposit),
+						.replace("%toaccountid%", raccid)
+						.replace("%toaccountname%", raccn)
+						.replace("%toaccountowner%", racco)
+						.replace("%format%", deposit.replace(" ", "+")),
 						map));
 			}
 			if(
@@ -248,7 +273,7 @@ public class LogHandler
 				{
 					m2.addAll(ChatApiSmall.generateTextComponentII(
 							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Edit")
-							.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.RECOMMENT))
+							.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.RECOMMENT).trim().replace(" ", "+"))
 							.replace("%id%", String.valueOf(al.getId())),
 							map));
 				}
@@ -256,7 +281,7 @@ public class LogHandler
 				{
 					m2.addAll(ChatApiSmall.generateTextComponentII(
 							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Delete")
-							.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.DELETELOG))
+							.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.DELETELOG).replace(" ", "+"))
 							.replace("%id%", String.valueOf(al.getId())),
 							map));
 				}
@@ -371,13 +396,13 @@ public class LogHandler
 			if(MatchApi.isPositivNumber(amount))
 			{
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("CmdMoney.Diagram.Positiv")
+						plugin.getYamlHandler().getLang().getString("Log.Diagram.Positiv")
 						.replace("%relativ%", plugin.getIFHApi().format(amount, ac.getCurrency()))
 						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
 			} else
 			{
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("CmdMoney.Diagram.Negativ")
+						plugin.getYamlHandler().getLang().getString("Log.Diagram.Negativ")
 						.replace("%relativ%", plugin.getIFHApi().format(amount, ac.getCurrency()))
 						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
 			}
@@ -622,7 +647,7 @@ public class LogHandler
 		lastline += "&6"+TimeHandler.getTime(list.get(0).getUnixTime())+"▲";
 		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
 		ArrayList<BaseComponent> m1 = new ArrayList<>();
-		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.Grafic.HeadlineII")
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.Grafic.HeadlineII")
 				.replace("%accountname%", ac.getAccountName())
 				.replace("%amount%", String.valueOf(last))));
 		msg.add(m1);
@@ -828,7 +853,6 @@ public class LogHandler
 		totalbc.add(twelfthbc);
 		totalbc.add(thirteenthbc);
 		
-		
 		int k = 0;
 		for(ArrayList<ActionLogger> lists : totallist)
 		{
@@ -899,53 +923,49 @@ public class LogHandler
 			if(k == 0)
 			{
 				totalbc.get(k).add(ChatApi.hoverEvent(bars, Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.HoverMessageII")
-						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
-						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
-						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
-						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+						plugin.getYamlHandler().getLang().getString("Log.BarChart.HoverMessageII")
+						.replace("%totalvalue%", color+plugin.getIFHApi().format(smaxTotal, ac.getCurrency()))
+						.replace("%positivvalue%", plugin.getIFHApi().format(smaxPositiv, ac.getCurrency()))
+						.replace("%negativvalue%", plugin.getIFHApi().format(smaxNegativ, ac.getCurrency()))
 						));
-				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.LastYear")));
+				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.BarChart.LastYear")));
 				totalbc.get(k).add(ChatApi.hoverEvent(barsII, Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.HoverMessageII")
-						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
-						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
-						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
-						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+						plugin.getYamlHandler().getLang().getString("Log.BarChart.HoverMessageII")
+						.replace("%totalvalue%", color+plugin.getIFHApi().format(smaxTotal, ac.getCurrency()))
+						.replace("%positivvalue%", plugin.getIFHApi().format(smaxPositiv, ac.getCurrency()))
+						.replace("%negativvalue%", plugin.getIFHApi().format(smaxNegativ, ac.getCurrency()))
 						));
 			} else
 			{
 				totalbc.get(k).add(ChatApi.hoverEvent(bars, Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.HoverMessage")
-						.replace("%percentP%", AdvancedEconomyPlus.getVault().format(hpercentP))
-						.replace("%percentN%", AdvancedEconomyPlus.getVault().format(hpercentN))
-						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
-						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
-						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
-						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+						plugin.getYamlHandler().getLang().getString("Log.BarChart.HoverMessage")
+						.replace("%percentP%", plugin.getIFHApi().format(hpercentP, ac.getCurrency()))
+						.replace("%percentN%", plugin.getIFHApi().format(hpercentN, ac.getCurrency()))
+						.replace("%totalvalue%", color+plugin.getIFHApi().format(smaxTotal, ac.getCurrency()))
+						.replace("%positivvalue%", plugin.getIFHApi().format(smaxPositiv, ac.getCurrency()))
+						.replace("%negativvalue%", plugin.getIFHApi().format(smaxNegativ, ac.getCurrency()))
 						));
-				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.Month")
+				totalbc.get(k).add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.BarChart.Month")
 						.replace("%month%", month.format(DateTimeFormatter.ofPattern("MM.yyyy")))));
 				totalbc.get(k).add(ChatApi.hoverEvent(barsII, Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.HoverMessage")
-						.replace("%percentP%", AdvancedEconomyPlus.getVault().format(hpercentP))
-						.replace("%percentN%", AdvancedEconomyPlus.getVault().format(hpercentN))
-						.replace("%totalvalue%", color+AdvancedEconomyPlus.getVault().format(smaxTotal))
-						.replace("%positivvalue%", AdvancedEconomyPlus.getVault().format(smaxPositiv))
-						.replace("%negativvalue%", AdvancedEconomyPlus.getVault().format(smaxNegativ))
-						.replace("%currency%", AdvancedEconomyPlus.getVault().currencyNamePlural())
+						plugin.getYamlHandler().getLang().getString("Log.BarChart.HoverMessage")
+						.replace("%percentP%", plugin.getIFHApi().format(hpercentP, ac.getCurrency()))
+						.replace("%percentN%", plugin.getIFHApi().format(hpercentN, ac.getCurrency()))
+						.replace("%totalvalue%", color+plugin.getIFHApi().format(smaxTotal, ac.getCurrency()))
+						.replace("%positivvalue%", plugin.getIFHApi().format(smaxPositiv, ac.getCurrency()))
+						.replace("%negativvalue%", plugin.getIFHApi().format(smaxNegativ, ac.getCurrency()))
 						));
 			}
 			k++;
 		}
 		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
 		ArrayList<BaseComponent> m1 = new ArrayList<>();
-		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.Headline")
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.BarChart.Headline")
 				.replace("%player%", ac.getOwner().getName())
 				.replace("%amount%", String.valueOf(list.size()))));
 		msg.add(m1);
 		ArrayList<BaseComponent> m2 = new ArrayList<>();
-		m2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdMoney.BarChart.Infoline")));
+		m2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.BarChart.Infoline")));
 		msg.add(m2);
 		for(ArrayList<BaseComponent> bc : totalbc)
 		{
@@ -973,6 +993,7 @@ public class LogHandler
 			int page, int end, int last,
 			LoggerSettingsHandler.Access access, String cmdstring)
 	{
+		ConfigHandler.debug(d1, "> Trendlog Output Begin");
 		boolean lastpage = false;
 		if(end > last)
 		{
@@ -982,9 +1003,9 @@ public class LogHandler
 		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
 		ArrayList<BaseComponent> m1 = new ArrayList<>();
 		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.TrendLog.Headline")
-				.replace("%accountName%", ac.getAccountName())
-				.replace("%accountID%", String.valueOf(ac.getID()))
-				.replace("%accountOwner%", ac.getOwner().getName())
+				.replace("%accountname%", ac.getAccountName())
+				.replace("%accountid%", String.valueOf(ac.getID()))
+				.replace("%accountowner%", ac.getOwner().getName())
 				.replace("%amount%", String.valueOf(last))));
 		msg.add(m1);
 		for(TrendLogger tl : list)
@@ -995,31 +1016,31 @@ public class LogHandler
 				m2.add(ChatApi.hoverEvent(
 						plugin.getYamlHandler().getLang().getString("Log.TrendLog.ChangePositiv")
 						.replace("%date%", TimeHandler.getLocalDateTime(tl.getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-						.replace("%first%", AdvancedEconomyPlus.getVault().format(tl.getFirstValue()))
-						.replace("%last%", AdvancedEconomyPlus.getVault().format(tl.getLastValue())),
+						.replace("%first%", plugin.getIFHApi().format(tl.getFirstValue(), ac.getCurrency()))
+						.replace("%last%", plugin.getIFHApi().format(tl.getLastValue(), ac.getCurrency())),
 						HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.TrendLog.Positiv")
-						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))));
+						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))));
 			} else if(tl.getRelativeAmountChange() == 0) 
 			{
 				m2.add(ChatApi.hoverEvent(
 						plugin.getYamlHandler().getLang().getString("Log.TrendLog.ChangeNeutral")
 						.replace("%date%", TimeHandler.getLocalDateTime(tl.getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-						.replace("%first%", AdvancedEconomyPlus.getVault().format(tl.getFirstValue()))
-						.replace("%last%", AdvancedEconomyPlus.getVault().format(tl.getLastValue())),
+						.replace("%first%", plugin.getIFHApi().format(tl.getFirstValue(), ac.getCurrency()))
+						.replace("%last%", plugin.getIFHApi().format(tl.getLastValue(), ac.getCurrency())),
 						HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.TrendLog.Positiv")
-						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))));
+						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))));
 			} else
 			{
 				m2.add(ChatApi.hoverEvent(
 						plugin.getYamlHandler().getLang().getString("Log.TrendLog.ChangeNegativ")
 						.replace("%date%", TimeHandler.getLocalDateTime(tl.getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-						.replace("%first%", AdvancedEconomyPlus.getVault().format(tl.getFirstValue()))
-						.replace("%last%", AdvancedEconomyPlus.getVault().format(tl.getLastValue())),
+						.replace("%first%", plugin.getIFHApi().format(tl.getFirstValue(), ac.getCurrency()))
+						.replace("%last%", plugin.getIFHApi().format(tl.getLastValue(), ac.getCurrency())),
 						HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.TrendLog.Negativ")
-						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))));
+						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))));
 			}
 			msg.add(m2);
 		}
@@ -1091,9 +1112,9 @@ public class LogHandler
 		msg.add(m1);
 		ArrayList<BaseComponent> m2 = new ArrayList<>();
 		m2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.Diagram.Infoline")
-				.replace("%max%", AdvancedEconomyPlus.getVault().format(maxamount))
-				.replace("%min%", AdvancedEconomyPlus.getVault().format(minamount))
-				.replace("%median%", AdvancedEconomyPlus.getVault().format(median))));
+				.replace("%max%", plugin.getIFHApi().format(maxamount, ac.getCurrency()))
+				.replace("%min%", plugin.getIFHApi().format(minamount, ac.getCurrency()))
+				.replace("%median%", plugin.getIFHApi().format(median, ac.getCurrency()))));
 		msg.add(m2);
 		while(i < list.size())
 		{
@@ -1125,15 +1146,15 @@ public class LogHandler
 			if(MatchApi.isPositivNumber(tl.getRelativeAmountChange()))
 			{
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("LLog.TrendDiagram.Positiv")
-						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))
-						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
+						plugin.getYamlHandler().getLang().getString("Log.TrendDiagram.Positiv")
+						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))
+						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
 			} else
 			{
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("CmdMoney.TrendDiagram.Negativ")
-						.replace("%relativ%", AdvancedEconomyPlus.getVault().format(tl.getRelativeAmountChange()))
-						.replace("%percent%", AdvancedEconomyPlus.getVault().format(percent))));
+						plugin.getYamlHandler().getLang().getString("Log.TrendDiagram.Negativ")
+						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))
+						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
 			}
 			msg.add(m3);
 			i++;
@@ -1157,6 +1178,7 @@ public class LogHandler
 		double minamount = 0.0;
 		int safeline = -1;
 		int i = 0;
+		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
 		while(i<list.size())
 		{
 			TrendLogger el  = list.get(i);
@@ -1196,7 +1218,7 @@ public class LogHandler
 		double hpercent = (maxamount-minamount);
 		String wim = plugin.getYamlHandler().getConfig().getString("GraficSpaceSymbol", "ˉ");
 		String x = plugin.getYamlHandler().getConfig().getString("GraficPointSymbol", "x");
-		String headmessage = "&a▼"+AdvancedEconomyPlus.getVault().format(maxamount);
+		String headmessage = "&a▼"+plugin.getIFHApi().format(maxamount, ac.getCurrency());
 		String messageI = "|";
 		String messageII = "|";
 		String messageIII = "|";
@@ -1209,7 +1231,7 @@ public class LogHandler
 		String messageIX = "|";
 		String messageX = "|";
 		String messageXI = wim;
-		String bottommessage = "&c▲"+AdvancedEconomyPlus.getVault().format(minamount);
+		String bottommessage = "&c▲"+plugin.getIFHApi().format(minamount, ac.getCurrency());
 		String lastline = "&6▲"+TimeHandler.getLocalDateTime(list.get(list.size()-1).getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 		i = list.size()-1;
 		while(i>=0)
@@ -1370,45 +1392,59 @@ public class LogHandler
 			lastpage = true;
 		}
 		lastline += "&6"+TimeHandler.getLocalDateTime(list.get(0).getUnixTime()).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))+"▲";
-		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
 		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
 		ArrayList<BaseComponent> m1 = new ArrayList<>();
 		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Log.Grafic.Headline")
-				.replace("%accountName%", ac.getAccountName())
-				.replace("%accountID%", String.valueOf(ac.getID()))
-				.replace("%accountOwner%", ac.getOwner().getName())
+				.replace("%accountname%", ac.getAccountName())
+				.replace("%accountid%", String.valueOf(ac.getID()))
+				.replace("%accountowner%", ac.getOwner().getName())
 				.replace("%amount%", String.valueOf(last))));
 		msg.add(m1);
 		ArrayList<BaseComponent> m2 = new ArrayList<>();
 		m2.add(ChatApi.tctl(headmessage));
+		msg.add(m2);
 		ArrayList<BaseComponent> m3 = new ArrayList<>();
 		m3.add(ChatApi.tctl(messageI));
+		msg.add(m3);
 		ArrayList<BaseComponent> m4 = new ArrayList<>();
 		m4.add(ChatApi.tctl(messageII));
+		msg.add(m4);
 		ArrayList<BaseComponent> m5 = new ArrayList<>();
 		m5.add(ChatApi.tctl(messageIII));
+		msg.add(m5);
 		ArrayList<BaseComponent> m6 = new ArrayList<>();
 		m6.add(ChatApi.tctl(messageIV));
+		msg.add(m6);
 		ArrayList<BaseComponent> m7 = new ArrayList<>();
 		m7.add(ChatApi.tctl(messageV));
+		msg.add(m7);
 		ArrayList<BaseComponent> m8 = new ArrayList<>();
 		m8.add(ChatApi.tctl(middlemessage));
+		msg.add(m8);
 		ArrayList<BaseComponent> m9 = new ArrayList<>();
 		m9.add(ChatApi.tctl(messageVI));
+		msg.add(m9);
 		ArrayList<BaseComponent> m10 = new ArrayList<>();
 		m10.add(ChatApi.tctl(messageVII));
+		msg.add(m10);
 		ArrayList<BaseComponent> m11 = new ArrayList<>();
 		m11.add(ChatApi.tctl(messageVIII));
+		msg.add(m11);
 		ArrayList<BaseComponent> m12 = new ArrayList<>();
 		m12.add(ChatApi.tctl(messageIX));
+		msg.add(m12);
 		ArrayList<BaseComponent> m13 = new ArrayList<>();
 		m13.add(ChatApi.tctl(messageX));
+		msg.add(m13);
 		ArrayList<BaseComponent> m14 = new ArrayList<>();
 		m14.add(ChatApi.tctl(messageXI));
+		msg.add(m14);
 		ArrayList<BaseComponent> m15 = new ArrayList<>();
 		m15.add(ChatApi.tctl(bottommessage));
+		msg.add(m15);
 		ArrayList<BaseComponent> m16 = new ArrayList<>();
 		m16.add(ChatApi.tctl(lastline));
+		msg.add(m16);
 		pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, Methode.GRAFIC.toString());
 		return;
 	}

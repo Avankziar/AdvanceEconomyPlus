@@ -71,12 +71,6 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	private ArrayList<CommandConstructor> commandTree;
 	private ArrayList<BaseConstructor> helpList;
 	private LinkedHashMap<String, ArgumentModule> argumentMap;
-	public static String baseCommandI = "eco"; //Pfad angabe + ürspungliches Commandname
-	public static String baseCommandII = "money";
-	public static String baseCommandV = "standingorder";
-	
-	public static String infoCommandPath = "CmdEco";
-	public static String infoCommand = "/"; //InfoComamnd
 	
 	public void onEnable()
 	{
@@ -94,6 +88,8 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		commandTree = new ArrayList<>();
 		helpList = new ArrayList<>();
 		argumentMap = new LinkedHashMap<>();
+		
+		setupIFH();
 		
 		try
 		{
@@ -115,17 +111,16 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			return;
 		}
 		loggerApi = new LoggerApi(this);
-		backgroundTask = new BackgroundTask(this);
-		setupIFH();
+		ConfigHandler.init(plugin);
 		setupVault();
-		setupStrings();
+		ifhApi.registerCurrencyFromFile();
+		backgroundTask = new BackgroundTask(this);
 		setupListener();
 		setupBstats();
-		ConfigHandler.init(plugin);
 		setupExtraPermission();
 		new CurrencyCommandSetup(plugin).setupCommand();
 		setupPlaceholderAPI();
-		setupMessageToBungee();
+		setupMessageToBungee();		
 	}
 	
 	public void onDisable()
@@ -190,12 +185,6 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	public static LoggerApi getLoggerApi()
 	{
 		return loggerApi;
-	}
-	
-	private void setupStrings()
-	{	
-		//Zuletzt infoCommand deklarieren
-		infoCommand += plugin.getYamlHandler().getCom().getString(baseCommandI+".Name");
 	}
 	
 	public void setupListener()
@@ -359,11 +348,11 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	{
 		if (plugin.getServer().getPluginManager().isPluginEnabled("Vault")) 
 		{
-			vaultApi = new VaultApi(this);
+			vaultApi = new VaultApi(plugin);
             plugin.getServer().getServicesManager().register(
             		net.milkbowl.vault.economy.Economy.class,
             		vaultApi,
-            		this,
+            		plugin,
                     ServicePriority.Normal);
             log.info(pluginName + " detected Vault. Hooking!");
             return true;
@@ -391,7 +380,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	private void setupMessageToBungee() 
 	{
-        if (Bukkit.getPluginManager().getPlugin("InterfaceHub") == null) 
+        if(Bukkit.getPluginManager().getPlugin("InterfaceHub") == null) 
         {
             return;
         }
@@ -403,14 +392,16 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			{
 			    if(i == 20)
 			    {
-				cancel();
-				return;
+					cancel();
+					return;
 			    }
 			    RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee> rsp = 
-	                             getServer().getServicesManager().getRegistration(MessageToBungee.class);
-			    if (rsp == null) 
+	                             getServer().getServicesManager().getRegistration(
+	                            		 main.java.me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee.class);
+			    if(rsp == null) 
 			    {
-	                        i++;
+			    	//Check up to 20 seconds after the start, to connect with the provider
+			    	i++;
 			        return;
 			    }
 			    mtb = rsp.getProvider();
@@ -448,4 +439,58 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		int pluginId = 7665;
         new Metrics(this, pluginId);
 	}
+	
+	/*private Economy ifheco;
+	
+	setupIFHEco() in der main ausführen
+	
+	public Economy getEco()
+	{
+		return ifheco;
+	}
+	
+	private void test(Player player, Player twoplayer)
+	{
+		Account ac = ifheco.getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN, ifheco.getDefaultCurrency(CurrencyType.DIGITAL));
+		ifheco.withdraw(ac, 1000); //Nur wenn man etwas abziehen will.
+		ifheco.deposit(ac, 1000); //Nur wenn man etwas deponieren will.
+		String cat = "Die Kategorie, am besten ein Wort wie: Shop oder sowas ";
+		String comment = "Die Notiz, eine Beschreibung was gemacht wurde.";
+		ifheco.withdraw(ac, 1000, OrdererType.PLAYER, player.getUniqueId().toString(), cat, comment); //Wenn man etwas mit Notiz etc. abziehen will
+		ifheco.deposit(ac, 1000, OrdererType.PLAYER, player.getUniqueId().toString(), cat, comment); //Wenn man etwas mit Notiz etc. deponieren will
+		
+		Account to = ifheco.getDefaultAccount(twoplayer.getUniqueId(), AccountCategory.MAIN, ifheco.getDefaultCurrency(CurrencyType.DIGITAL));
+		ifheco.transaction(ac, to, 1000); //einfache transaktion zwischen 2 spieler
+		ifheco.transaction(ac, to, 1000, OrdererType.PLAYER, player.getUniqueId().toString(), cat, comment); //transaktion zwischen 2 Spieler mit notiz
+	}
+	
+	private void setupIFHEco() 
+	{
+        if (Bukkit.getPluginManager().getPlugin("InterfaceHub") == null) 
+        {
+            return;
+        }
+        new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+			    if(i == 20)
+			    {
+					cancel();
+					return;
+			    }
+			    RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.economy.Economy> rsp = 
+	                             getServer().getServicesManager().getRegistration(Economy.class);
+			    if (rsp == null) 
+			    {
+			    	i++;
+			        return;
+			    }
+			    ifheco = rsp.getProvider();
+			    cancel();
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+	}*/
 }

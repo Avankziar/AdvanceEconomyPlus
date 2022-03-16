@@ -77,7 +77,7 @@ public interface Table00
 			{
 				String data = "UPDATE `" + MysqlHandler.Type.ENTITYDATA.getValue()
 						+ "` SET `entity_uuid` = ?,"
-						+ " `entity_name` = ?, `entity_type` = ? = ?"
+						+ " `entity_name` = ?, `entity_type` = ?"
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
 				preparedStatement.setString(1, el.getUUID().toString());
@@ -224,7 +224,7 @@ public interface Table00
 			try 
 			{			
 				String sql = "SELECT * FROM `" + MysqlHandler.Type.ENTITYDATA.getValue() 
-						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+						+ "` ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();

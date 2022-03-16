@@ -15,7 +15,6 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 
 public class AccountClose extends ArgumentModule
@@ -55,26 +54,18 @@ public class AccountClose extends ArgumentModule
 	}
 	
 	/*
-	 * aep account close <Accountname> [confirm(If Account is Predefine)]
 	 * aep account close <AccountOwnername> <Accountname> [confirm(If Account is Predefine)]
 	 */
 	private void middlePart(Player player, String[] args)
 	{
-		Account ac = null;
-		if(args.length == 3)
-		{
-			ac = plugin.getIFHApi().getAccount(plugin.getIFHApi().getEntity(player.getUniqueId(), EconomyType.PLAYER), args[2]);
-		} else if(args.length == 4)
-		{
-			ac = plugin.getIFHApi().getAccount(plugin.getIFHApi().getEntity(args[2]), args[3]);
-		}
+		Account ac = plugin.getIFHApi().getAccount(plugin.getIFHApi().getEntity(args[2]), args[3]);
 		if(ac == null)
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.Pay.AccountDontExist")));
 			return;
 		}
-		if(!ac.getOwner().toString().equals(player.getUniqueId().toString())
+		if(!ac.getOwner().getUUID().toString().equals(player.getUniqueId().toString())
 				&& !player.hasPermission(ExtraPerm.get(Type.BYPASS_ACCOUNTMANAGEMENT)))
 		{
 			player.sendMessage(ChatApi.tl(

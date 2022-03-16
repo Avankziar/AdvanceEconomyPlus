@@ -100,6 +100,8 @@ public class TopList extends ArgumentModule implements CommandExecutor
 		}
 	}
 	
+	// aep toplist <currency> <page> 
+	
 	private void middlePart(Player player, String cmdstring, String[] args,
 			int zero, int one)
 	{
@@ -113,7 +115,7 @@ public class TopList extends ArgumentModule implements CommandExecutor
 		}
 		int page = 0;
 		int quantity = 10;
-		String pagenumber = args[zero];
+		String pagenumber = args[one];
 		if(MatchApi.isInteger(pagenumber))
 		{
 			page = Integer.parseInt(pagenumber);
@@ -122,13 +124,13 @@ public class TopList extends ArgumentModule implements CommandExecutor
 				page = 0;
 			}
 		}
-		String currency = args[one];
+		String currency = args[zero];
 		if(page < 0)
 		{
 			page = 0;
 		}
 		ArrayList<Account> top = ConvertHandler.convertListII(
-				plugin.getMysqlHandler().getList(Type.ACCOUNT, "`balance`", page, quantity, "`account_currency` = ?", currency));
+				plugin.getMysqlHandler().getList(Type.ACCOUNT, "`balance` DESC", page*quantity, quantity, "`account_currency` = ?", currency));
 		if(top.size() <= 0)
 		{
 			player.sendMessage(ChatApi.tl(
@@ -144,19 +146,20 @@ public class TopList extends ArgumentModule implements CommandExecutor
 				.replace("%page%", String.valueOf(page))
 				.replace("%currency%", currency)));
 		msg.add(m1);
+		int i = (page*quantity)+1;
 		for(Account ac : top)
 		{
 			ArrayList<BaseComponent> m2 = new ArrayList<BaseComponent>();
 			m2.add(ChatApi.tctl(
 					plugin.getYamlHandler().getLang().getString("Cmd.Top.TopLine")
-					.replace("%place%", String.valueOf(page+1))
+					.replace("%place%", String.valueOf(i))
 					.replace("%accountid%", String.valueOf(ac.getID()))
-					.replace("%accountowner%", ac.getOwner().getName())
+					.replace("%owner%", ac.getOwner().getName())
 					.replace("%accountname%", ac.getAccountName())
 					.replace("%format%", plugin.getIFHApi().format(ac.getBalance(), ac.getCurrency()))));
 			msg.add(m2);
-			page++;
+			i++;
 		}
-		LogHandler.pastNextPage(plugin, player, msg, page, lastpage, cmdstring, null, null);
+		LogHandler.pastNextPage(plugin, player, msg, page, lastpage, cmdstring, currency, null);
 	}
 }

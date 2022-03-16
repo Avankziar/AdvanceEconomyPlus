@@ -1,10 +1,10 @@
 main: main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus
 name: AdvancedEconomyPlus
-version: 3
+version: 4
 load: STARTUP
 api-version: 1.18
 description: a Economy-Plugin
 author: Avankziar
-depend: [Vault]
-softdepend: [ChestShop,Jobs,HeadDatabase,QuickShop]
+depend: [InterfaceHub]
+softdepend: [Vault,ChestShop,Jobs,HeadDatabase,QuickShop]
 website: https://www.spigotmc.org/resources/advanced-economy-plus.79828/

@@ -77,6 +77,7 @@ public class PlayerListener implements Listener
 			aepu = new AEPUser(event.getPlayer().getUniqueId(), event.getPlayer().getName(),
 					ConfigHandler.getDefaultMoneyFlowNotification(true),
 					ConfigHandler.getDefaultMoneyFlowNotification(false), System.currentTimeMillis());
+			plugin.getMysqlHandler().create(MysqlHandler.Type.PLAYERDATA, aepu);
 			AccountHandler.createAllCurrencyAccounts(event.getPlayer(), 
 					plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
 		} else

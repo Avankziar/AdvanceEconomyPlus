@@ -1141,7 +1141,7 @@ public class LoggerSettingsHandler
 				{
 					fst.setInventoryHandlerType(InventoryHandlerType.NONE);
 					getLoggerSettings().replace(player.getUniqueId(), fst);
-					player.closeInventory();
+					new BukkitRunnable() {@Override public void run(){player.closeInventory();}}.runTask(plugin);
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return;
 				}
@@ -1152,10 +1152,10 @@ public class LoggerSettingsHandler
 					player.closeInventory();
 					return;
 				}
-				player.closeInventory();
+				new BukkitRunnable() {@Override public void run(){player.closeInventory();}}.runTask(plugin);
 				ArrayList<Object> whereObjects = new ArrayList<>();
 				String query = "";
-				String order = "`id`";
+				String order = "`id`"+ (fst.isDescending() ? " DESC" : " ASC");
 				if(fst.isAction())
 				{
 					if(fst.getOrderType() != OrderType.ID)
@@ -1239,7 +1239,7 @@ public class LoggerSettingsHandler
 				getLoggerSettings().replace(player.getUniqueId(), fst);
 				int start = 0;
 				int end = 0;
-				player.closeInventory();
+				new BukkitRunnable() {@Override public void run(){player.closeInventory();}}.runTask(plugin);
 				Object[] whereObject = whereObjects.toArray(new Object[whereObjects.size()]);
 				if(Methode.BARCHART == methode)
 				{

@@ -1,11 +1,14 @@
 package main.java.me.avankziar.aep.spigot.api.economy;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -13,10 +16,12 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.objects.QuickPayAccount;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.general.economy.account.AccountType;
@@ -46,12 +51,22 @@ public class IFHApi implements Economy
 	protected LinkedHashMap<String, String> defaultDecimalSeperator = new LinkedHashMap<>();
 	protected LinkedHashMap<String, LinkedHashMap<Double, String>> defaultSIPrefix = new LinkedHashMap<>();
 	
+	private static String difhapi1 = "ifhapiFormat";
+	
 	public IFHApi(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
 		accountHandler = new AccountHandler(plugin);
 		currencyHandler = new CurrencyHandler(plugin);
 		transactionHandler = new TransactionHandler(plugin);
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				transactionHandler.init();
+			}
+		}.runTaskLater(plugin, 20*5);
 	}
 	
 	//If you want to know how the exchange with tax are calculated, copy this method and change the values.
@@ -547,6 +562,14 @@ public class IFHApi implements Economy
 		return currencyHandler.registerCurrency(currency);
 	}
 	
+	public void registerCurrencyFromFile()
+	{
+		for(String s : plugin.getYamlHandler().getCurrency().keySet())
+		{
+			registerCurrencyFromFile(plugin.getYamlHandler().getCurrency(s));
+		}
+	}
+	
 	public void registerCurrencyFromFile(YamlConfiguration c)
 	{
 		currencyHandler.registerCurrencyFromFile(c);
@@ -772,148 +795,230 @@ public class IFHApi implements Economy
 				getDefaultDecimalSeperator(economyCurrency));
 	}
 
+	//FIXME Negativ Zahlen miteinbedenken
 	@Override
 	public String format(double amount, @Nonnull EconomyCurrency ec, int gradationQuantity, int decimalPlaces, 
 			boolean useSIPrefix, boolean useSymbol, String thousandSeperator, String decimalSeperator)
 	{
+		ConfigHandler.debug(difhapi1, "> Format Begin");
 		if(ec == null)
 		{
+			ConfigHandler.debug(difhapi1, "> Format: ec == null");
 			return null;
 		}
+		ConfigHandler.debug(difhapi1, "> Format Info: gQ = "+gradationQuantity
+												+" | dP = "+decimalPlaces
+												+" | useSIP: "+useSIPrefix
+												+" | useS: "+useSymbol
+												+" | ts: "+thousandSeperator
+												+" | ds: "+decimalSeperator);
 		String ts = thousandSeperator;
 		String ds = decimalSeperator;
 		if(ts == null)
 		{
 			ts = getDefaultThousandSeperator(ec);
+			ConfigHandler.debug(difhapi1, "> Format: ts == null >> ts = "+ts+" (Default)");
 		}
 		if(ds == null)
 		{
 			ds = getDefaultDecimalSeperator(ec);
+			ConfigHandler.debug(difhapi1, "> Format: ds == null >> ds = "+ds+" (Default)");
 		}
 		StringBuilder sb = new StringBuilder();
 		if(gradationQuantity == 0)
 		{
+			ConfigHandler.debug(difhapi1, "> Format: gQ == 0");
 			Gradation gr = ec.getCurrencyGradation().getHighestGradation();
+			ConfigHandler.debug(difhapi1, "> Format: gradation(highest) : "
+					+gr.getSingular()+", "+gr.getPlural()+", "+gr.getSymbol()+", "+gr.getValueToBaseGradation());
 			BigDecimal divisor = new BigDecimal(gr.getValueToBaseGradation());
-			BigDecimal result = new BigDecimal(amount).divide(divisor);
+			BigDecimal result = new BigDecimal(amount);
+			if(result.doubleValue() != 0.0 && divisor.doubleValue() != 0.0)
+			{
+				result = new BigDecimal(amount).divide(divisor, 10, RoundingMode.HALF_UP);
+			}
+			ConfigHandler.debug(difhapi1, "> Format: %a%/%d% = %res%"
+					.replace("%a%", String.valueOf(amount))
+					.replace("%d%", String.valueOf(divisor.doubleValue()))
+					.replace("%res%", String.valueOf(result.doubleValue())));
 			String si = null;
 			if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName()))
 			{
+				ConfigHandler.debug(difhapi1, "> Format: useSIPrefix");
 				for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 				{
-					BigDecimal step1 = result.divide(new BigDecimal(e.getKey()));
-					if(step1.doubleValue() > 1.0)
+					BigDecimal step1 = result.divide(new BigDecimal(e.getKey()), 10, RoundingMode.HALF_UP);
+					ConfigHandler.debug(difhapi1, "> Format: step : %s% = %r%/%k%"
+							.replace("%s%", String.valueOf(step1.doubleValue()))
+							.replace("%r%", String.valueOf(result.doubleValue()))
+							.replace("%k%", String.valueOf(new BigDecimal(e.getKey()).doubleValue())));
+					if(step1.doubleValue() >= 1.0)
 					{
 						si = e.getValue();
 						result = step1;
 						break;
 					}
 				}
-				result = result.setScale(decimalPlaces);
 			}
+			ConfigHandler.debug(difhapi1, "> Format: res = "+result.doubleValue());
 			DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
 			DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
 			symbols.setGroupingSeparator(thousandSeperator.charAt(0));
 			symbols.setDecimalSeparator(decimalSeperator.charAt(0));
+			formatter.setMaximumFractionDigits(decimalPlaces);
+			formatter.setMinimumFractionDigits(decimalPlaces);
 			formatter.setDecimalFormatSymbols(symbols);
-			sb.append(formatter.format(result.doubleValue()));
-			if(si != null)
-			{
-				sb.append(si+" ");
-			} else
-			{
-				sb.append(" ");
-			}
-			sb.append(useSymbol ? gr.getSymbol() : gr.getPlural());
+			String format = plugin.getYamlHandler().getCurrency(ec.getUniqueName()).getString("Format.OutputFormat")
+					.replace("%number%", formatter.format(result))
+					.replace("%siprefix%", si != null ? si : "")
+					.replace("%gradation%", useSymbol ? gr.getSymbol() : gr.getPlural());
+			sb.append(format.trim());
+			ConfigHandler.debug(difhapi1, "> Format: End = "+sb.toString());
 			return sb.toString();
 		}
 		int highest = 0;
 		int lowest = 0;
 		if(gradationQuantity > 0)
 		{
+			ConfigHandler.debug(difhapi1, "> Format: gQ > 0");
 			highest = ec.getCurrencyGradation().getHighestGradationNumber();
 			lowest = highest-gradationQuantity;
 			if(lowest < 0) lowest = 0;
 		} else if(gradationQuantity < 0)
 		{
+			ConfigHandler.debug(difhapi1, "> Format: gQ < 0");
 			highest = ec.getCurrencyGradation().getHighestGradationNumber()+gradationQuantity;
 			lowest = 0;
 			if(highest < 0) highest = 0;
 		}
+		ConfigHandler.debug(difhapi1, "> Format: highest = %h% | lowest = %l%"
+				.replace("%h%", String.valueOf(highest))
+				.replace("%l%", String.valueOf(lowest)));
 		BigDecimal result = new BigDecimal(amount);
+		ConfigHandler.debug(difhapi1, "> Format: amount = "+result.doubleValue());
 		while(highest >= lowest)
 		{
+			ConfigHandler.debug(difhapi1, "> Format: while("+highest+" >= "+lowest+")");
 			Gradation gr = ec.getCurrencyGradation().getGradation(highest);
+			ConfigHandler.debug(difhapi1, "> Format: gradation("+highest+") : "
+											+gr.getSingular()+", "+gr.getPlural()+", "+gr.getSymbol()+", "+gr.getValueToBaseGradation());
 			BigDecimal divisor = new BigDecimal(gr.getValueToBaseGradation());
-			BigDecimal resultWhile = result.divide(divisor);
+			BigDecimal resultWhile = result;
+			if(result.doubleValue() != 0.0 && divisor.doubleValue() != 0.0)
+			{
+				resultWhile = result.divide(divisor, 10, RoundingMode.HALF_UP);
+			}
+			ConfigHandler.debug(difhapi1, "> Format: %a%/%d% = %res%"
+					.replace("%a%", String.valueOf(result.doubleValue()))
+					.replace("%d%", String.valueOf(divisor.doubleValue()))
+					.replace("%res%", String.valueOf(resultWhile.doubleValue())));
 			if(highest == lowest)
 			{
+				ConfigHandler.debug(difhapi1, "> Format: highest == lowest");
 				String si = null;
 				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName()))
 				{
 					for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 					{
-						BigDecimal step1 = resultWhile.divide(new BigDecimal(e.getKey()));
-						if(step1.doubleValue() > 1.0)
+						BigDecimal step1 = resultWhile;
+						if(resultWhile.doubleValue() != 0.0 && new BigDecimal(e.getKey()).doubleValue() != 0.0)
+						{
+							step1 = resultWhile.divide(new BigDecimal(e.getKey()), 10, RoundingMode.HALF_UP);
+						}
+						ConfigHandler.debug(difhapi1, "> Format: step : %s% = %r%/%k%"
+								.replace("%s%", String.valueOf(step1.doubleValue()))
+								.replace("%r%", String.valueOf(resultWhile.doubleValue()))
+								.replace("%k%", String.valueOf(new BigDecimal(e.getKey()).doubleValue())));
+						if(step1.doubleValue() >= 1.0)
 						{
 							si = e.getValue();
 							resultWhile = step1;
 							break;
 						}
 					}
-					resultWhile = resultWhile.setScale(decimalPlaces);
 				}
+				ConfigHandler.debug(difhapi1, "> Format: res = "+resultWhile.doubleValue());
 				DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
 				DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
 				symbols.setGroupingSeparator(thousandSeperator.charAt(0));
 				symbols.setDecimalSeparator(decimalSeperator.charAt(0));
+				formatter.setMaximumFractionDigits(decimalPlaces);
+				formatter.setMinimumFractionDigits(decimalPlaces);
 				formatter.setDecimalFormatSymbols(symbols);
-				sb.append(formatter.format(resultWhile.doubleValue()));
-				if(si != null)
-				{
-					sb.append(si+" ");
-				} else
-				{
-					sb.append(" ");
-				}
-				sb.append(useSymbol ? gr.getSymbol() : gr.getPlural());
+				String format = plugin.getYamlHandler().getCurrency(ec.getUniqueName()).getString("Format.OutputFormat")
+						.replace("%number%", formatter.format(resultWhile))
+						.replace("%siprefix%", si != null ? si : "")
+						.replace("%gradation%", useSymbol ? gr.getSymbol() : gr.getPlural());
+				sb.append(format.trim());
+				ConfigHandler.debug(difhapi1, "> Format: End = "+sb.toString());
+				return sb.toString();
 			} else
 			{
-				BigDecimal resultForSI = resultWhile;
+				BigDecimal resultForSI = new BigDecimal(0.0);
 				String si = null;
 				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName()))
 				{
 					for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 					{
-						BigDecimal step1 = resultWhile.divide(new BigDecimal(e.getKey()));
-						if(step1.doubleValue() > 1.0)
+						BigDecimal val = new BigDecimal(e.getKey());
+						BigDecimal step1 = resultWhile;
+						if(resultWhile.doubleValue() != 0.0 && val.doubleValue() != 0.0)
+						{
+							step1 = resultWhile.divide(val, 10, RoundingMode.HALF_UP);
+						}
+						ConfigHandler.debug(difhapi1, "> Format: step : %s% = %r%/%k%"
+								.replace("%s%", String.valueOf(step1.doubleValue()))
+								.replace("%r%", String.valueOf(resultWhile.doubleValue()))
+								.replace("%k%", String.valueOf(val.doubleValue())));
+						if(step1.doubleValue() >= 1.0)
 						{
 							si = e.getValue();
 							resultWhile = step1;
+							resultWhile = new BigDecimal(resultWhile.toBigInteger());
+							if(val.doubleValue() != 0.0)
+							{
+								resultForSI = step1.multiply(val)
+													.multiply(new BigDecimal(gr.getValueToBaseGradation()))
+													.subtract(resultWhile
+															.multiply(val.multiply(new BigDecimal(gr.getValueToBaseGradation()))));
+							}
+							ConfigHandler.debug(difhapi1, "> Format: resultForSI : %si% = (%s%*%v%*%gr%)-(%rw%*%v%*%gr%)"
+									.replace("%si%", String.valueOf(resultForSI.doubleValue()))
+									.replace("%s%", String.valueOf(step1.doubleValue()))
+									.replace("%v%", String.valueOf(val.doubleValue()))
+									.replace("%gr%", String.valueOf(gr.getValueToBaseGradation()))
+									.replace("%rw%", String.valueOf(resultWhile.doubleValue())));
 							break;
 						}
 					}
-					resultWhile = resultWhile.setScale(0);
-				}
-				DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-				DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
-
-				symbols.setGroupingSeparator(thousandSeperator.charAt(0));
-				symbols.setDecimalSeparator(decimalSeperator.charAt(0));
-				formatter.setDecimalFormatSymbols(symbols);
-				sb.append(formatter.format(resultWhile.doubleValue()));
-				if(si != null)
-				{
-					sb.append(si+" ");
+					result = resultForSI;
 				} else
 				{
-					sb.append(" ");
+					BigDecimal val = new BigDecimal(gr.getValueToBaseGradation());
+					result = resultWhile.multiply(val)
+							.subtract(new BigDecimal(resultWhile.toBigInteger()).multiply(val));
+					ConfigHandler.debug(difhapi1, "> Format: resultForSI : %s% = (%rw%*%gr%)-(%rwi%*%gr%)"
+							.replace("%s%", String.valueOf(result.doubleValue()))
+							.replace("%gr%", String.valueOf(gr.getValueToBaseGradation()))
+							.replace("%rw%", String.valueOf(resultWhile.doubleValue()))
+							.replace("%rwi%", String.valueOf(new BigDecimal(resultWhile.toBigInteger()).doubleValue())));
 				}
-				sb.append(useSymbol ? gr.getSymbol() : gr.getPlural());
-				sb.append(" ");
-				result = result.subtract(resultForSI.setScale(0).multiply(divisor));
+				ConfigHandler.debug(difhapi1, "> Format: res = "+resultWhile.doubleValue());
+				DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+				DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+				formatter.setMaximumFractionDigits(0);
+				formatter.setMinimumFractionDigits(0);
+				symbols.setGroupingSeparator(thousandSeperator.charAt(0));
+				symbols.setDecimalSeparator(decimalSeperator.charAt(0));
+				
+				formatter.setDecimalFormatSymbols(symbols);
+				String format = plugin.getYamlHandler().getCurrency(ec.getUniqueName()).getString("Format.OutputFormat")
+						.replace("%number%", formatter.format(resultWhile))
+						.replace("%siprefix%", si != null ? si : " ")
+						.replace("%gradation%", useSymbol ? gr.getSymbol() : gr.getPlural());
+				sb.append(format);
 			}
 			highest--;
 		}
@@ -1004,5 +1109,130 @@ public class IFHApi implements Economy
 	public boolean isMultiCurrency()
 	{
 		return true;
+	}
+	
+	public String getBoolean(boolean boo)
+	{
+		return plugin.getYamlHandler().getLang().getString("Boolean.Replacer."+String.valueOf(boo));
+	}
+	
+	public String getEconomyEntityType(EconomyEntity.EconomyType eeet)
+	{
+		if(plugin.getYamlHandler().getLang().get("EconomyEntityEconomyType.Replacer."+eeet.toString()) != null)
+		{
+			String acts = plugin.getYamlHandler().getLang().getString("EconomyEntityEconomyType.Replacer."+eeet.toString());
+			if(acts != null)
+			{ 
+				return acts;
+			}
+		}
+		return EconomyEntity.EconomyType.PLAYER.toString();
+	}
+	
+	public EconomyEntity.EconomyType getEconomyEntityType(String s)
+	{
+		List<EconomyEntity.EconomyType> eeetl = new ArrayList<EconomyEntity.EconomyType>(EnumSet.allOf(EconomyEntity.EconomyType.class));
+		for(EconomyEntity.EconomyType eeet : eeetl)
+		{
+			if(plugin.getYamlHandler().getLang().get("EconomyEntityEconomyType.Replacer."+eeet.toString()) != null)
+			{
+				String accs = plugin.getYamlHandler().getLang().getString("EconomyEntityEconomyType.Replacer."+eeet.toString());
+				if(s.equalsIgnoreCase(accs))
+				{ 
+					return eeet;
+				}
+			}
+		}
+		return EconomyEntity.EconomyType.PLAYER;
+	}
+	
+	public String getAccountType(AccountType act)
+	{
+		if(plugin.getYamlHandler().getLang().get("AccountType.Replacer."+act.toString()) != null)
+		{
+			String acts = plugin.getYamlHandler().getLang().getString("AccountType.Replacer."+act.toString());
+			if(acts != null)
+			{ 
+				return acts;
+			}
+		}
+		return AccountType.WALLET.toString();
+	}
+	
+	public AccountType getAccountType(String s)
+	{
+		List<AccountType> actl = new ArrayList<AccountType>(EnumSet.allOf(AccountType.class));
+		for(AccountType act : actl)
+		{
+			if(plugin.getYamlHandler().getLang().get("AccountCategory.Replacer."+act.toString()) != null)
+			{
+				String accs = plugin.getYamlHandler().getLang().getString("AccountCategory.Replacer."+act.toString());
+				if(s.equalsIgnoreCase(accs))
+				{ 
+					return act;
+				}
+			}
+		}
+		return AccountType.WALLET;
+	}
+	
+	public String getAccountCategory(AccountCategory acc)
+	{
+		if(plugin.getYamlHandler().getLang().get("AccountCategory.Replacer."+acc.toString()) != null)
+		{
+			String accs = plugin.getYamlHandler().getLang().getString("AccountCategory.Replacer."+acc.toString());
+			if(accs != null)
+			{ 
+				return accs;
+			}
+		}
+		return AccountCategory.MAIN.toString();
+	}
+	
+	public AccountCategory getAccountCategory(String s)
+	{
+		List<AccountCategory> accl = new ArrayList<AccountCategory>(EnumSet.allOf(AccountCategory.class));
+		for(AccountCategory acc : accl)
+		{
+			if(plugin.getYamlHandler().getLang().get("AccountCategory.Replacer."+acc.toString()) != null)
+			{
+				String accs = plugin.getYamlHandler().getLang().getString("AccountCategory.Replacer."+acc.toString());
+				if(s.equalsIgnoreCase(accs))
+				{ 
+					return acc;
+				}
+			}
+		}
+		return AccountCategory.MAIN;
+	}
+	
+	public String getAccountManagementType(AccountManagementType amt)
+	{
+		if(plugin.getYamlHandler().getLang().get("AccountManagementType.Replacer."+amt.toString()) != null)
+		{
+			String amts = plugin.getYamlHandler().getLang().getString("AccountManagementType.Replacer."+amt.toString());
+			if(amts != null)
+			{ 
+				return amts;
+			}
+		}
+		return AccountManagementType.CAN_SEE_BALANCE.toString();
+	}
+	
+	public AccountManagementType getAccountManagementType(String s)
+	{
+		List<AccountManagementType> amtl = new ArrayList<AccountManagementType>(EnumSet.allOf(AccountManagementType.class));
+		for(AccountManagementType amt : amtl)
+		{
+			if(plugin.getYamlHandler().getLang().get("AccountManagementType.Replacer."+amt.toString()) != null)
+			{
+				String atms = plugin.getYamlHandler().getLang().getString("AccountManagementType.Replacer."+amt.toString());
+				if(s.equalsIgnoreCase(atms))
+				{ 
+					return amt;
+				}
+			}
+		}
+		return AccountManagementType.CAN_SEE_BALANCE;
 	}
 }

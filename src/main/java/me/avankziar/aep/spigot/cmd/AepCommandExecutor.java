@@ -12,10 +12,12 @@ import org.bukkit.entity.Player;
 import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
+import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -123,7 +125,7 @@ public class AepCommandExecutor implements CommandExecutor
 		}
 		///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 		player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
-				ClickEvent.Action.RUN_COMMAND, AdvancedEconomyPlus.infoCommand));
+				ClickEvent.Action.RUN_COMMAND, CommandSuggest.get(null, CommandExecuteType.AEP)));
 		return false;
 	}
 	
@@ -134,7 +136,7 @@ public class AepCommandExecutor implements CommandExecutor
 		int end = page*10+9;
 		int last = 0;
 		player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString(
-				AdvancedEconomyPlus.infoCommandPath+".BaseInfo.Headline")));
+				"Log.Headline")));
 		for(BaseConstructor bc : plugin.getCommandHelpList())
 		{
 			if(count >= start && count <= end)
@@ -152,7 +154,7 @@ public class AepCommandExecutor implements CommandExecutor
 		{
 			lastpage = true;
 		}
-		pastNextPage(player, AdvancedEconomyPlus.infoCommandPath, page, lastpage, AdvancedEconomyPlus.infoCommand);
+		pastNextPage(player, "Log.", page, lastpage, CommandSuggest.get(null, CommandExecuteType.AEP));
 	}
 	
 	private void sendInfo(Player player, BaseConstructor bc)
@@ -177,7 +179,7 @@ public class AepCommandExecutor implements CommandExecutor
 		if(page!=0)
 		{
 			TextComponent msg2 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString(path+".BaseInfo.Past"));
+					plugin.getYamlHandler().getLang().getString(path+"Past"));
 			String cmd = cmdstring+" "+String.valueOf(j);
 			for(String o : objects)
 			{
@@ -189,7 +191,7 @@ public class AepCommandExecutor implements CommandExecutor
 		if(!lastpage)
 		{
 			TextComponent msg1 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString(path+".BaseInfo.Next"));
+					plugin.getYamlHandler().getLang().getString(path+"Next"));
 			String cmd = cmdstring+" "+String.valueOf(i);
 			for(String o : objects)
 			{

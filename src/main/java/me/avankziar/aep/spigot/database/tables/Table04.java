@@ -241,7 +241,7 @@ public interface Table04
 			try 
 			{			
 				String sql = "SELECT * FROM `" + MysqlHandler.Type.TREND.getValue() 
-						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+						+ "` ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();

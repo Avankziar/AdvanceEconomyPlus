@@ -47,9 +47,10 @@ Build 4 ========================================================================
     + QuickpayAccounts
 + Wenn Spieler zum ersten Mal joinen nachdem AEP installiert worden ist, werden alle Accounts jeder Währung anhand derer Dateien erstellt.
   Sollte vorher schon AEP installiert worden sein und der Spieler hatte einen alten Account gehabt, wird dieser convertiert und das Geld dem
-  ersten neuen Account angerechnet.
+  ersten neuen Account angerechnet. Die Tabelle muss aber auf dem alten Namen stehetn: economyPlayerData
 + Änderung aller Transaktionsbefehle von <VonSpieler> <ZuSpieler> in <VonSpielername> <VonAccountname> <Zuspielername> <ZuAccountname>
-+ Alle Transaktionsbefehle sind nun asynchron.
++ Alle Befehle sind nun asynchron bis auf folgende Ausnahmen:
+  ActionLog, Trendlog & Loggersettings. Diese sind nur teilweise asynchron.
 + ActionLog LocateDateTime in long (Unix) geändert.
 + ActionLog String kategorie hinzugefügt.
 + LoggerHandler alle Methoden mit EconomyLogger in ActionLog geändert.
@@ -68,6 +69,14 @@ Build 4 ========================================================================
 + Loan remit wurde in Loan forgive umbenannt.
 + Loan transfer, nicht optionale Argument [Accountid] hinzugefügt.
 + PlaceHolderAPI einbinden
+  + PlaceHolder:
+    [var] : balance(if nothing is specified), accountid, accountname, accountcategory, accounttype, 
+	<format> : withoutformat(if nothing is specified), withformat
+	playerbalance_<format>,<currencyuniquename>
+	defaultaccount_<format>,<accountcategory>,<currencyuniquename>,[var]
+	quickpayaccount_<format>,<currencyuniquename>,[var]
+	totalbalance_<format>,<currencyuniquename>
+	totalbalance_<format>,<accountcategory>,<currencyuniquename>
 + Alle Account Befehle hinzugefügt
 + /aep deleteallplayeraccounts <Spielername> hinzugefügt. Löscht alle Accounts des Spielers und den Spieler selber.
 + Wenn Spieleraccounts über dem Overdue + Löschungsdatum sind, werden sie nach dem Serverrestart gelöscht mit Consolenmeldung.
@@ -96,6 +105,71 @@ Build 4 ========================================================================
   Ist der Wert kleiner 0, ist die Funktion deaktiviert.
 + IFH MessageToBungee als Consumer installiert. Ersetzt den vorherigen Bungeepart zur Nachrichtenkomunikation bei Transaktionen.
 + IFH Bungee Economy implementiert. Somit könne Plugins auf dem Bungee direkt Economy Aktion durchführen.
++ Alle folgenden Befehle welche mit einem # gekenntzeichnet sind, sind Währungsspezifisch, bedeutet jede Währung hat ihre eigenen
+  /money, /money pay etc. Befehle.
++ Es ist möglich, wenn Dezimalzahlen als Befehlsargumente benutzt werden, diese auch mit Komma zu schreiben.
++ Defaultbefehle(Befehle & Argumente sind umbenennbar bzw. eindeutschbar):
+  + Für alle Befehle einzusehen > /aep
+  + #/money 
+    Zeigt alle Konten an die mit der Währung verbunden sind.
+  + #/money pay <Sender> <SenderAccountname> <Betrag> <Empfänger> <EmpfängerAccountname> [Kategorie] [Notiz...]
+    Überweist Geld von einem Konto (wo man zugriff hat) auf ein Konto, welches der angegebene Spieler besitzt.
+  + #/money paythroughgui <Empfänger> <Betrag> [Kategorie] [Notiz...]
+  	Überweist Geld von einem Konto (wo man zugriff hat) auf ein Konto, welches der angegebene Spieler besitzt. Hier wird die Auswahl der Konten
+  	durch 2 Guis ermöglicht.
+  + #/money give <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...]
+  	Gibt dem Konto den angegebenen Spieler Geld (Geld wird generiert, war vorher nicht existend).
+  + #/money giveconsole <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...]
+  	Gibt dem Konto den angegebenen Spieler Geld (Geld wird generiert, war vorher nicht existend). Nur für die Konsole ausführbar.
+  + #/money set <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...]
+  	Zieht dem Konto seinen vollen Kontostand ab und fügt dem Konto dann das angegebene Geld hinzu. Anmerkung: Sollte der Spieler ein "Void" Konto
+ 	besitzen, wird das Geld, welches dem Konto abgezogen wird, in das Konto "Void" eingezahlt.
+  + #/money setconsole <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...]
+  	Zieht dem Konto seinen vollen Kontostand ab und fügt dem Konto dann das angegebene Geld hinzu. Anmerkung: Sollte der Spieler ein "Void" Konto
+  	besitzen, wird das Geld, welches dem Konto abgezogen wird, in das Konto "Void" eingezahlt. Nur für die Konsole.
+  + #/money take <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...]
+  	Zieht dem Konto den Betrag ab, sofern dieser das Geld hat. Anmerkung: Sollte der Spieler ein "Void" Konto hat, wird das Geld dorthin überwiesen.
+  + #/money takeconsole <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...]
+  	Zieht dem Konto den Betrag ab, sofern dieser das Geld hat. Anmerkung: Sollte der Spieler ein "Void" Konto hat, wird das Geld dorthin überwiesen.
+  	Nur für die Konsole.
+  + /aep
+    Zeigt alle existierende Befehle an, wozu man die Permission hat.
+  + /aep account
+    Zeigt alle Konten an, wo man irgendwelche Rechte hat. Sowie der Hover zeigt dann an, welche man hat.
+  + /aep account close <AccountEigentümerName> [Accountname] [bestätigen]
+    Schließt einen Account.
+  + /aep account manage <Spielername> <Accountname> <Spielername, welcher das Recht erhält> <Managementtype>
+    Erteilt Rechte für einen Account einem Spieler
+  + /aep account open <Währungsname> <Spielername/NPCname/Servername> <Accountname> <Accountkategorie> [Accounttype] [Economyentitytype]
+    Eröffnet einen Account
+  + /aep account overdue
+    Zeigt alle Spieler, welche länger als x Tage (Configwert) nicht mehr auf dem Server waren, sowie alles Geld was sie besitzten.
+  + /aep account setdefault <Spielername> <Accountname>
+    Setzt den Defaultaccount.
+  + /aep account setname <Spielername> <Accountname> <Neuer Name>
+    Setzt einen neuen Namen.
+  + /aep account setowner <Spielername> <Accountname> <Neuer Eigentümer>
+    Setzte einen neuen Eigentümer
+  + /aep account setquickpay <Accountname>
+    Setzt einen QuickPay account
+  + /aep walletnotification
+    Toggelt die Transaktionsbenachrichtigung für Brieftaschenaccounts.
+  + /aep banknotification
+    Toggelt die Transaktionsbenachrichtigung für Bankaccounts.
+  + /aep gettotal
+    Zeigt alles Geld in dem System an.
+  + /aep toplist <Währung> [Seite]
+    Zeigt eine Topliste pro Währung an.
+  + /aep recomment <id> <NeueKategorie> <Neue Notiz...>
+    Verändert einen Actionlog
+  + /aep deletelog <id>
+    Löscht einen Actionlog
+  + /aep deleteallplayeraccounts <Spielername>
+    Löscht einen Spieler mit all seinen Account und seinem Geld
+  + /aep player <Spielername> <Boolean:Zeige nur seine eigenen Accounts)
+    Zeigt das gleiche an wie /aep account, aka ist ein Admin Befehl.
+  + /aep loggersettings
+    Loggersettings
     
   Todo:
   - Config Value einbauen um Überweisungen auf Cooldown zu halten.

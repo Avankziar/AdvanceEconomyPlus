@@ -111,34 +111,26 @@ public class TakeConsole extends ArgumentModule implements CommandExecutor
 			sender.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
 					.replace("%cmd%", cmdString)
-					.replace("%amount%", three+" - "+four)));
+					.replace("%amount%", three+"")));
 			return;
 		}
-		String fromName = "";
+		String fromName = args[zero];
 		UUID fromuuid;
-		String fromAcName = null;
+		String fromAcName = args[one];
 		Account from = null;
 		
 		String category = null;
 		String comment = null;
-		String as = null;
+		String as = Pay.convertDecimalSeperator(args[two]);
 		double amount = 0.0;
 		int catStart = four;
-		if(MatchApi.isDouble(args[three]))
+		if(MatchApi.isDouble(as))
 		{
-			if(args.length < four)
-			{
-				sender.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
-						.replace("%cmd%", cmdString.trim())
-						.replace("%amount%", String.valueOf(three))));
-				return;
-			}
 			fromName = args[zero];
-			fromuuid = Utility.convertNameToUUID(fromAcName, EconomyEntity.EconomyType.PLAYER);
+			fromuuid = Utility.convertNameToUUID(fromName, EconomyEntity.EconomyType.PLAYER);
 			if(fromuuid == null)
 			{
-				fromuuid = Utility.convertNameToUUID(fromAcName, EconomyEntity.EconomyType.ENTITY);
+				fromuuid = Utility.convertNameToUUID(fromName, EconomyEntity.EconomyType.ENTITY);
 				if(fromuuid == null)
 				{
 					sender.sendMessage(ChatApi.tl(
@@ -146,8 +138,6 @@ public class TakeConsole extends ArgumentModule implements CommandExecutor
 					return;
 				}
 			}
-			fromAcName = args[one];
-			as = args[two];
 			amount = Double.parseDouble(as);
 			from = plugin.getIFHApi().getAccount(
 					new EconomyEntity(EconomyEntity.EconomyType.PLAYER, fromuuid, fromName), fromAcName);
@@ -172,21 +162,11 @@ public class TakeConsole extends ArgumentModule implements CommandExecutor
 			return;
 		}
 		Account voids = plugin.getIFHApi().getDefaultAccount(fromuuid, AccountCategory.VOID, from.getCurrency());
-		if(args.length >= catStart+2)
+		if(args.length >= catStart+1)
 		{
-			category = args[catStart];
-			catStart++;
-			StringBuilder sb = new StringBuilder();
-			while(catStart < args.length)
-			{
-				sb.append(args[catStart]);
-				if(catStart+1 != args.length)
-				{
-					sb.append(" ");
-				}
-				catStart++;
-			}
-			comment = sb.toString();
+			String[] s = Pay.getCategoryAndComment(args, catStart);
+			category = s[0];
+			comment = s[1];
 		}
 		endpart(sender, from, voids, category, comment, amount);
 	}
@@ -218,23 +198,23 @@ public class TakeConsole extends ArgumentModule implements CommandExecutor
 		{
 			for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.Take.Deposit"))
 			{
-				s.replace("%fromaccount%", from.getAccountName())
-				.replace("%fromatdeposit%", plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency()))
+				String a = s.replace("%fromaccount%", from.getAccountName())
+				.replace("%formatdeposit%", plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency()))
 				.replace("%category%", category != null ? category : "/")
 				.replace("%comment%", comment != null ? comment : "/");
-				list.add(s);
+				list.add(a);
 			}
 		} else
 		{
 			for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.Take.Transaction"))
 			{
-				s.replace("%fromaccount%", from.getAccountName())
+				String a = s.replace("%fromaccount%", from.getAccountName())
 				.replace("%toaccount%", voids.getAccountName())
-				.replace("%fromatwithdraw%", plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency()))
-				.replace("%fromatdeposit%", plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency()))
+				.replace("%formatwithdraw%", plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency()))
+				.replace("%formatdeposit%", plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency()))
 				.replace("%category%", category != null ? category : "/")
 				.replace("%comment%", comment != null ? comment : "/");
-				list.add(s);
+				list.add(a);
 			}
 		}
 		for(String s : list)

@@ -173,7 +173,7 @@ public class StandingOrderCommandExecutor implements CommandExecutor
 		}
 		///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 		player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
-				ClickEvent.Action.RUN_COMMAND, AdvancedEconomyPlus.infoCommand));
+				ClickEvent.Action.RUN_COMMAND, CommandSuggest.get(null, CommandExecuteType.AEP)));
 		return false;
 	}
 	

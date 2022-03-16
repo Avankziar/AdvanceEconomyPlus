@@ -15,12 +15,14 @@ import main.java.me.avankziar.aep.general.objects.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
+import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm.Type;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
+import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
@@ -175,7 +177,7 @@ public class LoanCommandExecutor implements CommandExecutor
 		}
 		///Deine Eingabe ist fehlerhaft, klicke hier auf den Text um &cweitere Infos zu bekommen!
 		player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
-				ClickEvent.Action.RUN_COMMAND, AdvancedEconomyPlus.infoCommand));
+				ClickEvent.Action.RUN_COMMAND, CommandSuggest.get(null, CommandExecuteType.AEP)));
 		return false;
 	}
 	

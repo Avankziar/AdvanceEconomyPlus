@@ -13,7 +13,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
-import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
+import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 
 public class LoggerSettings extends ArgumentModule
 {
@@ -62,14 +62,14 @@ public class LoggerSettings extends ArgumentModule
 					plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 			return;
 		}
-		int accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), player.getUniqueId());
-		if(accountID < 0)
+		Account dacc = plugin.getIFHApi().getDefaultAccount(player.getUniqueId());
+		if(dacc == null)
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.QuickPayDontExist")));
 			return;
 		}
-		new LoggerSettingsHandler(plugin).generateGUI(player, player.getUniqueId(), accountID, null, 0);
+		new LoggerSettingsHandler(plugin).generateGUI(player, player.getUniqueId(), dacc.getID(), null, 0);
 		return;
 	}
 }

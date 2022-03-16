@@ -36,7 +36,7 @@ public enum CommandExecuteType
 	ACCOUNT,
 	ACCOUNT_OPEN, // /money open <Spielername> <Accountname> <AccountType> <Category> 
 	ACCOUNT_CLOSE, // /money close <Accountname> [Spielername] [confirm (Wenn es ein predefine acc ist mit bypass)]
-	ACCOUNT_INFO, // /money info <Accountname> [spielername], sowas in der art
+	//ACCOUNT_INFO, // /money info <Accountname> [spielername], sowas in der art || Verworfen siehe ACCOUNT
 	ACCOUNT_OVERDUE, // zeigt alle Spieler an, welche nicht mehr seit x Tage online waren, mit alle ihren Konten.
 	ACCOUNT_SETNAME, // /money setname <Accountname> <New Accountname>
 	ACCOUNT_SETOWNER,

@@ -150,7 +150,7 @@ public class Balance implements CommandExecutor
 		if(player != null)
 		{
 			player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
-					ClickEvent.Action.RUN_COMMAND, AdvancedEconomyPlus.infoCommand));
+					ClickEvent.Action.RUN_COMMAND, CommandSuggest.get(null, CommandExecuteType.AEP)));
 			//AdvancedEconomyPlus.log.info(sender.getName() + " send command: " + cmd.getName() + arg);
 		}
 		return true;
@@ -194,8 +194,36 @@ public class Balance implements CommandExecutor
 		ArrayList<AccountManagement> listAM = ConvertHandler.convertListIX(
 				plugin.getMysqlHandler().getList(MysqlHandler.Type.ACCOUNTMANAGEMENT,
 						"`id` ASC", start, quantity,
-						"`uuid` = ? AND `account_management_type` = ?", uuid, AccountManagementType.CAN_SEE_BALANCE.toString()));
-		if(listAM.isEmpty())
+						"`player_uuid` = ?", uuid));
+		ArrayList<Integer> acclist = new ArrayList<>();
+		for(AccountManagement am : listAM)
+		{
+			if(!acclist.contains(am.getAccountID()))
+			{
+				acclist.add(am.getAccountID());
+			}
+		}
+		int count = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNTMANAGEMENT, "`player_uuid` = ?", uuid);
+		while(acclist.size() < quantity)
+		{
+			if(count < start)
+			{
+				break;
+			}
+			start = start + quantity;
+			ArrayList<AccountManagement> listAMII = ConvertHandler.convertListIX(
+					plugin.getMysqlHandler().getList(MysqlHandler.Type.ACCOUNTMANAGEMENT,
+							"`id` ASC", start, quantity,
+							"`player_uuid` = ?", uuid));
+			for(AccountManagement am : listAMII)
+			{
+				if(!acclist.contains(am.getAccountID()))
+				{
+					acclist.add(am.getAccountID());
+				}
+			}
+		}
+		if(acclist.isEmpty())
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.Balance.HaveNotOneAccountToSeeTheBalance")));
@@ -203,59 +231,68 @@ public class Balance implements CommandExecutor
 		}
 		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
 		ArrayList<BaseComponent> headline = new ArrayList<>();
-		headline.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.Headline")));
+		headline.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.Headline").replace("%player%", name)));
 		msg.add(headline);
-		for(AccountManagement am : listAM)
+		for(Integer i : acclist)
 		{
-			Account a = plugin.getIFHApi().getAccount(am.getAccountID());
-			String owner = Utility.convertUUIDToName(a.getOwner().toString(), EconomyEntity.EconomyType.PLAYER);
+			Account a = plugin.getIFHApi().getAccount(i);
+			String owner = Utility.convertUUIDToName(a.getOwner().getUUID().toString(), EconomyEntity.EconomyType.PLAYER);
 			ArrayList<BaseComponent> list = new ArrayList<>();
+			list.add(ChatApi.generateTextComponent(
+					plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.Info")
+					.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACCOUNT).replace(" ", "+").trim())));
 			if(a.getOwner() != null &&
-					(a.getOwner().toString().equals(player.getUniqueId().toString())
+					(a.getOwner().getUUID().toString().equals(player.getUniqueId().toString())
 					|| player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACCOUNTMANAGEMENT))
-					|| plugin.getIFHApi().canManageAccount(a, 
-							UUID.fromString(uuid), AccountManagementType.CAN_ADMINISTRATE_ACCOUNT)))
+					))
 			{
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLog")
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACTIONLOG).replace(" ", "+").trim())
+						.replace("%account%", a.getAccountName())
+						.replace("%player%", owner)));
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLog")
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).replace(" ", "+").trim())
+						.replace("%account%", a.getAccountName())
+						.replace("%player%", owner)));
 				list.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwner")
 						.replace("%account%", a.getAccountName())
 						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency()))));
-				list.add(ChatApi.generateTextComponent(
-						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.Info")
-						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACCOUNT_INFO).trim())
-						.replace("%account%", a.getAccountName())
-						.replace("%player%", owner)));
+				
+			} else if(plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_LOG)
+					&& plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_BALANCE))
+			{
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLog")
-						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACTIONLOG).trim())
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACTIONLOG).replace(" ", "+").trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLog")
-						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).trim())
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).replace(" ", "+").trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
-			} else if(plugin.getIFHApi().canManageAccount(a, 
-					UUID.fromString(uuid), AccountManagementType.CAN_SEE_LOG))
-			{
 				list.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.CanSeeLog")
 						.replace("%account%", a.getAccountName())
 						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency()))));
-				list.add(ChatApi.generateTextComponent(
-						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLog")
-						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACTIONLOG).trim())
-						.replace("%account%", a.getAccountName())
-						.replace("%player%", owner)));
-				list.add(ChatApi.generateTextComponent(
-						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLog")
-						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).trim())
-						.replace("%account%", a.getAccountName())
-						.replace("%player%", owner)));
-			} else
+			} else if(plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_BALANCE))
 			{
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLogDeny")));
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLogDeny")));
 				list.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.CanSeeBalance")
 						.replace("%account%", a.getAccountName())
 						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency()))));
-			}
+			} else
+			{
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLogDeny")));
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLogDeny")));
+				list.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.CannotSeeBalance")
+						.replace("%account%", a.getAccountName())));			}
 			msg.add(list);
 		}
 		for(ArrayList<BaseComponent> l : msg)

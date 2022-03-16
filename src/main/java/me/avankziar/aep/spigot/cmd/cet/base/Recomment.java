@@ -101,7 +101,7 @@ public class Recomment extends ArgumentModule
 		}
 		el.setCategory(category);
 		el.setComment(recomment);
-		plugin.getMysqlHandler().updateData(MysqlHandler.Type.ACTION, el, "`id` = ?",id);
+		plugin.getMysqlHandler().updateData(MysqlHandler.Type.ACTION, el, "`id` = ?", id);
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.ReComment.CommentWasChange")
 				.replace("%id%", idstring)
 				.replace("%category%", category)

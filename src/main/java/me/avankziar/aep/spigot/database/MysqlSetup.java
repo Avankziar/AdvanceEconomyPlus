@@ -38,6 +38,10 @@ public class MysqlSetup
 		{
 			return false;
 		}
+		if(!setupDatabaseII())
+		{
+			return false;
+		}
 		if(!setupDatabaseIII())
 		{
 			return false;
@@ -176,7 +180,7 @@ public class MysqlSetup
         		+ " account_category text,"
         		+ " account_currency text,"
         		+ " account_predefined boolean,"
-        		+ " owner_uuid char(36) NOT NULL,"
+        		+ " owner_uuid text NOT NULL,"
         		+ " owner_type text,"
         		+ " owner_name text,"
         		+ " balance double"
@@ -275,7 +279,7 @@ public class MysqlSetup
 		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.LOGGERSETTINGSPRESET.getValue()
         		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
         		+ " slotid int,"
-        		+ " player_uuid char(36),"
+        		+ " player_uuid text,"
         		+ " account_id int,"
         		+ " isaction boolean,"
         		+ " inventoryhandlertype text,"
@@ -297,10 +301,10 @@ public class MysqlSetup
 	{
 		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.DEFAULTACCOUNT.getValue()
         		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-        		+ " player_uuid char(36) NOT NULL,"
+        		+ " player_uuid text NOT NULL,"
         		+ " account_id int,"
         		+ " account_currency text,"
-        		+ " account_category text,"
+        		+ " account_category text"
         		+ " );";
 		baseSetup(data);
 		return true;
@@ -310,7 +314,7 @@ public class MysqlSetup
 	{
 		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.ACCOUNTMANAGEMENT.getValue()
         		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-        		+ " player_uuid char(36) NOT NULL,"
+        		+ " player_uuid text NOT NULL,"
         		+ " account_id int,"
         		+ " account_management_type text"
         		+ " );";
@@ -322,7 +326,7 @@ public class MysqlSetup
 	{
 		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.QUICKPAYACCOUNT.getValue()
         		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-        		+ " player_uuid char(36) NOT NULL,"
+        		+ " player_uuid text NOT NULL,"
         		+ " account_id int,"
         		+ " account_currency text"
         		+ " );";

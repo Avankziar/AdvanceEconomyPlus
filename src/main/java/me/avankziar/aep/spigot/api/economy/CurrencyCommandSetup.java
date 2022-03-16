@@ -69,7 +69,6 @@ import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderList;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderPause;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderRepeatingtime;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderStarttime;
-import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
@@ -78,6 +77,7 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
+import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.general.economy.account.AccountType;
 import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
@@ -94,6 +94,11 @@ public class CurrencyCommandSetup
 	private LinkedHashMap<Integer, ArrayList<String>> pMapIV = new LinkedHashMap<>();
 	private LinkedHashMap<Integer, ArrayList<String>> pMapV = new LinkedHashMap<>();
 	private ArrayList<String> accountmap = new ArrayList<>();
+	private ArrayList<String> ec = new ArrayList<>();
+	private ArrayList<String> acc = new ArrayList<>();
+	private ArrayList<String> act = new ArrayList<>();
+	private ArrayList<String> amt = new ArrayList<>();
+	private ArrayList<String> eeet = new ArrayList<>();
 	
 	public CurrencyCommandSetup(AdvancedEconomyPlus plugin)
 	{
@@ -107,6 +112,26 @@ public class CurrencyCommandSetup
 		pMapIII.put(3, playerarray);
 		pMapIV.put(4, playerarray);
 		pMapV.put(5, playerarray);
+		for(EconomyCurrency ecu : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
+		{
+			ec.add(ecu.getUniqueName());
+		}
+		for(AccountCategory a : new ArrayList<AccountCategory>(EnumSet.allOf(AccountCategory.class)))
+		{
+			acc.add(plugin.getIFHApi().getAccountCategory(a));
+		}
+		for(AccountType a : new ArrayList<AccountType>(EnumSet.allOf(AccountType.class)))
+		{
+			act.add(plugin.getIFHApi().getAccountType(a));
+		}
+		for(AccountManagementType a : new ArrayList<AccountManagementType>(EnumSet.allOf(AccountManagementType.class)))
+		{
+			amt.add(plugin.getIFHApi().getAccountManagementType(a));
+		}
+		for(EconomyEntity.EconomyType a : new ArrayList<EconomyEntity.EconomyType>(EnumSet.allOf(EconomyEntity.EconomyType.class)))
+		{
+			eeet.add(plugin.getIFHApi().getEconomyEntityType(a));
+		}
 	}
 	
 	public void setupCommand()
@@ -151,6 +176,11 @@ public class CurrencyCommandSetup
 					return;
 				}
 				CommandConstructor cmd = new CommandConstructor(cet, cmdpath, false);
+				if(cmd.getName() == null)
+				{
+					AdvancedEconomyPlus.log.warning("Commandpath "+cmdpath+" dont exist in commands.yml! Command are not registered!");
+					continue;
+				}
 				plugin.registerCommand(cmd.getPath(), cmd.getName());
 				switch(cet)
 				{
@@ -186,6 +216,11 @@ public class CurrencyCommandSetup
 		ArrayList<ArgumentConstructor> arglist = new ArrayList<>();
 		if(plugin.getYamlHandler().getCom().get("Commands.NESTED") != null)
 		{
+			LinkedHashMap<Integer, ArrayList<String>> map_p_acn = new LinkedHashMap<>();
+			map_p_acn.put(1, playerarray);
+			map_p_acn.put(2, accountmap);
+			LinkedHashMap<Integer, ArrayList<String>> map_0_ec = new LinkedHashMap<>();
+			map_0_ec.put(1, ec);
 			CommandStructurType cst = CommandStructurType.NESTED;
 			for(String s : plugin.getYamlHandler().getCom().getStringList("Commands.NESTED"))
 			{
@@ -210,11 +245,11 @@ public class CurrencyCommandSetup
 				default:
 					break;
 				case ACTIONLOG:
-					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 4, false, null);
+					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 4, false, map_p_acn);
 					new ActionLog(null, arg, cst);
 					break;
 				case TRENDLOG:
-					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 4, false, null);
+					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 4, false, map_p_acn);
 					new TrendLog(null, arg, cst);
 					break;
 				case WALLETNOTIFICATION:
@@ -234,18 +269,27 @@ public class CurrencyCommandSetup
 					new GetTotal(null, arg, cst);
 					break;
 				case TOPLIST:
-					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 0, false, null);
+					arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 2, false, map_0_ec);
 					new TopList(null, arg, cst);
 					break;
 				}
-				arglist.add(arg);
+				if(arg != null)
+				{
+					arglist.add(arg);
+				}
 			}
 		}
 		addBaseArgumentConstructor(arglist);
 		addLoggerSettingsArgumentConstructor(arglist);
 		addAccountArgumentConstructor(arglist);
 		
-		CommandConstructor aep = new CommandConstructor(CommandExecuteType.AEP, "aep", false, (ArgumentConstructor[]) arglist.toArray());
+		ArgumentConstructor[] arac = arglist.toArray(new ArgumentConstructor[0]);
+		CommandConstructor aep = new CommandConstructor(CommandExecuteType.AEP, "aep", false, arac);
+		if(aep.getName() == null)
+		{
+			AdvancedEconomyPlus.log.warning("Commandpath "+aep.getPath()+" dont exist in commands.yml! Command are not registered!");
+			return;
+		}
 		plugin.registerCommand(aep.getPath(), aep.getName());
 		plugin.getCommand(aep.getName()).setExecutor(new AepCommandExecutor(aep));
 		plugin.getCommand(aep.getName()).setTabCompleter(new TABCompletion());
@@ -308,34 +352,16 @@ public class CurrencyCommandSetup
 	{
 		LinkedHashMap<Integer, ArrayList<String>> pMapIIacc = pMapII;
 		pMapIIacc.put(3, accountmap);
-		LinkedHashMap<Integer, ArrayList<String>> pMapIIacc_p = pMapIIacc;
-		pMapIIacc_p.put(4, playerarray);
-		pMapIIacc_p.put(5, accountmap);
+		LinkedHashMap<Integer, ArrayList<String>> map_p_acc_p_amt = new LinkedHashMap<>();
+		map_p_acc_p_amt.put(2, playerarray);
+		map_p_acc_p_amt.put(3, accountmap);
+		map_p_acc_p_amt.put(4, playerarray);
+		LinkedHashMap<Integer, ArrayList<String>> map_p_acc_p =  map_p_acc_p_amt;
+		map_p_acc_p_amt.put(5, amt);
 		
 		LinkedHashMap<Integer, ArrayList<String>> ec_p_acn_acc_act_eeet = new LinkedHashMap<>();
-		ArrayList<String> ec = new ArrayList<>();
-		for(EconomyCurrency ecu : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
-		{
-			ec.add(ecu.getUniqueName());
-		}
-		ArrayList<String> acc = new ArrayList<>();
-		for(AccountCategory a : new ArrayList<AccountCategory>(EnumSet.allOf(AccountCategory.class)))
-		{
-			acc.add(a.toString());
-		}
-		ArrayList<String> act = new ArrayList<>();
-		for(AccountType a : new ArrayList<AccountType>(EnumSet.allOf(AccountType.class)))
-		{
-			act.add(a.toString());
-		}
-		ArrayList<String> eeet = new ArrayList<>();
-		for(EconomyEntity.EconomyType a : new ArrayList<EconomyEntity.EconomyType>(EnumSet.allOf(EconomyEntity.EconomyType.class)))
-		{
-			eeet.add(a.toString());
-		}
 		ec_p_acn_acc_act_eeet.put(2, ec);
 		ec_p_acn_acc_act_eeet.put(3, playerarray);
-		ec_p_acn_acc_act_eeet.put(4, accountmap);
 		ec_p_acn_acc_act_eeet.put(5, acc);
 		ec_p_acn_acc_act_eeet.put(6, act);
 		ec_p_acn_acc_act_eeet.put(7, eeet);
@@ -343,21 +369,21 @@ public class CurrencyCommandSetup
 		mapIIacc.put(2, accountmap);	
 		
 		ArgumentConstructor accountclose = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_CLOSE, "aep_account_close", 1, 2, 4, false, pMapIIacc);
+				CommandExecuteType.ACCOUNT_CLOSE, "aep_account_close", 1, 3, 4, false, pMapIIacc);
 		ArgumentConstructor accountmanage = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_MANAGE, "aep_account_manage", 1, 6, 6, false, pMapIIacc_p);
+				CommandExecuteType.ACCOUNT_MANAGE, "aep_account_manage", 1, 5, 5, false, map_p_acc_p_amt);
 		ArgumentConstructor accountopen = new ArgumentConstructor(
 				CommandExecuteType.ACCOUNT_OPEN, "aep_account_open", 1, 6, 8, false, ec_p_acn_acc_act_eeet);
 		ArgumentConstructor accountoverdue = new ArgumentConstructor(
 				CommandExecuteType.ACCOUNT_OVERDUE, "aep_account_overdue", 1, 1, 1, false, null);
 		ArgumentConstructor accountsetdefault = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_SETDEFAULT, "aep_account_setdefault", 1, 4, 4, false, pMapIIacc);
+				CommandExecuteType.ACCOUNT_SETDEFAULT, "aep_account_setdefault", 1, 3, 3, false, pMapIIacc);
 		ArgumentConstructor accountsetname = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_SETNAME, "aep_account_setname", 1, 5, 5, false, pMapIIacc);
+				CommandExecuteType.ACCOUNT_SETNAME, "aep_account_setname", 1, 4, 4, false, pMapIIacc);
 		ArgumentConstructor accountsetowner = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_SETOWNER, "aep_account_setowner", 1, 5, 5, false, pMapIIacc_p);
+				CommandExecuteType.ACCOUNT_SETOWNER, "aep_account_setowner", 1, 4, 4, false, map_p_acc_p);
 		ArgumentConstructor accountsetquickpay = new ArgumentConstructor(
-				CommandExecuteType.ACCOUNT_SETQUICKPAY, "aep_account_setquickpay", 1, 3, 3, false, mapIIacc);
+				CommandExecuteType.ACCOUNT_SETQUICKPAY, "aep_account_setquickpay", 1, 2, 2, false, mapIIacc);
 		
 		ArgumentConstructor account = new ArgumentConstructor(
 				CommandExecuteType.ACCOUNT, "aep_account", 0, 0, 0, false, null,
@@ -400,6 +426,11 @@ public class CurrencyCommandSetup
 				list, pause, payback, reject, forgive, repay, send, time, transfer);	
 		
 		plugin.registerCommand(loan.getPath(), loan.getName());
+		if(loan.getName() == null)
+		{
+			AdvancedEconomyPlus.log.warning("Commandpath "+loan.getPath()+" dont exist in commands.yml! Command are not registered!");
+			return;
+		}
 		plugin.getCommand(loan.getName()).setExecutor(new LoanCommandExecutor(loan));
 		plugin.getCommand(loan.getName()).setTabCompleter(new TABCompletion());
 		
@@ -442,6 +473,11 @@ public class CurrencyCommandSetup
 				list, pause, rt, st);
 		
 		plugin.registerCommand(standingorder.getPath(), standingorder.getName());
+		if(standingorder.getName() == null)
+		{
+			AdvancedEconomyPlus.log.warning("Commandpath "+standingorder.getPath()+" dont exist in commands.yml! Command are not registered!");
+			return;
+		}
 		plugin.getCommand(standingorder.getName()).setExecutor(new StandingOrderCommandExecutor(standingorder));
 		plugin.getCommand(standingorder.getName()).setTabCompleter(new TABCompletion());
 		
@@ -481,6 +517,11 @@ public class CurrencyCommandSetup
 				return;
 			}
 			CommandConstructor cmd = new CommandConstructor(cet, cmdpath, false);
+			if(cmd.getName() == null)
+			{
+				AdvancedEconomyPlus.log.warning("Commandpath "+cmdpath+" dont exist in commands.yml! Command are not registered!");
+				continue;
+			}
 			plugin.registerCommand(cmd.getPath(), cmd.getName());
 			switch(cet)
 			{
@@ -509,7 +550,7 @@ public class CurrencyCommandSetup
 				plugin.getCommand(cmd.getName()).setExecutor(new Set(cmd, null, cst));
 				break;
 			case SET_CONSOLE:
-				plugin.getCommand(cmd.getName()).setExecutor(new SetConsole( cmd, null, cst));
+				plugin.getCommand(cmd.getName()).setExecutor(new SetConsole(cmd, null, cst));
 				break;
 			default:
 				break;
@@ -525,10 +566,10 @@ public class CurrencyCommandSetup
 			return;
 		}
 		LinkedHashMap<Integer, ArrayList<String>> map_p_acn_0_p_acn = new LinkedHashMap<>();
-		map_p_acn_0_p_acn.put(0, playerarray);
-		map_p_acn_0_p_acn.put(1, accountmap);
-		map_p_acn_0_p_acn.put(3, playerarray);
-		map_p_acn_0_p_acn.put(4, accountmap);
+		map_p_acn_0_p_acn.put(1, playerarray);
+		map_p_acn_0_p_acn.put(2, accountmap);
+		map_p_acn_0_p_acn.put(4, playerarray);
+		map_p_acn_0_p_acn.put(5, accountmap);
 		LinkedHashMap<Integer, ArrayList<String>> map_0_p = new LinkedHashMap<>();
 		map_0_p.put(1, playerarray);
 		LinkedHashMap<Integer, ArrayList<String>> map_p_acn = new LinkedHashMap<>();
@@ -551,7 +592,7 @@ public class CurrencyCommandSetup
 				cmdpath = sp[1];
 			} catch(Exception e)
 			{
-				return;
+				continue;
 			}
 			ArgumentConstructor arg = null;
 			switch(cet)
@@ -561,7 +602,7 @@ public class CurrencyCommandSetup
 				new Pay(null, arg, cst);
 				break;
 			case PAY_THROUGH_GUI:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, map_0_p);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 999, false, map_0_p);
 				new PayThroughGui(null, arg, cst);
 				break;
 			case GIVE:
@@ -591,7 +632,10 @@ public class CurrencyCommandSetup
 			default:
 				break;
 			}
-			arglist.add(arg);
+			if(arg != null)
+			{
+				arglist.add(arg);
+			}
 		}
 		
 		for(String s : y.getStringList("Commands.NESTED"))
@@ -609,20 +653,23 @@ public class CurrencyCommandSetup
 				cmdpath = sp[1];
 			} catch(Exception e)
 			{
-				return;
+				continue;
 			}
-			CommandConstructor cmd = new CommandConstructor(cet, cmdpath, false, (ArgumentConstructor[]) arglist.toArray());
-			plugin.registerCommand(cmd.getPath(), cmd.getName());
-			switch(cet)
+			if(cet != CommandExecuteType.BALANCE)
 			{
-			default:
-				break;
-			case BALANCE:
-				plugin.getCommand(cmd.getName()).setExecutor(new Balance(cmd, cst));
-				plugin.getCommand(cmd.getName()).setTabCompleter(new TABCompletion());
-				CommandSuggest.set(ec, cet, cmd.getCommandString());
-				break;
+				continue;
 			}
+			ArgumentConstructor[] arac = arglist.toArray(new ArgumentConstructor[0]);
+			
+			CommandConstructor cmd = new CommandConstructor(cet, cmdpath, false, arac);
+			if(cmd.getName() == null)
+			{
+				AdvancedEconomyPlus.log.warning("Commandpath "+cmdpath+" dont exist in commands.yml! Command are not registered!");
+				continue;
+			}
+			plugin.registerCommand(cmd.getPath(), cmd.getName());
+			plugin.getCommand(cmd.getName()).setExecutor(new Balance(cmd, cst));
+			plugin.getCommand(cmd.getName()).setTabCompleter(new TABCompletion());
 		}
 	}
 	
@@ -635,6 +682,10 @@ public class CurrencyCommandSetup
 		ArrayList<String> cus = new ArrayList<>();
 		for(AEPUser chus : cu) 
 		{
+			if(chus == null)
+			{
+				continue;
+			}
 			cus.add(chus.getName());	
 		}
 		Collections.sort(cus);
@@ -653,11 +704,16 @@ public class CurrencyCommandSetup
 	
 	public void setupAccount()
 	{
-		ArrayList<Account> a = ConvertHandler.convertListII(plugin.getMysqlHandler().getTop(
-				MysqlHandler.Type.ACCOUNT, "`id` ASC", 0, plugin.getMysqlHandler().lastID(MysqlHandler.Type.ACCOUNT)));
+		ArrayList<Account> a = ConvertHandler.convertListII(plugin.getMysqlHandler().getTop(MysqlHandler.Type.ACCOUNT,
+				"`id`", 0,
+				plugin.getMysqlHandler().lastID(MysqlHandler.Type.ACCOUNT)));
 		ArrayList<String> ac = new ArrayList<>();
 		for(Account acc : a)
 		{
+			if(acc == null)
+			{
+				continue;
+			}
 			if(!ac.contains(acc.getAccountName()))
 			{
 				ac.add(acc.getAccountName());

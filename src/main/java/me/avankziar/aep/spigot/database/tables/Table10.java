@@ -27,7 +27,7 @@ public interface Table10
 			try 
 			{
 				String sql = "INSERT INTO `" + MysqlHandler.Type.QUICKPAYACCOUNT.getValue() 
-						+ "`(, `player_uuid`, `account_id`,"
+						+ "`(`player_uuid`, `account_id`,"
 						+ " `account_currency`)"
 						+ "VALUES(?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
@@ -173,7 +173,7 @@ public interface Table10
 			try 
 			{			
 				String sql = "SELECT * FROM `" + MysqlHandler.Type.QUICKPAYACCOUNT.getValue()
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -226,7 +226,7 @@ public interface Table10
 			try 
 			{			
 				String sql = "SELECT * FROM `" + MysqlHandler.Type.QUICKPAYACCOUNT.getValue()
-						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+						+ "` ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();

@@ -201,7 +201,7 @@ public interface Table05
 			try 
 			{			
 				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue() 
-						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+						+ "` WHERE "+whereColumn+" ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        int i = 1;
 		        for(Object o : whereObject)
@@ -264,7 +264,7 @@ public interface Table05
 			try 
 			{			
 				String sql = "SELECT * FROM `" + MysqlHandler.Type.STANDINGORDER.getValue()  
-						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+						+ "` ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();

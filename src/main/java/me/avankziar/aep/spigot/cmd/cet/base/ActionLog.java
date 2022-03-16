@@ -22,6 +22,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler.Methode;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
@@ -36,6 +37,8 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 	private ArgumentConstructor ac;
 	private CommandStructurType cst;
 	
+	private static String d1 = "actionlog";
+	
 	public ActionLog(CommandConstructor cc, ArgumentConstructor ac, CommandStructurType cst)
 	{
 		super(ac);
@@ -48,6 +51,7 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) 
 	{
+		ConfigHandler.debug(d1, "> Actionlog Begin");
 		if(!(sender instanceof Player))
 		{
 			sender.sendMessage("Cmd only for Players!");
@@ -72,9 +76,6 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 			{
 				e.printStackTrace();
 			}
-		} else
-		{
-			
 		}
 		return true;
 	}
@@ -118,11 +119,13 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 	private void middlePart(Player player, String cmdString, String[] args,
 			int zero, int one, int two) throws IOException
 	{
+		ConfigHandler.debug(d1, "> Middle part");
 		String playerName = null;
 		int accountID = 0;
 		int page = 0;
 		if(args.length == zero)
 		{
+			ConfigHandler.debug(d1, "> args.lenght == zero");
 			AEPUser fromuser = (AEPUser) plugin.getMysqlHandler().getData(
 					MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", player.getUniqueId().toString());
 			if(fromuser == null)
@@ -139,8 +142,9 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 				return;
 			}
 			playerName = player.getName();
-		} else if(args.length >= zero+1)
+		} else if(args.length >= one)
 		{
+			ConfigHandler.debug(d1, "> args.lenght >= one");
 			if(!args[zero].equals(player.getName()))
 			{
 				if(!player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACTIONLOG_OTHER)))
@@ -159,16 +163,20 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 						plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
 				return;
 			}
-			accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), player.getUniqueId());
-			if(accountID < 0)
+			if(args.length == one)
 			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.QuickPayDontExist")));
-				return;
+				accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), player.getUniqueId());
+				if(accountID < 0)
+				{
+					player.sendMessage(ChatApi.tl(
+							plugin.getYamlHandler().getLang().getString("Cmd.QuickPayDontExist")));
+					return;
+				}
 			}
 		}
-		if(args.length >= one+1)
+		if(args.length >= two)
 		{
+			ConfigHandler.debug(d1, "> args.lenght >= two");
 			UUID uuid = Utility.convertNameToUUID(playerName, EconomyEntity.EconomyType.PLAYER);
 			if(uuid == null)
 			{
@@ -191,6 +199,7 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 		}
 		if(args.length >= two+1)
 		{
+			ConfigHandler.debug(d1, "> args.lenght >= three");
 			String pagenumber = args[two];
 			if(MatchApi.isInteger(pagenumber))
 			{

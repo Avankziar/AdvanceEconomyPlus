@@ -3,6 +3,7 @@ package main.java.me.avankziar.aep.spigot.cmd.cst.transaction;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,9 +11,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -122,31 +123,31 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 	}
 	
 	/*
-	 * paythroughgui <amount> <ToPlayer> [category] [comment...]
+	 * paythroughgui <ToPlayer> <amount> [category] [comment...]
 	 */
 	private void middlePart(Player player, String cmdString, String[] args,
 			int zero, int one, int two, int three)
 	{
-		if(args.length < three)
+		if(args.length < two)
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
 					.replace("%cmd%", cmdString)
-					.replace("%amount%", String.valueOf(three))));
+					.replace("%amount%", String.valueOf(two))));
 			return;
 		}		
 		String category = null;
 		String comment = null;
 		String as = null;
 		double amount = 0.0;
-		int catStart = three;
-		as = args[zero];
-		String toName = args[one];
-		if(!MatchApi.isDouble(args[zero]))
+		int catStart = two+1;
+		as = Pay.convertDecimalSeperator(args[one]);
+		String toName = args[zero];
+		if(!MatchApi.isDouble(as))
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("NoNumber")
-					.replace("%args%", args[zero])));
+					.replace("%args%", args[one])));
 			return;
 		}
 		amount = Double.parseDouble(as);
@@ -165,24 +166,15 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 					.replace("%args%", as)));
 			return;
 		}
-		if(args.length >= catStart+2)
+		if(args.length >= catStart+1)
 		{
-			category = args[catStart];
-			catStart++;
-			StringBuilder sb = new StringBuilder();
-			while(catStart < args.length)
-			{
-				sb.append(args[catStart]);
-				if(catStart+1 != args.length)
-				{
-					sb.append(" ");
-				}
-				catStart++;
-			}
-			comment = sb.toString();
+			String[] s = Pay.getCategoryAndComment(args, catStart);
+			category = s[0];
+			comment = s[1];
 		}
 		GuiPay gp = new GuiPay(player, toName, amount, category, comment);
-		GuiPayListener.guiPayMap.put(player.getUniqueId(), gp);
+		GuiPayListener.guiPayMap.put(player.getUniqueId().toString(), gp);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new RemovePlayerInGui(player.getUniqueId()), 20*60*2);
 		try
 		{
 			openPayThroughGui(player);
@@ -194,11 +186,11 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 	
 	public static void openPayThroughGui(Player player) throws IOException
 	{
-		if(!GuiPayListener.guiPayMap.containsKey(player.getUniqueId()))
+		if(!GuiPayListener.guiPayMap.containsKey(player.getUniqueId().toString()))
 		{
 			return;
 		}
-		GuiPay gp = GuiPayListener.guiPayMap.get(player.getUniqueId());
+		GuiPay gp = GuiPayListener.guiPayMap.get(player.getUniqueId().toString());
 		AdvancedEconomyPlus plugin = AdvancedEconomyPlus.getPlugin();
 		//Inventory isnt open
 		AEPUser aepu = null;
@@ -234,18 +226,31 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 			ArrayList<String> lore = new ArrayList<>();
 			for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.PayThroughGui.Lore"))
 			{
-				String r = s.replace("%own%", ac.getOwner().getName())
-						.replace("%owt%", ac.getOwner().getType().toString())
+				String r = ChatApi.tl(s.replace("%own%", ac.getOwner().getName())
+						.replace("%owt%", plugin.getIFHApi().getEconomyEntityType(ac.getOwner().getType()))
 						.replace("%acn%", ac.getAccountName())
-						.replace("%acc%", ac.getCategory().toString())
-						.replace("%act%", ac.getType().toString());
+						.replace("%acc%", plugin.getIFHApi().getAccountCategory(ac.getCategory()))
+						.replace("%act%", plugin.getIFHApi().getAccountType(ac.getType()))
+						);
 				lore.add(r);
 			}
 			im.setLore(lore);
 			is.setItemMeta(im);
 			inv.addItem(is);
 		}
-		if(player.getOpenInventory().getType() == InventoryType.CRAFTING)
+		
+		if(player.getOpenInventory() instanceof PlayerInventory)
+		{
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					player.getOpenInventory().getTopInventory().setContents(inv.getContents());
+					player.updateInventory();
+				}
+			}.runTaskLater(plugin, 10*1);
+		} else
 		{
 			new BukkitRunnable()
 			{
@@ -257,18 +262,7 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 						player.openInventory(inv);
 					}
 				}
-			}.runTask(plugin);
-		} else
-		{
-			new BukkitRunnable()
-			{
-				@Override
-				public void run()
-				{
-					player.getOpenInventory().getBottomInventory().setContents(inv.getContents());
-					player.updateInventory();
-				}
-			}.runTask(plugin);
+			}.runTaskLater(plugin, 10*1);
 		}
 	}
 	
@@ -309,7 +303,7 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 	
 	public static void endPart(final Player player, final GuiPay gp)
 	{
-		GuiPayListener.guiPayMap.remove(player.getUniqueId());
+		GuiPayListener.guiPayMap.remove(player.getUniqueId().toString());
 		AdvancedEconomyPlus plugin = AdvancedEconomyPlus.getPlugin();
 		Account from = plugin.getIFHApi().getAccount(gp.getFromAccountID());
 		Account to = plugin.getIFHApi().getAccount(gp.getToAccountID());
@@ -342,21 +336,43 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 			return;
 		}
 		ArrayList<String> list = new ArrayList<>();
+		String wformat = plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency());
+		String dformat = plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency());
+		String tformat = plugin.getIFHApi().format(ea.getTaxAmount(), from.getCurrency());
 		for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.Pay.Transaction"))
 		{
-			s.replace("%fromaccount%", from.getAccountName())
+			String a = s.replace("%fromaccount%", from.getAccountName())
 			.replace("%toaccount%", to.getAccountName())
-			.replace("%fromatwithdraw%", plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency()))
-			.replace("%fromatdeposit%", plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency()))
-			.replace("%fromattax%", String.valueOf(ea.getTaxAmount()))
+			.replace("%formatwithdraw%", wformat)
+			.replace("%formatdeposit%", dformat)
+			.replace("%formattax%", tformat)
 			.replace("%category%", category != null ? category : "/")
 			.replace("%comment%", comment != null ? comment : "/");
-			list.add(s);
+			list.add(a);
 		}
 		for(String s : list)
 		{
 			player.sendMessage(ChatApi.tl(s));
 		}
-		Pay.sendToOther(plugin, to, list);
+		Pay.sendToOther(plugin, to, list, player.getUniqueId());
+	}
+	
+	private class RemovePlayerInGui implements Runnable
+	{
+		private final UUID uuid;
+		
+		public RemovePlayerInGui(UUID uuid)
+		{
+			this.uuid = uuid;
+		}
+		
+		@Override
+        public void run() 
+		{
+            if (uuid != null) 
+            {
+            	GuiPayListener.guiPayMap.remove(uuid.toString());
+            }
+        }
 	}
 }

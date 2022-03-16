@@ -72,13 +72,13 @@ public class AccountSetDefault extends ArgumentModule
 			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Pay.AccountDontExist")));
 			return;
 		}
-		if(!plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT))
-		{
-			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.CannotSetAsDefault")));
-			return;
-		}
 		if(!player.hasPermission(ExtraPerm.get(ExtraPerm.Type.CAN_SETDEFAULTACCOUNT)+ac.getCategory().toString().toLowerCase()))
 		{
+			if(!plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT))
+			{
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.CannotSetAsDefault")));
+				return;
+			}
 			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.CannotSetAsDefaultPerPerm")));
 			return;
 		}
@@ -91,8 +91,8 @@ public class AccountSetDefault extends ArgumentModule
 			{
 				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.IsAlreadyADefaultAccount")
 						.replace("%acname%", ac.getAccountName())
-						.replace("%acid%", String.valueOf(ac.getID()))
-						.replace("%cat%", ac.getCategory().toString())));
+						.replace("%acowner%", ac.getOwner().getName())
+						.replace("%cat%", plugin.getIFHApi().getAccountCategory(ac.getCategory()))));
 				return;
 			}
 			dacc.setAccountID(ac.getID());

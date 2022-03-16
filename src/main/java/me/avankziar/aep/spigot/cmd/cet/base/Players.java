@@ -23,6 +23,7 @@ import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 
 public class Players extends ArgumentModule
@@ -78,6 +79,10 @@ public class Players extends ArgumentModule
 		{
 			playername = args[1];
 		}
+		if(args.length >= 3)
+		{
+			onlycheckhisaccounts = true;
+		}
 		AEPUser aepu = (AEPUser) plugin.getMysqlHandler().getData(
 				MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", playername);
 		if(aepu == null)
@@ -88,7 +93,7 @@ public class Players extends ArgumentModule
 		}
 		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
 		ArrayList<BaseComponent> m1 = new ArrayList<>();
-		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Player.Headline")));
+		m1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Player.Headline").replace("%player%", playername)));
 		msg.add(m1);
 		LinkedHashMap<Integer, ArrayList<AccountManagementType>> accountIDs = new LinkedHashMap<>();
 		ArrayList<AccountManagement> aml = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
@@ -121,8 +126,7 @@ public class Players extends ArgumentModule
 			}
 			ArrayList<AccountManagementType> amt = e.getValue();
 			if(onlycheckhisaccounts 
-					&& ac.getOwner().getUUID().toString() != aepu.getUUID().toString()
-					&& !amt.contains(AccountManagementType.CAN_WITHDRAW))
+					&& ac.getOwner().getUUID().toString().equals(aepu.getUUID().toString()))
 			{
 				continue;
 			}
@@ -137,8 +141,8 @@ public class Players extends ArgumentModule
 					.replace("%balance%", plugin.getIFHApi().format(ac.getBalance(), ac.getCurrency())));
 			sb.append("~!~");
 			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountTypeAndCategory")
-					.replace("%type%", ac.getType().toString())
-					.replace("%category%", ac.getCategory().toString()));
+					.replace("%type%", plugin.getIFHApi().getAccountType(ac.getType()))
+					.replace("%category%", plugin.getIFHApi().getAccountCategory(ac.getCategory())));
 			sb.append("~!~");
 			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountPredefined")
 					.replace("%predefined%", String.valueOf(ac.isPredefinedAccount())));
@@ -195,6 +199,12 @@ public class Players extends ArgumentModule
 			ml.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountSeperator")));
 		}
 		msg.add(ml);
+		for(ArrayList<BaseComponent> list : msg)
+		{
+			TextComponent tx = ChatApi.tctl("");
+			tx.setExtra(list);
+			player.spigot().sendMessage(tx);	
+		}
 		return;
 	}
 }

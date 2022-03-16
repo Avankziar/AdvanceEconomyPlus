@@ -93,7 +93,7 @@ public class AccountOverdue extends ArgumentModule
 						.replace("%count%", String.valueOf(account)));
 				sb.append("~!~");
 				ArrayList<Account> aclist = ConvertHandler.convertListII(plugin.getMysqlHandler().getAllListAt(
-						MysqlHandler.Type.ACCOUNT, "`owner_uuid` = ?", u.getUUID().toString()));
+						MysqlHandler.Type.ACCOUNT, "`id` ASC", "`owner_uuid` = ?", u.getUUID().toString()));
 				LinkedHashMap<String,Double> ecvalue = new LinkedHashMap<>();
 				for(Account acc : aclist)
 				{
@@ -106,7 +106,6 @@ public class AccountOverdue extends ArgumentModule
 						ecvalue.put(acc.getCurrency().getUniqueName(), acc.getBalance());
 					}
 				}
-				sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Account.Overdue.AccountCount"));
 				int ii = 0;
 				for(String ec : ecvalue.keySet())
 				{
@@ -118,8 +117,7 @@ public class AccountOverdue extends ArgumentModule
 						sb.append("~!~");
 					}
 				}
-				m1.add(ChatApi.hoverEvent("&e"+u.getName()+"&f, ", Action.SHOW_TEXT,
-						sb.toString()));
+				m1.add(ChatApi.hoverEvent("&e"+u.getName()+"&f, ", Action.SHOW_TEXT, sb.toString()));
 				msg.add(m1);
 		}
 		for(ArrayList<BaseComponent> list : msg)

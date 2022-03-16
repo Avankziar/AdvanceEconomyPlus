@@ -22,6 +22,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler.Methode;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
@@ -36,6 +37,8 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 	private ArgumentConstructor ac;
 	private CommandStructurType cst;
 	
+	private static String d1 = "trendlog";
+	
 	public TrendLog(CommandConstructor cc, ArgumentConstructor ac, CommandStructurType cst)
 	{
 		super(ac);
@@ -48,6 +51,7 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) 
 	{
+		ConfigHandler.debug(d1, "> Trendlog Begin");
 		if(!(sender instanceof Player))
 		{
 			sender.sendMessage("Cmd only for Players!");
@@ -80,6 +84,7 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 	@Override
 	public void run(CommandSender sender, String[] args) throws IOException
 	{
+		ConfigHandler.debug(d1, "> Trendlog Begin");
 		if(!(sender instanceof Player))
 		{
 			sender.sendMessage("Cmd only for Players!");
@@ -116,6 +121,7 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 	private void middlePart(Player player, String cmdString, String[] args,
 			int zero, int one, int two) throws IOException
 	{
+		ConfigHandler.debug(d1, "> Middle part");
 		String playerName = null;
 		int accountID = 0;
 		int page = 0;
@@ -137,7 +143,7 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 				return;
 			}
 			playerName = player.getName();
-		} else if(args.length >= zero+1)
+		} else if(args.length >= one)
 		{
 			if(!args[zero].equals(player.getName()))
 			{
@@ -157,15 +163,18 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 						plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
 				return;
 			}
-			accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), player.getUniqueId());
-			if(accountID < 0)
+			if(args.length == one)
 			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.QuickPayDontExist")));
-				return;
+				accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), player.getUniqueId());
+				if(accountID < 0)
+				{
+					player.sendMessage(ChatApi.tl(
+							plugin.getYamlHandler().getLang().getString("Cmd.QuickPayDontExist")));
+					return;
+				}
 			}
 		}
-		if(args.length >= one+1)
+		if(args.length >= two)
 		{
 			UUID uuid = Utility.convertNameToUUID(playerName, EconomyEntity.EconomyType.PLAYER);
 			if(uuid == null)
@@ -199,6 +208,7 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 				}
 			}
 		}
+		ConfigHandler.debug(d1, "> LoggerSettings Methode access");
 		LoggerSettings fst = new LoggerSettings(accountID, player.getUniqueId(), page);
 		fst.setAction(false);
 		if(LoggerSettingsHandler.getLoggerSettings().containsKey(player.getUniqueId()))

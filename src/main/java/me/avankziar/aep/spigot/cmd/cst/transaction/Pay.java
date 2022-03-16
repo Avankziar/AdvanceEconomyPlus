@@ -152,10 +152,10 @@ public class Pay extends ArgumentModule implements CommandExecutor
 		String comment = null;
 		String as = null;
 		double amount = 0.0;
-		int catStart = three;
-		if(MatchApi.isDouble(args[zero]))
+		int catStart = four;
+		if(MatchApi.isDouble(convertDecimalSeperator(args[zero])))
 		{
-			as = args[zero];
+			as = convertDecimalSeperator(args[zero]);
 			toName = args[one];
 			toAcName = args[two];
 			amount = Double.parseDouble(as);
@@ -174,10 +174,10 @@ public class Pay extends ArgumentModule implements CommandExecutor
 						plugin.getYamlHandler().getLang().getString("Cmd.Pay.ShortPayAccountDontExist")));
 				return;
 			}
-			touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.PLAYER);
+			touuid = Utility.convertNameToUUID(toName, EconomyEntity.EconomyType.PLAYER);
 			if(touuid == null)
 			{
-				touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.ENTITY);
+				touuid = Utility.convertNameToUUID(toName, EconomyEntity.EconomyType.ENTITY);
 				if(touuid == null)
 				{
 					player.sendMessage(ChatApi.tl(
@@ -192,7 +192,7 @@ public class Pay extends ArgumentModule implements CommandExecutor
 						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
 				return;
 			}
-		} else if(MatchApi.isDouble(args[two]))
+		} else if(MatchApi.isDouble(convertDecimalSeperator(args[two])))
 		{
 			if(args.length < five)
 			{
@@ -204,11 +204,11 @@ public class Pay extends ArgumentModule implements CommandExecutor
 			}
 			fromName = args[zero];
 			fromAcName = args[one];
-			as = args[two];
+			as = convertDecimalSeperator(args[two]);
 			toName = args[three];
 			toAcName = args[four];
 			amount = Double.parseDouble(as);
-			catStart = five;
+			catStart = five+1;
 			from = plugin.getIFHApi().getAccount(
 					new EconomyEntity(EconomyEntity.EconomyType.PLAYER, fromuuid, fromName), fromAcName);
 			if(from == null)
@@ -217,10 +217,10 @@ public class Pay extends ArgumentModule implements CommandExecutor
 						plugin.getYamlHandler().getLang().getString("Cmd.Pay.StartAccountDontExist")));
 				return;
 			}
-			touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.PLAYER);
+			touuid = Utility.convertNameToUUID(toName, EconomyEntity.EconomyType.PLAYER);
 			if(touuid == null)
 			{
-				touuid = Utility.convertNameToUUID(toAcName, EconomyEntity.EconomyType.ENTITY);
+				touuid = Utility.convertNameToUUID(toName, EconomyEntity.EconomyType.ENTITY);
 				if(touuid == null)
 				{
 					player.sendMessage(ChatApi.tl(
@@ -235,11 +235,11 @@ public class Pay extends ArgumentModule implements CommandExecutor
 						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
 				return;
 			}
-		} else if(MatchApi.isDouble(args[one]))
+		} else if(MatchApi.isDouble(convertDecimalSeperator(args[one])))
 		{
 			fromAcName = args[zero];
 			toName = player.getName();
-			as = args[one];
+			as = convertDecimalSeperator(args[one]);
 			toAcName = args[two];			
 			amount = Double.parseDouble(as);
 			from = plugin.getIFHApi().getAccount(
@@ -277,35 +277,29 @@ public class Pay extends ArgumentModule implements CommandExecutor
 					.replace("%args%", as)));
 			return;
 		}
-		if(!from.getCurrency().toString().equalsIgnoreCase(to.getCurrency().getUniqueName()))
+		if(from.getID() == to.getID())
 		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("Cmd.Pay.NotSameCurrency")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Pay.SameAccount")));
+			return;
+		}
+		if(!from.getCurrency().getUniqueName().toString().equalsIgnoreCase(to.getCurrency().getUniqueName()))
+		{
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Pay.NotSameCurrency")));
 			return;
 		}
 		Account tax = plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.TAX, from.getCurrency());
-		if(args.length >= catStart+2)
+		if(args.length >= catStart+1)
 		{
-			category = args[catStart];
-			catStart++;
-			StringBuilder sb = new StringBuilder();
-			while(catStart < args.length)
-			{
-				sb.append(args[catStart]);
-				if(catStart+1 != args.length)
-				{
-					sb.append(" ");
-				}
-				catStart++;
-			}
-			comment = sb.toString();
+			String[] s = Pay.getCategoryAndComment(args, catStart);
+			category = s[0];
+			comment = s[1];
 		}
 		endpart(player, from, to, tax, category, comment, amount);
 	}
 	
 	private void endpart(Player player, Account from, Account to, Account tax, String category, String comment, double amount)
 	{
-		LinkedHashMap<TaxationCase, TaxationSet> map = CurrencyHandler.taxationMap.get(from.getCurrency().getUniqueName());
+		LinkedHashMap<TaxationCase, TaxationSet> map = CurrencyHandler.taxationMap.get(from.getCurrency().getUniqueName());		
 		TaxationSet ts = map.containsKey(TaxationCase.TRANSACTION_BETWEEN_PLAYERS) ? map.get(TaxationCase.TRANSACTION_BETWEEN_PLAYERS) : null;
 		double taxation = ts != null ? ts.getTaxInPercent() : 0.0;
 		boolean taxAreExclusive = ts != null ? ts.isTaxAreExclusive() : true;
@@ -330,25 +324,54 @@ public class Pay extends ArgumentModule implements CommandExecutor
 			return;
 		}
 		ArrayList<String> list = new ArrayList<>();
+		String wformat = plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency());
+		String dformat = plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency());
+		String tformat = plugin.getIFHApi().format(ea.getTaxAmount(), from.getCurrency());
 		for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.Pay.Transaction"))
 		{
-			s.replace("%fromaccount%", from.getAccountName())
+			String a = s.replace("%fromaccount%", from.getAccountName())
 			.replace("%toaccount%", to.getAccountName())
-			.replace("%fromatwithdraw%", plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency()))
-			.replace("%fromatdeposit%", plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency()))
-			.replace("%fromattax%", String.valueOf(ea.getTaxAmount()))
+			.replace("%formatwithdraw%", wformat)
+			.replace("%formatdeposit%", dformat)
+			.replace("%formattax%", tformat)
 			.replace("%category%", category != null ? category : "/")
 			.replace("%comment%", comment != null ? comment : "/");
-			list.add(s);
+			list.add(a);
 		}
 		for(String s : list)
 		{
 			player.sendMessage(ChatApi.tl(s));
 		}
-		sendToOther(plugin, to, list);
+		sendToOther(plugin, to, list, player.getUniqueId());
 	}
 	
-	public static void sendToOther(AdvancedEconomyPlus plugin, Account to, ArrayList<String> list)
+	public static String convertDecimalSeperator(String s)
+	{
+		String a = s.replace(",", ".");
+		return a;
+	}
+	
+	public static String[] getCategoryAndComment(String[] args, int catStart)
+	{
+		String[] s = new String[2];
+		catStart--;
+		s[0] = args[catStart];
+		catStart++;
+		StringBuilder sb = new StringBuilder();
+		while(catStart < args.length)
+		{
+			sb.append(args[catStart]);
+			if(catStart+1 != args.length)
+			{
+				sb.append(" ");
+			}
+			catStart++;
+		}
+		s[1] = sb.toString();
+		return s;
+	}
+	
+	public static void sendToOther(AdvancedEconomyPlus plugin, Account to, ArrayList<String> list, UUID...exceptions)
 	{
 		if(plugin.getMtB() != null)
 		{
@@ -357,7 +380,7 @@ public class Pay extends ArgumentModule implements CommandExecutor
 			{
 				mana = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
 						MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
-						to.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS));
+						to.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()));
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -373,6 +396,22 @@ public class Pay extends ArgumentModule implements CommandExecutor
 				if(u == null)
 				{
 					continue;
+				}
+				if(exceptions != null)
+				{
+					boolean ex = false;
+					for(UUID uuid : exceptions)
+					{
+						if(uuid.toString().equals(u.getUUID().toString()))
+						{
+							ex = true;
+							break;
+						}
+					}
+					if(ex)
+					{
+						continue;
+					}
 				}
 				if(to.getType() == AccountType.BANK)
 				{

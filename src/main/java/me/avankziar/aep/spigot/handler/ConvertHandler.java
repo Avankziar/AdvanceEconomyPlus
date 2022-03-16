@@ -130,7 +130,7 @@ public class ConvertHandler
 				el.add((LoanRepayment) o);
 			} else
 			{
-				return null;
+				return el;
 			}
 		}
 		return el;
@@ -146,7 +146,7 @@ public class ConvertHandler
 				el.add((Account) o);
 			} else
 			{
-				return null;
+				return el;
 			}
 		}
 		return el;

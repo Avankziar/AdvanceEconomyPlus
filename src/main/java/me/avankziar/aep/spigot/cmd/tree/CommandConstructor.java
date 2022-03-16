@@ -24,16 +24,25 @@ public class CommandConstructor extends BaseConstructor
         this.tablist = new ArrayList<>();
         for(ArgumentConstructor ac : argumentConstructors)
         {
+        	if(ac == null)
+        	{
+        		continue;
+        	}
         	this.subcommands.add(ac);
         	this.tablist.add(ac.getName());
         }
         getPlugin().getCommandTree().add(this);
+        AdvancedEconomyPlus.log.info("CC load "+path+", "+cet.toString()); //FIXME
     }
 	
 	public void addArg(AdvancedEconomyPlus plugin, ArgumentConstructor...argumentConstructors)
 	{
 		for(ArgumentConstructor ac : argumentConstructors)
         {
+			if(ac == null)
+			{
+				continue;
+			}
         	this.subcommands.add(ac);
         	this.tablist.add(ac.getName());
         }

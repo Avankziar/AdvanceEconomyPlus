@@ -99,9 +99,9 @@ public interface Table03
 			{
 				String data = "UPDATE `" + MysqlHandler.Type.ACTION.getValue()
 						+ "` SET `unixtime` = ?,"
-						+ " `from_account_id` = ?, `to_account_id` = ? = ?, `tax_account_id`, = ?"
+						+ " `from_account_id` = ?, `to_account_id` = ?, `tax_account_id` = ?,"
 						+ " `orderer_type` = ?, `orderer_uuid` = ?, `orderer_plugin` = ?,"
-						+ " `amount_to_withdraw` = ?, `amount_to_deposit` = ?, `amount_to_tax`, = ?"
+						+ " `amount_to_withdraw` = ?, `amount_to_deposit` = ?, `amount_to_tax` = ?,"
 						+ " `category` = ?, `comment` = ?"
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
@@ -117,6 +117,7 @@ public interface Table03
 		        preparedStatement.setDouble(10, el.getAmountToTax());
 		        preparedStatement.setString(11, el.getCategory());
 		        preparedStatement.setString(12, el.getComment());
+		        
 		        int i = 13;
 		        for(Object o : whereObject)
 		        {
@@ -278,7 +279,7 @@ public interface Table03
 			try 
 			{			
 				String sql = "SELECT * FROM `" + MysqlHandler.Type.ACTION.getValue() 
-						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+						+ "` ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();

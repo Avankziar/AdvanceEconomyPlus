@@ -78,7 +78,7 @@ public interface Table01
 			try 
 			{
 				String data = "UPDATE `" + MysqlHandler.Type.PLAYERDATA.getValue()
-						+ "` SET `player_uuid` = ?, `player_name` = ?, `wallet_moneyflow_notification` = ?, `bank_moneyflow_notification`, = ?"
+						+ "` SET `player_uuid` = ?, `player_name` = ?, `wallet_moneyflow_notification` = ?, `bank_moneyflow_notification` = ?,"
 						+ " `unixtime` = ?"
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
@@ -232,7 +232,7 @@ public interface Table01
 			try 
 			{			
 				String sql = "SELECT * FROM `" + MysqlHandler.Type.PLAYERDATA.getValue() 
-						+ "` ORDER BY "+orderByColumn+" DESC LIMIT "+start+", "+end;
+						+ "` ORDER BY "+orderByColumn+" LIMIT "+start+", "+end;
 		        preparedStatement = conn.prepareStatement(sql);
 		        
 		        result = preparedStatement.executeQuery();

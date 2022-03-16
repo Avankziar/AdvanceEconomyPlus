@@ -75,18 +75,30 @@ public class AccountManage extends ArgumentModule
 		AccountManagementType amt;
 		try
 		{
-			amt = AccountManagementType.valueOf(args[5]);
+			amt = plugin.getIFHApi().getAccountManagementType(args[5]);
 		} catch(Exception e)
 		{
 			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Manage.AMTDontExist")
 					.replace("%amt%", args[5])));
 			return;
 		}
-		if(!plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_ADMINISTRATE_ACCOUNT)
-				&& !player.hasPermission(ExtraPerm.get(Type.BYPASS_ACCOUNTMANAGEMENT)))
+		if(!player.hasPermission(ExtraPerm.get(Type.BYPASS_ACCOUNTMANAGEMENT)))
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Manage.YouCannotManageTheAccount")));
-			return;
+			if(amt == AccountManagementType.CAN_SET_OWNERSHIP
+					&& !plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_SET_OWNERSHIP))
+			{
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Manage.YouCannotManageTheAccount")));
+				return;
+			} else if(amt == AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT
+					&& !plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT))
+			{
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Manage.YouCannotManageTheAccount")));
+				return;
+			} else if(!plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_ADMINISTRATE_ACCOUNT))
+			{
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Manage.YouCannotManageTheAccount")));
+				return;
+			}
 		}
 		if(plugin.getIFHApi().canManageAccount(ac, ee.getUUID(), amt))
 		{
@@ -95,7 +107,7 @@ public class AccountManage extends ArgumentModule
 					.replace("%acname%", ac.getAccountName())
 					.replace("%acowner%", ac.getOwner().getName())
 					.replace("%player%", ee.getName())
-					.replace("%amt%", amt.toString())));
+					.replace("%amt%", plugin.getIFHApi().getAccountManagementType(amt))));
 			return;
 		} else
 		{
@@ -104,7 +116,7 @@ public class AccountManage extends ArgumentModule
 					.replace("%acname%", ac.getAccountName())
 					.replace("%acowner%", ac.getOwner().getName())
 					.replace("%player%", ee.getName())
-					.replace("%amt%", amt.toString())));
+					.replace("%amt%", plugin.getIFHApi().getAccountManagementType(amt))));
 		}
 	}
 }

@@ -11,6 +11,7 @@ import main.java.me.avankziar.aep.general.objects.AEPUser;
 import main.java.me.avankziar.aep.general.objects.AccountManagement;
 import main.java.me.avankziar.aep.general.objects.DefaultAccount;
 import main.java.me.avankziar.aep.general.objects.EntityData;
+import main.java.me.avankziar.aep.general.objects.QuickPayAccount;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
@@ -46,6 +47,7 @@ public class AccountHandler
 			EconomyEntity.EconomyType eeet = EconomyType.PLAYER;
 			EconomyEntity ee = new EconomyEntity(eeet, player.getUniqueId(), player.getName());
 			YamlConfiguration y = plugin.getYamlHandler().getCurrency(ec.getUniqueName());
+			boolean quickpayAlreadyCreated = false;
 			if(y.getBoolean("WhenPlayerFirstJoin.CreateWallets", false))
 			{
 				AccountType at = AccountType.WALLET;
@@ -57,7 +59,11 @@ public class AccountHandler
 						continue;
 					}
 					AccountCategory acy = AccountCategory.valueOf(s[0]);
-					String acname = acy == AccountCategory.MAIN ? player.getName() : acy.toString().toLowerCase(); 
+					if(acy == null)
+					{
+						acy = AccountCategory.MAIN;
+					}
+					String acname = acy == AccountCategory.MAIN ? player.getName() : plugin.getIFHApi().getAccountCategory(acy); 
 					boolean defaultac = MatchApi.isBoolean(s[1]) ? Boolean.valueOf(s[1]) : false;
 					double startamount = MatchApi.isDouble(s[2]) ? Double.parseDouble(s[2]) : 0.0;
 					ArrayList<AccountManagementType> amtl = new ArrayList<>();
@@ -77,7 +83,12 @@ public class AccountHandler
 						OLD_AEPUser old = _AEPUserHandler_OLD.getEcoPlayer(player);
 						if(old != null)
 						{
-							startamount += old.getBalance();
+							double mult = 1.0;
+							for(int i = ec.getCurrencyGradation().getHighestGradationNumber(); i > 0; i--)
+							{
+								mult = mult*ec.getCurrencyGradation().getGradation(i).getValueToBaseGradation();
+							}
+							startamount += old.getBalance()*mult;
 							plugin.getMysqlHandler().deleteData(Type.OLDPLAYER, "`id` = ?", old.getId());
 						}
 					}
@@ -87,12 +98,23 @@ public class AccountHandler
 						continue;
 					}
 					plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
+					ac = plugin.getIFHApi().getAccount(ee, acname, at, acy, ec);
+					if(defaultac)
+					{
+						plugin.getIFHApi().setDefaultAccount(ee.getUUID(), ac, acy);
+					}
 					for(AccountManagementType amt : amtl)
 					{
 						if(!plugin.getIFHApi().canManageAccount(ac, ee.getUUID(), amt))
 						{
 							plugin.getIFHApi().addManagementTypeToAccount(ac, ee.getUUID(), amt);
 						}
+					}
+					if(!quickpayAlreadyCreated)
+					{
+						QuickPayAccount qpa = new QuickPayAccount(player.getUniqueId(), ac.getID(), ec.getUniqueName());
+						plugin.getMysqlHandler().create(MysqlHandler.Type.QUICKPAYACCOUNT, qpa);
+						quickpayAlreadyCreated = true;
 					}
 				}
 			}
@@ -107,7 +129,11 @@ public class AccountHandler
 						continue;
 					}
 					AccountCategory acy = AccountCategory.valueOf(s[0]);
-					String acname = acy == AccountCategory.MAIN ? player.getName() : acy.toString().toLowerCase(); 
+					if(acy == null)
+					{
+						acy = AccountCategory.MAIN;
+					}
+					String acname = acy == AccountCategory.MAIN ? player.getName() : plugin.getIFHApi().getAccountCategory(acy);
 					boolean defaultac = MatchApi.isBoolean(s[1]) ? Boolean.valueOf(s[1]) : false;
 					double startamount = MatchApi.isDouble(s[2]) ? Double.parseDouble(s[2]) : 0.0;
 					ArrayList<AccountManagementType> amtl = new ArrayList<>();
@@ -128,12 +154,23 @@ public class AccountHandler
 						continue;
 					}
 					plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
+					ac = plugin.getIFHApi().getAccount(ee, acname, at, acy, ec);
+					if(defaultac)
+					{
+						plugin.getIFHApi().setDefaultAccount(ee.getUUID(), ac, acy);
+					}
 					for(AccountManagementType amt : amtl)
 					{
 						if(!plugin.getIFHApi().canManageAccount(ac, ee.getUUID(), amt))
 						{
 							plugin.getIFHApi().addManagementTypeToAccount(ac, ee.getUUID(), amt);
 						}
+					}
+					if(!quickpayAlreadyCreated)
+					{
+						QuickPayAccount qpa = new QuickPayAccount(player.getUniqueId(), ac.getID(), ec.getUniqueName());
+						plugin.getMysqlHandler().create(MysqlHandler.Type.QUICKPAYACCOUNT, qpa);
+						quickpayAlreadyCreated = true;
 					}
 				}
 			}
@@ -434,7 +471,7 @@ public class AccountHandler
 	{
 		return (Account) plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT,
 				  "`owner_uuid` = ? AND `account_name` = ? AND `account_currency` = ? AND `account_type` = ? AND "
-				+ "`account_category` = ? AND `owner_type` = ? AND `server` = ? AND `world` = ?",
+				+ "`account_category` = ? AND `owner_type` = ?",
 				ownerUUID.toString(), accountName, currency.getUniqueName(), type.toString(), category.toString(), ownerEntityType.toString());
 	}
 	
@@ -442,7 +479,7 @@ public class AccountHandler
 	{
 		return (Account) plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT,
 				  "`owner_uuid` = ? AND `account_name` = ? AND `account_currency` = ? AND `account_type` = ? AND "
-				+ "`account_category` = ? AND `owner_type` = ? AND `server` = ? AND `world` = ?",
+				+ "`account_category` = ? AND `owner_type` = ? ",
 				owner.getUUID().toString(), accountName, currency.getUniqueName(), type.toString(), category.toString(), owner.getType().toString());
 	}
 	
@@ -543,7 +580,7 @@ public class AccountHandler
 	public void setDefaultAccount(UUID ownerUUID, Account account, AccountCategory category)
 	{
 		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.DEFAULTACCOUNT,
-				"`player_uuid` = ? `account_category` = ?",
+				"`player_uuid` = ? AND `account_category` = ?",
 				ownerUUID.toString(), category.toString()))
 		{
 			DefaultAccount dacc = (DefaultAccount) plugin.getMysqlHandler().getData(MysqlHandler.Type.DEFAULTACCOUNT,
@@ -577,7 +614,7 @@ public class AccountHandler
 		{
 			plugin.getMysqlHandler().deleteData(MysqlHandler.Type.ACCOUNTMANAGEMENT,
 					"`player_uuid` = ? AND `account_id` = ? AND `account_management_type` = ?",
-					uuid.toString(), account.getID(), accountManagementType);
+					uuid.toString(), account.getID(), accountManagementType.toString());
 		}
 		return true;
 	}
@@ -599,6 +636,6 @@ public class AccountHandler
 	{
 		return plugin.getMysqlHandler().exist(MysqlHandler.Type.ACCOUNTMANAGEMENT,
 				"`player_uuid` = ? AND `account_id` = ? AND `account_management_type` = ?",
-				uuid.toString(), accountID, accountManagementType);
+				uuid.toString(), accountID, accountManagementType.toString());
 	}
 }

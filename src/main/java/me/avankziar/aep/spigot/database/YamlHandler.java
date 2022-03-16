@@ -59,6 +59,11 @@ public class YamlHandler
 		return ls;
 	}
 	
+	public LinkedHashMap<String, YamlConfiguration> getCurrency()
+	{
+		return cy;
+	}
+	
 	public YamlConfiguration getCurrency(String uniquename)
 	{
 		return cy.get(uniquename);
@@ -104,10 +109,11 @@ public class YamlHandler
 			}
 		}
 		//Laden der config.yml
-		if(!loadYamlTask(config, cfg))
-		{
-			return false;
-		}
+		cfg = loadYamlTask(config, cfg);
+        if(cfg == null)
+        {
+        	return false;
+        }
 		
 		//Niederschreiben aller Werte für die Datei
 		writeFile(config, cfg, plugin.getYamlManager().getConfigKey());
@@ -128,7 +134,8 @@ public class YamlHandler
 			}
 		}
 		
-		if(!loadYamlTask(commands, com))
+		com = loadYamlTask(commands, com);
+		if(com == null)
 		{
 			return false;
 		}
@@ -191,7 +198,8 @@ public class YamlHandler
 			}
 		}
 		//Laden der Datei
-		if(!loadYamlTask(language, lang))
+		lang = loadYamlTask(language, lang);
+		if(lang == null)
 		{
 			return false;
 		}
@@ -207,7 +215,7 @@ public class YamlHandler
 		{
 			directory.mkdir();
 		}
-		for(String currency : plugin.getYamlHandler().getConfig().getStringList("LoadCurrency"))
+		for(String currency : getConfig().getStringList("Load.Currencies"))
 		{
 			File cur = new File(directory.getPath(), currency+".yml");
 			boolean exist = cur.exists();
@@ -225,7 +233,8 @@ public class YamlHandler
 				}
 			}
 			YamlConfiguration c = new YamlConfiguration();
-			if(!loadYamlTask(cur, c))
+			c = loadYamlTask(cur, c);
+			if(c == null)
 			{
 				return false;
 			}
@@ -233,6 +242,7 @@ public class YamlHandler
 			{
 				writeFile(cur, c, plugin.getYamlManager().getCurrencyKey(currency));
 			}
+			AdvancedEconomyPlus.log.info("Load Currency %cur%...".replace("%cur%", currency));
 			cy.put(currency, c);
 		}
 		return true;
@@ -260,7 +270,8 @@ public class YamlHandler
 			}
 		}
 		//Laden der Datei
-		if(!loadYamlTask(loggersettings, ls))
+		ls = loadYamlTask(loggersettings, ls);
+		if(ls == null)
 		{
 			return false;
 		}
@@ -269,7 +280,7 @@ public class YamlHandler
 		return true;
 	}
 	
-	private boolean loadYamlTask(File file, YamlConfiguration yaml)
+	private YamlConfiguration loadYamlTask(File file, YamlConfiguration yaml)
 	{
 		try 
 		{
@@ -280,9 +291,8 @@ public class YamlHandler
 					"Could not load the %file% file! You need to regenerate the %file%! Error: ".replace("%file%", file.getName())
 					+ e.getMessage());
 			e.printStackTrace();
-			return false;
 		}
-		return true;
+		return yaml;
 	}
 	
 	private boolean writeFile(File file, YamlConfiguration yml, LinkedHashMap<String, Language> keyMap) throws IOException

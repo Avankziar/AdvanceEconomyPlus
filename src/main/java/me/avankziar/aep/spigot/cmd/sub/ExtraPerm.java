@@ -17,7 +17,8 @@ public class ExtraPerm
 		BYPASS_DELETELOG,
 		BYPASS_STANDINGORDER,
 		BYPASS_LOAN,
-		CAN_SETDEFAULTACCOUNT
+		CAN_SETDEFAULTACCOUNT,
+		CAN_SETACCOUNTNAME
 	}
 	
 	private static LinkedHashMap<Type, String> map = new LinkedHashMap<>();
