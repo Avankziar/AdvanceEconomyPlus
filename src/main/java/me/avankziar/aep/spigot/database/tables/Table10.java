@@ -27,14 +27,12 @@ public interface Table10
 			try 
 			{
 				String sql = "INSERT INTO `" + MysqlHandler.Type.QUICKPAYACCOUNT.getValue() 
-						+ "`(`player_uuid`, `account_id`,"
-						+ " `account_currency`)"
+						+ "`(`player_uuid`, `account_id`, `account_currency`) "
 						+ "VALUES(?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.setString(1, ep.getPlayerUUID().toString());
 		        preparedStatement.setInt(2, ep.getAccountID());
 		        preparedStatement.setString(3, ep.getCurrencyUniqueName());
-		       
 		        
 		        preparedStatement.executeUpdate();
 		        return true;

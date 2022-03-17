@@ -34,6 +34,10 @@ public class MysqlSetup
 		{
 			return false;
 		}
+		if(!setupDatabase0())
+		{
+			return false;
+		}
 		if(!setupDatabaseI())
 		{
 			return false;

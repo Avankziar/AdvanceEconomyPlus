@@ -236,6 +236,10 @@ public class Balance implements CommandExecutor
 		for(Integer i : acclist)
 		{
 			Account a = plugin.getIFHApi().getAccount(i);
+			if(a == null)
+			{
+				continue;
+			}
 			String owner = Utility.convertUUIDToName(a.getOwner().getUUID().toString(), EconomyEntity.EconomyType.PLAYER);
 			ArrayList<BaseComponent> list = new ArrayList<>();
 			list.add(ChatApi.generateTextComponent(

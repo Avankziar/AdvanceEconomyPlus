@@ -90,7 +90,7 @@ public class AccountSetOwner extends ArgumentModule
 		ArrayList<AccountManagement> listAM = ConvertHandler.convertListIX(
 				plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.ACCOUNTMANAGEMENT,
 						"`id` ASC",
-						"`player_uuid` = ? `account_id` = ?", ac.getOwner().getUUID().toString(), ac.getID()));
+						"`player_uuid` = ? AND `account_id` = ?", ac.getOwner().getUUID().toString(), ac.getID()));
 		final String oldname = ac.getAccountName();
 		ac.setOwner(nowner);
 		plugin.getMysqlHandler().updateData(MysqlHandler.Type.ACCOUNT, ac, "`id` = ?", ac.getID());
