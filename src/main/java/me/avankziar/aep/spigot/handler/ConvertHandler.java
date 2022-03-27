@@ -130,7 +130,7 @@ public class ConvertHandler
 				el.add((LoanRepayment) o);
 			} else
 			{
-				return el;
+				return null;
 			}
 		}
 		return el;

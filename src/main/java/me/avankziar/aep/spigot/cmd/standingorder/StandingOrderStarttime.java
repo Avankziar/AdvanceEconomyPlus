@@ -88,8 +88,7 @@ public class StandingOrderStarttime extends ArgumentModule
 			return;
 		}
 		so.setStartTime(starttime);
-		long lastTime = starttime- (long) (so.getRepeatingTime()*0.9);
-		so.setLastTime(lastTime);
+		so.setLastTime(starttime - so.getRepeatingTime());
 		PendingHandler.standingOrder.remove(player.getUniqueId().toString());
 		plugin.getMysqlHandler().create(Type.STANDINGORDER, so);
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.StartTime.SetStartTime")

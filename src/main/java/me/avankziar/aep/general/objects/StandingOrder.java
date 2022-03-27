@@ -19,7 +19,8 @@ public class StandingOrder
 	private boolean cancelled; //Wurde der Dauerauftrag abgebrochen? Aka konnte der Spieler einmal nicht zahlen können.
 	private boolean paused; //Hat der Spieler den Auftrag pausiert.
 	
-	public StandingOrder(int id, String name, UUID owner, int accountFrom, int accountTo, double amount, double amountPaidSoFar, double amountPaidToTax,
+	public StandingOrder(int id, String name, UUID owner, int accountFrom, int accountTo,
+			double amount, double amountPaidSoFar, double amountPaidToTax,
 			long startTime, long repeatingTime, long lastTime, boolean cancelled, boolean paused)
 	{
 		setID(id);

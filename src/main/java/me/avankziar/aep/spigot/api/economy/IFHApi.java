@@ -559,7 +559,7 @@ public class IFHApi implements Economy
 	@Override
 	public boolean registerCurrency(Currency currency)
 	{
-		return currencyHandler.registerCurrency(currency);
+		return registerCurrency(currency, 0, false, 0, false, ",", ".", new LinkedHashMap<>());
 	}
 	
 	public void registerCurrencyFromFile()

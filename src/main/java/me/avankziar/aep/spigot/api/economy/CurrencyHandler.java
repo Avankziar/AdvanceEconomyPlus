@@ -89,7 +89,7 @@ public class CurrencyHandler
 								c.getString("Gradation.DIGITAL.Base.Plural"),
 								c.getString("Gradation.DIGITAL.Base.Singular"),
 								c.getString("Gradation.DIGITAL.Base.Symbol"),
-								0),
+								1),
 						gr.toArray(new Gradation[0]));
 			} else
 			{
@@ -98,7 +98,7 @@ public class CurrencyHandler
 								c.getString("Gradation.DIGITAL.Base.Plural"),
 								c.getString("Gradation.DIGITAL.Base.Singular"),
 								c.getString("Gradation.DIGITAL.Base.Symbol"),
-								0));
+								1));
 			}
 			break;
 		case EXPERIENCE:
@@ -295,7 +295,7 @@ public class CurrencyHandler
 		return false;
 	}
 	
-	public boolean registerCurrency(Currency currency)
+	private boolean registerCurrency(Currency currency)
 	{
 		EconomyCurrency c = currency.toCurrency();
 		if(existsCurrency(c.getUniqueName()))

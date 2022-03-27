@@ -354,7 +354,7 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		{
 			player.sendMessage(ChatApi.tl(s));
 		}
-		Pay.sendToOther(plugin, to, list, player.getUniqueId());
+		Pay.sendToOther(plugin, from, to, list, player.getUniqueId());
 	}
 	
 	private class RemovePlayerInGui implements Runnable

@@ -233,7 +233,8 @@ public class YamlManager
 				"ifhapiFormat",
 				"currencyhandler",
 				"actionlog",
-				"trendlog"})); //ADDME
+				"trendlog",
+				"loan"})); //ADDME
 		configKeys.put("Do.ShowOverdueAccounts"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
@@ -496,9 +497,9 @@ public class YamlManager
 				"&c/banknotification &f| Enables and disables messages that are sent to your bank account as a transaction.");
 		
 		argumentInput("aep_toplist", "toplist", basePermission,
-				"/aep top <currencyname> <pagenumber>", "/aep toplist ",
-				"&c/aep top <Währungsname> <Seitenzahl> &f| Zeigt die Liste der bestbetuchten Accounts der Währung an.",
-				"&c/aep top <currencyname> <page number> &f| Shows the list of the best accounts of the currency.");
+				"/aep toplist <currencyname> <pagenumber>", "/aep toplist ",
+				"&c/aep toplist <Währungsname> <Seitenzahl> &f| Zeigt die Liste der bestbetuchten Accounts der Währung an.",
+				"&c/aep toplist <currencyname> <page number> &f| Shows the list of the best accounts of the currency.");
 		commandsInput("toplist", "toplist", basePermission+"toplist",
 				"/toplist [pagenumber]", "/toplist ",
 				"&c/toplist [Seitenzahl] &f| Zeigt die Liste der bestbetuchten Spieler an.",
@@ -603,21 +604,21 @@ public class YamlManager
 	{
 		String basePermission = "aep.cmd.money";
 		argumentInput("aep_actionlog", "actionlog", basePermission,
-				"/aep actionlog [page] [playername]", "/aep actionlog ",
-				"&c/aep actionlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
-				"&c/aep actionlog [page] [playername] &f| Shows direct the actionlog by the actual Settings.");
+				"/aep actionlog [playername] [accountname] [page] [category]", "/aep actionlog ",
+				"&c/aep actionlog [Spielername] [Accountname] [Seitenzahl] [Kategorie] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
+				"&c/aep actionlog [playername] [accountname] [page] [category] &f| Shows direct the actionlog by the actual Settings.");
 		commandsInput("actionlog", "actionlog", basePermission,
-				"/actionlog [page] [playername]", "/actionlog ",
-				"&c/actionlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
-				"&c/actionlog [page] [playername] &f| Shows direct the actionlog by the actual Settings.");
+				"/actionlog [playername] [accountname] [page] [category]", "/actionlog ",
+				"&c/actionlog [Spielername] [Accountname] [Seitenzahl] [Kategorie] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
+				"&c/actionlog [playername] [accountname] [page] [category] &f| Shows direct the actionlog by the actual Settings.");
 		argumentInput("aep_trendlog", "trendlog", basePermission,
-				"/aep trendlog [page] [playername]", "/aep trendlog ",
-				"&c/aep trendlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
-				"&c/aep trendlog [page] [playername] &f| Shows direct the trendlog by the actual Settings.");
+				"/aep trendlog [playername] [accountname] [page]", "/aep trendlog ",
+				"&c/aep trendlog [Spielername] [Accountname] [Seitenzahl] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
+				"&c/aep trendlog [playername] [accountname] [page] &f| Shows direct the trendlog by the actual Settings.");
 		commandsInput("trendlog", "trendlog", basePermission,
-				"/trendlog [page] [playername]", "/trendlog ",
-				"&c/trendlog [Seitenzahl] [Spielername] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
-				"&c/trendlog [page] [playername] &f| Shows direct the trendlog by the actual Settings.");
+				"/trendlog [playername] [accountname] [page]", "/trendlog ",
+				"&c/trendlog [Spielername] [Accountname] [Seitenzahl] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
+				"&c/trendlog [playername] [accountname] [page] &f| Shows direct the trendlog by the actual Settings.");
 	}
 	
 	private void comAEPLoggerSettings()
@@ -705,12 +706,12 @@ public class YamlManager
 		
 		argumentInput("loan_cancel", "cancel", basePermission,
 				"/loan cancel", "/loan cancel ",
-				"&c/loan cancel &f| Bricht die Krediterstellung ab.",
+				"&c/loan cancel &f| 0",
 				"&c/loan cancel &f| Cancels the credit creation.");
 		
 		argumentInput("loan_create", "create", basePermission,
 				"/loan create <name> <senderaccountid> <reciveraccountid> <debtorname>", "/loan create ",
-				"&c/loan create <Name> <SenderAccountID> <EmpfängerAccountID> <SchuldnerName> &f| Erstellt einen Kreditvorschlag.",
+				"&c/loan create <Name> <SenderAccountID> <EmpfängerAccountID> <Schuldnername> &f| Erstellt einen Kreditvorschlag.",
 				"&c/loan create <name> <senderaccountid> <reciveraccountid> <debtorname> &f| Create a loanproposal.");
 		
 		argumentInput("loan_forgive", "forgive", basePermission,
@@ -755,12 +756,12 @@ public class YamlManager
 		
 		argumentInput("loan_send", "send", basePermission,
 				"/loan send <player>", "/loan send ",
-				"&c/loan send <spielername> &f| Sendet einen Kreditvorschlag einem Spieler.",
+				"&c/loan send <Spielername> &f| Sendet einen Kreditvorschlag einem Spieler.",
 				"&c/loan send <player> &f| Sends a loan proposal to a player.");
 		
 		argumentInput("loan_time", "time", basePermission,
 				"/loan time <starttime> <endtime> <repeatingtime>", "/loan time ",
-				"&c/loan time <startdatum|dd.MM.yyyy-HH:mm> <entdatum|dd.MM.yyyy-HH:mm> <ratenzyklus|dd-HH:mm> &f| Setzt die Zeiten für den Kreditvorschlag.",
+				"&c/loan time <startdatum|dd.MM.yyyy-HH:mm> <enddatum|dd.MM.yyyy-HH:mm> <ratenzyklus|dd-HH:mm> &f| Setzt die Zeiten für den Kreditvorschlag.",
 				"&c/loan time <starttime|dd.MM.yyyy-HH:mm> <endtime|dd.MM.yyyy-HH:mm> <repeatingtime|dd-HH:mm> &f| Sets the times for the loan proposal.");
 		
 		argumentInput("loan_transfer", "", basePermission,
@@ -786,9 +787,9 @@ public class YamlManager
 				"&c/standingorder cancel &f| Cancels the still waiting standing order.");
 		
 		argumentInput("standingorder_create", "create", basePermission,
-				"/standingorder create <name> <sender> <reciver>", "/standingorder create",
-				"&c/standingorder create <name> <Sender> <Empfänger> &f| Erstellt einen wartenden Dauerauftrag. Durch weitere Einstellung wird dieser finalisiert.",
-				"&c/standingorder create <name> <sender> <reciver> &f| Creates a waiting standing order. This is finalized by further settings.");
+				"/standingorder create <name> <senderaccoundID> <reciveraccountID>", "/standingorder create",
+				"&c/standingorder create <name> <SenderaccountID> <EmpfängeraccountID> &f| Erstellt einen wartenden Dauerauftrag. Durch weitere Einstellung wird dieser finalisiert.",
+				"&c/standingorder create <name> <senderaccountID> <reciveraccountID> &f| Creates a waiting standing order. This is finalized by further settings.");
 		
 		argumentInput("standingorder_delete", "delete", basePermission,
 				"/standingorder delete <id>", "/standingorder delete",
@@ -1808,6 +1809,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDie Währung &f%currency% &cerlaubt keine Kredite!",
 				"&cThe currency &f%currency% &cdont allow loans!"}));
+		languageKeys.put(base+"NoLoans"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu hast keine Kredite!",
+				"&cYou dont have loans!"}));
 		languageKeys.put(base+"ConfirmTerm"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"bestätigen",
@@ -2051,8 +2056,8 @@ public class YamlManager
 				"&cYou are not the orderer!"}));
 		languageKeys.put(base+"Amount.SetAmount"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eBetrag des noch wartenden Dauerauftrages &f%name% &ezu &f%amount% &r%currency% &egeändert.",
-				"&eAmount of the pending standing order &f%name% &eto &f%amount% &r%currency% &echanged."}));
+				"&eBetrag des noch wartenden Dauerauftrages &f%name% &ezu &r%format% &egeändert.",
+				"&eAmount of the pending standing order &f%name% &eto &r%format% &echanged."}));
 		languageKeys.put(base+"Amount.ChangeAmount"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eBetrag des schon existierenden Dauerauftrages &f%name% &eauf &f%format% &egeändert.",
@@ -2103,8 +2108,8 @@ public class YamlManager
 				"&cAmount paid so far: &f%format%"}));
 		languageKeys.put(base+"Info.AmountPaidToTax"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cBisher gezahlter Betrag: &f%format%",
-				"&cAmount paid so far: &f%format%"}));
+				"&cBisher gezahlte Steuern: &f%format%",
+				"&cTaxAmount paid so far: &f%format%"}));
 		languageKeys.put(base+"Info.StartTime"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cStartdatum: &f%starttime% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eNur+noch+wartende+Daueraufträge+können+verändert+werden!",
@@ -2147,8 +2152,8 @@ public class YamlManager
 				"&eSet the repetition cycle to &f%rt% &set."}));
 		languageKeys.put(base+"RepeatingTime.WrongSyntax"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cBitte nutze die richtige Zeit Syntax &f<dd-HH:mm>&c!",
-				"&cPlease use the right time syntax &f<dd-HH:mm>&c!"}));
+				"&cBitte nutze die richtige Zeit Syntax <&fdd-HH:mm&c>!",
+				"&cPlease use the right time syntax <&fdd-HH:mm&c>!"}));
 		languageKeys.put(base+"StartTime.Amount"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDu+hast+noch+keinen+Betrag+festgesetzt!+&f%amountcmd%+<Betrag>+&ceingeben+oder+hier+klicken!~click@SUGGEST_COMMAND@%amountcmd%+<Betrag>",
@@ -2163,12 +2168,20 @@ public class YamlManager
 				"&eStart date &f%starttime% &set! As soon as the time is reached, payments will start according to the set cycle."}));
 		languageKeys.put(base+"StartTime.WrongSyntax"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cBitte nutze die richtige Zeit Syntax &f<dd.MM.yyyy-HH:mm:ss>&c!",
-				"&cPlease use the right time syntax &f<dd.MM.yyyy-HH:mm:ss>&c!"}));
+				"&cBitte nutze die richtige Zeit Syntax <&fdd.MM.yyyy-HH:mm:ss&c>!",
+				"&cPlease use the right time syntax <&fdd.MM.yyyy-HH:mm:ss&c>!"}));
 		languageKeys.put(base+"StartTime.SpamProtection"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cAchtung! Spamschutz Warnung! Du unterschreitest die minimale Wiederholungszeit &f(%repeatingtime%) &csowie den Minimalbetrag &f(%amount%)&c! Bitte ändere eine der beiden Variabeln!",
 				"&cAttention! Spam protection warning! You fall below the minimum repetition time &f(%repeatingtime%) &cand the minimum amount&f(%amount%)&c! Please change one of the two variables!"}));
+		languageKeys.put(base+"Transaction"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&6Es wurden von dem Konto &e%fromaccount% &f%formatwithdraw% &6abgezogen und &f%formatdeposit% &6an &e%toaccount% &6als Dauerauftrag überwiesen.",
+				"&eGezahlte Steuern&7: &f%formattax%",
+				"&bKategorie: &f%category% &f| &bNotiz: &f%comment%",
+				"&6It was deducted from the account &e%fromaccount% &f%formatwithdraw% &6and transferred as standingorder &f%formatdeposit% &6to &e%toaccount%&6.",
+				"&eTaxes paid&7: &f%formattax%",
+				"&bCategory: &f%category% &f| &bComment: &f%comment%"}));
 	}
 	
 	@SuppressWarnings("unused")
@@ -2834,11 +2847,11 @@ public class YamlManager
 				CommandExecuteType.SET_CONSOLE.toString()+";money_setconsole"}));
 		currencyKeyI.put("Taxation"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				TaxationCase.TRANSACTION_BETWEEN_PLAYERS.toString()+";false;"+0.01,
-				TaxationCase.CURRENCY_EXCHANGE.toString()+";false;"+0.05,
-				TaxationCase.LOANLENDING+";false;"+0.01,
-				TaxationCase.LOANREPAYING+";false;"+0.01,
-				TaxationCase.STANDINGORDER+";false;"+0.01}));
+				TaxationCase.TRANSACTION_BETWEEN_PLAYERS.toString()+";false;"+1.0,
+				TaxationCase.CURRENCY_EXCHANGE.toString()+";false;"+5.0,
+				TaxationCase.LOANLENDING+";false;"+1.0,
+				TaxationCase.LOANREPAYING+";false;"+1.0,
+				TaxationCase.STANDINGORDER+";false;"+1.0}));
 		currencyKeyI.put("Format.OutputFormat"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"&r%number% %siprefix% %gradation% "}));
@@ -2987,11 +3000,11 @@ public class YamlManager
 				CommandExecuteType.SET_CONSOLE.toString()+";money_setconsole"}));
 		currencyKeyII.put("Taxation"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				TaxationCase.TRANSACTION_BETWEEN_PLAYERS.toString()+";true;"+0.01,
-				TaxationCase.CURRENCY_EXCHANGE.toString()+";true;"+0.05,
-				TaxationCase.LOANLENDING+";true;"+0.01,
-				TaxationCase.LOANREPAYING+";true;"+0.01,
-				TaxationCase.STANDINGORDER+";true;"+0.01}));
+				TaxationCase.TRANSACTION_BETWEEN_PLAYERS.toString()+";true;"+1.0,
+				TaxationCase.CURRENCY_EXCHANGE.toString()+";true;"+5.0,
+				TaxationCase.LOANLENDING+";true;"+1.0,
+				TaxationCase.LOANREPAYING+";true;"+1.0,
+				TaxationCase.STANDINGORDER+";true;"+1.0}));
 		currencyKeyII.put("Format.OutputFormat"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"&r%number%%siprefix% %gradation% "}));

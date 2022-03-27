@@ -342,7 +342,7 @@ public class Pay extends ArgumentModule implements CommandExecutor
 		{
 			player.sendMessage(ChatApi.tl(s));
 		}
-		sendToOther(plugin, to, list, player.getUniqueId());
+		sendToOther(plugin, from, to, list, player.getUniqueId());
 	}
 	
 	public static String convertDecimalSeperator(String s)
@@ -369,6 +369,122 @@ public class Pay extends ArgumentModule implements CommandExecutor
 		}
 		s[1] = sb.toString();
 		return s;
+	}
+	
+	public static void sendToOther(AdvancedEconomyPlus plugin, Account from, Account to, ArrayList<String> list, UUID...exceptions)
+	{
+		if(plugin.getMtB() != null)
+		{
+			ArrayList<AccountManagement> manaI = new ArrayList<>();
+			try
+			{
+				manaI = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
+						MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
+						to.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()));
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			ArrayList<AccountManagement> manaII = new ArrayList<>();
+			try
+			{
+				manaII = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
+						MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
+						to.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()));
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}			
+			ArrayList<UUID> ul = new ArrayList<>();
+			for(AccountManagement acm : manaI)
+			{
+				AEPUser u = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", acm.getUUID().toString());
+				if(u == null)
+				{
+					continue;
+				}
+				if(exceptions != null)
+				{
+					boolean ex = false;
+					for(UUID uuid : exceptions)
+					{
+						if(uuid.toString().equals(u.getUUID().toString()))
+						{
+							ex = true;
+							break;
+						}
+					}
+					if(ex)
+					{
+						continue;
+					}
+				}
+				if(ul.contains(u.getUUID()))
+				{
+					continue;
+				}
+				if(to.getType() == AccountType.BANK)
+				{
+					if(u.isBankMoneyFlowNotification())
+					{
+						ul.add(u.getUUID());
+					}
+				} else
+				{
+					if(u.isWalletMoneyFlowNotification())
+					{
+						ul.add(u.getUUID());
+					}
+				}
+			}
+			for(AccountManagement acm : manaII)
+			{
+				AEPUser u = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", acm.getUUID().toString());
+				if(u == null)
+				{
+					continue;
+				}
+				if(exceptions != null)
+				{
+					boolean ex = false;
+					for(UUID uuid : exceptions)
+					{
+						if(uuid.toString().equals(u.getUUID().toString()))
+						{
+							ex = true;
+							break;
+						}
+					}
+					if(ex)
+					{
+						continue;
+					}
+				}
+				if(ul.contains(u.getUUID()))
+				{
+					continue;
+				}
+				if(to.getType() == AccountType.BANK)
+				{
+					if(u.isBankMoneyFlowNotification())
+					{
+						ul.add(u.getUUID());
+					}
+				} else
+				{
+					if(u.isWalletMoneyFlowNotification())
+					{
+						ul.add(u.getUUID());
+					}
+				}
+			}
+			if(list.isEmpty())
+			{
+				return;
+			}
+			String[] la = list.toArray(new String[0]);
+			plugin.getMtB().sendMessage(ul, la);
+		}
 	}
 	
 	public static void sendToOther(AdvancedEconomyPlus plugin, Account to, ArrayList<String> list, UUID...exceptions)
@@ -426,6 +542,10 @@ public class Pay extends ArgumentModule implements CommandExecutor
 						ul.add(u.getUUID());
 					}
 				}
+			}
+			if(list.isEmpty())
+			{
+				return;
 			}
 			String[] la = list.toArray(new String[0]);
 			plugin.getMtB().sendMessage(ul, la);

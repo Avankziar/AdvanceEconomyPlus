@@ -17,6 +17,7 @@ import main.java.me.avankziar.aep.general.objects.TaxationSet;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyHandler;
+import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Pay;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
@@ -191,7 +192,7 @@ public class BackgroundTask
 					{
 						continue;
 					}
-					double amount = Double.parseDouble(sp[1])/100.0;
+					double amount = Double.parseDouble(sp[1]);
 					if(amount < 0.0 || amount > 100.0)
 					{
 						continue;
@@ -227,12 +228,12 @@ public class BackgroundTask
 								if(tax == null)
 								{
 									plugin.getIFHApi().withdraw(
-											ac, ac.getBalance()*amount,
+											ac, ac.getBalance()*amount/100,
 											OrdererType.PLAYER, ac.getOwner().getUUID().toString(), categoryII, commentII);
 								} else if(tax != null)
 								{
 									plugin.getIFHApi().transaction(
-											ac, tax, ac.getBalance()*amount,
+											ac, tax, ac.getBalance()*amount/100,
 											OrdererType.PLAYER, ac.getOwner().getUUID().toString(), categoryII, commentII);
 								}
 							}
@@ -277,7 +278,7 @@ public class BackgroundTask
 					{
 						continue;
 					}
-					double amount = Double.parseDouble(sp[1])/100.0;
+					double amount = Double.parseDouble(sp[1]);
 					if(amount < 0.0)
 					{
 						continue;
@@ -310,7 +311,7 @@ public class BackgroundTask
 							for(Account ac : aclist)
 							{
 								plugin.getIFHApi().deposit(
-										ac, ac.getBalance()*amount,
+										ac, ac.getBalance()*amount/100,
 										OrdererType.PLAYER, ac.getOwner().getUUID().toString(), categoryI, commentI);
 							}
 							start += 10;
@@ -509,22 +510,22 @@ public class BackgroundTask
 			public void run()
 			{
 				ConfigHandler.debug(dbm3, "> START RUN : StandingOrderPayment");
-				ArrayList<StandingOrder> list = new ArrayList<>();
+				ArrayList<StandingOrder> solist = new ArrayList<>();
 				try
 				{
-					list = ConvertHandler.convertListV(
+					solist = ConvertHandler.convertListV(
 							plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.STANDINGORDER, "`id` ASC",
 									"`cancelled` = ? AND `paused` = ?", false, false));
-					ConfigHandler.debug(dbm3, "> TRY : GET : StandingOrder List : Amount : "+list.size());
+					ConfigHandler.debug(dbm3, "> TRY : GET : StandingOrder List : Amount : "+solist.size());
 				} catch (IOException e)
 				{
 					ConfigHandler.debug(dbm3, "> CATCH : StandingOrderPayment IOException: "+e.toString());
 					return;
 				}
 				ConfigHandler.debug(dbm3, "> FOR-LOOP : StandingOrderPayment");
-				for(StandingOrder so : list)
+				for(StandingOrder so : solist)
 				{
-					ConfigHandler.debug(dbm3, ">> NULLCHECK : StandingOrder == null == "+(so == null));
+					ConfigHandler.debug(dbm3, ">> NULLCHECK : StandingOrder == null : "+(so == null));
 					if(so == null)
 					{
 						continue;
@@ -555,6 +556,7 @@ public class BackgroundTask
 					double taxation = ts != null ? ts.getTaxInPercent() : 0.0;
 					boolean taxAreExclusive = ts != null ? ts.isTaxAreExclusive() : true;
 					EconomyAction ea = null;
+					ArrayList<String> msg = new ArrayList<>();
 					if(from.getCurrency().getUniqueName().equals(to.getCurrency().getUniqueName()))
 					{
 						if(tax == null && category != null)
@@ -566,7 +568,7 @@ public class BackgroundTask
 						{
 							ea = plugin.getIFHApi().transaction(
 									from, to, amount,
-									taxation, taxAreExclusive, tax, 
+									taxation/100, taxAreExclusive, tax, 
 									OrdererType.PLAYER, so.getOwner().toString(), category, comment);
 						}
 						if(!ea.isSuccess())
@@ -577,6 +579,21 @@ public class BackgroundTask
 							continue;
 						}
 						ConfigHandler.debug(dbm3, ">> Transaction success");
+						String wformat = plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency());
+						String dformat = plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency());
+						String tformat = plugin.getIFHApi().format(ea.getTaxAmount(), from.getCurrency());
+						for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.StandingOrder.Transaction"))
+						{
+							String a = s.replace("%fromaccount%", from.getAccountName())
+							.replace("%toaccount%", to.getAccountName())
+							.replace("%formatwithdraw%", wformat)
+							.replace("%formatdeposit%", dformat)
+							.replace("%formattax%", tformat)
+							.replace("%category%", category != null ? category : "/")
+							.replace("%comment%", comment != null ? comment : "/");
+							msg.add(a);
+						}
+						Pay.sendToOther(plugin, from, to, msg);
 					} else
 					{
 						if(!from.getCurrency().isExchangeable() || !to.getCurrency().isExchangeable())
@@ -593,7 +610,7 @@ public class BackgroundTask
 						{
 							ea = plugin.getIFHApi().exchangeCurrencies(
 									from, to, amount,
-									taxation, taxAreExclusive, tax, taxII,
+									taxation/100, taxAreExclusive, tax, taxII,
 									OrdererType.PLAYER, so.getOwner().toString(), category, comment);
 						}
 						ConfigHandler.debug(dbm3, ">> CurrencyExchange success");
@@ -625,13 +642,13 @@ public class BackgroundTask
 			public void run()
 			{
 				final int count = plugin.getMysqlHandler().getCount(MysqlHandler.Type.STANDINGORDER, 
-						"(`cancelled` = ? OR `paused` = ?) AND `last_time` < ", true, true, deleteafter);
+						"(`cancelled` = ? OR `paused` = ?) AND `last_time` < ?", true, true, deleteafter);
 				if(count <= 0)
 				{
 					return;
 				}
 				plugin.getMysqlHandler().deleteData(MysqlHandler.Type.STANDINGORDER, 
-						"(`cancelled` = ? OR `paused` = ?) AND `last_time` < ", true, true, deleteafter);
+						"(`cancelled` = ? OR `paused` = ?) AND `last_time` < ?", true, true, deleteafter);
 				AdvancedEconomyPlus.log.info("==========AEP Database DeleteTask==========");
 				AdvancedEconomyPlus.log.info("Deleted StandingOrder: "+count);
 				AdvancedEconomyPlus.log.info("===========================================");				

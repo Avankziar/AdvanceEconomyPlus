@@ -72,11 +72,11 @@ public class ConfigHandler
 	
 	public static boolean isLoanEnabled(String currencyuniquename)
 	{
-		if(yh.getConfig().get("Enable.CurrencyMayUseLoan") == null)
+		if(yh.getConfig().get("Enable.CurrencyMayUseLoanRepayment") == null)
 		{
 			return false;
 		}
-		for(String s : yh.getConfig().getStringList("Enable.CurrencyMayUseLoan"))
+		for(String s : yh.getConfig().getStringList("Enable.CurrencyMayUseLoanRepayment"))
 		{
 			if(s.equals(currencyuniquename))
 			{

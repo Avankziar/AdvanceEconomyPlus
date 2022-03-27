@@ -207,12 +207,12 @@ public class TransactionHandler
 			double amountToDeposit = 0.0;
 			if(taxAreExclusive)
 			{
-				amountToWithdraw = amount + amount*taxInPercent;
+				amountToWithdraw = amount + amount*taxInPercent/100;
 				amountToDeposit = amount;
 			} else
 			{
 				amountToWithdraw = amount;
-				amountToDeposit = amount - amount*taxInPercent;
+				amountToDeposit = amount - amount*taxInPercent/100;
 			}
 			double amountToTax = amountToWithdraw - amountToDeposit;
 			if(withdraw != null && withdraw.getBalance() < amountToWithdraw)
@@ -283,12 +283,12 @@ public class TransactionHandler
 		double amountToDeposit = 0.0;
 		if(taxAreExclusive)
 		{
-			amountToWithdraw = amount + amount*taxInPercent;
+			amountToWithdraw = amount + amount*taxInPercent/100;
 			amountToDeposit = amount;
 		} else
 		{
 			amountToWithdraw = amount;
-			amountToDeposit = amount - amount*taxInPercent;
+			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
 		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
@@ -315,12 +315,12 @@ public class TransactionHandler
 		double amountToDeposit = 0.0;
 		if(taxAreExclusive)
 		{
-			amountToWithdraw = amount + amount*taxInPercent;
+			amountToWithdraw = amount + amount*taxInPercent/100;
 			amountToDeposit = amount;
 		} else
 		{
 			amountToWithdraw = amount;
-			amountToDeposit = amount - amount*taxInPercent;
+			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
 		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
@@ -399,12 +399,12 @@ public class TransactionHandler
 		double amountToDeposit = 0.0;
 		if(taxAreExclusive)
 		{
-			amountToWithdraw = amount + amount*taxInPercent;
+			amountToWithdraw = amount + amount*taxInPercent/100;
 			amountToDeposit = amount;
 		} else
 		{
 			amountToWithdraw = amount;
-			amountToDeposit = amount - amount*taxInPercent;
+			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
 		holder.setBalance(holder.getBalance()+amountToDeposit);
@@ -430,12 +430,12 @@ public class TransactionHandler
 		double amountToDeposit = 0.0;
 		if(taxAreExclusive)
 		{
-			amountToWithdraw = amount + amount*taxInPercent;
+			amountToWithdraw = amount + amount*taxInPercent/100;
 			amountToDeposit = amount;
 		} else
 		{
 			amountToWithdraw = amount;
-			amountToDeposit = amount - amount*taxInPercent;
+			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
 		holder.setBalance(holder.getBalance()+amountToDeposit);
@@ -511,12 +511,12 @@ public class TransactionHandler
 		double amountToDeposit = 0.0;
 		if(taxAreExclusive)
 		{
-			amountToWithdraw = amount + amount*taxInPercent;
+			amountToWithdraw = amount + amount*taxInPercent/100;
 			amountToDeposit = amount;
 		} else
 		{
 			amountToWithdraw = amount;
-			amountToDeposit = amount - amount*taxInPercent;
+			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
 		holder.setBalance(holder.getBalance()-amountToWithdraw);
@@ -542,12 +542,12 @@ public class TransactionHandler
 		double amountToDeposit = 0.0;
 		if(taxAreExclusive)
 		{
-			amountToWithdraw = amount + amount*taxInPercent;
+			amountToWithdraw = amount + amount*taxInPercent/100;
 			amountToDeposit = amount;
 		} else
 		{
 			amountToWithdraw = amount;
-			amountToDeposit = amount - amount*taxInPercent;
+			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
 		holder.setBalance(holder.getBalance()-amountToWithdraw);

@@ -245,7 +245,7 @@ public class CurrencyCommandSetup
 				default:
 					break;
 				case ACTIONLOG:
-					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 4, false, map_p_acn);
+					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 5, false, map_p_acn);
 					new ActionLog(null, arg, cst);
 					break;
 				case TRENDLOG:
@@ -407,7 +407,7 @@ public class CurrencyCommandSetup
 		ArgumentConstructor accept = new ArgumentConstructor(CommandExecuteType.LOAN_ACCEPT, bcmdIV+"_accept", 0, 0, 1, false, null);
 		ArgumentConstructor amount = new ArgumentConstructor(CommandExecuteType.LOAN_AMOUNT, bcmdIV+"_amount", 0, 3, 3, false, null);
 		ArgumentConstructor cancel = new ArgumentConstructor(CommandExecuteType.LOAN_CANCEL, bcmdIV+"_cancel", 0, 0, 0, false, null);
-		ArgumentConstructor create = new ArgumentConstructor(CommandExecuteType.LOAN_CREATE, bcmdIV+"_create", 0, 4, 4, false, pMapIII);
+		ArgumentConstructor create = new ArgumentConstructor(CommandExecuteType.LOAN_CREATE, bcmdIV+"_create", 0, 4, 4, false, pMapIV);
 		ArgumentConstructor forgive = new ArgumentConstructor(CommandExecuteType.LOAN_FORGIVE, bcmdIV+"_forgive", 0, 1, 2, false, null);
 		ArgumentConstructor info = new ArgumentConstructor(CommandExecuteType.LOAN_INFO, bcmdIV+"_info", 0, 1, 1, false, null);
 		ArgumentConstructor inherit = new ArgumentConstructor(CommandExecuteType.LOAN_INHERIT, bcmdIV+"_inherit", 0, 4, 4, false, pMapIII);

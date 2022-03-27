@@ -106,14 +106,14 @@ public class LoanCreate extends ArgumentModule
 		boolean mustbeowner = plugin.getYamlHandler().getConfig().getBoolean("Loan.ToLendingALoanPlayerMustBeTheOwnerOfTheAccount", true);
 		if(mustbeowner)
 		{
-			if(tac.getOwner().getUUID().toString().equals(player.getUniqueId().toString()))
+			if(!tac.getOwner().getUUID().toString().equals(player.getUniqueId().toString()))
 			{
 				player.sendMessage(ChatApi.tl(
 						plugin.getYamlHandler().getLang().getString("Cmd.Loan.YouCantBeCreateALoanIfYouHaveNoWithdrawRight")));
 				return;
 			}
 		}
-		if(fac.getOwner().getUUID().toString().equals(player.getUniqueId().toString()))
+		/*if(fac.getOwner().getUUID().toString().equals(player.getUniqueId().toString()))
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.Loan.YouCantBeTheOwnerOfYourOwnLoan")));
@@ -124,7 +124,7 @@ public class LoanCreate extends ArgumentModule
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.Loan.YouCantBeTheOwnerOfYourOwnLoan")));
 			return;
-		}
+		} */ // FIXME Wieder einbauen. nur für test ausgebaut
 		if(PendingHandler.loanRepayment.containsKey(player.getUniqueId().toString()))
 		{
 			LoanRepayment dr = PendingHandler.loanRepayment.get(player.getUniqueId().toString());

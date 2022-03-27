@@ -491,7 +491,7 @@ public class AccountHandler
 					"`id` ASC", "1"));
 		} catch (IOException e)
 		{
-			return null;
+			return new ArrayList<>();
 		}
 	}
 	
@@ -503,7 +503,7 @@ public class AccountHandler
 					"`id` ASC", "`account_type` = ?", type.toString()));
 		} catch (IOException e)
 		{
-			return null;
+			return new ArrayList<>();
 		}
 	}
 	
@@ -515,7 +515,7 @@ public class AccountHandler
 					"`id` ASC", "`owner_type` = ?", ownerType.toString()));
 		} catch (IOException e)
 		{
-			return null;
+			return new ArrayList<>();
 		}
 	}
 	
@@ -527,7 +527,7 @@ public class AccountHandler
 					"`id` ASC", "`account_category` = ?", category.toString()));
 		} catch (IOException e)
 		{
-			return null;
+			return new ArrayList<>();
 		}
 	}
 	
@@ -539,7 +539,7 @@ public class AccountHandler
 					"`id` ASC", "`account_type` = ? AND `owner_type` = ?", type.toString(), ownerType.toString()));
 		} catch (IOException e)
 		{
-			return null;
+			return new ArrayList<>();
 		}
 	}
 	
@@ -552,7 +552,7 @@ public class AccountHandler
 					type.toString(), ownerType.toString(), category.toString()));
 		} catch (IOException e)
 		{
-			return null;
+			return new ArrayList<>();
 		}
 	}
 	
@@ -563,10 +563,7 @@ public class AccountHandler
 
 	public Account getDefaultAccount(UUID ownerUUID, AccountCategory category)
 	{
-		DefaultAccount dacc = (DefaultAccount) plugin.getMysqlHandler().getData(MysqlHandler.Type.DEFAULTACCOUNT,
-				"`player_uuid` = ? AND `account_category` = ?",
-				ownerUUID.toString(), category.toString());
-		return dacc != null ? getAccount(dacc.getAccountID()) : null;
+		return getDefaultAccount(ownerUUID, category, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
 	}
 	
 	public Account getDefaultAccount(UUID ownerUUID, AccountCategory category, EconomyCurrency currency)

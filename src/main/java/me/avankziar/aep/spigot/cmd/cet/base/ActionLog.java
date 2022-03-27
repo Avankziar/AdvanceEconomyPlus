@@ -26,6 +26,7 @@ import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler.Methode;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
+import main.java.me.avankziar.aep.spigot.object.subs.ActionFilterSettings;
 import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
@@ -69,9 +70,10 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 			int zero = 0;
 			int one = 1;
 			int two = 2;
+			int three = 3;
 			try
 			{
-				middlePart(player, cmdString, args, zero, one, two);
+				middlePart(player, cmdString, args, zero, one, two, three);
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -100,9 +102,10 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 			int zero = 0+1;
 			int one = 1+1;
 			int two = 2+1;
+			int three = 3+1;
 			try
 			{
-				middlePart(player, cmdString, args, zero, one, two);
+				middlePart(player, cmdString, args, zero, one, two, three);
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -112,12 +115,12 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 	
 	/*
 	 * actionlog
-	 * actionlog <Player> [accountname] [Page]
+	 * actionlog <Player> [accountname] [Page] [actionlog category]
 	 * aep actionlog
-	 * aep actionlog <Player> [accountname] [Page]
+	 * aep actionlog <Player> [accountname] [Page] [actionlog category]
 	 */
 	private void middlePart(Player player, String cmdString, String[] args,
-			int zero, int one, int two) throws IOException
+			int zero, int one, int two, int three) throws IOException
 	{
 		ConfigHandler.debug(d1, "> Middle part");
 		String playerName = null;
@@ -197,7 +200,7 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 			}
 			accountID = ac.getID();
 		}
-		if(args.length >= two+1)
+		if(args.length >= three)
 		{
 			ConfigHandler.debug(d1, "> args.lenght >= three");
 			String pagenumber = args[two];
@@ -212,6 +215,14 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 		}
 		LoggerSettings fst = new LoggerSettings(accountID, player.getUniqueId(), page);
 		fst.setAction(true);
+		if(args.length >= three+1)
+		{
+			ConfigHandler.debug(d1, "> args.lenght >= four");
+			ActionFilterSettings afs = new ActionFilterSettings();
+			afs.setCategory(args[three]);
+			fst.setActionFilter(afs);
+		}
+		
 		if(LoggerSettingsHandler.getLoggerSettings().containsKey(player.getUniqueId()))
 		{
 			LoggerSettingsHandler.getLoggerSettings().replace(player.getUniqueId(), fst);

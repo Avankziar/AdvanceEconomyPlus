@@ -108,7 +108,7 @@ public class StandingOrderInfo extends ArgumentModule
 				.replace("%accountname%", from.getAccountName())
 				.replace("%ownername%", from.getOwner().getName())
 				.replace("%id%", String.valueOf(from.getID()))));
-		Account to = plugin.getIFHApi().getAccount(so.getAccountFrom());
+		Account to = plugin.getIFHApi().getAccount(so.getAccountTo());
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.To")
 				.replace("%accountname%", to.getAccountName())
@@ -139,10 +139,10 @@ public class StandingOrderInfo extends ArgumentModule
 				.replace("%lasttime%", TimeHandler.getTime(so.getLastTime()))));
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.isCancelled")
-				.replace("%cancelled%", String.valueOf(so.isCancelled()))));
+				.replace("%cancelled%", plugin.getIFHApi().getBoolean(so.isCancelled()))));
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.isPaused")
-				.replace("%paused%", String.valueOf(so.isPaused()))));
+				.replace("%paused%", plugin.getIFHApi().getBoolean(so.isPaused()))));
 		return;
 	}
 }

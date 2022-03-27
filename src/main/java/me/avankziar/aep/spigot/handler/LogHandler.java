@@ -35,7 +35,7 @@ public class LogHandler
 	private static String d1 = "trendlog";
 	
 	public static void pastNextPage(AdvancedEconomyPlus plugin, Player player, ArrayList<ArrayList<BaseComponent>> msg,
-			int page, boolean lastpage, String cmdstring, String playervalue, String accountName)
+			int page, boolean lastpage, String cmdstring, String...texts)
 	{
 		ConfigHandler.debug(d1, "> pastNext Begin : "+msg.size());
 		if(page == 0 && lastpage)
@@ -56,13 +56,12 @@ public class LogHandler
 			TextComponent msg2 = ChatApi.tctl(
 					plugin.getYamlHandler().getLang().getString("Log.Past"));
 			String cmd = cmdstring.trim();
-			if(playervalue != null)
+			for(String tx : texts)
 			{
-				cmd += " "+playervalue;
-			}
-			if(accountName != null)
-			{
-				cmd += " "+accountName;
+				if(tx != null)
+				{
+					cmd += " "+tx;
+				}
 			}
 			cmd += " "+String.valueOf(j);
 			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
@@ -73,13 +72,12 @@ public class LogHandler
 			TextComponent msg1 = ChatApi.tctl(
 					plugin.getYamlHandler().getLang().getString("Log.Next"));
 			String cmd = cmdstring.trim();
-			if(playervalue != null)
+			for(String tx : texts)
 			{
-				cmd += " "+playervalue;
-			}
-			if(accountName != null)
-			{
-				cmd += " "+accountName;
+				if(tx != null)
+				{
+					cmd += " "+tx;
+				}
 			}
 			cmd += " "+String.valueOf(i);
 			msg1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
@@ -290,7 +288,8 @@ public class LogHandler
 		}
 		if(access == LoggerSettingsHandler.Access.COMMAND)
 		{
-			pastNextPage(plugin, player, msg, page, lastpage, cmdstring, ac.getOwner().getName(), ac.getAccountName());
+			String cat = fst.getActionFilter().getCategory();
+			pastNextPage(plugin, player, msg, page, lastpage, cmdstring, ac.getOwner().getName(), ac.getAccountName(), cat);
 		} else
 		{
 			pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, LoggerSettingsHandler.Methode.LOG.toString());

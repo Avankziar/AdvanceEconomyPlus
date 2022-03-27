@@ -68,9 +68,7 @@ public class AdvancedEconomyPlus extends Plugin
 			{
 				handler.close();
 			}
-		}
-		
-		catch (Throwable t) 
+		} catch (Throwable t) 
 		{
 			getLogger().log(Level.SEVERE, "Exception disabling plugin " + plugin.getDescription().getName(), t);
 		}

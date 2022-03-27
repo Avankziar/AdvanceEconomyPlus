@@ -39,6 +39,8 @@ public class LoanCommandExecutor implements CommandExecutor
 	private AdvancedEconomyPlus plugin;
 	private static CommandConstructor cc;
 	
+	private static String db1 = "loan";
+	
 	public LoanCommandExecutor(CommandConstructor cc)
 	{
 		this.plugin = BaseConstructor.getPlugin();
@@ -48,6 +50,7 @@ public class LoanCommandExecutor implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) 
 	{
+		ConfigHandler.debug(db1, "> Loan Begin");
 		if (!(sender instanceof Player)) 
 		{
 			AdvancedEconomyPlus.log.info("/%cmd% is only for Player!".replace("%cmd%", cc.getName()));
@@ -56,21 +59,40 @@ public class LoanCommandExecutor implements CommandExecutor
 		Player player = (Player) sender;
 		if(!ConfigHandler.isLoanEnabled())
 		{
-			player.sendMessage(ChatApi.tl(
-					plugin.getYamlHandler().getLang().getString("NoLoan")));
+			ConfigHandler.debug(db1, "> Loan isnt enabled");
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoLoan")));
 			return false;
 		}
 		if(cc == null)
 		{
+			ConfigHandler.debug(db1, "> cc == null");
 			return false;
 		}
-		if (args.length >= 1) 
+		if (args.length >= 0) 
 		{
-			if(MatchApi.isInteger(args[0]))
+			ConfigHandler.debug(db1, "> args.lenght == "+args.length);
+			if(args.length == 0)
 			{
 				if(!player.hasPermission(cc.getPermission()))
 				{
 					///Du hast dafür keine Rechte!
+					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+					return false;
+				}
+				new BukkitRunnable()
+				{
+					@Override
+					public void run()
+					{
+						baseCommands(player, 0, null);
+					}
+				}.runTaskAsynchronously(plugin);
+				return true;
+			}
+			if(MatchApi.isInteger(args[0]))
+			{
+				if(!player.hasPermission(cc.getPermission()))
+				{
 					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return false;
 				}
@@ -98,23 +120,6 @@ public class LoanCommandExecutor implements CommandExecutor
 					return true;
 				}
 			}
-		} else if(args.length == 0)
-		{
-			if(!player.hasPermission(cc.getPermission()))
-			{
-				///Du hast dafür keine Rechte!
-				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
-				return false;
-			}
-			new BukkitRunnable()
-			{
-				@Override
-				public void run()
-				{
-					baseCommands(player, 0, null);
-				}
-			}.runTaskAsynchronously(plugin);
-			return true;
 		}
 		int length = args.length-1;
 		ArrayList<ArgumentConstructor> aclist = cc.subcommands;
@@ -157,7 +162,6 @@ public class LoanCommandExecutor implements CommandExecutor
 							return false;
 						} else
 						{
-							///Du hast dafür keine Rechte!
 							player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 							return false;
 						}
@@ -183,9 +187,11 @@ public class LoanCommandExecutor implements CommandExecutor
 	
 	public void baseCommands(final Player player, int page, String otherplayer)
 	{
+		ConfigHandler.debug(db1, "> baseCommand start");
 		String playeruuid = player.getUniqueId().toString();
 		if(otherplayer != null)
 		{
+			ConfigHandler.debug(db1, "> otherplayer != null");
 			if(!otherplayer.equals(player.getName()))
 			{
 				if(!player.hasPermission(ExtraPerm.get(Type.BYPASS_LOAN)))
@@ -212,6 +218,13 @@ public class LoanCommandExecutor implements CommandExecutor
 						"`debtor` = ? OR `loan_owner` = ?",	playeruuid, playeruuid));
 		int last = plugin.getMysqlHandler().countWhereID(MysqlHandler.Type.LOAN,
 				"`debtor` = ? OR `loan_owner` = ?",	playeruuid, playeruuid);
+		ConfigHandler.debug(db1, "> list.size : "+list.size()+" | last : "+last);
+		if(list.isEmpty())
+		{
+			player.sendMessage(ChatApi.tl(
+					plugin.getYamlHandler().getLang().getString("Cmd.Loan.NoLoans")));
+			return;
+		}
 		boolean lastpage = false;
 		if(end > last)
 		{

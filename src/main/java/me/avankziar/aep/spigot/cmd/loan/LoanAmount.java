@@ -106,7 +106,7 @@ public class LoanAmount extends ArgumentModule
 		 */
 		if(taxAreExclusive)
 		{
-			toam =  loam+loam*inst+loam*taxation; //GesamtBetrag+Gesamtbetrag*Zinsen+Gesamtbetrag*Steuern
+			toam =  loam+loam*inst+loam*taxation/100; //GesamtBetrag+Gesamtbetrag*Zinsen+Gesamtbetrag*Steuern
 		} else
 		{
 			toam = loam+loam*inst;
@@ -116,7 +116,7 @@ public class LoanAmount extends ArgumentModule
 		lr.setLoanAmount(loam);
 		lr.setAmountRatio(amra);
 		lr.setInterest(inst);
-		lr.setTaxInDecimal(taxation);
+		lr.setTaxInDecimal(taxation/100);
 		PendingHandler.loanRepayment.replace(player.getUniqueId().toString(), lr);
 		player.spigot().sendMessage(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Amount.SetsAmounts"),
 				HoverEvent.Action.SHOW_TEXT,
@@ -124,7 +124,7 @@ public class LoanAmount extends ArgumentModule
 				.replace("%ta%", plugin.getIFHApi().format(toam, from.getCurrency()))
 				.replace("%ar%", plugin.getIFHApi().format(amra, from.getCurrency()))
 				.replace("%ar%", plugin.getIFHApi().format(loam, from.getCurrency()))
-				.replace("%tax%", String.valueOf(taxation*100))
+				.replace("%tax%", String.valueOf(taxation))
 				.replace("%in%", String.valueOf(inst*100))
 				.replace("%min%", String.valueOf(minimumpayment))));
 		return;
