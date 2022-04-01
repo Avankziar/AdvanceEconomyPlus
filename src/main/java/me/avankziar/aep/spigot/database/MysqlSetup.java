@@ -243,6 +243,7 @@ public class MysqlSetup
         		+ " start_time bigint,"
         		+ " repeating_time bigint,"
         		+ " last_time bigint,"
+        		+ " end_time bigint,"
         		+ " cancelled boolean,"
         		+ " paused boolean"
         		+ ");";

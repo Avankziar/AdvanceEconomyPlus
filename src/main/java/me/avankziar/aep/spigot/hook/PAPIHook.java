@@ -58,10 +58,26 @@ public class PAPIHook extends PlaceholderExpansion
 	/*
 	 * [var] : balance(if nothing is specified), accountid, accountname, accountcategory, accounttype, 
 	 * <format> : withoutformat(if nothing is specified), withformat
+	 * 
+	 * >Gesamtes Guthaben des Spieler pro Währung. Ohne Void und Steueraccounts
 	 * playerbalance_<format>,<currencyuniquename>
+	 * 
+	 * >Gesamtes Guthaben des Spieler pro AccountCategory pro Währung.
+	 * playerbalancecategory_<format>,<accountcategory>,<currencyuniquename>
+	 * 
+	 * >Gesamtes Guthaben des Spieler pro Währung. Mit Void und Steueraccounts
+	 * playerbalancewithtaxvoid_<format>,<currencyuniquename>
+	 * 
+	 * >Guthaben des Defaultaccounts mit der AccountCategory und der Währung. Optional andere Variabeln erhältlich
 	 * defaultaccount_<format>,<accountcategory>,<currencyuniquename>,[var]
+	 * 
+	 * >Guthaben des QuickpayAccounts. Mit der Währung. Optional andere Variabeln erhältlich
 	 * quickpayaccount_<format>,<currencyuniquename>,[var]
+	 * 
+	 * >Gesamtes Guthaben im system per Währung
 	 * totalbalance_<format>,<currencyuniquename>
+	 * 
+	 * >Gesamtes Guthaben im System, per Accountcategoriy und Währung.
 	 * totalbalance_<format>,<accountcategory>,<currencyuniquename>
 	 */
 	
@@ -74,7 +90,7 @@ public class PAPIHook extends PlaceholderExpansion
 		}
 		final UUID uuid = player.getUniqueId();
 		
-		if(idf.startsWith("playerbalance"))
+		if(idf.startsWith("playerbalancewithtaxvoid"))
 		{
 			String[] s = idf.split(",");
 			String[] t = s[0].split("_");
@@ -84,8 +100,42 @@ public class PAPIHook extends PlaceholderExpansion
 			{
 				return null;
 			}
-			double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, "`owner_uuid` = ?`account_currency` = ?",
-					player.getUniqueId().toString(), ecy.getUniqueName());
+			double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, 
+					"`owner_uuid` = ? AND `account_currency` = ?",
+					player.getUniqueId().toString(), ecy.getUniqueName(), AccountCategory.TAX.toString(), AccountCategory.VOID.toString());
+			return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
+		} else if(idf.startsWith("playerbalancecategory"))
+		{
+			String[] s = idf.split(",");
+			String[] t = s[0].split("_");
+			boolean withformat = t.length >= 2 ? t[1].equals("withformat") : false;
+			AccountCategory acc = AccountCategory.MAIN;
+			try
+			{
+				acc = AccountCategory.valueOf(s[2]);
+			} catch(Exception e) {}
+			EconomyCurrency ecy = plugin.getIFHApi().getCurrency(s[3]);
+			if(ecy == null)
+			{
+				return null;
+			}
+			double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, 
+					"`owner_uuid` = ? AND `account_currency` = ?  AND `account_category` = ?",
+					player.getUniqueId().toString(), ecy.getUniqueName(), acc.toString());
+			return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
+		} else if(idf.startsWith("playerbalance"))
+		{
+			String[] s = idf.split(",");
+			String[] t = s[0].split("_");
+			boolean withformat = t.length >= 2 ? t[1].equals("withformat") : false;
+			EconomyCurrency ecy = plugin.getIFHApi().getCurrency(s[2]);
+			if(ecy == null)
+			{
+				return null;
+			}
+			double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, 
+					"`owner_uuid` = ? AND `account_currency` = ? AND `account_category` != ? AND `account_category` != ?",
+					player.getUniqueId().toString(), ecy.getUniqueName(), AccountCategory.TAX.toString(), AccountCategory.VOID.toString());
 			return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
 		} else if(idf.startsWith("defaultaccount"))
 		{

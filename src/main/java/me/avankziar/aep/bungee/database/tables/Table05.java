@@ -30,8 +30,8 @@ public interface Table05
 				String sql = "INSERT INTO `" + MysqlHandler.Type.STANDINGORDER.getValue() 
 						+ "`(`standing_order_name`, `owner_uuid`, `from_account`, `to_account`,"
 						+ " `amount`, `amount_paid_so_far`, `amount_paid_to_tax`,"
-						+ " `start_time`, `repeating_time`, `last_time`, `cancelled`, `paused`) " 
-						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+						+ " `start_time`, `repeating_time`, `last_time`, `end_time`, `cancelled`, `paused`) " 
+						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.setString(1, ep.getName());
 		        preparedStatement.setString(2, ep.getOwner().toString());
@@ -43,8 +43,9 @@ public interface Table05
 		        preparedStatement.setLong(8, ep.getStartTime());
 		        preparedStatement.setLong(9, ep.getRepeatingTime());
 		        preparedStatement.setLong(10, ep.getLastTime());
-		        preparedStatement.setBoolean(11, ep.isCancelled());
-		        preparedStatement.setBoolean(12, ep.isPaused());
+		        preparedStatement.setLong(11, ep.getEndtime());
+		        preparedStatement.setBoolean(12, ep.isCancelled());
+		        preparedStatement.setBoolean(13, ep.isPaused());
 		        
 		        preparedStatement.executeUpdate();
 		        return true;
@@ -89,7 +90,7 @@ public interface Table05
 				String data = "UPDATE `" + MysqlHandler.Type.STANDINGORDER.getValue() 
 						+ "` SET `standing_order_name` = ?, `owner_uuid` = ?, `from_account` = ?, `to_account` = ?,"
 						+ " `amount` = ?, `amount_paid_so_far` = ?, `amount_paid_to_tax` = ?," 
-						+ " `start_time` = ?, `repeating_time` = ?, `last_time` = ?, `cancelled` = ?, `paused` = ?" 
+						+ " `start_time` = ?, `repeating_time` = ?, `last_time` = ?, `end_time` = ?, `cancelled` = ?, `paused` = ?" 
 						+ " WHERE "+whereColumn;
 				preparedStatement = conn.prepareStatement(data);
 				preparedStatement.setString(1, ep.getName());
@@ -102,9 +103,10 @@ public interface Table05
 		        preparedStatement.setLong(8, ep.getStartTime());
 		        preparedStatement.setLong(9, ep.getRepeatingTime());
 		        preparedStatement.setLong(10, ep.getLastTime());
+		        preparedStatement.setLong(11, ep.getEndtime());
 		        preparedStatement.setBoolean(11, ep.isCancelled());
 		        preparedStatement.setBoolean(12, ep.isPaused());
-		        int i = 13;
+		        int i = 14;
 		        for(Object o : whereObject)
 		        {
 		        	preparedStatement.setObject(i, o);
@@ -164,6 +166,7 @@ public interface Table05
 		        			result.getLong("start_time"), 
 		        			result.getLong("repeating_time"), 
 		        			result.getLong("last_time"), 
+		        			result.getLong("end_time"),
 		        			result.getBoolean("cancelled"), 
 		        			result.getBoolean("paused"));
 		        }
@@ -226,6 +229,7 @@ public interface Table05
 		        			result.getLong("start_time"), 
 		        			result.getLong("repeating_time"), 
 		        			result.getLong("last_time"), 
+		        			result.getLong("end_time"),
 		        			result.getBoolean("cancelled"), 
 		        			result.getBoolean("paused"));
 		        	list.add(ep);
@@ -284,6 +288,7 @@ public interface Table05
 		        			result.getLong("start_time"), 
 		        			result.getLong("repeating_time"), 
 		        			result.getLong("last_time"), 
+		        			result.getLong("end_time"),
 		        			result.getBoolean("cancelled"), 
 		        			result.getBoolean("paused"));
 		        	list.add(ep);
@@ -348,6 +353,7 @@ public interface Table05
 		        			result.getLong("start_time"), 
 		        			result.getLong("repeating_time"), 
 		        			result.getLong("last_time"), 
+		        			result.getLong("end_time"),
 		        			result.getBoolean("cancelled"), 
 		        			result.getBoolean("paused"));
 		        	list.add(ep);

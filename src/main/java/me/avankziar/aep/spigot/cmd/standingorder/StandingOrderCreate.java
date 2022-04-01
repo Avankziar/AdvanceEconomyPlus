@@ -111,7 +111,7 @@ public class StandingOrderCreate extends ArgumentModule
 					plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.AlreadyPendingOrder")));
 			return;
 		}
-		StandingOrder so = new StandingOrder(0, name, player.getUniqueId(), fac.getID(), tac.getID(), 0, 0, 0, 0, 0, 0, false, false);
+		StandingOrder so = new StandingOrder(0, name, player.getUniqueId(), fac.getID(), tac.getID(), 0, 0, 0, 0, 0, 0, -1, false, false);
 		PendingHandler.standingOrder.put(player.getUniqueId().toString(), so);
 		player.spigot().sendMessage(ChatApi.clickEvent(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Create.OrderCreated"),

@@ -16,12 +16,13 @@ public class StandingOrder
 	private long startTime; //Anfangsdatum
 	private long repeatingTime; //Millisekunden, wann wieder gezahlt wird.
 	private long lastTime; //Millisekunden, wann das letzte man gezahl wurde.
+	private long endtime; //Letzte Zahlungsanweisung
 	private boolean cancelled; //Wurde der Dauerauftrag abgebrochen? Aka konnte der Spieler einmal nicht zahlen können.
 	private boolean paused; //Hat der Spieler den Auftrag pausiert.
 	
 	public StandingOrder(int id, String name, UUID owner, int accountFrom, int accountTo,
 			double amount, double amountPaidSoFar, double amountPaidToTax,
-			long startTime, long repeatingTime, long lastTime, boolean cancelled, boolean paused)
+			long startTime, long repeatingTime, long lastTime, long endtime, boolean cancelled, boolean paused)
 	{
 		setID(id);
 		setName(name);
@@ -190,6 +191,22 @@ public class StandingOrder
 	public void setOwner(UUID owner)
 	{
 		this.owner = owner;
+	}
+
+	/**
+	 * @return the endtime
+	 */
+	public long getEndtime()
+	{
+		return endtime;
+	}
+
+	/**
+	 * @param endtime the endtime to set
+	 */
+	public void setEndtime(long endtime)
+	{
+		this.endtime = endtime;
 	}
 
 }

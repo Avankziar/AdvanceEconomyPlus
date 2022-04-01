@@ -137,6 +137,12 @@ public class StandingOrderInfo extends ArgumentModule
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.LastTime")
 				.replace("%lasttime%", TimeHandler.getTime(so.getLastTime()))));
+		if(so.getEndtime() > 0)
+		{
+			player.spigot().sendMessage(ChatApi.generateTextComponent(
+					plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.EndTime")
+					.replace("%endtime%", TimeHandler.getTime(so.getEndtime()))));
+		}
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.isCancelled")
 				.replace("%cancelled%", plugin.getIFHApi().getBoolean(so.isCancelled()))));

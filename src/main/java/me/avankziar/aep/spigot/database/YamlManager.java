@@ -326,9 +326,6 @@ public class YamlManager
 		configKeys.put("Loan.ToLendingALoanPlayerMustBeTheOwnerOfTheAccount"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
-		configKeys.put("Loan.RetakePayment"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				false}));
 		
 		configKeys.put("ChestShop.EnableHook"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -437,8 +434,6 @@ public class YamlManager
 		{
 			switch(ept)
 			{
-			case CAN_SETACCOUNTNAME:
-			case CAN_SETDEFAULTACCOUNT:
 			case COUNT_ACCOUNT:
 				commandsKeys.put("Bypass."+ept.toString().replace("_", "")
 						, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -815,6 +810,11 @@ public class YamlManager
 				"/standingorder repeatingtime <dd-HH:mm value>", "/standingorder repeatingtime",
 				"&c/standingorder repeatingtime <dd-HH:mm Wert> &f| Setzt eine Wiederholungsvariable, welche im dd-HH:mm Format geschrieben werden muss.",
 				"&c/standingorder repeatingtime <dd-HH:mm Wert> &f| Sets a repeat variable, which must be written in dd-HH:mm format.");
+		
+		argumentInput("standingorder_endtime", "endtime", basePermission,
+				"/standingorder endtime <dd.MM.yyyy-HH:mm value>  [standingordername]", "/standingorder endtime",
+				"&c/standingorder endtime <dd.MM.yyyy-HH:mm Wert>  [Dauerauftragsname] &f| Setzt das Enddatum.",
+				"&c/standingorder endtime <dd.MM.yyyy-HH:mm Wert> [standingordername] &f| Sets the enddate.");
 		
 		argumentInput("standingorder_starttime", "starttime", basePermission,
 				"/standingorder starttime <dd.MM.yyyy-HH:mm value>", "/standingorder starttime",
@@ -2114,6 +2114,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cStartdatum: &f%starttime% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eNur+noch+wartende+Daueraufträge+können+verändert+werden!",
 				"&cStartdate: &f%starttime% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eOnly+waiting+standing+orders+can+be+changed!"}));
+		languageKeys.put(base+"Info.EndTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cEnddatum: &f%endtime%",
+				"&cEnddate: &f%endtime%"}));
 		languageKeys.put(base+"Info.RepeatingTime"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cWiederholungszyklus: &f%repeatingtime% &2✏~click@SUGGEST_COMMAND@%cmd%~hover@SHOW_TEXT@&eKlicke+hier+um+die+Wiederholungszeit+zu+ändern!",
@@ -2174,6 +2178,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cAchtung! Spamschutz Warnung! Du unterschreitest die minimale Wiederholungszeit &f(%repeatingtime%) &csowie den Minimalbetrag &f(%amount%)&c! Bitte ändere eine der beiden Variabeln!",
 				"&cAttention! Spam protection warning! You fall below the minimum repetition time &f(%repeatingtime%) &cand the minimum amount&f(%amount%)&c! Please change one of the two variables!"}));
+		languageKeys.put(base+"EndTime.SetEndTime"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eEnddatum &f%endtime% &egesetzt! Sobald der Zeitpunkt erreicht wird, endet die Zahlungen.",
+				"&eEnddate &f%endtime% &set! As soon as the time is reached, payments will end."}));
 		languageKeys.put(base+"Transaction"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&6Es wurden von dem Konto &e%fromaccount% &f%formatwithdraw% &6abgezogen und &f%formatdeposit% &6an &e%toaccount% &6als Dauerauftrag überwiesen.",
