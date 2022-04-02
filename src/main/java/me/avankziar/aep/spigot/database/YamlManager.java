@@ -9,6 +9,7 @@ import java.util.List;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import main.java.me.avankziar.aep.general.objects.TaxationCase;
+import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
@@ -93,6 +94,7 @@ public class YamlManager
 		{
 			return;
 		}
+		AdvancedEconomyPlus.log.info("key: "+key);
 		if(keyMap.get(key).languageValues.get(languageType).length == 1)
 		{
 			if(keyMap.get(key).languageValues.get(languageType)[0] instanceof String)
@@ -217,6 +219,15 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"Mike;true",
 				"King_Cobra;false"}));
+		configKeys.put("Do.Default.ReplaceIDIfNull"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"Void"}));
+		configKeys.put("Do.Default.ReplaceLogSystemWithCategory"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
+		configKeys.put("Do.Default.ReplaceIfNull"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"System"}));
 		configKeys.put("Do.Default.WalletMoneyFlowNotification"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
@@ -1353,6 +1364,14 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDer Spieler hat keinen LoggerSetting ausgewählt!",
 				"&cThe player has not selected a LoggerSetting!"}));
+		languageKeys.put(base+"LoggerSettingsTextOnlyThroughGUI"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cBitte den Befehl nur nutzen, wenn man durch die GUI aufgefordert wird!",
+				"&cPlease use the command only if you are prompted by the GUI prompts you to do so!"}));
+		languageKeys.put(base+"LoggerSettingsTextSuggest"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eKlicke hier auf die Nachricht, um einen Befehlsvorschlag zu erhalten. Tippe dann deinen Suchtext ein und drücke &b>Enter<",
+				"&eClick here on the message to get a command suggestion. Then type your search text and press &b>Enter<"}));
 		
 		languageKeys.put(base+"BarChart.Headline"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

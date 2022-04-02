@@ -64,6 +64,7 @@ import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderAmount;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderCancel;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderCreate;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderDelete;
+import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderEndTime;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderInfo;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderList;
 import main.java.me.avankziar.aep.spigot.cmd.standingorder.StandingOrderPause;
@@ -467,10 +468,11 @@ public class CurrencyCommandSetup
 		ArgumentConstructor pause = new ArgumentConstructor(CommandExecuteType.STORDER_PAUSE, bcmdV+"_pause", 0, 1, 1, false, null);
 		ArgumentConstructor rt = new ArgumentConstructor(CommandExecuteType.STORDER_REPEATINGTIME, bcmdV+"_repeatingtime", 0, 1, 2, false, null);
 		ArgumentConstructor st = new ArgumentConstructor(CommandExecuteType.STORDER_STARTTIME, bcmdV+"_starttime", 0, 1, 1, false, null);
+		ArgumentConstructor et = new ArgumentConstructor(CommandExecuteType.STORDER_STARTTIME, bcmdV+"_endtime", 0, 1, 2, false, null);
 		
 		CommandConstructor standingorder = new CommandConstructor(CommandExecuteType.STORDER, bcmdV, false,
 				amount, cancel, create, delete, info,
-				list, pause, rt, st);
+				list, pause, rt, st, et);
 		
 		plugin.registerCommand(standingorder.getPath(), standingorder.getName());
 		if(standingorder.getName() == null)
@@ -485,6 +487,7 @@ public class CurrencyCommandSetup
 		new StandingOrderCancel(cancel);
 		new StandingOrderCreate(create);
 		new StandingOrderDelete(delete);
+		new StandingOrderEndTime(et);
 		new StandingOrderInfo(info);
 		new StandingOrderList(list);
 		new StandingOrderPause(pause);

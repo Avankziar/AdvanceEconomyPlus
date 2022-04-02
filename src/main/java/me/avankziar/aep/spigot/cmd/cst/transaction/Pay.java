@@ -282,11 +282,6 @@ public class Pay extends ArgumentModule implements CommandExecutor
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Pay.SameAccount")));
 			return;
 		}
-		if(!from.getCurrency().getUniqueName().toString().equalsIgnoreCase(to.getCurrency().getUniqueName()))
-		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Pay.NotSameCurrency")));
-			return;
-		}
 		Account tax = plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.TAX, from.getCurrency());
 		if(args.length >= catStart+1)
 		{
@@ -294,10 +289,17 @@ public class Pay extends ArgumentModule implements CommandExecutor
 			category = s[0];
 			comment = s[1];
 		}
-		endpart(player, from, to, tax, category, comment, amount);
+		if(from.getCurrency().getUniqueName().toString().equalsIgnoreCase(to.getCurrency().getUniqueName()))
+		{
+			endpartSameCurrency(player, from, to, tax, category, comment, amount);
+		} else
+		{
+			Account taxTo = plugin.getIFHApi().getDefaultAccount(to.getOwner().getUUID(), AccountCategory.TAX, to.getCurrency());
+			endpartVariousCurrency(player, from, to, tax, taxTo, category, comment, amount);
+		}		
 	}
 	
-	private void endpart(Player player, Account from, Account to, Account tax, String category, String comment, double amount)
+	private void endpartSameCurrency(Player player, Account from, Account to, Account tax, String category, String comment, double amount)
 	{
 		LinkedHashMap<TaxationCase, TaxationSet> map = CurrencyHandler.taxationMap.get(from.getCurrency().getUniqueName());		
 		TaxationSet ts = map.containsKey(TaxationCase.TRANSACTION_BETWEEN_PLAYERS) ? map.get(TaxationCase.TRANSACTION_BETWEEN_PLAYERS) : null;
@@ -327,6 +329,57 @@ public class Pay extends ArgumentModule implements CommandExecutor
 		String wformat = plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency());
 		String dformat = plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency());
 		String tformat = plugin.getIFHApi().format(ea.getTaxAmount(), from.getCurrency());
+		for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.Pay.Transaction"))
+		{
+			String a = s.replace("%fromaccount%", from.getAccountName())
+			.replace("%toaccount%", to.getAccountName())
+			.replace("%formatwithdraw%", wformat)
+			.replace("%formatdeposit%", dformat)
+			.replace("%formattax%", tformat)
+			.replace("%category%", category != null ? category : "/")
+			.replace("%comment%", comment != null ? comment : "/");
+			list.add(a);
+		}
+		for(String s : list)
+		{
+			player.sendMessage(ChatApi.tl(s));
+		}
+		sendToOther(plugin, from, to, list, player.getUniqueId());
+	}
+	
+	private void endpartVariousCurrency(Player player, Account from, Account to,
+			Account taxFrom, Account taxTo,
+			String category, String comment, double amount)
+	{
+		LinkedHashMap<TaxationCase, TaxationSet> map = CurrencyHandler.taxationMap.get(from.getCurrency().getUniqueName());		
+		TaxationSet ts = map.containsKey(TaxationCase.CURRENCY_EXCHANGE) ? map.get(TaxationCase.CURRENCY_EXCHANGE) : null;
+		double taxation = ts != null ? ts.getTaxInPercent() : 0.0;
+		boolean taxAreExclusive = ts != null ? ts.isTaxAreExclusive() : true;
+		EconomyAction ea = null;
+		if((taxFrom == null || taxTo == null) && category == null)
+		{
+			ea = plugin.getIFHApi().exchangeCurrencies(from, to, amount);
+		} else if((taxFrom == null || taxTo == null) && category != null)
+		{
+			ea = plugin.getIFHApi().exchangeCurrencies(from, to, amount, OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+		} else if(taxFrom != null && category == null)
+		{
+			ea = plugin.getIFHApi().exchangeCurrencies(from, to, amount, taxation, taxAreExclusive, taxFrom, taxTo);
+		} else if(taxFrom != null && category != null)
+		{
+			ea = plugin.getIFHApi().exchangeCurrencies(from, to, amount, taxation, taxAreExclusive, taxFrom, taxTo,
+					OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+		}
+		if(!ea.isSuccess())
+		{
+			player.sendMessage(ChatApi.tl(ea.getDefaultErrorMessage()));
+			return;
+		}
+		ArrayList<String> list = new ArrayList<>();
+		String wformat = plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency());
+		String dformat = plugin.getIFHApi().format(ea.getDepositAmount(), to.getCurrency());
+		String tformat = plugin.getIFHApi().format(ea.getTaxAmount(),
+				from.getCurrency().getTaxationBeforeExchange() ? from.getCurrency() : to.getCurrency());
 		for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.Pay.Transaction"))
 		{
 			String a = s.replace("%fromaccount%", from.getAccountName())

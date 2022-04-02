@@ -32,7 +32,6 @@ public class CommandConstructor extends BaseConstructor
         	this.tablist.add(ac.getName());
         }
         getPlugin().getCommandTree().add(this);
-        AdvancedEconomyPlus.log.info("CC load "+path+", "+cet.toString()); //FIXME
     }
 	
 	public void addArg(AdvancedEconomyPlus plugin, ArgumentConstructor...argumentConstructors)

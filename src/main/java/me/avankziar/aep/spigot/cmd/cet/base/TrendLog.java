@@ -14,7 +14,6 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
-import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
@@ -145,37 +144,7 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 			playerName = player.getName();
 		} else if(args.length >= one)
 		{
-			if(!args[zero].equals(player.getName()))
-			{
-				if(!player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACTIONLOG_OTHER)))
-				{
-					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getLang().getString("NoPermission")));
-					return;
-				}
-			}
 			playerName = args[zero];
-			AEPUser fromuser = (AEPUser) plugin.getMysqlHandler().getData(
-					MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", playerName); //FIXME ist durch eine exist abfrage zu verbessen, auch actionlog
-			if(fromuser == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
-				return;
-			}
-			if(args.length == one)
-			{
-				accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), player.getUniqueId());
-				if(accountID < 0)
-				{
-					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getLang().getString("Cmd.QuickPayDontExist")));
-					return;
-				}
-			}
-		}
-		if(args.length >= two)
-		{
 			UUID uuid = Utility.convertNameToUUID(playerName, EconomyEntity.EconomyType.PLAYER);
 			if(uuid == null)
 			{

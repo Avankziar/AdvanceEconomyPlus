@@ -23,6 +23,7 @@ import main.java.me.avankziar.aep.general.objects.ActionLogger;
 import main.java.me.avankziar.aep.general.objects.TrendLogger;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
+import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.database.Language.ISO639_2B;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.object.LoggerSettings;
@@ -818,7 +819,7 @@ public class LoggerSettingsHandler
 	{
 		player.closeInventory();
 		player.spigot().sendMessage(ChatApi.clickEvent
-				(plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsTextSuggest")
+				(plugin.getYamlHandler().getLang().getString("Cmd.Log.LoggerSettingsTextSuggest")
 				, Action.SUGGEST_COMMAND, loggerSettingsTextCommandString));
 	}
 	
@@ -870,7 +871,7 @@ public class LoggerSettingsHandler
 			}
 		} else
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdMoney.Log.LoggerSettingsTextOnlyThroughGUI")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Log.LoggerSettingsTextOnlyThroughGUI")));
 			return;
 		}
 		getLoggerSettings().put(player.getUniqueId(), fst);
@@ -1137,6 +1138,7 @@ public class LoggerSettingsHandler
 			public void run()
 			{
 				if(fst.getAccountID() > 0
+						&& !player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACTIONLOG_OTHER))
 						&& !plugin.getIFHApi().canManageAccount(fst.getAccountID(), player.getUniqueId(), AccountManagementType.CAN_SEE_LOG))
 				{
 					fst.setInventoryHandlerType(InventoryHandlerType.NONE);

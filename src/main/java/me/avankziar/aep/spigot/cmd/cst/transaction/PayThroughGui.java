@@ -308,9 +308,19 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		Account from = plugin.getIFHApi().getAccount(gp.getFromAccountID());
 		Account to = plugin.getIFHApi().getAccount(gp.getToAccountID());
 		Account tax = plugin.getIFHApi().getAccount(gp.getTaxAccountID());
-		String category = gp.getCategory();
-		String comment = gp.getComment();
-		double amount = gp.getAmount();
+		if(from.getCurrency().getUniqueName().toString().equalsIgnoreCase(to.getCurrency().getUniqueName()))
+		{
+			endPartSameCurrency(plugin, player, gp, from, to, tax, gp.getCategory(), gp.getComment(), gp.getAmount());
+		} else
+		{
+			Account taxTo = plugin.getIFHApi().getDefaultAccount(to.getOwner().getUUID(), AccountCategory.TAX, to.getCurrency());
+			endpartVariousCurrency(plugin, player, from, to, tax, taxTo, gp.getCategory(), gp.getComment(), gp.getAmount());
+		}
+	}
+	
+	private static void endPartSameCurrency(AdvancedEconomyPlus plugin, final Player player, final GuiPay gp,
+			Account from, Account to, Account tax, String category, String comment, double amount)
+	{
 		LinkedHashMap<TaxationCase, TaxationSet> map = CurrencyHandler.taxationMap.get(from.getCurrency().getUniqueName());
 		TaxationSet ts = map.containsKey(TaxationCase.TRANSACTION_BETWEEN_PLAYERS) ? map.get(TaxationCase.TRANSACTION_BETWEEN_PLAYERS) : null;
 		double taxation = ts != null ? ts.getTaxInPercent() : 0.0;
@@ -335,10 +345,50 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 			player.sendMessage(ChatApi.tl(ea.getDefaultErrorMessage()));
 			return;
 		}
+		String tformat = plugin.getIFHApi().format(ea.getTaxAmount(), from.getCurrency());
+		finalpart(plugin, player, from, to, ea, tformat, category, comment, amount);
+	}
+	
+	private static void endpartVariousCurrency(AdvancedEconomyPlus plugin, Player player, Account from, Account to,
+			Account taxFrom, Account taxTo,
+			String category, String comment, double amount)
+	{
+		LinkedHashMap<TaxationCase, TaxationSet> map = CurrencyHandler.taxationMap.get(from.getCurrency().getUniqueName());		
+		TaxationSet ts = map.containsKey(TaxationCase.CURRENCY_EXCHANGE) ? map.get(TaxationCase.CURRENCY_EXCHANGE) : null;
+		double taxation = ts != null ? ts.getTaxInPercent() : 0.0;
+		boolean taxAreExclusive = ts != null ? ts.isTaxAreExclusive() : true;
+		EconomyAction ea = null;
+		if((taxFrom == null || taxTo == null) && category == null)
+		{
+			ea = plugin.getIFHApi().exchangeCurrencies(from, to, amount);
+		} else if((taxFrom == null || taxTo == null) && category != null)
+		{
+			ea = plugin.getIFHApi().exchangeCurrencies(from, to, amount, OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+		} else if(taxFrom != null && category == null)
+		{
+			ea = plugin.getIFHApi().exchangeCurrencies(from, to, amount, taxation, taxAreExclusive, taxFrom, taxTo);
+		} else if(taxFrom != null && category != null)
+		{
+			ea = plugin.getIFHApi().exchangeCurrencies(from, to, amount, taxation, taxAreExclusive, taxFrom, taxTo,
+					OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+		}
+		if(!ea.isSuccess())
+		{
+			player.sendMessage(ChatApi.tl(ea.getDefaultErrorMessage()));
+			return;
+		}
+		String tformat = plugin.getIFHApi().format(ea.getTaxAmount(),
+				from.getCurrency().getTaxationBeforeExchange() ? from.getCurrency() : to.getCurrency());
+		finalpart(plugin, player, from, to, ea, tformat, category, comment, amount);
+	}
+	
+	private static void finalpart(AdvancedEconomyPlus plugin, Player player, 
+			 Account from, Account to, EconomyAction ea, String tformat,
+			 String category, String comment, double amount)
+	{
 		ArrayList<String> list = new ArrayList<>();
 		String wformat = plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency());
-		String dformat = plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency());
-		String tformat = plugin.getIFHApi().format(ea.getTaxAmount(), from.getCurrency());
+		String dformat = plugin.getIFHApi().format(ea.getDepositAmount(), to.getCurrency());
 		for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.Pay.Transaction"))
 		{
 			String a = s.replace("%fromaccount%", from.getAccountName())

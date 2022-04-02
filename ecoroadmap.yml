@@ -27,16 +27,16 @@ Future =========================================================================
 - LoadBefore Essential
 - mysql struktur änderung bezüglich Orderby und DESC
   
-- BungeeCord Geldunterstützung anbieten.
 - Waren in der ger.yml Rechtschreibfeher beim Loggersetting drin
   => LoggerSettingsTextOnlyThroughGUI: '&cBitte den Befehl nur nutzen, wenn man durch
       die GUI aufgefordert wird!'
 	 LoggerSettingsTextSuggest: '&eKlicke hier auf die Nachricht, um einen Befehlsvorschlag
       zu erhalten. Tippe dann deinen Suchtext ein und drücke &b>Enter<'
-- Loggersetting spawnen nicht in englisch.
-- Mysql Performance in allen Tabellen hinzufügen. Siehe scc
 
 Build 4 =============================================================================================================================
++ Bugfix, eng_ls.yml wird richtig erstellt.
++ Für zukünftige IFH Anwendungen ist eine MysqlPerformance Zählung eingebaut.
++ Durch IFH kann auf Bungeecord Ebene auch mit der Economy durch Plugins interagiert werden.
 + Mysql:
   + Datenbank hinzugefügt für:
     + Entitys und Server
@@ -179,7 +179,6 @@ Build 4 ========================================================================
   - LoggerSettings adding %account_owner_name%, %account_owner_type%
   - LoggerSettings Slot 3 => AccountID, Slot 5 => Category für die Dateien ändern
   - Tablisten für Pay befehle für alle Spieler eine listen anlegen mit deren Accountnamen.
-  - Standinorder ein enddatum hinzufügen.
 
 Build 3 ============================================================================================================================
 - +CommandTree eingebungen und dahingehend umgeschrieben. Bedeutet Befehle und Permission sind änderbar.

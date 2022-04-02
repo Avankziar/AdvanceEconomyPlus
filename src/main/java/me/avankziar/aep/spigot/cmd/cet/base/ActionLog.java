@@ -14,7 +14,6 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.sub.CommandSuggest;
-import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
@@ -145,40 +144,10 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 				return;
 			}
 			playerName = player.getName();
-		} else if(args.length >= one)
+		} else if(args.length >= two)
 		{
 			ConfigHandler.debug(d1, "> args.lenght >= one");
-			if(!args[zero].equals(player.getName()))
-			{
-				if(!player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACTIONLOG_OTHER)))
-				{
-					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getLang().getString("NoPermission")));
-					return;
-				}
-			}
 			playerName = args[zero];
-			AEPUser fromuser = (AEPUser) plugin.getMysqlHandler().getData(
-					MysqlHandler.Type.PLAYERDATA, "`player_name` = ?", playerName);
-			if(fromuser == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
-				return;
-			}
-			if(args.length == one)
-			{
-				accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), player.getUniqueId());
-				if(accountID < 0)
-				{
-					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getLang().getString("Cmd.QuickPayDontExist")));
-					return;
-				}
-			}
-		}
-		if(args.length >= two)
-		{
 			ConfigHandler.debug(d1, "> args.lenght >= two");
 			UUID uuid = Utility.convertNameToUUID(playerName, EconomyEntity.EconomyType.PLAYER);
 			if(uuid == null)
@@ -222,7 +191,6 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 			afs.setCategory(args[three]);
 			fst.setActionFilter(afs);
 		}
-		
 		if(LoggerSettingsHandler.getLoggerSettings().containsKey(player.getUniqueId()))
 		{
 			LoggerSettingsHandler.getLoggerSettings().replace(player.getUniqueId(), fst);

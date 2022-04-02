@@ -531,6 +531,15 @@ public class BackgroundTask
 						continue;
 					}
 					long now = System.currentTimeMillis();
+					if(so.getEndtime() > 0)
+					{
+						if(now > so.getEndtime())
+						{
+							so.setCancelled(true);
+							plugin.getMysqlHandler().updateData(MysqlHandler.Type.STANDINGORDER, so, "`id` = ?", so.getID());
+							continue;
+						}
+					}
 					long sum = so.getLastTime()+so.getRepeatingTime();
 					if(sum >= now)
 					{

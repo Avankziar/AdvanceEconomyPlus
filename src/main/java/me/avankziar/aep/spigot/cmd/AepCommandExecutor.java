@@ -133,7 +133,7 @@ public class AepCommandExecutor implements CommandExecutor
 	{
 		int count = 0;
 		int start = page*10;
-		int end = page*10+9;
+		int end = page*10+10;
 		int last = 0;
 		player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString(
 				"Log.Headline")));

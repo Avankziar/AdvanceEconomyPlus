@@ -3,8 +3,6 @@ package main.java.me.avankziar.aep.spigot.cmd.tree;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-
 public class ArgumentConstructor extends BaseConstructor
 {
     public int minArgsConstructor;
@@ -59,7 +57,6 @@ public class ArgumentConstructor extends BaseConstructor
         {
         	tabList.put(position, tl);
         }
-        AdvancedEconomyPlus.log.info("AC load "+path+", "+cet.toString()); //FIXME
     }
     
     public ArgumentConstructor getSubArgument(String argument)

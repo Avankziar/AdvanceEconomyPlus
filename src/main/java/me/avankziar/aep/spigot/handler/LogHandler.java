@@ -197,15 +197,21 @@ public class LogHandler
 				send = plugin.getIFHApi().getAccount(al.getFromAccountID());
 				rec = ac;
 			}
-			String system = "System";
+			String system = plugin.getConfig().getString("Do.Default.ReplaceIfNull", "System");
+			boolean repA = plugin.getConfig().getBoolean("Do.Default.ReplaceLogSystemWithCategory", false);
+			String idrep = plugin.getConfig().getString("Do.Default.ReplaceIDIfNull", "System");
 			String withdraw = send != null ? plugin.getIFHApi().format(al.getAmountToWithdraw(), send.getCurrency()) : "0.0";
 			String deposit = rec != null ? plugin.getIFHApi().format(al.getAmountToDeposit(), rec.getCurrency()) : "0.0";
-			String saccid = String.valueOf(send != null ? send.getID() : system);
-			String saccn = send != null ? send.getAccountName() : system;
-			String sacco = send != null ? send.getOwner().getName() : system;
-			String raccid = String.valueOf(rec != null ? rec.getID() : system);
-			String raccn = rec != null ? rec.getAccountName() : system;
-			String racco = rec != null ? rec.getOwner().getName() : system;
+			String saccid = String.valueOf(send != null ? send.getID() : idrep);
+			String saccn = send != null ? send.getAccountName() :  
+				(repA ? (al.getCategory() != null ? category : system) : system);
+			String sacco = send != null ? send.getOwner().getName() :  
+				(repA ? (al.getCategory() != null ? category : system) : system);
+			String raccid = String.valueOf(rec != null ? rec.getID() :  idrep);
+			String raccn = rec != null ? rec.getAccountName() :  
+				(repA ? (al.getCategory() != null ? category : system) : system);
+			String racco = rec != null ? rec.getOwner().getName() :  
+				(repA ? (al.getCategory() != null ? category : system) : system);
 			String tax = send != null ? plugin.getIFHApi().format(al.getAmountToTax(), send.getCurrency())
 					: plugin.getIFHApi().format(al.getAmountToTax(), rec.getCurrency());
 			map.put("%fromaccountid%", saccid); 
