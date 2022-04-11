@@ -123,7 +123,7 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 	}
 	
 	/*
-	 * paythroughgui <ToPlayer> <amount> [category] [comment...]
+	 * paythroughgui <amount> <ToPlayer> [category] [comment...]
 	 */
 	private void middlePart(Player player, String cmdString, String[] args,
 			int zero, int one, int two, int three)
@@ -141,13 +141,13 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		String as = null;
 		double amount = 0.0;
 		int catStart = two+1;
-		as = Pay.convertDecimalSeperator(args[one]);
-		String toName = args[zero];
+		as = Transfer.convertDecimalSeperator(args[zero]);
+		String toName = args[one];
 		if(!MatchApi.isDouble(as))
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("NoNumber")
-					.replace("%args%", args[one])));
+					.replace("%args%", args[zero])));
 			return;
 		}
 		amount = Double.parseDouble(as);
@@ -168,9 +168,17 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		}
 		if(args.length >= catStart+1)
 		{
-			String[] s = Pay.getCategoryAndComment(args, catStart);
+			String[] s = Transfer.getCategoryAndComment(args, catStart);
 			category = s[0];
 			comment = s[1];
+		} else if(args.length >= catStart)
+		{
+			category = Transfer.getCategory(args, catStart);
+			comment = "N/A";
+		} else
+		{
+			category = "N/A";
+			comment = "N/A";
 		}
 		GuiPay gp = new GuiPay(player, toName, amount, category, comment);
 		GuiPayListener.guiPayMap.put(player.getUniqueId().toString(), gp);
@@ -216,24 +224,43 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		for(AccountManagement am : aml)
 		{
 			Account ac = plugin.getIFHApi().getAccount(am.getAccountID());
-			if(ac == null)
+			if(ac == null || ac.getCurrency() == null)
 			{
 				continue;
 			}
+			boolean canSeeBalance = plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_SEE_BALANCE);
 			ItemStack is = new ItemStack(getMat(ac.getCategory()));
 			ItemMeta im = is.getItemMeta();
 			im.setDisplayName(String.valueOf(ac.getID()));
 			ArrayList<String> lore = new ArrayList<>();
-			for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.PayThroughGui.Lore"))
+			if(canSeeBalance)
 			{
-				String r = ChatApi.tl(s.replace("%own%", ac.getOwner().getName())
-						.replace("%owt%", plugin.getIFHApi().getEconomyEntityType(ac.getOwner().getType()))
-						.replace("%acn%", ac.getAccountName())
-						.replace("%acc%", plugin.getIFHApi().getAccountCategory(ac.getCategory()))
-						.replace("%act%", plugin.getIFHApi().getAccountType(ac.getType()))
-						);
-				lore.add(r);
-			}
+				for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.PayThroughGui.Lore"))
+				{
+					String r = ChatApi.tl(s
+							.replace("%own%", ac.getOwner().getName())
+							.replace("%owt%", plugin.getIFHApi().getEconomyEntityType(ac.getOwner().getType()))
+							.replace("%acn%", ac.getAccountName())
+							.replace("%acc%", plugin.getIFHApi().getAccountCategory(ac.getCategory()))
+							.replace("%act%", plugin.getIFHApi().getAccountType(ac.getType()))
+							.replace("%bal%", plugin.getIFHApi().format(ac.getBalance(), ac.getCurrency()))
+							);
+					lore.add(r);
+				}
+			} else
+			{
+				for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.PayThroughGui.LoreWithOutBalance"))
+				{
+					String r = ChatApi.tl(s
+							.replace("%own%", ac.getOwner().getName())
+							.replace("%owt%", plugin.getIFHApi().getEconomyEntityType(ac.getOwner().getType()))
+							.replace("%acn%", ac.getAccountName())
+							.replace("%acc%", plugin.getIFHApi().getAccountCategory(ac.getCategory()))
+							.replace("%act%", plugin.getIFHApi().getAccountType(ac.getType()))
+							);
+					lore.add(r);
+				}
+			}			
 			im.setLore(lore);
 			is.setItemMeta(im);
 			inv.addItem(is);
@@ -404,7 +431,7 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		{
 			player.sendMessage(ChatApi.tl(s));
 		}
-		Pay.sendToOther(plugin, from, to, list, player.getUniqueId());
+		Transfer.sendToOther(plugin, from, to, list, player.getUniqueId());
 	}
 	
 	private class RemovePlayerInGui implements Runnable

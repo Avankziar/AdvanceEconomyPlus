@@ -66,6 +66,11 @@ public class AccountSetQuickPay extends ArgumentModule
 			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Pay.AccountDontExist")));
 			return;
 		}
+		if(ac.getCurrency() == null)
+		{
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", ac.getAccountName()));
+			return;
+		}
 		if(!plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_WITHDRAW))
 		{
 			player.sendMessage(ChatApi.tl(

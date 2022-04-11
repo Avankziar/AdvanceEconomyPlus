@@ -75,7 +75,8 @@ public class CurrencyHandler
 				{
 					break;
 				}
-				int vtbg = c.getInt("Gradation.DIGITAL."+i+".ValueToBaseGradation", i) == 0 ? 1 : c.getInt("Gradation.DIGITAL."+i+".ValueToBaseGradation", i);
+				int vtbg = c.getInt("Gradation.DIGITAL."+i+".ValueToBaseGradation", i) == 0 
+						? 1 : c.getInt("Gradation.DIGITAL."+i+".ValueToBaseGradation", i);
 				gr.add(new Gradation(
 							c.getString("Gradation.DIGITAL."+i+".Plural"),
 							c.getString("Gradation.DIGITAL."+i+".Singular"),
@@ -153,7 +154,10 @@ public class CurrencyHandler
 		registerCurrency(cu);
 		if(c.getBoolean("DefaultCurrency"))
 		{
-			defaultDigitalCurrency = cu.toCurrency();
+			if(defaultDigitalCurrency == null)
+			{
+				defaultDigitalCurrency = cu.toCurrency();
+			}			
 		}
 		plugin.getIFHApi().defaultGradationQuantity.put(uniquename, c.getInt("Format.GradationQuantity"));
 		plugin.getIFHApi().defaultUseSIPrefix.put(uniquename, c.getBoolean("Format.UseSIPrefix"));

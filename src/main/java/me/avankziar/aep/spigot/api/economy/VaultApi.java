@@ -8,13 +8,11 @@ import java.util.Locale;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.general.objects.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
-import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.general.economy.account.AccountType;
 import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
@@ -336,10 +334,10 @@ public class VaultApi implements Economy
 			return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE,
 					plugin.getYamlHandler().getLang().getString("NoPlayerAccount"));
 		}
-		if(ConfigHandler.isLoanRetakeEnabled())
+		/*if(ConfigHandler.isLoanRetakeEnabled()) FIXME
 		{
 			if(plugin.getMysqlHandler().exist(MysqlHandler.Type.LOAN,
-					"`from_player` = ? AND `forgiven` = ? AND `paused` = ? AND `finished` = ? AND `endtime` < ?",
+					"`from_player` = ? AND `forgiven` = ? AND `paused` = ? AND `finished` = ? AND `endtime` < ?", // from_player existiert nicht
 					player.getName(), false, false, false, System.currentTimeMillis()))
 			{
 				new BukkitRunnable()
@@ -360,7 +358,7 @@ public class VaultApi implements Economy
 					}
 				}.runTaskLater(plugin, 20L*2);
 			}
-		}
+		}*/
 		account.setBalance(account.getBalance()+amount);
 		double b = account.getBalance();
 		plugin.getIFHApi().saveAccount(account);

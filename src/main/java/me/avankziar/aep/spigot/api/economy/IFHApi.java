@@ -470,6 +470,13 @@ public class IFHApi implements Economy
 		return accountHandler.getAccounts();
 	}
 	
+	
+	@Override
+	public ArrayList<Account> getAccounts(EconomyEntity owner)
+	{
+		return accountHandler.getAccounts(owner);
+	}
+	
 	@Override
 	public ArrayList<Account> getAccounts(AccountType accountType)
 	{
@@ -872,7 +879,8 @@ public class IFHApi implements Economy
 			String format = plugin.getYamlHandler().getCurrency(ec.getUniqueName()).getString("Format.OutputFormat")
 					.replace("%number%", formatter.format(result))
 					.replace("%siprefix%", si != null ? si : "")
-					.replace("%gradation%", useSymbol ? gr.getSymbol() : gr.getPlural());
+					.replace("%gradation%", useSymbol ? gr.getSymbol() : 
+						((result.doubleValue() >= 1 && result.doubleValue() < 2) ? gr.getSingular() : gr.getPlural()));
 			sb.append(format.trim());
 			ConfigHandler.debug(difhapi1, "> Format: End = "+sb.toString());
 			return sb.toString();
@@ -950,7 +958,8 @@ public class IFHApi implements Economy
 				String format = plugin.getYamlHandler().getCurrency(ec.getUniqueName()).getString("Format.OutputFormat")
 						.replace("%number%", formatter.format(resultWhile))
 						.replace("%siprefix%", si != null ? si : "")
-						.replace("%gradation%", useSymbol ? gr.getSymbol() : gr.getPlural());
+						.replace("%gradation%", useSymbol ? gr.getSymbol() : 
+							((resultWhile.doubleValue() >= 1 && resultWhile.doubleValue() < 2) ? gr.getSingular() : gr.getPlural()));
 				sb.append(format.trim());
 				ConfigHandler.debug(difhapi1, "> Format: End = "+sb.toString());
 				return sb.toString();
@@ -1017,7 +1026,8 @@ public class IFHApi implements Economy
 				String format = plugin.getYamlHandler().getCurrency(ec.getUniqueName()).getString("Format.OutputFormat")
 						.replace("%number%", formatter.format(resultWhile))
 						.replace("%siprefix%", si != null ? si : " ")
-						.replace("%gradation%", useSymbol ? gr.getSymbol() : gr.getPlural());
+						.replace("%gradation%", useSymbol ? gr.getSymbol() : 
+							((resultWhile.doubleValue() >= 1 && resultWhile.doubleValue() < 2) ? gr.getSingular() : gr.getPlural()));
 				sb.append(format);
 			}
 			highest--;

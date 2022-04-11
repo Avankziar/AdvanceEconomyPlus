@@ -16,6 +16,7 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
 import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
@@ -34,6 +35,8 @@ public class AccountHandler
 	protected EconomyEntity defaultServer;
 	protected EconomyEntity defaultEntity;
 	
+	private static String d1 = "accounthandler";
+	
 	public AccountHandler(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
@@ -41,21 +44,26 @@ public class AccountHandler
 	
 	public static void createAllCurrencyAccounts(Player player, boolean convert)
 	{
+		ConfigHandler.debug(d1, "> createAllCurrencyAccounts start : "+player.getName()+" | convert : "+convert);
 		AdvancedEconomyPlus plugin = AdvancedEconomyPlus.getPlugin();
 		for(EconomyCurrency ec : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
 		{
+			ConfigHandler.debug(d1, "> Currency : "+ec.getUniqueName());
 			EconomyEntity.EconomyType eeet = EconomyType.PLAYER;
 			EconomyEntity ee = new EconomyEntity(eeet, player.getUniqueId(), player.getName());
 			YamlConfiguration y = plugin.getYamlHandler().getCurrency(ec.getUniqueName());
 			boolean quickpayAlreadyCreated = false;
 			if(y.getBoolean("WhenPlayerFirstJoin.CreateWallets", false))
 			{
+				ConfigHandler.debug(d1, "> CreateWallets");
 				AccountType at = AccountType.WALLET;
 				for(String a : y.getStringList("WhenPlayerFirstJoin.WalletsToCreate"))
 				{
+					ConfigHandler.debug(d1, "> WalletsToCreate : "+a);
 					String[] s = a.split(";");
 					if(s.length < 3)
 					{
+						ConfigHandler.debug(d1, "> s.length < 3 : continue");
 						continue;
 					}
 					AccountCategory acy = AccountCategory.valueOf(s[0]);
@@ -63,7 +71,14 @@ public class AccountHandler
 					{
 						acy = AccountCategory.MAIN;
 					}
-					String acname = acy == AccountCategory.MAIN ? player.getName() : plugin.getIFHApi().getAccountCategory(acy); 
+					String acname = acy == AccountCategory.MAIN ? player.getName() : plugin.getIFHApi().getAccountCategory(acy);
+					int j = 0;
+					while(plugin.getMysqlHandler().exist(MysqlHandler.Type.ACCOUNT, 
+							"`owner_uuid` = ? AND `account_name` = ?", ee.getUUID().toString(), acname))
+					{
+						acname = acy == AccountCategory.MAIN ? player.getName()+j : plugin.getIFHApi().getAccountCategory(acy)+j;
+						j++;
+					}
 					boolean defaultac = MatchApi.isBoolean(s[1]) ? Boolean.valueOf(s[1]) : false;
 					double startamount = MatchApi.isDouble(s[2]) ? Double.parseDouble(s[2]) : 0.0;
 					ArrayList<AccountManagementType> amtl = new ArrayList<>();
@@ -75,6 +90,7 @@ public class AccountHandler
 							amtl.add(amt);
 						} catch(Exception e)
 						{
+							ConfigHandler.debug(d1, "> AccountManagementType Exception : "+s[i]+" | Exit");
 							continue;
 						}
 					}
@@ -92,15 +108,19 @@ public class AccountHandler
 							plugin.getMysqlHandler().deleteData(Type.OLDPLAYER, "`id` = ?", old.getId());
 						}
 					}
-					Account ac = new Account(acname, at, acy, ec, ee, startamount, defaultac);
+					Account ac = new Account(acname, at, acy, ec, ee, startamount, true);
 					if(plugin.getIFHApi().existAccount(ee.getUUID(), ec, ac.getType(), acy, eeet))
 					{
+						ConfigHandler.debug(d1, "> Account already exist, Exit : "
+								+ee.getUUID().toString()+", "+ec.getUniqueName()+", "+ac.getType()+", "+acy.toString()+", "+eeet.toString());
 						continue;
 					}
+					ConfigHandler.debug(d1, "> Account is created!");
 					plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
 					ac = plugin.getIFHApi().getAccount(ee, acname, at, acy, ec);
 					if(defaultac)
 					{
+						ConfigHandler.debug(d1, "> Create Defaultaccount");
 						plugin.getIFHApi().setDefaultAccount(ee.getUUID(), ac, acy);
 					}
 					for(AccountManagementType amt : amtl)
@@ -134,6 +154,13 @@ public class AccountHandler
 						acy = AccountCategory.MAIN;
 					}
 					String acname = acy == AccountCategory.MAIN ? player.getName() : plugin.getIFHApi().getAccountCategory(acy);
+					int j = 0;
+					while(plugin.getMysqlHandler().exist(MysqlHandler.Type.ACCOUNT, 
+							"`owner_uuid` = ? AND `account_name` = ?", ee.getUUID().toString(), acname))
+					{
+						acname = acy == AccountCategory.MAIN ? player.getName()+j : plugin.getIFHApi().getAccountCategory(acy)+j;
+						j++;
+					}
 					boolean defaultac = MatchApi.isBoolean(s[1]) ? Boolean.valueOf(s[1]) : false;
 					double startamount = MatchApi.isDouble(s[2]) ? Double.parseDouble(s[2]) : 0.0;
 					ArrayList<AccountManagementType> amtl = new ArrayList<>();
@@ -452,7 +479,8 @@ public class AccountHandler
 	
 	public Account getAccount(int id)
 	{
-		return (Account) plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT, "`id` = ?", id);
+		Object o = plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT, "`id` = ?", id);
+		return o == null ? null : (Account) o;
 	}
 	
 	public Account getAccount(UUID ownerUUID, String accountName)
@@ -461,26 +489,29 @@ public class AccountHandler
 		{
 			return null;
 		}
-		return (Account) plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT,
+		Object o = plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT,
 				  "`owner_uuid` = ? AND `account_name` = ?",
 				ownerUUID.toString(), accountName);
+		return o == null ? null : (Account) o;
 	}
 	
 	public Account getAccount(UUID ownerUUID, String accountName, EconomyEntity.EconomyType ownerEntityType, AccountType type, AccountCategory category,
 			EconomyCurrency currency)
 	{
-		return (Account) plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT,
+		Object o = plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT,
 				  "`owner_uuid` = ? AND `account_name` = ? AND `account_currency` = ? AND `account_type` = ? AND "
 				+ "`account_category` = ? AND `owner_type` = ?",
 				ownerUUID.toString(), accountName, currency.getUniqueName(), type.toString(), category.toString(), ownerEntityType.toString());
+		return o == null ? null : (Account) o;
 	}
 	
 	public Account getAccount(EconomyEntity owner, String accountName, AccountType type, AccountCategory category, EconomyCurrency currency)
 	{
-		return (Account) plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT,
+		Object o = plugin.getMysqlHandler().getData(MysqlHandler.Type.ACCOUNT,
 				  "`owner_uuid` = ? AND `account_name` = ? AND `account_currency` = ? AND `account_type` = ? AND "
 				+ "`account_category` = ? AND `owner_type` = ? ",
 				owner.getUUID().toString(), accountName, currency.getUniqueName(), type.toString(), category.toString(), owner.getType().toString());
+		return o == null ? null : (Account) o;
 	}
 	
 	public ArrayList<Account> getAccounts()
@@ -489,6 +520,19 @@ public class AccountHandler
 		{
 			return ConvertHandler.convertListII(plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.ACCOUNT,
 					"`id` ASC", "1"));
+		} catch (IOException e)
+		{
+			return new ArrayList<>();
+		}
+	}
+	
+	public ArrayList<Account> getAccounts(EconomyEntity owner)
+	{
+		try
+		{
+			return ConvertHandler.convertListII(plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.ACCOUNT,
+					"`id` ASC", "`owner_uuid` = ? AND `owner_type` = ? AND `owner_name` = ?",
+					owner.getUUID().toString(), owner.getType().toString(), owner.getName()));
 		} catch (IOException e)
 		{
 			return new ArrayList<>();
@@ -577,16 +621,16 @@ public class AccountHandler
 	public void setDefaultAccount(UUID ownerUUID, Account account, AccountCategory category)
 	{
 		if(plugin.getMysqlHandler().exist(MysqlHandler.Type.DEFAULTACCOUNT,
-				"`player_uuid` = ? AND `account_category` = ?",
-				ownerUUID.toString(), category.toString()))
+				"`player_uuid` = ? AND `account_category` = ? AND `account_currency` = ?",
+				ownerUUID.toString(), category.toString(), account.getCurrency().getUniqueName()))
 		{
 			DefaultAccount dacc = (DefaultAccount) plugin.getMysqlHandler().getData(MysqlHandler.Type.DEFAULTACCOUNT,
-					"`player_uuid` = ? AND `account_category` = ?",
-					ownerUUID.toString(), category.toString());
+					"`player_uuid` = ? AND `account_category` = ? AND `account_currency` = ?",
+					ownerUUID.toString(), category.toString(), account.getCurrency().getUniqueName());
 			dacc.setAccountID(account.getID());
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.DEFAULTACCOUNT, dacc, 
-					"`player_uuid` = ? AND `account_category` = ?",
-					ownerUUID.toString(), category.toString());
+					"`player_uuid` = ? AND `account_category` = ? AND `account_currency` = ?",
+					ownerUUID.toString(), category.toString(), account.getCurrency().getUniqueName());
 		} else
 		{
 			DefaultAccount dacc = new DefaultAccount(ownerUUID, account.getID(), account.getCurrency().getUniqueName(), category);

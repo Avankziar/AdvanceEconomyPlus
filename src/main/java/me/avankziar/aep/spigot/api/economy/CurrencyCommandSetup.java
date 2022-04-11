@@ -17,6 +17,7 @@ import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountClose;
 import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountManage;
 import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountOpen;
 import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountOverdue;
+import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountPermissionInfo;
 import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountSetDefault;
 import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountSetName;
 import main.java.me.avankziar.aep.spigot.cmd.cet.account.AccountSetOwner;
@@ -45,6 +46,7 @@ import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Set;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.SetConsole;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Take;
 import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.TakeConsole;
+import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Transfer;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanAccept;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanAmount;
 import main.java.me.avankziar.aep.spigot.cmd.loan.LoanCancel;
@@ -100,6 +102,8 @@ public class CurrencyCommandSetup
 	private ArrayList<String> act = new ArrayList<>();
 	private ArrayList<String> amt = new ArrayList<>();
 	private ArrayList<String> eeet = new ArrayList<>();
+	private ArrayList<String> cats = new ArrayList<>();
+	
 	
 	public CurrencyCommandSetup(AdvancedEconomyPlus plugin)
 	{
@@ -132,6 +136,10 @@ public class CurrencyCommandSetup
 		for(EconomyEntity.EconomyType a : new ArrayList<EconomyEntity.EconomyType>(EnumSet.allOf(EconomyEntity.EconomyType.class)))
 		{
 			eeet.add(plugin.getIFHApi().getEconomyEntityType(a));
+		}
+		for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.PayCategorySuggestion"))
+		{
+			cats.add(s);
 		}
 	}
 	
@@ -220,6 +228,9 @@ public class CurrencyCommandSetup
 			LinkedHashMap<Integer, ArrayList<String>> map_p_acn = new LinkedHashMap<>();
 			map_p_acn.put(1, playerarray);
 			map_p_acn.put(2, accountmap);
+			LinkedHashMap<Integer, ArrayList<String>> map_p_acn_cat = map_p_acn;
+			
+			map_p_acn_cat.put(4, cats);
 			LinkedHashMap<Integer, ArrayList<String>> map_0_ec = new LinkedHashMap<>();
 			map_0_ec.put(1, ec);
 			CommandStructurType cst = CommandStructurType.NESTED;
@@ -246,7 +257,7 @@ public class CurrencyCommandSetup
 				default:
 					break;
 				case ACTIONLOG:
-					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 5, false, map_p_acn);
+					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 5, false, map_p_acn_cat);
 					new ActionLog(null, arg, cst);
 					break;
 				case TRENDLOG:
@@ -270,7 +281,7 @@ public class CurrencyCommandSetup
 					new GetTotal(null, arg, cst);
 					break;
 				case TOPLIST:
-					arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 2, false, map_0_ec);
+					arg = new ArgumentConstructor(cet, cmdpath, 0, 1, 3, false, map_0_ec);
 					new TopList(null, arg, cst);
 					break;
 				}
@@ -377,6 +388,8 @@ public class CurrencyCommandSetup
 				CommandExecuteType.ACCOUNT_OPEN, "aep_account_open", 1, 6, 8, false, ec_p_acn_acc_act_eeet);
 		ArgumentConstructor accountoverdue = new ArgumentConstructor(
 				CommandExecuteType.ACCOUNT_OVERDUE, "aep_account_overdue", 1, 1, 1, false, null);
+		ArgumentConstructor accountperminfo = new ArgumentConstructor(
+				CommandExecuteType.ACCOUNT_OVERDUE, "aep_account_permissioninfo", 1, 1, 2, false, pMapII);
 		ArgumentConstructor accountsetdefault = new ArgumentConstructor(
 				CommandExecuteType.ACCOUNT_SETDEFAULT, "aep_account_setdefault", 1, 3, 3, false, pMapIIacc);
 		ArgumentConstructor accountsetname = new ArgumentConstructor(
@@ -388,7 +401,7 @@ public class CurrencyCommandSetup
 		
 		ArgumentConstructor account = new ArgumentConstructor(
 				CommandExecuteType.ACCOUNT, "aep_account", 0, 0, 0, false, null,
-				accountclose, accountmanage, accountopen, accountoverdue, accountsetdefault, accountsetname,
+				accountclose, accountmanage, accountopen, accountoverdue, accountperminfo, accountsetdefault, accountsetname,
 				accountsetowner, accountsetquickpay);
 		arglist.add(account);
 		new Accounts(account);
@@ -396,6 +409,7 @@ public class CurrencyCommandSetup
 		new AccountManage(accountmanage);
 		new AccountOpen(accountopen);
 		new AccountOverdue(accountoverdue);
+		new AccountPermissionInfo(accountperminfo);
 		new AccountSetDefault(accountsetdefault);
 		new AccountSetName(accountsetname);
 		new AccountSetOwner(accountsetowner);
@@ -468,7 +482,7 @@ public class CurrencyCommandSetup
 		ArgumentConstructor pause = new ArgumentConstructor(CommandExecuteType.STORDER_PAUSE, bcmdV+"_pause", 0, 1, 1, false, null);
 		ArgumentConstructor rt = new ArgumentConstructor(CommandExecuteType.STORDER_REPEATINGTIME, bcmdV+"_repeatingtime", 0, 1, 2, false, null);
 		ArgumentConstructor st = new ArgumentConstructor(CommandExecuteType.STORDER_STARTTIME, bcmdV+"_starttime", 0, 1, 1, false, null);
-		ArgumentConstructor et = new ArgumentConstructor(CommandExecuteType.STORDER_STARTTIME, bcmdV+"_endtime", 0, 1, 2, false, null);
+		ArgumentConstructor et = new ArgumentConstructor(CommandExecuteType.STORDER_ENDTIME, bcmdV+"_endtime", 0, 1, 2, false, null);
 		
 		CommandConstructor standingorder = new CommandConstructor(CommandExecuteType.STORDER, bcmdV, false,
 				amount, cancel, create, delete, info,
@@ -537,6 +551,9 @@ public class CurrencyCommandSetup
 			case PAY_THROUGH_GUI:
 				plugin.getCommand(cmd.getName()).setExecutor(new PayThroughGui(cmd, null, cst));
 				break;
+			case TRANSFER:
+				plugin.getCommand(cmd.getName()).setExecutor(new Transfer(cmd, null, cst));
+				break;
 			case GIVE:
 				plugin.getCommand(cmd.getName()).setExecutor(new Give(cmd, null, cst));
 				break;
@@ -573,8 +590,10 @@ public class CurrencyCommandSetup
 		map_p_acn_0_p_acn.put(2, accountmap);
 		map_p_acn_0_p_acn.put(4, playerarray);
 		map_p_acn_0_p_acn.put(5, accountmap);
-		LinkedHashMap<Integer, ArrayList<String>> map_0_p = new LinkedHashMap<>();
-		map_0_p.put(1, playerarray);
+		map_p_acn_0_p_acn.put(6, cats);
+		LinkedHashMap<Integer, ArrayList<String>> map_0_p_cat = new LinkedHashMap<>();
+		map_0_p_cat.put(2, playerarray);
+		map_0_p_cat.put(3, cats);
 		LinkedHashMap<Integer, ArrayList<String>> map_p_acn = new LinkedHashMap<>();
 		map_p_acn.put(1, playerarray);
 		map_p_acn.put(2, accountmap);
@@ -600,12 +619,16 @@ public class CurrencyCommandSetup
 			ArgumentConstructor arg = null;
 			switch(cet)
 			{
+			case TRANSFER:
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 999, false, map_p_acn_0_p_acn);
+				new Transfer(null, arg, cst);
+				break;
 			case PAY:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 3, 999, false, map_p_acn_0_p_acn);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 999, false, map_0_p_cat);
 				new Pay(null, arg, cst);
 				break;
 			case PAY_THROUGH_GUI:
-				arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 999, false, map_0_p);
+				arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 999, false, map_0_p_cat);
 				new PayThroughGui(null, arg, cst);
 				break;
 			case GIVE:

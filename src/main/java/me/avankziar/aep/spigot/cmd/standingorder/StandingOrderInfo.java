@@ -117,7 +117,7 @@ public class StandingOrderInfo extends ArgumentModule
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.Amount")
 				.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.STORDER_AMOUNT).trim().replace(" ", "+")
-						+so.getAmount()+"+"+(add != null ? add : ""))
+						+"+"+so.getAmount()+"+"+(add != null ? add : ""))
 				.replace("%format%", plugin.getIFHApi().format(so.getAmount(), from.getCurrency()))));
 		player.spigot().sendMessage(ChatApi.tctl(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.AmountPaidSoFar")
@@ -128,7 +128,7 @@ public class StandingOrderInfo extends ArgumentModule
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.RepeatingTime")
 				.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.STORDER_REPEATINGTIME).trim().replace(" ", "+")
-						+TimeHandler.getRepeatingTime(so.getRepeatingTime())+"+"+(add != null ? add : ""))
+						+"+"+TimeHandler.getRepeatingTime(so.getRepeatingTime())+"+"+(add != null ? add : ""))
 				.replace("%repeatingtime%", TimeHandler.getRepeatingTime(so.getRepeatingTime()))));
 		player.spigot().sendMessage(ChatApi.generateTextComponent(
 				plugin.getYamlHandler().getLang().getString("Cmd.StandingOrder.Info.StartTime")

@@ -10,9 +10,9 @@ public enum CommandExecuteType
 	BALANCE, // /money
 	
 	//Only Currency bounded
-	PAY, 	// /money pay <Betrag> <Spieler> <Spielerkontoname> [Kategorie] [Msg...] | Default Main konto zu Konto A Spieler B
-			// /money pay <Kontoname> <Betrag> <Spieler> <Spielerkontoname> [Kategorie] [Msg...]
-			// /money pay <Betrag> <Spieler> <Spielerkontoname> [Kategorie] [Msg...]
+	PAY,
+			// /money pay <Spieler> <Betrag> [Kategorie] [Msg...]
+	TRANSFER,
 	PAY_THROUGH_GUI,
 	GIVE, // /money give
 	GIVE_CONSOLE,
@@ -44,6 +44,7 @@ public enum CommandExecuteType
 	ACCOUNT_MANAGE, // /money manage <Spielername> <Accountname> <Spielername> <ManagementType>, sowas in der art.
 	ACCOUNT_SETQUICKPAY, // /money setshortpay <Accountname>
 	ACCOUNT_SETDEFAULT, // /money setdefault <Accountname> [Spielername], sowas in der art.
+	ACCOUNT_PERMISSIONINFO, //zeigt alle Rechte alle eigenen Konten an.
 	
 	CURRENCY_INFO, // /money currencyinfo, sowas in der Art.
 	CURRENCY_EXCHANGE,
@@ -79,4 +80,5 @@ public enum CommandExecuteType
 	STORDER_PAUSE,
 	STORDER_REPEATINGTIME,
 	STORDER_STARTTIME,
+	STORDER_ENDTIME,
 }

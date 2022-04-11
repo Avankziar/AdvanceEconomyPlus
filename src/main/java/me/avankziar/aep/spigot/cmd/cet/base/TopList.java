@@ -20,6 +20,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.handler.LogHandler;
+import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import net.md_5.bungee.api.chat.BaseComponent;
 
@@ -100,12 +101,12 @@ public class TopList extends ArgumentModule implements CommandExecutor
 		}
 	}
 	
-	// aep toplist <currency> <page> 
+	// aep toplist <currency> <page> <withvoidAndtax>
 	
 	private void middlePart(Player player, String cmdstring, String[] args,
 			int zero, int one)
 	{
-		if(args.length > one+1)
+		if(args.length < one)
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.NotEnoughArguments")
@@ -115,22 +116,43 @@ public class TopList extends ArgumentModule implements CommandExecutor
 		}
 		int page = 0;
 		int quantity = 10;
-		String pagenumber = args[one];
-		if(MatchApi.isInteger(pagenumber))
+		
+		if(args.length >= one+1)
 		{
-			page = Integer.parseInt(pagenumber);
-			if(!MatchApi.isPositivNumber(page))
+			String pagenumber = args[one];
+			if(MatchApi.isInteger(pagenumber))
 			{
-				page = 0;
+				page = Integer.parseInt(pagenumber);
+				if(!MatchApi.isPositivNumber(page))
+				{
+					page = 0;
+				}
 			}
 		}
+		
 		String currency = args[zero];
 		if(page < 0)
 		{
 			page = 0;
 		}
-		ArrayList<Account> top = ConvertHandler.convertListII(
-				plugin.getMysqlHandler().getList(Type.ACCOUNT, "`balance` DESC", page*quantity, quantity, "`account_currency` = ?", currency));
+		boolean withtaxAndvoid = false;
+		if(args.length >= one+2)
+		{
+			withtaxAndvoid = true;
+		}
+		ArrayList<Account> top = new ArrayList<>();
+		if(withtaxAndvoid)
+		{
+			top = ConvertHandler.convertListII(
+					plugin.getMysqlHandler().getList(Type.ACCOUNT, "`balance` DESC", page*quantity, quantity, "`account_currency` = ?", currency));
+		} else
+		{
+			top = ConvertHandler.convertListII(
+					plugin.getMysqlHandler().getList(Type.ACCOUNT, "`balance` DESC", page*quantity, quantity, 
+							"`account_currency` = ? AND `account_category` != ? AND `account_category` != ?", 
+							currency, AccountCategory.TAX.toString(), AccountCategory.VOID.toString()));
+		}
+		
 		if(top.size() <= 0)
 		{
 			player.sendMessage(ChatApi.tl(

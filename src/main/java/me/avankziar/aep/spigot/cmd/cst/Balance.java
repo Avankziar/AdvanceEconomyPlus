@@ -30,6 +30,7 @@ import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class Balance implements CommandExecutor
@@ -236,7 +237,7 @@ public class Balance implements CommandExecutor
 		for(Integer i : acclist)
 		{
 			Account a = plugin.getIFHApi().getAccount(i);
-			if(a == null)
+			if(a == null || a.getCurrency() == null)
 			{
 				continue;
 			}
@@ -260,9 +261,11 @@ public class Balance implements CommandExecutor
 						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).replace(" ", "+").trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
-				list.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwner")
+				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwner")
 						.replace("%account%", a.getAccountName())
-						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency()))));
+						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
+						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
+						.replace("%fromaccountowner%", owner)));
 				
 			} else if(plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_LOG)
 					&& plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_BALANCE))
@@ -277,26 +280,33 @@ public class Balance implements CommandExecutor
 						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).replace(" ", "+").trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
-				list.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.CanSeeLog")
+				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.CanSeeLog")
 						.replace("%account%", a.getAccountName())
-						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency()))));
+						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
+								Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
+								.replace("%fromaccountowner%", owner)));
 			} else if(plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_BALANCE))
 			{
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLogDeny")));
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLogDeny")));
-				list.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.CanSeeBalance")
+				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.CanSeeBalance")
 						.replace("%account%", a.getAccountName())
-						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency()))));
+						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
+						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
+						.replace("%fromaccountowner%", owner)));
 			} else
 			{
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLogDeny")));
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLogDeny")));
-				list.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.CannotSeeBalance")
-						.replace("%account%", a.getAccountName())));			}
+				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.CannotSeeBalance")
+						.replace("%account%", a.getAccountName()),
+						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
+						.replace("%fromaccountowner%", owner)));			
+			}
 			msg.add(list);
 		}
 		for(ArrayList<BaseComponent> l : msg)

@@ -7,7 +7,7 @@ import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.general.objects.StandingOrder;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Pay;
+import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Transfer;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
@@ -29,7 +29,7 @@ public class StandingOrderAmount extends ArgumentModule
 	public void run(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;
-		String amounts = Pay.convertDecimalSeperator(args[1]);
+		String amounts = Transfer.convertDecimalSeperator(args[1]);
 		int id = -1;
 		double amount = 0;
 		if(!MatchApi.isDouble(amounts))

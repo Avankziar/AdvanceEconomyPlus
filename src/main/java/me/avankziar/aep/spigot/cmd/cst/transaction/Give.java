@@ -153,7 +153,7 @@ public class Give extends ArgumentModule implements CommandExecutor
 		
 		String category = null;
 		String comment = null;
-		String as = Pay.convertDecimalSeperator(args[two]);
+		String as = Transfer.convertDecimalSeperator(args[two]);
 		double amount = 0.0;
 		int catStart = four;
 		if(MatchApi.isDouble(as))
@@ -186,6 +186,11 @@ public class Give extends ArgumentModule implements CommandExecutor
 					.replace("%args%", args[two])));
 			return;
 		}
+		if(from.getCurrency() == null)
+		{
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", from.getAccountName()));
+			return;
+		}
 		if(!MatchApi.isPositivNumber(amount))
 		{
 			player.sendMessage(ChatApi.tl(
@@ -195,9 +200,17 @@ public class Give extends ArgumentModule implements CommandExecutor
 		}
 		if(args.length >= catStart+1)
 		{
-			String[] s = Pay.getCategoryAndComment(args, catStart);
+			String[] s = Transfer.getCategoryAndComment(args, catStart);
 			category = s[0];
 			comment = s[1];
+		} else if(args.length >= catStart)
+		{
+			category = Transfer.getCategory(args, catStart);
+			comment = "N/A";
+		} else
+		{
+			category = "N/A";
+			comment = "N/A";
 		}
 		endpart(player, from, category, comment, amount);
 	}
@@ -231,6 +244,6 @@ public class Give extends ArgumentModule implements CommandExecutor
 		{
 			player.sendMessage(ChatApi.tl(s));
 		}
-		Pay.sendToOther(plugin, from, list, player.getUniqueId());
+		Transfer.sendToOther(plugin, from, list, player.getUniqueId());
 	}
 }

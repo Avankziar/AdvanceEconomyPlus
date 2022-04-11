@@ -66,6 +66,11 @@ public class AccountManage extends ArgumentModule
 					plugin.getYamlHandler().getLang().getString("Cmd.Pay.AccountDontExist")));
 			return;
 		}
+		if(ac.getCurrency() == null)
+		{
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", ac.getAccountName()));
+			return;
+		}
 		EconomyEntity ee = plugin.getIFHApi().getEntity(args[4], EconomyType.PLAYER);
 		if(ee == null)
 		{

@@ -129,6 +129,10 @@ public class Accounts extends ArgumentModule
 				plugin.getIFHApi().removeManagementTypeFromAccount(e.getKey());
 				continue;
 			}
+			if(ac.getCurrency() == null) //If currency is not loaded
+			{
+				continue;
+			}
 			ArrayList<AccountManagementType> amt = e.getValue();
 			StringBuilder sb = new StringBuilder();
 			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountID")
@@ -137,9 +141,12 @@ public class Accounts extends ArgumentModule
 			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountOwner")
 					.replace("%owner%", ac.getOwner().getName()));
 			sb.append("~!~");
-			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountBalance")
-					.replace("%balance%", plugin.getIFHApi().format(ac.getBalance(), ac.getCurrency())));
-			sb.append("~!~");
+			if(amt.contains(AccountManagementType.CAN_SEE_BALANCE))
+			{
+				sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountBalance")
+						.replace("%balance%", plugin.getIFHApi().format(ac.getBalance(), ac.getCurrency())));
+				sb.append("~!~");
+			}
 			sb.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountTypeAndCategory")
 					.replace("%type%", plugin.getIFHApi().getAccountType(ac.getType()))
 					.replace("%category%", plugin.getIFHApi().getAccountCategory(ac.getCategory())));

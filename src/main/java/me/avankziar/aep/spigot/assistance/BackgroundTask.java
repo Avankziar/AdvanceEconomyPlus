@@ -17,7 +17,7 @@ import main.java.me.avankziar.aep.general.objects.TaxationSet;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyHandler;
-import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Pay;
+import main.java.me.avankziar.aep.spigot.cmd.cst.transaction.Transfer;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
@@ -157,6 +157,10 @@ public class BackgroundTask
 							}
 							for(Account ac : aclist)
 							{
+								if(ac == null || ac.getCurrency() == null)
+								{
+									continue;
+								}
 								Account tax = plugin.getIFHApi().getDefaultAccount(ac.getOwner().getUUID(), AccountCategory.TAX, ec);
 								if(tax == null)
 								{
@@ -224,6 +228,10 @@ public class BackgroundTask
 							}
 							for(Account ac : aclist)
 							{
+								if(ac == null || ac.getCurrency() == null)
+								{
+									continue;
+								}
 								Account tax = plugin.getIFHApi().getDefaultAccount(ac.getOwner().getUUID(), AccountCategory.TAX, ec);
 								if(tax == null)
 								{
@@ -310,6 +318,10 @@ public class BackgroundTask
 							}
 							for(Account ac : aclist)
 							{
+								if(ac == null || ac.getCurrency() == null)
+								{
+									continue;
+								}
 								plugin.getIFHApi().deposit(
 										ac, ac.getBalance()*amount/100,
 										OrdererType.PLAYER, ac.getOwner().getUUID().toString(), categoryI, commentI);
@@ -419,7 +431,7 @@ public class BackgroundTask
 					}
 					Account from = plugin.getIFHApi().getAccount(lr.getAccountFromID());
 					Account to = plugin.getIFHApi().getAccount(lr.getAccountToID());
-					if(from == null || to == null)
+					if(from == null || to == null || from.getCurrency() == null || to.getCurrency() == null)
 					{
 						ConfigHandler.debug(dbm2, ">> CATCH : Account(s) == null");
 						continue;
@@ -549,7 +561,7 @@ public class BackgroundTask
 					ConfigHandler.debug(dbm3, ">> TRY : GET Accounts");
 					Account from = plugin.getIFHApi().getAccount(so.getAccountFrom());
 					Account to = plugin.getIFHApi().getAccount(so.getAccountTo());
-					if(from == null || to == null)
+					if(from == null || to == null || from.getCurrency() == null || to.getCurrency() == null)
 					{
 						ConfigHandler.debug(dbm3, ">> CATCH : Account(s) == null");
 						continue;
@@ -602,7 +614,7 @@ public class BackgroundTask
 							.replace("%comment%", comment != null ? comment : "/");
 							msg.add(a);
 						}
-						Pay.sendToOther(plugin, from, to, msg);
+						Transfer.sendToOther(plugin, from, to, msg);
 					} else
 					{
 						if(!from.getCurrency().isExchangeable() || !to.getCurrency().isExchangeable())

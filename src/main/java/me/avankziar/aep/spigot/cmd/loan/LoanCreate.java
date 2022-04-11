@@ -8,8 +8,6 @@ import main.java.me.avankziar.aep.general.objects.AEPUser;
 import main.java.me.avankziar.aep.general.objects.LoanRepayment;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
-import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm.Type;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
@@ -68,6 +66,16 @@ public class LoanCreate extends ArgumentModule
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.AccountDontExist")
 					.replace("%account%", fac == null ? args[2] : args[3])));
+			return;
+		}
+		if(fac.getCurrency() == null)
+		{
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", fac.getAccountName()));
+			return;
+		}
+		if(tac.getCurrency() == null)
+		{
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", tac.getAccountName()));
 			return;
 		}
 		if(!ConfigHandler.isLoanEnabled(fac.getCurrency().getUniqueName()))
@@ -136,7 +144,7 @@ public class LoanCreate extends ArgumentModule
 			LoanRepayment dr = new LoanRepayment(0, name, fromid, toid, player.getUniqueId(), debtor.getUUID(),
 					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, false);
 			PendingHandler.loanRepayment.put(player.getUniqueId().toString(), dr);
-			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Create.isCreate"));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Loan.Create.isCreate")));
 		}
 		return;
 	}

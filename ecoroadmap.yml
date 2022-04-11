@@ -25,13 +25,6 @@ Future =========================================================================
 - Neue Mysql mit Tagensdaten, wieviel Geld ins und aus dem System gegangen ist. Mit Grafik oder ähnlich arbeiten.
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
 - LoadBefore Essential
-- mysql struktur änderung bezüglich Orderby und DESC
-  
-- Waren in der ger.yml Rechtschreibfeher beim Loggersetting drin
-  => LoggerSettingsTextOnlyThroughGUI: '&cBitte den Befehl nur nutzen, wenn man durch
-      die GUI aufgefordert wird!'
-	 LoggerSettingsTextSuggest: '&eKlicke hier auf die Nachricht, um einen Befehlsvorschlag
-      zu erhalten. Tippe dann deinen Suchtext ein und drücke &b>Enter<'
 
 Build 4 =============================================================================================================================
 + Bugfix, eng_ls.yml wird richtig erstellt.
@@ -172,6 +165,18 @@ Build 4 ========================================================================
     Loggersettings
     
   Todo:
+  -+ Über all die ac.getCurrency == null check machen, für den Fall das die Währung nicht geladen ist.
+  -+ Für die Kategorie im /money pay ein paar vorschläge per language anzeigen.
+    Sparen, Sparbuch
+  - Actionlog auch anlegen, wenn nur Kategory da ist.
+  -+ Notification bei transaktion werden nicht angezeigt. Crosserver funktioniert es nicht
+  -+ /aep account permissioninfo gibt eine Auflistung darüber, welcher Spieler rechte bei den Accounts hat.
+  -+ Trendlog legt pro tag mehrere Einträge an.
+  - /money pay in /money paylong
+  - account öffnung fehler !!
+  - /money, Eigentümer als Hover
+  - /aep player fehler
+  
   - Config Value einbauen um Überweisungen auf Cooldown zu halten.
   - Permission festlegen um Währungen umzutauschen => <RestPerm>.<WährungVon>.<WährungZu>
   - Eventuell einen boolean bei den Transactionen einbauen, welches erlaubt das der Withdraw account in den Minus gehen kann.

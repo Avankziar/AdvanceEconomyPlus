@@ -214,8 +214,7 @@ public class LogHandler
 				(repA ? (al.getCategory() != null ? category : system) : system);
 			String tax = send != null ? plugin.getIFHApi().format(al.getAmountToTax(), send.getCurrency())
 					: plugin.getIFHApi().format(al.getAmountToTax(), rec.getCurrency());
-			map.put("%fromaccountid%", saccid); 
-			//FIXME if send == null , do it as "System". && Config Boolean if "System" is not wanted
+			map.put("%fromaccountid%", saccid);
 			map.put("%fromaccountname%", saccn);
 			map.put("%fromaccountowner%", sacco);
 			map.put("%toaccountid%", raccid);

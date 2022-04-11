@@ -155,7 +155,7 @@ public class AccountOpen extends ArgumentModule
 			}
 		}		
 		Account ac = new Account(0, acname, act, acc, ec, ee, 0, false);
-		double amount = 0.0;
+		double amount = -1.0;
 		ArrayList<AccountManagementType> amtlist = new ArrayList<>();
 		for(String unsp : plugin.getYamlHandler().getConfig().getStringList("Cost.OpenAccount"))
 		{
@@ -185,6 +185,10 @@ public class AccountOpen extends ArgumentModule
 			if(MatchApi.isDouble(sp[3]))
 			{
 				amount = Double.parseDouble(sp[3]);
+				if(amount < 0)
+				{
+					amount = 0;
+				}
 				break;
 			}
 			for(int i = 4; i < sp.length; i++)
@@ -198,6 +202,11 @@ public class AccountOpen extends ArgumentModule
 					continue;
 				}				
 			}
+		}
+		if(amount < 0)
+		{
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.DontAllowOpening")));
+			return;
 		}
 		if(amount > 0.0 && ee.getType() == EconomyType.PLAYER)
 		{

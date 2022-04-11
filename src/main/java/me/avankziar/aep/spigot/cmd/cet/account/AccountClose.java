@@ -54,7 +54,7 @@ public class AccountClose extends ArgumentModule
 	}
 	
 	/*
-	 * aep account close <AccountOwnername> <Accountname> [confirm(If Account is Predefine)]
+	 * aep account close <AccountOwnername> <Accountname> [confirm(If Account has more than 0 money)]
 	 */
 	private void middlePart(Player player, String[] args)
 	{
@@ -71,6 +71,20 @@ public class AccountClose extends ArgumentModule
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.Account.YouAreNotTheOwner")));
 			return;
+		}
+		if(ac.getCurrency() == null)
+		{
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", ac.getAccountName()));
+			return;
+		}
+		if(ac.getBalance() > 1.0)
+		{
+			if(!args[args.length-1].equalsIgnoreCase("confirm") && !args[args.length-1].equalsIgnoreCase("bestätigen"))
+			{
+				player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.Account.Close.BalanceMoreThanZero")
+						.replace("%acn%", ac.getAccountName()));
+				return;
+			}
 		}
 		if(ac.isPredefinedAccount())
 		{
@@ -100,12 +114,6 @@ public class AccountClose extends ArgumentModule
 					return;
 				}
 			}			
-			if(!args[args.length-1].equalsIgnoreCase("confirm") && !args[args.length-1].equalsIgnoreCase("bestätigen"))
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Account.PleaseConfirmPredefine")));
-				return;
-			}
 		}
 		final String oname = ac.getOwner().getName();
 		final String acname = ac.getAccountName();

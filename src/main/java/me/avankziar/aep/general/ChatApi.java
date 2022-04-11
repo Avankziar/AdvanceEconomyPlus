@@ -89,11 +89,11 @@ public class ChatApi
 		{
 			if(i == 0)
 			{
-				hoverMessage.addExtra(new TextComponent(new ComponentBuilder(tl(h)).create()));
+				hoverMessage.addExtra(tctl(h));
 			} else
 			{
 				hoverMessage.addExtra(newLine);
-				hoverMessage.addExtra(new TextComponent(new ComponentBuilder(tl(h)).create()));
+				hoverMessage.addExtra(tctl(h));
 			}
 			i++;
 		}

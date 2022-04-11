@@ -97,6 +97,11 @@ public class AccountOverdue extends ArgumentModule
 				LinkedHashMap<String,Double> ecvalue = new LinkedHashMap<>();
 				for(Account acc : aclist)
 				{
+					if(acc.getCurrency() == null)
+					{
+						player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", acc.getAccountName()));
+						return;
+					}
 					if(ecvalue.containsKey(acc.getCurrency().getUniqueName()))
 					{
 						double amount = acc.getBalance()+ecvalue.get(acc.getCurrency().getUniqueName());

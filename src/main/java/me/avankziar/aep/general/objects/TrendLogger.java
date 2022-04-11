@@ -1,6 +1,7 @@
 package main.java.me.avankziar.aep.general.objects;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 
@@ -21,7 +22,9 @@ public class TrendLogger
 	public TrendLogger(long unixTime, Type type, int accountID, double relativeAmountChange,
 			double firstValue, double lastValue)
 	{
-		setUnixTime(unixTime);
+		LocalDateTime ldt = TimeHandler.getLocalDateTime(unixTime);
+		LocalDate ld = LocalDate.of(ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth());
+		setUnixTime(TimeHandler.getTime(ld));
 		setType(type);
 		setAccountID(accountID);
 		setRelativeAmountChange(relativeAmountChange);

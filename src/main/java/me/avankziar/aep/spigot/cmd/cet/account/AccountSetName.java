@@ -73,14 +73,26 @@ public class AccountSetName extends ArgumentModule
 			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Pay.AccountDontExist")));
 			return;
 		}
+		if(ac.getCurrency() == null)
+		{
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", ac.getAccountName()));
+			return;
+		}
 		if(!player.hasPermission(ExtraPerm.get(Type.BYPASS_ACCOUNTMANAGEMENT)))
 		{
 			if(!ac.getOwner().getUUID().toString().equals(player.getUniqueId().toString())
 					&& !plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_ADMINISTRATE_ACCOUNT))
 			{
-				
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Manage.YouCannotManageTheAccount")));
+				return;
 			}
-			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Manage.YouCannotManageTheAccount")));
+		}
+		boolean newNameExist = plugin.getMysqlHandler().exist(MysqlHandler.Type.ACCOUNT, 
+				"`owner_uuid` = ? AND `account_name` = ?", ee.getUUID().toString(), nname);
+		if(newNameExist)
+		{
+			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetName.NameAlreadyExist")
+					.replace("%newname%", nname)));
 			return;
 		}
 		final String oldname = ac.getAccountName();

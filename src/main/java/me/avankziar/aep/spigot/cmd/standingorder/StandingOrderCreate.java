@@ -61,6 +61,16 @@ public class StandingOrderCreate extends ArgumentModule
 					.replace("%account%", fac == null ? args[2] : args[3])));
 			return;
 		}
+		if(fac.getCurrency() == null)
+		{
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", fac.getAccountName()));
+			return;
+		}
+		if(tac.getCurrency() == null)
+		{
+			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", tac.getAccountName()));
+			return;
+		}
 		if(!ConfigHandler.isStandingOrderEnabled(fac.getCurrency().getUniqueName()))
 		{
 			player.sendMessage(ChatApi.tl(
