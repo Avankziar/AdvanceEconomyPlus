@@ -1174,9 +1174,9 @@ public class IFHApi implements Economy
 		List<AccountType> actl = new ArrayList<AccountType>(EnumSet.allOf(AccountType.class));
 		for(AccountType act : actl)
 		{
-			if(plugin.getYamlHandler().getLang().get("AccountCategory.Replacer."+act.toString()) != null)
+			if(plugin.getYamlHandler().getLang().get("AccountType.Replacer."+act.toString()) != null)
 			{
-				String accs = plugin.getYamlHandler().getLang().getString("AccountCategory.Replacer."+act.toString());
+				String accs = plugin.getYamlHandler().getLang().getString("AccountType.Replacer."+act.toString());
 				if(s.equalsIgnoreCase(accs))
 				{ 
 					return act;

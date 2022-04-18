@@ -150,4 +150,23 @@ public class ConfigHandler
 			return plugin.getYamlHandler().getConfig().getBoolean("Do.Default.BankMoneyFlowNotification");
 		}
 	}
+	
+	public enum CountType
+	{
+		HIGHEST, ADDUP;
+	}
+	
+	public CountType getCountPermType()
+	{
+		String s = plugin.getYamlHandler().getConfig().getString("Do.OpenAccount.CountPerm", "HIGHEST");
+		CountType ct;
+		try
+		{
+			ct = CountType.valueOf(s);
+		} catch (Exception e)
+		{
+			ct = CountType.HIGHEST;
+		}
+		return ct;
+	}
 }

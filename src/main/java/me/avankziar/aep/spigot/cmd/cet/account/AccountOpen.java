@@ -17,6 +17,8 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
+import main.java.me.avankziar.aep.spigot.handler.ConfigHandler.CountType;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.general.economy.account.AccountType;
@@ -31,6 +33,8 @@ public class AccountOpen extends ArgumentModule
 {
 	private AdvancedEconomyPlus plugin;
 	private ArgumentConstructor ac;
+	
+	private static String d1 = "accountopen";
 	
 	public AccountOpen(ArgumentConstructor ac)
 	{
@@ -157,29 +161,35 @@ public class AccountOpen extends ArgumentModule
 		Account ac = new Account(0, acname, act, acc, ec, ee, 0, false);
 		double amount = -1.0;
 		ArrayList<AccountManagementType> amtlist = new ArrayList<>();
+		ConfigHandler.debug(d1, "> Cost.OpenAccount Begin");
 		for(String unsp : plugin.getYamlHandler().getConfig().getStringList("Cost.OpenAccount"))
 		{
+			ConfigHandler.debug(d1, "> unsp : "+unsp);
 			String[] sp = unsp.split(";");
 			if(!ac.getCurrency().getUniqueName().equals(sp[0]))
 			{
+				ConfigHandler.debug(d1, "> Currency !equal "+sp[0]);
 				continue;
 			}
-			AccountType acta;
-			AccountCategory acca;
+			AccountType acta = AccountType.WALLET;
+			AccountCategory acca = AccountCategory.MAIN;
 			try
 			{
 				acta = AccountType.valueOf(sp[1]);
 				acca = AccountCategory.valueOf(sp[2]);
 			} catch(Exception e)
 			{
+				ConfigHandler.debug(d1, "> Type || category !valueOf "+sp[1]+" "+sp[2]);
 				continue;
 			}
-			if(ac.getType() != acta)
+			if(act != acta)
 			{
+				ConfigHandler.debug(d1, "> Type != : "+act+" "+sp[1]);
 				continue;
 			}
-			if(ac.getCategory() != acca)
+			if(acc != acca)
 			{
+				ConfigHandler.debug(d1, "> Category != "+acc+" "+sp[2]);
 				continue;
 			}
 			if(MatchApi.isDouble(sp[3]))
@@ -189,7 +199,10 @@ public class AccountOpen extends ArgumentModule
 				{
 					amount = 0;
 				}
-				break;
+			} else
+			{
+				ConfigHandler.debug(d1, "> amount "+sp[3]);
+				continue;
 			}
 			for(int i = 4; i < sp.length; i++)
 			{
@@ -199,9 +212,11 @@ public class AccountOpen extends ArgumentModule
 					amtlist.add(amt);
 				} catch(Exception e)
 				{
+					ConfigHandler.debug(d1, "> AMT !equal "+sp[i]);
 					continue;
 				}				
 			}
+			break;
 		}
 		if(amount < 0)
 		{
@@ -210,7 +225,7 @@ public class AccountOpen extends ArgumentModule
 		}
 		if(amount > 0.0 && ee.getType() == EconomyType.PLAYER)
 		{
-			Account main = plugin.getIFHApi().getDefaultAccount(ee.getUUID(), AccountCategory.MAIN, ec);
+			Account main = plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN, ec);
 			if(main == null)
 			{
 				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Open.OpenCostExistButNoMainAccount")));
@@ -227,13 +242,13 @@ public class AccountOpen extends ArgumentModule
 			if(tax == null)
 			{
 				ea = plugin.getIFHApi().withdraw(
-						ac, amount,
-						OrdererType.PLAYER, ac.getOwner().getUUID().toString(), category, comment);
+						main, amount,
+						OrdererType.PLAYER, main.getOwner().getUUID().toString(), category, comment);
 			} else if(tax != null)
 			{
 				ea = plugin.getIFHApi().transaction(
-						ac, tax, amount,
-						OrdererType.PLAYER, ac.getOwner().getUUID().toString(), category, comment);
+						main, tax, amount,
+						OrdererType.PLAYER, main.getOwner().getUUID().toString(), category, comment);
 			}
 			if(!ea.isSuccess())
 			{
@@ -265,39 +280,77 @@ public class AccountOpen extends ArgumentModule
 		return;
 	}
 	
-	private boolean countAccounts(Player player, AccountType act, AccountCategory acc) //ADDME Highup oder set
+	private boolean countAccounts(Player player, AccountType act, AccountCategory acc)
 	{
 		boolean useact = plugin.getYamlHandler().getConfig().getBoolean("Do.OpenAccount.CountWithAccountType", false);
 		boolean useacc = plugin.getYamlHandler().getConfig().getBoolean("Do.OpenAccount.CountWithAccountCategory", false);
 		int c = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNT, "`account_predefined` = ?", false);
-		for(int i = 500; i > 0; i--)
+		CountType ct = new ConfigHandler().getCountPermType();
+		switch(ct)
 		{
-			if(useact && useacc)
+		case ADDUP:
+			int a = 0;
+			for(int i = 500; i >= 0; i--)
 			{
-				if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+act.toString().toLowerCase()+"."+acc.toString().toLowerCase()+"."+i))
+				if(useact && useacc)
 				{
-					return c < i;
-				}
-			} else if(useact && !useacc)
-			{
-				if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+act.toString().toLowerCase()+"."+i))
+					if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+act.toString().toLowerCase()+"."+
+																						acc.toString().toLowerCase()+"."+i))
+					{
+						a += i;
+					}
+				} else if(useact && !useacc)
 				{
-					return c < i;
-				}
-			} else if(!useact && useacc)
-			{
-				if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+acc.toString().toLowerCase()+"."+i))
+					if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+act.toString().toLowerCase()+"."+i))
+					{
+						a += i;
+					}
+				} else if(!useact && useacc)
 				{
-					return c < i;
-				}
-			} else
-			{
-				if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+i))
+					if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+acc.toString().toLowerCase()+"."+i))
+					{
+						a += i;
+					}
+				} else
 				{
-					return c < i;
+					if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+i))
+					{
+						a += i;
+					}
 				}
 			}
-			
+			return c < a;
+		case HIGHEST:
+			for(int i = 500; i >= 0; i--)
+			{
+				if(useact && useacc)
+				{
+					if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+act.toString().toLowerCase()+"."+
+																						acc.toString().toLowerCase()+"."+i))
+					{
+						return c < i;
+					}
+				} else if(useact && !useacc)
+				{
+					if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+act.toString().toLowerCase()+"."+i))
+					{
+						return c < i;
+					}
+				} else if(!useact && useacc)
+				{
+					if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+acc.toString().toLowerCase()+"."+i))
+					{
+						return c < i;
+					}
+				} else
+				{
+					if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.COUNT_ACCOUNT)+i))
+					{
+						return c < i;
+					}
+				}
+			}
+			break;
 		}
 		return false;
 	}

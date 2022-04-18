@@ -286,6 +286,9 @@ public class YamlManager
 		configKeys.put("Do.OpenAccount.CountWithAccountCategory"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
+		configKeys.put("Do.OpenAccount.CountPerm"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"ADDUP"}));
 		
 	
 		configKeys.put("Cost.OpenAccount"
