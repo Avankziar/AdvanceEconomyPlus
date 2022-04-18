@@ -105,9 +105,11 @@ Build 4 ========================================================================
   + Für alle Befehle einzusehen > /aep
   + #/money 
     Zeigt alle Konten an die mit der Währung verbunden sind.
-  + #/money pay <Sender> <SenderAccountname> <Betrag> <Empfänger> <EmpfängerAccountname> [Kategorie] [Notiz...]
+  + #/money transfer <Sender> <SenderAccountname> <Betrag> <Empfänger> <EmpfängerAccountname> [Kategorie] [Notiz...]
     Überweist Geld von einem Konto (wo man zugriff hat) auf ein Konto, welches der angegebene Spieler besitzt.
-  + #/money paythroughgui <Empfänger> <Betrag> [Kategorie] [Notiz...]
+  + #/money pay <Betrag> <Empfänger> [Kategorie] [Notiz...]
+    Überweist Geld von dem eigenen QuickPayAccount auf den QuickPayAccount des Empfängers, welches der angegebene Spieler besitzt.
+  + #/money paythroughgui <Betrag> <Empfänger> [Kategorie] [Notiz...]
   	Überweist Geld von einem Konto (wo man zugriff hat) auf ein Konto, welches der angegebene Spieler besitzt. Hier wird die Auswahl der Konten
   	durch 2 Guis ermöglicht.
   + #/money give <Spieler> <Accountname> <Betrag> [Kategorie] [Notiz...]
@@ -172,9 +174,6 @@ Build 4 ========================================================================
   -+ Notification bei transaktion werden nicht angezeigt. Crosserver funktioniert es nicht
   -+ /aep account permissioninfo gibt eine Auflistung darüber, welcher Spieler rechte bei den Accounts hat.
   -+ Trendlog legt pro tag mehrere Einträge an.
-  - /money pay in /money paylong
-  - account öffnung fehler !!
-  - /money, Eigentümer als Hover
   - /aep player fehler
   
   - Config Value einbauen um Überweisungen auf Cooldown zu halten.

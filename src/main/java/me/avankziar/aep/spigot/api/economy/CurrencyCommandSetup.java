@@ -329,7 +329,7 @@ public class CurrencyCommandSetup
 		arglist.add(deleteallplayeraccounts);
 		
 		ArgumentConstructor player = new ArgumentConstructor(
-				CommandExecuteType.PLAYER, "aep_player", 0, 0, 2, false, pMapI);
+				CommandExecuteType.PLAYER, "aep_player", 0, 0, 3, false, pMapI);
 		new Players(player);
 		arglist.add(player);
 		

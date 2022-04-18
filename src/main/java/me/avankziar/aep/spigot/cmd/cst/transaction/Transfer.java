@@ -123,9 +123,7 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 	}
 	
 	/*
-	 * pay <amount> <ToPlayer> <ToAccountname> [category] [comment...]
-	 * pay <FromAccountname(Own)> <amount> <ToAccountName(Own)> [category] [comment...]
-	 * pay <FromPlayer> <FromAccountName> <amount> <ToPlayer> <ToAccountname> [category] [comment...]
+	 * transfer <FromPlayer> <FromAccountName> <amount> <ToPlayer> <ToAccountname> [category] [comment...]
 	 */
 	private void middlePart(Player player, String cmdString, String[] args,
 			int zero, int one, int two, int three, int four, int five)

@@ -124,6 +124,10 @@ public class Players extends ArgumentModule
 				plugin.getIFHApi().removeManagementTypeFromAccount(e.getKey());
 				continue;
 			}
+			if(ac.getCurrency() == null)
+			{
+				continue;
+			}
 			ArrayList<AccountManagementType> amt = e.getValue();
 			if(onlycheckhisaccounts 
 					&& ac.getOwner().getUUID().toString().equals(aepu.getUUID().toString()))
