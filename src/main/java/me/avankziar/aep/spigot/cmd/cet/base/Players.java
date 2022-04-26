@@ -130,7 +130,7 @@ public class Players extends ArgumentModule
 			}
 			ArrayList<AccountManagementType> amt = e.getValue();
 			if(onlycheckhisaccounts 
-					&& ac.getOwner().getUUID().toString().equals(aepu.getUUID().toString()))
+					&& !ac.getOwner().getUUID().toString().equals(aepu.getUUID().toString()))
 			{
 				continue;
 			}

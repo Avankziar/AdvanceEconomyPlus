@@ -33,7 +33,6 @@ import main.java.me.avankziar.ifh.general.economy.account.AccountType;
 import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.general.economy.action.EconomyAction;
 import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
-import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 
 public class Transfer extends ArgumentModule implements CommandExecutor
@@ -151,46 +150,7 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 		String as = null;
 		double amount = 0.0;
 		int catStart = four;
-		if(MatchApi.isDouble(convertDecimalSeperator(args[zero])))
-		{
-			as = convertDecimalSeperator(args[zero]);
-			toName = args[one];
-			toAcName = args[two];
-			amount = Double.parseDouble(as);
-			AEPUser fromuser = (AEPUser) plugin.getMysqlHandler().getData(
-					MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", fromuuid.toString());
-			if(fromuser == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
-				return;
-			}
-			from = plugin.getIFHApi().getAccount(plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), player.getUniqueId()));
-			if(from == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.ShortPayAccountDontExist")));
-				return;
-			}
-			touuid = Utility.convertNameToUUID(toName, EconomyEntity.EconomyType.PLAYER);
-			if(touuid == null)
-			{
-				touuid = Utility.convertNameToUUID(toName, EconomyEntity.EconomyType.ENTITY);
-				if(touuid == null)
-				{
-					player.sendMessage(ChatApi.tl(
-							plugin.getYamlHandler().getLang().getString("EntityNotExist")));
-					return;
-				}
-			}	
-			to = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, touuid, toName), toAcName);
-			if(to == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
-				return;
-			}
-		} else if(MatchApi.isDouble(convertDecimalSeperator(args[two])))
+		if(MatchApi.isDouble(convertDecimalSeperator(args[two])))
 		{
 			if(args.length < five)
 			{
@@ -226,28 +186,6 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 					return;
 				}
 			}	
-			to = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, touuid, toName), toAcName);
-			if(to == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.TargetAccountDontExist")));
-				return;
-			}
-		} else if(MatchApi.isDouble(convertDecimalSeperator(args[one])))
-		{
-			fromAcName = args[zero];
-			toName = player.getName();
-			as = convertDecimalSeperator(args[one]);
-			toAcName = args[two];			
-			amount = Double.parseDouble(as);
-			from = plugin.getIFHApi().getAccount(
-					new EconomyEntity(EconomyEntity.EconomyType.PLAYER, fromuuid, fromName), fromAcName);
-			if(from == null)
-			{
-				player.sendMessage(ChatApi.tl(
-						plugin.getYamlHandler().getLang().getString("Cmd.Pay.StartAccountDontExist")));
-				return;
-			}
 			to = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, touuid, toName), toAcName);
 			if(to == null)
 			{

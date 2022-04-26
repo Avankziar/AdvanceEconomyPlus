@@ -167,14 +167,8 @@ Build 4 ========================================================================
     Loggersettings
     
   Todo:
-  -+ Über all die ac.getCurrency == null check machen, für den Fall das die Währung nicht geladen ist.
-  -+ Für die Kategorie im /money pay ein paar vorschläge per language anzeigen.
-    Sparen, Sparbuch
-  - Actionlog auch anlegen, wenn nur Kategory da ist.
   -+ Notification bei transaktion werden nicht angezeigt. Crosserver funktioniert es nicht
   -+ /aep account permissioninfo gibt eine Auflistung darüber, welcher Spieler rechte bei den Accounts hat.
-  -+ Trendlog legt pro tag mehrere Einträge an.
-  - /aep player fehler
   
   - Config Value einbauen um Überweisungen auf Cooldown zu halten.
   - Permission festlegen um Währungen umzutauschen => <RestPerm>.<WährungVon>.<WährungZu>

@@ -205,7 +205,11 @@ public class TransactionHandler
 			}
 			double amountToWithdraw = 0.0;
 			double amountToDeposit = 0.0;
-			if(taxAreExclusive)
+			if(taxInPercent <= 0)
+			{
+				amountToWithdraw = amount;
+				amountToDeposit = amount;
+			} else if(taxAreExclusive)
 			{
 				amountToWithdraw = amount + amount*taxInPercent/100;
 				amountToDeposit = amount;
@@ -295,7 +299,11 @@ public class TransactionHandler
 		}
 		double amountToWithdraw = 0.0;
 		double amountToDeposit = 0.0;
-		if(taxAreExclusive)
+		if(taxInPercent <= 0)
+		{
+			amountToWithdraw = amount;
+			amountToDeposit = amount;
+		} else if(taxAreExclusive)
 		{
 			amountToWithdraw = amount + amount*taxInPercent/100;
 			amountToDeposit = amount;
@@ -343,7 +351,11 @@ public class TransactionHandler
 		}
 		double amountToWithdraw = 0.0;
 		double amountToDeposit = 0.0;
-		if(taxAreExclusive)
+		if(taxInPercent <= 0)
+		{
+			amountToWithdraw = amount;
+			amountToDeposit = amount;
+		} else if(taxAreExclusive)
 		{
 			amountToWithdraw = amount + amount*taxInPercent/100;
 			amountToDeposit = amount;
@@ -439,7 +451,11 @@ public class TransactionHandler
 		}
 		double amountToWithdraw = 0.0;
 		double amountToDeposit = 0.0;
-		if(taxAreExclusive)
+		if(taxInPercent <= 0)
+		{
+			amountToWithdraw = amount;
+			amountToDeposit = amount;
+		} else if(taxAreExclusive)
 		{
 			amountToWithdraw = amount + amount*taxInPercent/100;
 			amountToDeposit = amount;
