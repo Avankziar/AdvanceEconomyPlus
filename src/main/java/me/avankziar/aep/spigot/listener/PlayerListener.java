@@ -172,7 +172,7 @@ public class PlayerListener implements Listener
 				try
 				{
 					acs = ConvertHandler.convertListII(
-							plugin.getMysqlHandler().getAllListAt(Type.ACCOUNT, "`id` = ?", "`owner_uuid` = ? AND `account_type` = ?",
+							plugin.getMysqlHandler().getAllListAt(Type.ACCOUNT, "`id` ASC", "`owner_uuid` = ? AND `account_type` = ?",
 									uuid.toString(), AccountType.WALLET.toString()));
 				} catch (Exception e)
 				{
