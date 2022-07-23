@@ -191,7 +191,7 @@ public class PlayerListener implements Listener
 					acCount++;
 					Account voi = plugin.getIFHApi().getDefaultAccount(uuid, AccountCategory.VOID, ac.getCurrency());
 					Double aec = onDeathWalletLostinPercent.get(ac.getCurrency().getUniqueName());
-					if(aec == null)
+					if(aec == null || aec < 0.0)
 					{
 						continue;
 					}
@@ -219,6 +219,10 @@ public class PlayerListener implements Listener
 						}
 						ecmap.put(ac.getCurrency().getUniqueName(), count);
 					}
+				}
+				if(acCount == 0)
+				{
+					return;
 				}
 				StringBuilder sb = new StringBuilder();
 				sb.append(plugin.getYamlHandler().getLang().getString("DeathListener.Hover")+"~!~");

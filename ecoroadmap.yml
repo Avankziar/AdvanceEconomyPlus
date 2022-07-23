@@ -26,6 +26,13 @@ Future =========================================================================
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
 - LoadBefore Essential
 
+Build 4-1-2 ===========
+- Logikfehler bei der AcountManagementFee & Interest behoben
+- Geldverlust bei Tode, wird die Nachricht nur ausgegeben, wenn auch tatsächlich geld verloren wurde.
+
+Build 4-1-1 ===========
+- MC 1.19 support
+
 Build 4 =============================================================================================================================
 + Bugfix, eng_ls.yml wird richtig erstellt.
 + Für zukünftige IFH Anwendungen ist eine MysqlPerformance Zählung eingebaut.

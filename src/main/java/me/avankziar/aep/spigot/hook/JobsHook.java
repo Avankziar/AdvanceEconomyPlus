@@ -25,7 +25,7 @@ import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 public class JobsHook implements Listener
 {
 	private static AdvancedEconomyPlus plugin;
-	private static HashMap<String,HashMap<String,Double>> joblist = new HashMap<>(); //Job, Playeruuid, Geld
+	private static HashMap<String, HashMap<String,Double>> joblist = new HashMap<>(); //Job, Playeruuid, Geld
 	
 	public JobsHook(AdvancedEconomyPlus plugin)
 	{

@@ -103,7 +103,7 @@ public class BackgroundTask
 			{
 				LocalDateTime lt = LocalDateTime.now();
 				if(lt.getDayOfWeek().getValue() != tf.dayOfWeek.day 
-						&& lt.getHour() != tf.localTime.getHour() && lt.getMinute() != tf.localTime.getMinute())
+						|| lt.getHour() != tf.localTime.getHour() || lt.getMinute() != tf.localTime.getMinute())
 				{
 					return;
 				}
@@ -264,7 +264,7 @@ public class BackgroundTask
 			{
 				LocalDateTime lt = LocalDateTime.now();
 				if(lt.getDayOfWeek().getValue() != tf.dayOfWeek.day 
-						&& lt.getHour() != tf.localTime.getHour() && lt.getMinute() != tf.localTime.getMinute())
+						|| lt.getHour() != tf.localTime.getHour() || lt.getMinute() != tf.localTime.getMinute())
 				{
 					return;
 				}
@@ -703,25 +703,25 @@ public class BackgroundTask
 
 		public static DayOfWeek value(String s)
 		{
-			if(s.equalsIgnoreCase(MONDAY.toString()))
+			if(s.equalsIgnoreCase(MONDAY.toString()) || s.equalsIgnoreCase("1"))
 			{
 				return MONDAY;
-			} else if(s.equalsIgnoreCase(TUESDAY.toString()))
+			} else if(s.equalsIgnoreCase(TUESDAY.toString()) || s.equalsIgnoreCase("2"))
 			{
 				return TUESDAY;
-			} else if(s.equalsIgnoreCase(WEDNESDAY.toString()))
+			} else if(s.equalsIgnoreCase(WEDNESDAY.toString()) || s.equalsIgnoreCase("3"))
 			{
 				return WEDNESDAY;
-			} else if(s.equalsIgnoreCase(THURSDAY.toString()))
+			} else if(s.equalsIgnoreCase(THURSDAY.toString()) || s.equalsIgnoreCase("4"))
 			{
 				return THURSDAY;
-			} else if(s.equalsIgnoreCase(FRIDAY.toString()))
+			} else if(s.equalsIgnoreCase(FRIDAY.toString()) || s.equalsIgnoreCase("5"))
 			{
 				return FRIDAY;
-			} else if(s.equalsIgnoreCase(SATURDAY.toString()))
+			} else if(s.equalsIgnoreCase(SATURDAY.toString()) || s.equalsIgnoreCase("6"))
 			{
 				return SATURDAY;
-			} else if(s.equalsIgnoreCase(SUNDAY.toString()))
+			} else if(s.equalsIgnoreCase(SUNDAY.toString()) || s.equalsIgnoreCase("7"))
 			{
 				return SUNDAY;
 			}

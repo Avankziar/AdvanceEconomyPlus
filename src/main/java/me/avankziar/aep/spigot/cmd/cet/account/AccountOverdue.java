@@ -20,8 +20,8 @@ import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
 import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class AccountOverdue extends ArgumentModule
 {

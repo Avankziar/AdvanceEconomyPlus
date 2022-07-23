@@ -264,7 +264,7 @@ public class YamlManager
 				"taler;100.0"}));
 		configKeys.put("Do.Bankaccount.TimeToWithdrawAccountManagementFees"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"7-11:00"}));
+				"SUNDAYY-11:00"}));
 		configKeys.put("Do.Bankaccount.AccountManagementFeesAsLumpSum"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"dollar;500.0;MAIN",
@@ -275,7 +275,7 @@ public class YamlManager
 				"taler;1.0;MAIN"}));
 		configKeys.put("Do.Bankaccount.TimeToDepositInterest"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"7-11:00"}));
+				"SUNDAY-11:00"}));
 		configKeys.put("Do.Bankaccount.InterestAsPercent"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"dollar;0.1;SAVING",
