@@ -1,4 +1,5 @@
 name: AdvancedEconomyPlus
 main: main.java.me.avankziar.aep.bungee.AdvancedEconomyPlus
-version: 3
+version: 4
 author: Avankziar
+softDepends: [InterfaceHub, RootAdministration]

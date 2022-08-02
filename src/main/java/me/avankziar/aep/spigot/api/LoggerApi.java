@@ -8,6 +8,7 @@ import main.java.me.avankziar.aep.general.objects.TrendLogger;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.handler.TimeHandler;
 
 public class LoggerApi
 {
@@ -31,23 +32,6 @@ public class LoggerApi
 		{
 			plugin.getMysqlHandler().create(Type.ACTION, economylogger);
 		}
-	}
-	
-	/**
-	 * Return a EconomyLogger if the EconomyLogger exist, else return it null.
-	 * @param  whereColumn | The String for the mysql query. <p>Example: "`id` = ? AND `datetime` = ?"
-	 * @param  whereObjects | The objects that replace the "?" from the whereColumn String.
-	 * @return EconomyLogger
-	 * @author Christoph Steins/Avankziar
-	 * @see ActionLogger
-	 */
-	public static ActionLogger getActionLogger(String whereColumn, Object... whereObjects)
-	{
-		if(plugin.getMysqlHandler().exist(Type.ACTION, whereColumn, whereObjects))
-		{
-			return (ActionLogger) plugin.getMysqlHandler().getData(Type.ACTION, whereColumn, whereObjects);
-		}
-		return null;
 	}
 	
 	/**
@@ -83,10 +67,10 @@ public class LoggerApi
 		TrendLogger.Type newtype = TrendLogger.Type.STABIL;
 		TrendLogger trendLogger = new TrendLogger(date, newtype, accountID, relativeAmountChange, balance, balance);
 		if(plugin.getMysqlHandler().exist(Type.TREND,
-				"`dates` = ? AND `account_id` = ?", ConvertHandler.serialised(date), accountID))
+				"`dates` = ? AND `account_id` = ?", TimeHandler.getTime(date), accountID))
 		{
 			TrendLogger oldtrendLogger = (TrendLogger) plugin.getMysqlHandler().getData(Type.TREND,
-					"`dates` = ? AND `account_id` = ?", ConvertHandler.serialised(date), accountID);
+					"`dates` = ? AND `account_id` = ?", TimeHandler.getTime(date), accountID);
 			double newrelative = trendLogger.getRelativeAmountChange()+oldtrendLogger.getRelativeAmountChange();
 			if(MatchApi.isPositivNumber(newrelative) 
 					&& newrelative > plugin.getYamlHandler().getConfig().getDouble("TrendLogger.ValueIsStabil"))
@@ -100,7 +84,7 @@ public class LoggerApi
 			TrendLogger newtl = new TrendLogger(date, newtype, accountID, newrelative,
 					oldtrendLogger.getFirstValue(), trendLogger.getLastValue());
 			plugin.getMysqlHandler().updateData(Type.TREND, newtl, 
-					"`dates` = ? AND `account_id` = ?", ConvertHandler.serialised(date), accountID);
+					"`dates` = ? AND `account_id` = ?", TimeHandler.getTime(date), accountID);
 		} else
 		{
 			trendLogger = new TrendLogger(date, newtype, accountID, relativeAmountChange, balance+relativeAmountChange, balance);
@@ -144,23 +128,6 @@ public class LoggerApi
 		{
 			plugin.getMysqlHandler().create(Type.TREND, trendLogger);
 		}
-	}
-	
-	/**
-	 * Return a TrendLogger if the TrendLogger exist, else return it null.
-	 * @param  whereColumn | The String for the mysql query. <p>Example: "`id` = ? AND `datetime` = ?"
-	 * @param  whereObjects | The objects that replace the "?" from the whereColumn String.
-	 * @return TrendLogger
-	 * @author Christoph Steins/Avankziar
-	 * @see TrendLogger
-	 */
-	public static TrendLogger getTrendLogger(String whereColumn, Object... whereObjects)
-	{
-		if(plugin.getMysqlHandler().exist(Type.TREND, whereColumn, whereObjects))
-		{
-			return (TrendLogger) plugin.getMysqlHandler().getData(Type.TREND, whereColumn, whereObjects);
-		}
-		return null;
 	}
 	
 	/**

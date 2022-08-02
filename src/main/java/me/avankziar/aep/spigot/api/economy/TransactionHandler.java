@@ -255,9 +255,9 @@ public class TransactionHandler
 				"default",
 				ACTIONLOG_TRANSACTION));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()));
+				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()-amount));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()));
+				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()+amount));
 		saveAccount(withdraw, deposit);
 		return ea;
 	}
@@ -283,9 +283,9 @@ public class TransactionHandler
 				actionLogCategory != null ? actionLogCategory : "default",
 				actionLogComment != null ? actionLogComment : ACTIONLOG_TRANSACTION));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()));
+				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()-amount));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()));
+				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()+amount));
 		saveAccount(withdraw, deposit);
 		return ea;
 	}
@@ -332,11 +332,11 @@ public class TransactionHandler
 				"default",
 				ACTIONLOG_TRANSACTION));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()));
+				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()-amount));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()));
+				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()+amount));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()));
+				taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
 		saveAccount(withdraw, deposit, taxDepot);
 		return ea;
 	}
@@ -378,14 +378,14 @@ public class TransactionHandler
 				actionLogCategory != null ? actionLogCategory : "default",
 				actionLogComment != null ? actionLogComment : ACTIONLOG_TRANSACTION));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				withdraw.getID(), -amountToWithdraw, withdraw.getBalance(), withdraw.getBalance()));
+				withdraw.getID(), -amountToWithdraw, withdraw.getBalance(), withdraw.getBalance()-amountToWithdraw));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				deposit.getID(), amountToDeposit, deposit.getBalance(), deposit.getBalance()));
+				deposit.getID(), amountToDeposit, deposit.getBalance(), deposit.getBalance()+amountToDeposit));
 		if(taxDepot != null && amountToTax > 0.0)
 		{
 			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()));
+					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
 		}
 		saveAccount(withdraw, deposit, taxDepot);
 		return ea;
@@ -412,7 +412,7 @@ public class TransactionHandler
 				"default",
 				ACTIONLOG_DEPOSIT));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				holder.getID(), amount, holder.getBalance(), holder.getBalance()));
+				holder.getID(), amount, holder.getBalance(), holder.getBalance()+amount));
 		saveAccount(holder);
 		return ea;
 	}
@@ -479,12 +479,12 @@ public class TransactionHandler
 				"default",
 				ACTIONLOG_DEPOSIT));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				holder.getID(), amountToDeposit, holder.getBalance(), holder.getBalance()));
+				holder.getID(), amountToDeposit, holder.getBalance(), holder.getBalance()+amountToDeposit));
 		if(taxDepot != null)
 		{
 			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()));
+					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
 		}
 		saveAccount(holder, taxDepot);
 		return ea;
@@ -522,12 +522,12 @@ public class TransactionHandler
 				actionLogCategory != null ? actionLogCategory : "default",
 				actionLogComment != null ? actionLogComment : ACTIONLOG_DEPOSIT));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				holder.getID(), amountToDeposit, holder.getBalance(), holder.getBalance()));
+				holder.getID(), amountToDeposit, holder.getBalance(), holder.getBalance()+amountToDeposit));
 		if(taxDepot != null && amountToTax > 0.0)
 		{
 			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()));
+					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
 		}
 		saveAccount(holder, taxDepot);
 		return ea;
@@ -554,7 +554,7 @@ public class TransactionHandler
 				"default",
 				ACTIONLOG_WITHDRAW));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				holder.getID(), -amount, holder.getBalance(), holder.getBalance()));
+				holder.getID(), -amount, holder.getBalance(), holder.getBalance()-amount));
 		saveAccount(holder);
 		return ea;
 	}
@@ -617,12 +617,12 @@ public class TransactionHandler
 				"default",
 				ACTIONLOG_WITHDRAW));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				holder.getID(), -amountToWithdraw, holder.getBalance(), holder.getBalance()));
+				holder.getID(), -amountToWithdraw, holder.getBalance(), holder.getBalance()-amountToWithdraw));
 		if(taxDepot != null)
 		{
 			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()));
+					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
 		}
 		saveAccount(holder, taxDepot);
 		return ea;
@@ -660,12 +660,12 @@ public class TransactionHandler
 				actionLogCategory != null ? actionLogCategory : "default",
 				actionLogComment != null ? actionLogComment : ACTIONLOG_WITHDRAW));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				holder.getID(), -amountToWithdraw, holder.getBalance(), holder.getBalance()));
+				holder.getID(), -amountToWithdraw, holder.getBalance(), holder.getBalance()-amountToWithdraw));
 		if(taxDepot != null && amountToTax > 0.0)
 		{
 			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()));
+					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
 		}
 		saveAccount(holder, taxDepot);
 		return ea;
@@ -752,9 +752,9 @@ public class TransactionHandler
 				actionLogCategory != null ? actionLogCategory : "default",
 				actionLogComment != null ? actionLogComment : ACTIONLOG_EXCHANGE));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()));
+				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()-amount));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()));
+				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()+amount));
 		saveAccount(withdraw, deposit);
 		return ea;
 	}
@@ -830,19 +830,20 @@ public class TransactionHandler
 				actionLogCategory != null ? actionLogCategory : "default",
 				actionLogComment != null ? actionLogComment : ACTIONLOG_EXCHANGE));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				withdraw.getID(), -amountToWithdraw, withdraw.getBalance(), withdraw.getBalance()));
+				withdraw.getID(), -amountToWithdraw, withdraw.getBalance(), withdraw.getBalance()-amountToWithdraw));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				deposit.getID(), amountToDeposit, deposit.getBalance(), deposit.getBalance()));
+				deposit.getID(), amountToDeposit, deposit.getBalance(), deposit.getBalance()+amountToDeposit));
 		if(withdrawAccounttaxDepot != null && amountToTax > 0.0 && ex.taxTo == TaxToCurrency.TO_WITHDRAW_CURRENCY)
 		{
 			withdrawAccounttaxDepot.setBalance(withdrawAccounttaxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-					withdrawAccounttaxDepot.getID(), amountToTax, withdrawAccounttaxDepot.getBalance(), withdrawAccounttaxDepot.getBalance()));
+					withdrawAccounttaxDepot.getID(), amountToTax, withdrawAccounttaxDepot.getBalance(),
+					withdrawAccounttaxDepot.getBalance()+amountToTax));
 		} else if(depositAccounttaxDepot != null && amountToTax > 0.0 && ex.taxTo == TaxToCurrency.TO_DEPOSIT_CURRENCY)
 		{
 			depositAccounttaxDepot.setBalance(depositAccounttaxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-					depositAccounttaxDepot.getID(), amountToTax, depositAccounttaxDepot.getBalance(), depositAccounttaxDepot.getBalance()));
+					depositAccounttaxDepot.getID(), amountToTax, depositAccounttaxDepot.getBalance(), depositAccounttaxDepot.getBalance()+amountToTax));
 		}
 		saveAccount(withdraw, deposit, withdrawAccounttaxDepot, depositAccounttaxDepot);
 		return ea;
