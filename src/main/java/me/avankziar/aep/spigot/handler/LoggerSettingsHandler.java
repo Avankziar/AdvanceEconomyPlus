@@ -819,7 +819,7 @@ public class LoggerSettingsHandler
 	{
 		player.closeInventory();
 		player.spigot().sendMessage(ChatApi.clickEvent
-				(plugin.getYamlHandler().getLang().getString("Cmd.Log.LoggerSettingsTextSuggest")
+				(plugin.getYamlHandler().getLang().getString("Log.LoggerSettingsTextSuggest")
 				, Action.SUGGEST_COMMAND, loggerSettingsTextCommandString));
 	}
 	
@@ -871,7 +871,7 @@ public class LoggerSettingsHandler
 			}
 		} else
 		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Log.LoggerSettingsTextOnlyThroughGUI")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Log.LoggerSettingsTextOnlyThroughGUI")));
 			return;
 		}
 		getLoggerSettings().put(player.getUniqueId(), fst);
