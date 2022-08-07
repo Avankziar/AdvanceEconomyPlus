@@ -53,20 +53,30 @@ public class HeadDatabaseHook implements Listener
 			from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
 		}
 		Account to = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.VOID);
-		if(to == null)
+		if(to == null && plugin.getIFHApi().getDefaultServer() != null)
 		{
 			to = plugin.getIFHApi().getDefaultAccount(plugin.getIFHApi().getDefaultServer().getUUID(), AccountCategory.VOID);
 		}
-		if(from == null || to == null)
+		if(from == null && to == null)
 		{
 			return;
+		} else if(from != null && to != null)
+		{
+			LoggerApi.addActionLogger(new ActionLogger(
+					0,
+					System.currentTimeMillis(),
+					from.getID(), to.getID(), 0, 
+					OrdererType.PLAYER, cuuid, null, amount, amount, 0.0, category, comment));
+			LoggerApi.addTrendLogger(LocalDate.now(), from.getID(), -amount, from.getBalance());
+			LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());
+		} else if(from != null && to == null)
+		{
+			LoggerApi.addActionLogger(new ActionLogger(
+					0,
+					System.currentTimeMillis(),
+					from.getID(), 0, 0,
+					OrdererType.PLAYER, cuuid, null, amount, amount, 0.0, category, comment));
+			LoggerApi.addTrendLogger(LocalDate.now(), from.getID(), -amount, from.getBalance());
 		}
-		LoggerApi.addActionLogger(new ActionLogger(
-				0,
-				System.currentTimeMillis(),
-				from.getID(), to.getID(),
-				-1, OrdererType.PLAYER, cuuid, null, amount, amount, 0.0, category, comment));
-		LoggerApi.addTrendLogger(LocalDate.now(), from.getID(), -amount, from.getBalance());
-		LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());
 	}
 }
