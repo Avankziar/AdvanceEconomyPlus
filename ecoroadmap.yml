@@ -28,6 +28,7 @@ Future =========================================================================
 
 Build 4-1-4 ===========
 - Loggersettings language error fix
+- headdatabase hook fix
 
 Build 4-1-3 ==========
 - Trendlog date convert error fix
