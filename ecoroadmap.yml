@@ -26,6 +26,9 @@ Future =========================================================================
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
 - LoadBefore Essential
 
+Build 4-1-5
+- /money take/takeconsole replacer fix
+
 Build 4-1-4 ===========
 - Loggersettings language error fix
 - headdatabase hook fix
