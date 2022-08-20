@@ -222,7 +222,7 @@ public class Take extends ArgumentModule implements CommandExecutor
 			for(String s : plugin.getYamlHandler().getLang().getStringList("Cmd.Take.Withdraw"))
 			{
 				String a = s.replace("%fromaccount%", from.getAccountName())
-				.replace("%formatwithdraw%", plugin.getIFHApi().format(ea.getDepositAmount(), from.getCurrency()))
+				.replace("%formatwithdraw%", plugin.getIFHApi().format(ea.getWithDrawAmount(), from.getCurrency()))
 				.replace("%category%", category != null ? category : "/")
 				.replace("%comment%", comment != null ? comment : "/");
 				list.add(a);

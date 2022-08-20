@@ -1150,13 +1150,13 @@ public class LogHandler
 			if(MatchApi.isPositivNumber(tl.getRelativeAmountChange()))
 			{
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("Log.TrendDiagram.Positiv")
+						plugin.getYamlHandler().getLang().getString("Log.Diagram.Positiv")
 						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))
 						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
 			} else
 			{
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
-						plugin.getYamlHandler().getLang().getString("Log.TrendDiagram.Negativ")
+						plugin.getYamlHandler().getLang().getString("Log.Diagram.Negativ")
 						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))
 						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
 			}

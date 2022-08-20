@@ -26,6 +26,11 @@ Future =========================================================================
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
 - LoadBefore Essential
 
+Build 4-1-6
+- Trendlog minor fix
+- /money take minor fix
+- loggersettings diagram minor fix
+
 Build 4-1-5
 - /money take/takeconsole replacer fix
 
