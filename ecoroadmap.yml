@@ -31,7 +31,7 @@ Build 4-1-6
 - /money take minor fix
 - loggersettings diagram minor fix
 - loggersetting ClickMsg fix
-
+- loggersettings Sender-Parameter geändert in Account-Parameter & Reciever-Parameter geändert in Kategorie-Parameter
 
 Build 4-1-5
 - /money take/takeconsole replacer fix
