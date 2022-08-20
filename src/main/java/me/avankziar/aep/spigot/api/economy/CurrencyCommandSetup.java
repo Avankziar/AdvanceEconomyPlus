@@ -353,7 +353,7 @@ public class CurrencyCommandSetup
 		ArgumentConstructor lstext = new ArgumentConstructor(
 				CommandExecuteType.LOGGERSETTINGS_TEXT, "aep_loggersettings_text", 1, 2, 999, false, null);
 		new LoggerSettingsText(lstext);
-		LoggerSettingsHandler.loggerSettingsTextCommandString = lstext.getSuggestion();
+		LoggerSettingsHandler.loggerSettingsTextCommandString = lstext.getCommandString();
 		
 		ArgumentConstructor ls = new ArgumentConstructor(
 				CommandExecuteType.LOGGERSETTINGS, "aep_loggersettings", 0, 0, 0, false, null,
