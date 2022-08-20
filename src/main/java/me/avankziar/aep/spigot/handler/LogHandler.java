@@ -399,16 +399,18 @@ public class LogHandler
 			ArrayList<BaseComponent> m3 = new ArrayList<>();
 			if(MatchApi.isPositivNumber(amount))
 			{
+				String per = "&a"+String.valueOf(percent);
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.Diagram.Positiv")
 						.replace("%relativ%", plugin.getIFHApi().format(amount, ac.getCurrency()))
-						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
+						.replace("%percent%", per)));
 			} else
 			{
+				String per = "&c"+String.valueOf(percent);
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.Diagram.Negativ")
 						.replace("%relativ%", plugin.getIFHApi().format(amount, ac.getCurrency()))
-						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
+						.replace("%percent%", per)));
 			}
 			msg.add(m3);
 			i++;
@@ -943,8 +945,8 @@ public class LogHandler
 			{
 				totalbc.get(k).add(ChatApi.hoverEvent(bars, Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.BarChart.HoverMessage")
-						.replace("%percentP%", plugin.getIFHApi().format(hpercentP, ac.getCurrency()))
-						.replace("%percentN%", plugin.getIFHApi().format(hpercentN, ac.getCurrency()))
+						.replace("%percentP%", String.valueOf(hpercentP))
+						.replace("%percentN%", String.valueOf(hpercentN))
 						.replace("%totalvalue%", color+plugin.getIFHApi().format(smaxTotal, ac.getCurrency()))
 						.replace("%positivvalue%", plugin.getIFHApi().format(smaxPositiv, ac.getCurrency()))
 						.replace("%negativvalue%", plugin.getIFHApi().format(smaxNegativ, ac.getCurrency()))
@@ -953,8 +955,8 @@ public class LogHandler
 						.replace("%month%", month.format(DateTimeFormatter.ofPattern("MM.yyyy")))));
 				totalbc.get(k).add(ChatApi.hoverEvent(barsII, Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.BarChart.HoverMessage")
-						.replace("%percentP%", plugin.getIFHApi().format(hpercentP, ac.getCurrency()))
-						.replace("%percentN%", plugin.getIFHApi().format(hpercentN, ac.getCurrency()))
+						.replace("%percentP%", String.valueOf(hpercentP))
+						.replace("%percentN%", String.valueOf(hpercentN))
 						.replace("%totalvalue%", color+plugin.getIFHApi().format(smaxTotal, ac.getCurrency()))
 						.replace("%positivvalue%", plugin.getIFHApi().format(smaxPositiv, ac.getCurrency()))
 						.replace("%negativvalue%", plugin.getIFHApi().format(smaxNegativ, ac.getCurrency()))
@@ -1149,16 +1151,18 @@ public class LogHandler
 			ArrayList<BaseComponent> m3 = new ArrayList<>();
 			if(MatchApi.isPositivNumber(tl.getRelativeAmountChange()))
 			{
+				String per = "&a"+String.valueOf(percent);
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.Diagram.Positiv")
 						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))
-						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
+						.replace("%percent%", per)));
 			} else
 			{
+				String per = "&c"+String.valueOf(percent);
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.Diagram.Negativ")
 						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))
-						.replace("%percent%", plugin.getIFHApi().format(percent, ac.getCurrency()))));
+						.replace("%percent%", per)));
 			}
 			msg.add(m3);
 			i++;

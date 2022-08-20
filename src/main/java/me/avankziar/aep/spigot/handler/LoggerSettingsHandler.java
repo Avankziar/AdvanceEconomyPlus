@@ -927,14 +927,14 @@ public class LoggerSettingsHandler
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%accountname%") && ls.getAccountID() > 0)
+					if(s.contains("%accountname%"))
 					{
 						Account ac = plugin.getIFHApi().getAccount(ls.getAccountID());
 						if(ac != null)
 						{
 							s = s.replace("%accountname%", ac.getAccountName());
+							lore.add(s);
 						}
-						lore.add(s);
 						continue;
 					}
 					if(s.contains("%number%"))
@@ -1039,14 +1039,14 @@ public class LoggerSettingsHandler
 					lore.add(s);
 					continue;
 				}
-				if(s.contains("%accountName%") && fst.getAccountID() > 0)
+				if(s.contains("%accountname%"))
 				{
 					Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
 					if(ac != null)
 					{
-						s = s.replace("%accountName%", ac.getAccountName());
-					}
-					lore.add(s);
+						s = s.replace("%accountname%", ac.getAccountName());
+						lore.add(s);
+					}					
 					continue;
 				}
 				if(s.contains("%number%"))
