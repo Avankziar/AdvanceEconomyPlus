@@ -79,6 +79,7 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.general.economy.account.AccountType;
@@ -352,6 +353,7 @@ public class CurrencyCommandSetup
 		ArgumentConstructor lstext = new ArgumentConstructor(
 				CommandExecuteType.LOGGERSETTINGS_TEXT, "aep_loggersettings_text", 1, 2, 999, false, null);
 		new LoggerSettingsText(lstext);
+		LoggerSettingsHandler.loggerSettingsTextCommandString = lstext.getSuggestion();
 		
 		ArgumentConstructor ls = new ArgumentConstructor(
 				CommandExecuteType.LOGGERSETTINGS, "aep_loggersettings", 0, 0, 0, false, null,
