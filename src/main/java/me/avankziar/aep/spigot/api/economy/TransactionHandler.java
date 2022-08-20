@@ -240,10 +240,6 @@ public class TransactionHandler
 		{
 			return preCheck;
 		}
-		withdraw.setBalance(withdraw.getBalance()-amount);
-		deposit.setBalance(deposit.getBalance()+amount);
-		final EconomyAction ea = new EconomyAction(amount, amount, 0.0, true, TA_SUCCESS, ErrorMessageType.SUCCESS,
-				withdraw.getBalance(), deposit.getBalance());
 		OrdererType ot = OrdererType.PLUGIN;
 		String ordererUUIDOrPlugin = "AEP";
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
@@ -258,6 +254,10 @@ public class TransactionHandler
 				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()-amount));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()+amount));
+		withdraw.setBalance(withdraw.getBalance()-amount);
+		deposit.setBalance(deposit.getBalance()+amount);
+		final EconomyAction ea = new EconomyAction(amount, amount, 0.0, true, TA_SUCCESS, ErrorMessageType.SUCCESS,
+				withdraw.getBalance(), deposit.getBalance());
 		saveAccount(withdraw, deposit);
 		return ea;
 	}
@@ -270,10 +270,6 @@ public class TransactionHandler
 		{
 			return preCheck;
 		}
-		withdraw.setBalance(withdraw.getBalance()-amount);
-		deposit.setBalance(deposit.getBalance()+amount);
-		final EconomyAction ea = new EconomyAction(amount, amount, 0.0, true, TA_SUCCESS, ErrorMessageType.SUCCESS,
-				withdraw.getBalance(), deposit.getBalance());
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
 				withdraw.getID(), deposit.getID(), 0,
 				type,
@@ -286,6 +282,10 @@ public class TransactionHandler
 				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()-amount));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()+amount));
+		withdraw.setBalance(withdraw.getBalance()-amount);
+		deposit.setBalance(deposit.getBalance()+amount);
+		final EconomyAction ea = new EconomyAction(amount, amount, 0.0, true, TA_SUCCESS, ErrorMessageType.SUCCESS,
+				withdraw.getBalance(), deposit.getBalance());
 		saveAccount(withdraw, deposit);
 		return ea;
 	}
@@ -313,14 +313,6 @@ public class TransactionHandler
 			amountToDeposit = amount - amount*taxInPercent/100;
 		}		
 		double amountToTax = amountToWithdraw - amountToDeposit;
-		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
-		deposit.setBalance(deposit.getBalance()+amountToDeposit);
-		if(taxDepot != null)
-		{
-			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
-		}
-		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, TA_SUCCESS, ErrorMessageType.SUCCESS,
-				withdraw.getBalance(), deposit.getBalance());
 		OrdererType ot = OrdererType.PLUGIN;
 		String ordererUUIDOrPlugin = "AEP";
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
@@ -332,11 +324,19 @@ public class TransactionHandler
 				"default",
 				ACTIONLOG_TRANSACTION));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()-amount));
+				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()-amountToWithdraw));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()+amount));
+				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()+amountToDeposit));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 				taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
+		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
+		deposit.setBalance(deposit.getBalance()+amountToDeposit);
+		if(taxDepot != null)
+		{
+			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
+		}
+		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, TA_SUCCESS, ErrorMessageType.SUCCESS,
+				withdraw.getBalance(), deposit.getBalance());
 		saveAccount(withdraw, deposit, taxDepot);
 		return ea;
 	}
@@ -365,10 +365,6 @@ public class TransactionHandler
 			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
-		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
-		deposit.setBalance(deposit.getBalance()+amountToDeposit);
-		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, TA_SUCCESS, ErrorMessageType.SUCCESS,
-				withdraw.getBalance(), deposit.getBalance());
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
 				withdraw.getID(), deposit.getID(), amountToTax > 0.0 ? taxDepot.getID() : 0,
 				type,
@@ -383,10 +379,14 @@ public class TransactionHandler
 				deposit.getID(), amountToDeposit, deposit.getBalance(), deposit.getBalance()+amountToDeposit));
 		if(taxDepot != null && amountToTax > 0.0)
 		{
-			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
+			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 		}
+		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
+		deposit.setBalance(deposit.getBalance()+amountToDeposit);
+		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, TA_SUCCESS, ErrorMessageType.SUCCESS,
+				withdraw.getBalance(), deposit.getBalance());
 		saveAccount(withdraw, deposit, taxDepot);
 		return ea;
 	}
@@ -398,9 +398,6 @@ public class TransactionHandler
 		{
 			return preCheck;
 		}
-		holder.setBalance(holder.getBalance()+amount);
-		final EconomyAction ea = new EconomyAction(0.0, amount, 0.0, true, D_SUCCESS, ErrorMessageType.SUCCESS,
-				0.0, holder.getBalance());
 		OrdererType ot = OrdererType.PLUGIN;
 		String ordererUUIDOrPlugin = "AEP";
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
@@ -413,6 +410,9 @@ public class TransactionHandler
 				ACTIONLOG_DEPOSIT));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 				holder.getID(), amount, holder.getBalance(), holder.getBalance()+amount));
+		holder.setBalance(holder.getBalance()+amount);
+		final EconomyAction ea = new EconomyAction(0.0, amount, 0.0, true, D_SUCCESS, ErrorMessageType.SUCCESS,
+				0.0, holder.getBalance());
 		saveAccount(holder);
 		return ea;
 	}
@@ -425,9 +425,6 @@ public class TransactionHandler
 		{
 			return preCheck;
 		}
-		holder.setBalance(holder.getBalance()+amount);
-		final EconomyAction ea = new EconomyAction(0.0, amount, 0.0, true, D_SUCCESS, ErrorMessageType.SUCCESS,
-				0.0, holder.getBalance());
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
 				0, holder.getID(), 0,
 				type,
@@ -437,7 +434,10 @@ public class TransactionHandler
 				actionLogCategory != null ? actionLogCategory : "default",
 				actionLogComment != null ? actionLogComment : ACTIONLOG_DEPOSIT));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				holder.getID(), amount, holder.getBalance(), holder.getBalance()));
+				holder.getID(), amount, holder.getBalance(), holder.getBalance()+amount));
+		holder.setBalance(holder.getBalance()+amount);
+		final EconomyAction ea = new EconomyAction(0.0, amount, 0.0, true, D_SUCCESS, ErrorMessageType.SUCCESS,
+				0.0, holder.getBalance());
 		saveAccount(holder);
 		return ea;
 	}
@@ -465,9 +465,6 @@ public class TransactionHandler
 			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
-		holder.setBalance(holder.getBalance()+amountToDeposit);
-		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, D_SUCCESS, ErrorMessageType.SUCCESS,
-				0.0, holder.getBalance());
 		OrdererType ot = OrdererType.PLUGIN;
 		String ordererUUIDOrPlugin = "AEP";
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
@@ -482,11 +479,14 @@ public class TransactionHandler
 				holder.getID(), amountToDeposit, holder.getBalance(), holder.getBalance()+amountToDeposit));
 		if(taxDepot != null)
 		{
-			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
+			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 		}
 		saveAccount(holder, taxDepot);
+		holder.setBalance(holder.getBalance()+amountToDeposit);
+		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, D_SUCCESS, ErrorMessageType.SUCCESS,
+				0.0, holder.getBalance());
 		return ea;
 	}
 	
@@ -510,9 +510,6 @@ public class TransactionHandler
 			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
-		holder.setBalance(holder.getBalance()+amountToDeposit);
-		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, D_SUCCESS, ErrorMessageType.SUCCESS,
-				0.0, holder.getBalance());
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
 				0, holder.getID(), amountToTax > 0.0 ? taxDepot.getID() : 0,
 				type,
@@ -525,10 +522,13 @@ public class TransactionHandler
 				holder.getID(), amountToDeposit, holder.getBalance(), holder.getBalance()+amountToDeposit));
 		if(taxDepot != null && amountToTax > 0.0)
 		{
-			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
+			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 		}
+		holder.setBalance(holder.getBalance()+amountToDeposit);
+		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, D_SUCCESS, ErrorMessageType.SUCCESS,
+				0.0, holder.getBalance());
 		saveAccount(holder, taxDepot);
 		return ea;
 	}
@@ -540,9 +540,6 @@ public class TransactionHandler
 		{
 			return preCheck;
 		}
-		holder.setBalance(holder.getBalance()-amount);
-		final EconomyAction ea = new EconomyAction(amount, 0.0, 0.0, true, W_SUCCESS, ErrorMessageType.SUCCESS,
-				holder.getBalance(), 0.0);
 		OrdererType ot = OrdererType.PLUGIN;
 		String ordererUUIDOrPlugin = "AEP";
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
@@ -555,6 +552,9 @@ public class TransactionHandler
 				ACTIONLOG_WITHDRAW));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 				holder.getID(), -amount, holder.getBalance(), holder.getBalance()-amount));
+		holder.setBalance(holder.getBalance()-amount);
+		final EconomyAction ea = new EconomyAction(amount, 0.0, 0.0, true, W_SUCCESS, ErrorMessageType.SUCCESS,
+				holder.getBalance(), 0.0);
 		saveAccount(holder);
 		return ea;
 	}
@@ -567,9 +567,6 @@ public class TransactionHandler
 		{
 			return preCheck;
 		}
-		holder.setBalance(holder.getBalance()-amount);
-		final EconomyAction ea = new EconomyAction(amount, 0.0, 0.0, true, W_SUCCESS, ErrorMessageType.SUCCESS,
-				holder.getBalance(), 0.0);
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
 				holder.getID(), 0, 0,
 				type,
@@ -579,7 +576,10 @@ public class TransactionHandler
 				actionLogCategory != null ? actionLogCategory : "default",
 				actionLogComment != null ? actionLogComment : ACTIONLOG_WITHDRAW));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
-				holder.getID(), -amount, holder.getBalance(), holder.getBalance()));
+				holder.getID(), -amount, holder.getBalance(), holder.getBalance()-amount));
+		holder.setBalance(holder.getBalance()-amount);
+		final EconomyAction ea = new EconomyAction(amount, 0.0, 0.0, true, W_SUCCESS, ErrorMessageType.SUCCESS,
+				holder.getBalance(), 0.0);
 		saveAccount(holder);
 		return ea;
 	}
@@ -603,9 +603,6 @@ public class TransactionHandler
 			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
-		holder.setBalance(holder.getBalance()-amountToWithdraw);
-		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, W_SUCCESS, ErrorMessageType.SUCCESS,
-				holder.getBalance(), 0.0);
 		OrdererType ot = OrdererType.PLUGIN;
 		String ordererUUIDOrPlugin = "AEP";
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
@@ -620,10 +617,13 @@ public class TransactionHandler
 				holder.getID(), -amountToWithdraw, holder.getBalance(), holder.getBalance()-amountToWithdraw));
 		if(taxDepot != null)
 		{
-			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
+			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 		}
+		holder.setBalance(holder.getBalance()-amountToWithdraw);
+		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, W_SUCCESS, ErrorMessageType.SUCCESS,
+				holder.getBalance(), 0.0);
 		saveAccount(holder, taxDepot);
 		return ea;
 	}
@@ -648,9 +648,6 @@ public class TransactionHandler
 			amountToDeposit = amount - amount*taxInPercent/100;
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
-		holder.setBalance(holder.getBalance()-amountToWithdraw);
-		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, W_SUCCESS, ErrorMessageType.SUCCESS,
-				holder.getBalance(), 0.0);
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
 				holder.getID(), 0, amountToTax > 0.0 ? taxDepot.getID() : 0,
 				type,
@@ -663,10 +660,13 @@ public class TransactionHandler
 				holder.getID(), -amountToWithdraw, holder.getBalance(), holder.getBalance()-amountToWithdraw));
 		if(taxDepot != null && amountToTax > 0.0)
 		{
-			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
+			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 		}
+		holder.setBalance(holder.getBalance()-amountToWithdraw);
+		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, W_SUCCESS, ErrorMessageType.SUCCESS,
+				holder.getBalance(), 0.0);
 		saveAccount(holder, taxDepot);
 		return ea;
 	}
@@ -734,15 +734,10 @@ public class TransactionHandler
 			taxAreExclusive = ts.isTaxAreExclusive();
 			taxInPercent = ts.getTaxInPercent();
 		}
-		
 		Exchange ex = plugin.getIFHApi().getExchangeOfCurrency(amount, withdraw.getCurrency(), deposit.getCurrency(), taxInPercent,
 				taxAreExclusive, withdraw.getCurrency().getTaxationBeforeExchange());
 		double amountToWithdraw = ex.toWithdrawAccount;
 		double amountToDeposit = ex.toDepositAccount;
-		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
-		deposit.setBalance(deposit.getBalance()+amountToDeposit);
-		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, 0.0, true, EX_SUCCESS, ErrorMessageType.SUCCESS,
-				withdraw.getBalance(), deposit.getBalance());
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
 				withdraw.getID(), deposit.getID(), 0,
 				type,
@@ -755,6 +750,10 @@ public class TransactionHandler
 				withdraw.getID(), -amount, withdraw.getBalance(), withdraw.getBalance()-amount));
 		LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 				deposit.getID(), amount, deposit.getBalance(), deposit.getBalance()+amount));
+		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
+		deposit.setBalance(deposit.getBalance()+amountToDeposit);
+		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, 0.0, true, EX_SUCCESS, ErrorMessageType.SUCCESS,
+				withdraw.getBalance(), deposit.getBalance());
 		saveAccount(withdraw, deposit);
 		return ea;
 	}
@@ -813,11 +812,6 @@ public class TransactionHandler
 		double amountToWithdraw = ex.toWithdrawAccount;
 		double amountToDeposit = ex.toDepositAccount;
 		double amountToTax = ex.toTaxAccount;
-		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
-		deposit.setBalance(deposit.getBalance()+amountToDeposit);
-		
-		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, EX_SUCCESS, ErrorMessageType.SUCCESS,
-				withdraw.getBalance(), deposit.getBalance());
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
 				withdraw.getID(), deposit.getID(),
 				amountToTax > 0.0 ? 
@@ -835,16 +829,20 @@ public class TransactionHandler
 				deposit.getID(), amountToDeposit, deposit.getBalance(), deposit.getBalance()+amountToDeposit));
 		if(withdrawAccounttaxDepot != null && amountToTax > 0.0 && ex.taxTo == TaxToCurrency.TO_WITHDRAW_CURRENCY)
 		{
-			withdrawAccounttaxDepot.setBalance(withdrawAccounttaxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 					withdrawAccounttaxDepot.getID(), amountToTax, withdrawAccounttaxDepot.getBalance(),
 					withdrawAccounttaxDepot.getBalance()+amountToTax));
+			withdrawAccounttaxDepot.setBalance(withdrawAccounttaxDepot.getBalance()+amountToTax);
 		} else if(depositAccounttaxDepot != null && amountToTax > 0.0 && ex.taxTo == TaxToCurrency.TO_DEPOSIT_CURRENCY)
 		{
-			depositAccounttaxDepot.setBalance(depositAccounttaxDepot.getBalance()+amountToTax);
 			LoggerApi.addTrendLogger(new TrendLogger(LocalDate.now(), TrendLogger.Type.STABIL,
 					depositAccounttaxDepot.getID(), amountToTax, depositAccounttaxDepot.getBalance(), depositAccounttaxDepot.getBalance()+amountToTax));
+			depositAccounttaxDepot.setBalance(depositAccounttaxDepot.getBalance()+amountToTax);
 		}
+		withdraw.setBalance(withdraw.getBalance()-amountToWithdraw);
+		deposit.setBalance(deposit.getBalance()+amountToDeposit);
+		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, EX_SUCCESS, ErrorMessageType.SUCCESS,
+				withdraw.getBalance(), deposit.getBalance());
 		saveAccount(withdraw, deposit, withdrawAccounttaxDepot, depositAccounttaxDepot);
 		return ea;
 	}

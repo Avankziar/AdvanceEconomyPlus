@@ -390,22 +390,28 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			@Override
 			public void run()
 			{
-			    if(i == 20)
-			    {
+				try
+				{
+					if(i == 20)
+				    {
+						cancel();
+						return;
+				    }
+				    RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee> rsp = 
+		                             getServer().getServicesManager().getRegistration(
+		                            		 main.java.me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee.class);
+				    if(rsp == null) 
+				    {
+				    	//Check up to 20 seconds after the start, to connect with the provider
+				    	i++;
+				        return;
+				    }
+				    mtb = rsp.getProvider();
+				    cancel();
+				} catch(NoClassDefFoundError e)
+				{
 					cancel();
-					return;
-			    }
-			    RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee> rsp = 
-	                             getServer().getServicesManager().getRegistration(
-	                            		 main.java.me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee.class);
-			    if(rsp == null) 
-			    {
-			    	//Check up to 20 seconds after the start, to connect with the provider
-			    	i++;
-			        return;
-			    }
-			    mtb = rsp.getProvider();
-			    cancel();
+				}			    
 			}
         }.runTaskTimer(plugin, 20L, 20*2);
 	}
