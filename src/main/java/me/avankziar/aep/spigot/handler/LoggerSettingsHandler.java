@@ -927,12 +927,12 @@ public class LoggerSettingsHandler
 						lore.add(s);
 						continue;
 					}
-					if(s.contains("%accountName%") && ls.getAccountID() > 0)
+					if(s.contains("%accountname%") && ls.getAccountID() > 0)
 					{
 						Account ac = plugin.getIFHApi().getAccount(ls.getAccountID());
 						if(ac != null)
 						{
-							s = s.replace("%accountName%", ac.getAccountName());
+							s = s.replace("%accountname%", ac.getAccountName());
 						}
 						lore.add(s);
 						continue;

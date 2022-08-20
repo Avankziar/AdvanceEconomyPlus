@@ -2317,11 +2317,11 @@ public class YamlManager
 					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"      §7-------------------------",
 					"§eAktuelle Werte:",
-					"§bSpieler: §f%uuid%",
-					"§bBanknummber: §f%number%",
+					"§bAccountnummer: §f%number%",
+					"§bAccountname: §f%accountname%",
 					"§bOrderSpalte: §f%ordercolumn%",
-					"§bVon: §f%from% §f| §bZu: §f%to%",
 					"§bAuftraggeber: §f%orderer%",
+					"§bKategorie: §f%category%",
 					"§bKommentar: §f%comment%",
 					"§bMin > §f%min% | §bMax < §f%max%",
 					"§bErstStand > §f%firststand%",
@@ -2330,11 +2330,11 @@ public class YamlManager
 					
 					"      §7-------------------------",
 					"§eActual Values:",
-					"§bPlayer: §f%uuid%",
-					"§bBanknumber: §f%number%",
+					"§bAccountnumber: §f%number%",
+					"§bAccountname: §f%accountname%",
 					"§bOrderColumn: §f%ordercolumn%",
-					"§bFrom: §f%from% §f| §bTo: §f%to%",
 					"§bOrderer: §f%orderer%",
+					"§bCategory: §f%category%",
 					"§bComment: §f%comment%",
 					"§bMin > §f%min% §f| §bMax < §f%max%",
 					"§bFirstStand > §f%firststand%",
@@ -2752,19 +2752,19 @@ public class YamlManager
 		{
 			loggerSettingsKeys.put("3.Name"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-					"&cAbsender-Parameter",
-					"&cSender-parameter"}));
+					"&cAccount-Parameter",
+					"&cAccount-parameter"}));
 			loggerSettingsKeys.put("3.Material"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"TARGET"}));
 			loggerSettingsKeys.put("3.Lore"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-					"§fParameter wird für die Angaben","§b>Absender<§f genutzt.",
-					"§aKlicke §ezur Eingabe eines Spielernamens","§eoder einer Bankkontonummer.",
+					"§fParameter wird für die Angaben","§b>Account<§f genutzt.",
+					"§aKlicke §ezur Eingabe eines Accountnummer","§eoder der Accounteigentümername und Accountname.",
 					"§4Q §ezum Zurücksetzen des Wertes!",
 					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
-					"§fParameter is used for the","§einformation §b>Sender<§f.",
-					"§eClicks to enter a player name","§eor bank account number.",
+					"§fParameter is used for the","§einformation §b>Account<§f.",
+					"§eClicks to enter a accountnumber","§eor accountownername and accountname.",
 					"§4Q §eto reset the parameter!",
 					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			
@@ -2788,19 +2788,19 @@ public class YamlManager
 			
 			loggerSettingsKeys.put("5.Name"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-					"&cEmpfänger-Parameter",
-					"&cReciver-parameter"}));
+					"&cKategorie-Parameter",
+					"&cCategory-parameter"}));
 			loggerSettingsKeys.put("5.Material"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 					"TARGET"}));
 			loggerSettingsKeys.put("5.Lore"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-					"§fParameter wird für die Angaben","§b>Empfänger<§f genutzt.",
-					"§aKlicke §ezur Eingabe eines Spielernamens","§eoder einer Bankkontonummer.",
+					"§fParameter wird für die Angaben","§b>Kategorie< (nur Aktionlog)§f genutzt.",
+					"§aKlicke §ezur Eingabe einer Kategorie",
 					"§4Q §ezum Zurücksetzen des Wertes!",
 					"§4Strg+Q §ezum Zurücksetzen §4aller §eWerte!",
-					"§fParameter is used for the","§einformation §b>Reciver<§f.",
-					"§eClicks to enter a player name","§eor bank account number.",
+					"§fParameter is used for the","§einformation §b>Category< (only Actionlog)§f.",
+					"§eClicks to enter a catogry",
 					"§4Q §eto reset the parameter!",
 					"§4Ctrl+Q §eto reset §4all §eparameter!"}));
 			
