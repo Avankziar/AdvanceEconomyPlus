@@ -55,6 +55,9 @@ public class MysqlSetup
 		if(conn != null)
 		{
 			AdvancedEconomyPlus.log.info("Database connection successful!");
+		} else
+		{
+			return false;
 		}
 		return true;
 	}
