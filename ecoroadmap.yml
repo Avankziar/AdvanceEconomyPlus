@@ -26,6 +26,10 @@ Future =========================================================================
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
 - LoadBefore Essential
 
+Build 4-2-0
+- MC 1.19.2 support
+- IFH Administration implementiert
+
 Build 4-1-6
 - Trendlog minor fix
 - /money take minor fix
