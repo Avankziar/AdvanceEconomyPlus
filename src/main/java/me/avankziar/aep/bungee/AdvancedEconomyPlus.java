@@ -30,7 +30,7 @@ public class AdvancedEconomyPlus extends Plugin
 	private static MysqlHandler mysqlHandler;
 	
 	private IFHEcoProvider ifhProvider;
-	private Administration adminstrationConsumer;
+	private Administration administrationConsumer;
 	
 	private ScheduledTask administrationRun;
 	
@@ -161,8 +161,8 @@ public class AdvancedEconomyPlus extends Plugin
 			        {
 			            return;
 			        }
-			        adminstrationConsumer = rsp.getProvider();
-			        if(adminstrationConsumer != null)
+			        administrationConsumer = rsp.getProvider();
+			        if(administrationConsumer != null)
 			        {
 			    		log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
 			    		administrationRun.cancel();
@@ -178,6 +178,6 @@ public class AdvancedEconomyPlus extends Plugin
 	
 	public Administration getAdministration()
 	{
-		return adminstrationConsumer;
+		return administrationConsumer;
 	}
 }
