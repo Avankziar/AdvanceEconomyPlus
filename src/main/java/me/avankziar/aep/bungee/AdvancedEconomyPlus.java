@@ -1,18 +1,23 @@
 package main.java.me.avankziar.aep.bungee;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import main.java.me.avankziar.aep.bungee.api.economy.IFHApi;
+import main.java.me.avankziar.aep.bungee.api.economy.IFHEcoProvider;
 import main.java.me.avankziar.aep.bungee.database.MysqlHandler;
 import main.java.me.avankziar.aep.bungee.database.MysqlSetup;
 import main.java.me.avankziar.aep.bungee.database.YamlHandler;
 import main.java.me.avankziar.aep.bungee.database.YamlManager;
 import main.java.me.avankziar.ifh.bungee.InterfaceHub;
+import main.java.me.avankziar.ifh.bungee.administration.Administration;
+import main.java.me.avankziar.ifh.bungee.plugin.RegisteredServiceProvider;
 import main.java.me.avankziar.ifh.bungee.plugin.ServicePriority;
+import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 public class AdvancedEconomyPlus extends Plugin
 {
@@ -24,12 +29,18 @@ public class AdvancedEconomyPlus extends Plugin
 	private static MysqlSetup mysqlSetup;
 	private static MysqlHandler mysqlHandler;
 	
-	private IFHApi ifhApi;
+	private IFHEcoProvider ifhProvider;
+	private Administration adminstrationConsumer;
+	
+	private ScheduledTask administrationRun;
 	
 	public void onEnable() 
 	{
 		plugin = this;
 		log = getLogger();
+		
+		setupIFHAdministration();
+		
 		yamlHandler = new YamlHandler(plugin);
 		
 		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
@@ -113,18 +124,60 @@ public class AdvancedEconomyPlus extends Plugin
 			plugin.getExecutorService().shutdownNow();
 	    	return false;
 	    }
-		ifhApi = new IFHApi(plugin);
+		ifhProvider = new IFHEcoProvider(plugin);
     	ifh.getServicesManager().register(
         main.java.me.avankziar.ifh.bungee.economy.Economy.class,
-        ifhApi,
+        ifhProvider,
         this,
         ServicePriority.Normal);
     	log.info(pluginName + " detected InterfaceHub >>> Economy.class is provided!");
 		return false;
 	}
 	
-	public IFHApi getIFHApi()
+	public IFHEcoProvider getIFHApi()
 	{
-		return ifhApi;
+		return ifhProvider;
+	}
+	
+	private void setupIFHAdministration()
+	{ 
+		Plugin plugin = BungeeCord.getInstance().getPluginManager().getPlugin("InterfaceHub");
+        if (plugin == null) 
+        {
+            return;
+        }
+        InterfaceHub ifh = (InterfaceHub) plugin;
+        administrationRun = plugin.getProxy().getScheduler().schedule(plugin, new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					RegisteredServiceProvider<Administration> rsp = ifh
+			        		.getServicesManager()
+			        		.getRegistration(Administration.class);
+			        if (rsp == null) 
+			        {
+			            return;
+			        }
+			        adminstrationConsumer = rsp.getProvider();
+			        if(adminstrationConsumer != null)
+			        {
+			    		log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
+			    		administrationRun.cancel();
+			        }
+				} catch(NoClassDefFoundError e)
+				{
+					administrationRun.cancel();
+				}
+			}
+		}, 15L*1000, 25L, TimeUnit.MILLISECONDS);
+        return;
+	}
+	
+	public Administration getAdministration()
+	{
+		return adminstrationConsumer;
 	}
 }

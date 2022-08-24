@@ -36,7 +36,7 @@ import main.java.me.avankziar.ifh.spigot.economy.currency.Currency;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 import main.java.me.avankziar.ifh.spigot.economy.currency.Gradation;
 
-public class IFHApi implements Economy
+public class IFHEcoProvider implements Economy
 {
 	private AdvancedEconomyPlus plugin;
 	protected AccountHandler accountHandler;
@@ -53,7 +53,7 @@ public class IFHApi implements Economy
 	
 	private static String difhapi1 = "ifhapiFormat";
 	
-	public IFHApi(AdvancedEconomyPlus plugin)
+	public IFHEcoProvider(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
 		accountHandler = new AccountHandler(plugin);

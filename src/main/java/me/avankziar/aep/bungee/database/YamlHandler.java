@@ -125,6 +125,10 @@ public class YamlHandler
 		}
 		cfg = loadYamlTask(config, cfg);
 		writeFile(config, cfg, plugin.getYamlManager().getConfigKey());
+		
+		languages = plugin.getAdministration() == null 
+				? cfg.getString("Language", "ENG").toUpperCase() 
+				: plugin.getAdministration().getLanguage();
 		return true;
 	}
 	

@@ -30,7 +30,7 @@ import main.java.me.avankziar.ifh.general.economy.action.OrdererType;
 import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 import net.md_5.bungee.config.Configuration;
 
-public class IFHApi implements Economy
+public class IFHEcoProvider implements Economy
 {
 	private AdvancedEconomyPlus plugin;
 	protected AccountHandler accountHandler;
@@ -45,7 +45,7 @@ public class IFHApi implements Economy
 	protected LinkedHashMap<String, String> defaultDecimalSeperator = new LinkedHashMap<>();
 	protected LinkedHashMap<String, LinkedHashMap<Double, String>> defaultSIPrefix = new LinkedHashMap<>();
 	
-	public IFHApi(AdvancedEconomyPlus plugin)
+	public IFHEcoProvider(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
 		accountHandler = new AccountHandler(plugin);

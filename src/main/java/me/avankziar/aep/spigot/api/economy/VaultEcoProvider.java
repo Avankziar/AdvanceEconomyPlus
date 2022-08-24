@@ -23,11 +23,11 @@ import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
-public class VaultApi implements Economy
+public class VaultEcoProvider implements Economy
 {
 	private AdvancedEconomyPlus plugin;
 
-	public VaultApi(AdvancedEconomyPlus plugin)
+	public VaultEcoProvider(AdvancedEconomyPlus plugin)
 	{
 		this.plugin = plugin;
 	}

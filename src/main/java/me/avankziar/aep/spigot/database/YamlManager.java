@@ -127,10 +127,15 @@ public class YamlManager
 	
 	public void initConfig()
 	{
+		configKeys.put("useIFHAdministration"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
+		configKeys.put("IFHAdministrationPath"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"aep"}));
 		configKeys.put("Language"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"ENG"}));
-		
 		configKeys.put("Mysql.Status"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));

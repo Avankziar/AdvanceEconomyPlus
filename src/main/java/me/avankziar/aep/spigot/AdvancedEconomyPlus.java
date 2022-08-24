@@ -25,8 +25,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.spigot.api.LoggerApi;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyCommandSetup;
-import main.java.me.avankziar.aep.spigot.api.economy.IFHApi;
-import main.java.me.avankziar.aep.spigot.api.economy.VaultApi;
+import main.java.me.avankziar.aep.spigot.api.economy.IFHEcoProvider;
+import main.java.me.avankziar.aep.spigot.api.economy.VaultEcoProvider;
 import main.java.me.avankziar.aep.spigot.assistance.BackgroundTask;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.bstats.Metrics;
@@ -46,6 +46,7 @@ import main.java.me.avankziar.aep.spigot.hook.QuickShopHook;
 import main.java.me.avankziar.aep.spigot.listener.GuiPayListener;
 import main.java.me.avankziar.aep.spigot.listener.PlayerListener;
 import main.java.me.avankziar.aep.spigot.listenerhandler.LoggerSettingsListenerHandler;
+import main.java.me.avankziar.ifh.spigot.administration.Administration;
 import main.java.me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee;
 
 public class AdvancedEconomyPlus extends JavaPlugin
@@ -60,9 +61,10 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	private static Utility utility;
 	private static BackgroundTask backgroundTask;
 	
-	private static VaultApi vaultApi;
-	private static IFHApi ifhApi;
-	private static MessageToBungee mtb = null;
+	private static VaultEcoProvider vaultProvider;
+	private static IFHEcoProvider ifhProvider;
+	private static MessageToBungee mtbConsumer = null;
+	private static Administration administrationConsumer;
 	
 	public static boolean isPapiRegistered = false;
 	
@@ -90,6 +92,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		argumentMap = new LinkedHashMap<>();
 		
 		setupIFH();
+		setupIFHAdministration();
 		
 		try
 		{
@@ -113,7 +116,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		loggerApi = new LoggerApi(this);
 		ConfigHandler.init(plugin);
 		setupVault();
-		ifhApi.registerCurrencyFromFile();
+		ifhProvider.registerCurrencyFromFile();
 		backgroundTask = new BackgroundTask(this);
 		setupListener();
 		setupBstats();
@@ -127,13 +130,6 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	{
 		Bukkit.getScheduler().cancelTasks(this);
 		HandlerList.unregisterAll(this);
-		if (yamlHandler.getConfig().getBoolean("Mysql.Status", false) == true)
-		{
-			if (mysqlSetup.getConnection() != null) 
-			{
-				mysqlSetup.closeConnection();
-			}
-		}
 		log.info(pluginName + " is disabled!");
 	}
 	
@@ -334,24 +330,24 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		return commandMap;
 	}
 	
-	public static VaultApi getVault()
+	public static VaultEcoProvider getVault()
 	{
-		return vaultApi;
+		return vaultProvider;
 	}
 	
-	public IFHApi getIFHApi()
+	public IFHEcoProvider getIFHApi()
 	{
-		return ifhApi;
+		return ifhProvider;
 	}
 
 	private boolean setupVault() 
 	{
 		if (plugin.getServer().getPluginManager().isPluginEnabled("Vault")) 
 		{
-			vaultApi = new VaultApi(plugin);
+			vaultProvider = new VaultEcoProvider(plugin);
             plugin.getServer().getServicesManager().register(
             		net.milkbowl.vault.economy.Economy.class,
-            		vaultApi,
+            		vaultProvider,
             		plugin,
                     ServicePriority.Normal);
             log.info(pluginName + " detected Vault. Hooking!");
@@ -368,10 +364,10 @@ public class AdvancedEconomyPlus extends JavaPlugin
 			Bukkit.getPluginManager().getPlugin(pluginName).getPluginLoader().disablePlugin(this);
 	    	return false;
 	    }
-		ifhApi = new IFHApi(plugin);
+		ifhProvider = new IFHEcoProvider(plugin);
     	plugin.getServer().getServicesManager().register(
         main.java.me.avankziar.ifh.spigot.economy.Economy.class,
-        ifhApi,
+        ifhProvider,
         this,
         ServicePriority.Normal);
     	log.info(pluginName + " detected InterfaceHub >>> Economy.class is provided!");
@@ -406,7 +402,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 				    	i++;
 				        return;
 				    }
-				    mtb = rsp.getProvider();
+				    mtbConsumer = rsp.getProvider();
 				    cancel();
 				} catch(NoClassDefFoundError e)
 				{
@@ -418,7 +414,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	
 	public MessageToBungee getMtB()
 	{
-		return mtb;
+		return mtbConsumer;
 	}
 	
 	public boolean existHook(String externPluginName)
@@ -444,6 +440,48 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	{
 		int pluginId = 7665;
         new Metrics(this, pluginId);
+	}
+	
+	private void setupIFHAdministration()
+	{ 
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+	    	return;
+	    }
+		new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+			    if(i == 20)
+			    {
+				cancel();
+				return;
+			    }
+			    try
+			    {
+			    	RegisteredServiceProvider<main.java.me.avankziar.ifh.spigot.administration.Administration> rsp = 
+	                         getServer().getServicesManager().getRegistration(Administration.class);
+				    if (rsp == null) 
+				    {
+				    	i++;
+				        return;
+				    }
+				    administrationConsumer = rsp.getProvider();
+				    log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
+			    } catch(NoClassDefFoundError e) 
+			    {
+			    	cancel();
+			    }		    
+			    cancel();
+			}
+        }.runTaskTimer(plugin,  0L, 20*2);
+	}
+	
+	public Administration getAdministration()
+	{
+		return administrationConsumer;
 	}
 	
 	/*private Economy ifheco;

@@ -5,17 +5,47 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 
 public class MysqlSetup 
 {
-	private AdvancedEconomyPlus plugin;
 	private Connection conn = null;
+	private String host;
+	private int port;
+	private String database;
+	private String user;
+	private String password;
+	private boolean isAutoConnect;
+	private boolean isVerifyServerCertificate;
+	private boolean isSSLEnabled;
 	
 	public MysqlSetup(AdvancedEconomyPlus plugin) 
 	{
-		this.plugin = plugin;
+		boolean adm = plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration", false);
+		if(plugin.getAdministration() == null)
+		{
+			adm = false;
+		}
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		
+		host = adm ? plugin.getAdministration().getHost(path)
+				: plugin.getYamlHandler().getConfig().getString("Mysql.Host");
+		port = adm ? plugin.getAdministration().getPort(path)
+				: plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306);
+		database = adm ? plugin.getAdministration().getDatabase(path)
+				: plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName");
+		user = adm ? plugin.getAdministration().getUsername(path)
+				: plugin.getYamlHandler().getConfig().getString("Mysql.User");
+		password = adm ? plugin.getAdministration().getPassword(path)
+				: plugin.getYamlHandler().getConfig().getString("Mysql.Password");
+		isAutoConnect = adm ? plugin.getAdministration().isAutoReconnect(path)
+				: plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true);
+		isVerifyServerCertificate = adm ? plugin.getAdministration().isVerifyServerCertificate(path)
+				: plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false);
+		isSSLEnabled = adm ? plugin.getAdministration().useSSL(path)
+				: plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false);
 		loadMysqlSetup();
 	}
 	
@@ -102,32 +132,20 @@ public class MysqlSetup
 	    		Class.forName("com.mysql.jdbc.Driver");
 	    	}
 	        Properties properties = new Properties();
-            properties.setProperty("user", plugin.getYamlHandler().getConfig().getString("Mysql.User"));
-            properties.setProperty("password", plugin.getYamlHandler().getConfig().getString("Mysql.Password"));
-            properties.setProperty("autoReconnect", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true) + "");
-            properties.setProperty("verifyServerCertificate", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false) + "");
-            properties.setProperty("useSSL", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
-            properties.setProperty("requireSSL", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
-            //Connect to database
-            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().getConfig().getString("Mysql.Host") 
-            		+ ":" + plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306) + "/" 
-            		+ plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"), properties);
-           
-          } catch (ClassNotFoundException e) 
-		{
-        	  AdvancedEconomyPlus.log.severe("Could not locate drivers for mysql! Error: " + e.getMessage());
+            properties.setProperty("user", user);
+            properties.setProperty("password", password);
+            properties.setProperty("autoReconnect", String.valueOf(isAutoConnect));
+            properties.setProperty("verifyServerCertificate", String.valueOf(isVerifyServerCertificate));
+            properties.setProperty("useSSL", String.valueOf(isSSLEnabled));
+            properties.setProperty("requireSSL", String.valueOf(isSSLEnabled));
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
+            AdvancedEconomyPlus.log.info("Database connection successful!");
+            return true;
+        } catch (Exception e) 
+	    {
+        	AdvancedEconomyPlus.log.severe("Could not locate drivers for mysql! Error: " + e.getMessage());
             return false;
-          } catch (SQLException e) 
-		{
-        	  AdvancedEconomyPlus.log.severe("Could not connect to mysql database! Error: " + e.getMessage());
-            return false;
-          }
-		AdvancedEconomyPlus.log.info("Database connection successful!");
-		return true;
+        }
 	}
 	
 	@Deprecated
@@ -341,32 +359,12 @@ public class MysqlSetup
 	
 	private boolean baseSetup(String data) 
 	{
-		if (conn != null) 
+		try (Connection conn = getConnection(); PreparedStatement query = conn.prepareStatement(data))
 		{
-			PreparedStatement query = null;
-		      try 
-		      {
-		    	  query = conn.prepareStatement(data);
-		    	  query.execute();
-		      } catch (SQLException e) 
-		      {
-		    	  e.printStackTrace();
-		    	  AdvancedEconomyPlus.log.severe("Error creating tables! Error: " + e.getMessage());
-		    	  return false;
-		      } finally 
-		      {
-		    	  try 
-		    	  {
-		    		  if (query != null) 
-		    		  {
-		    			  query.close();
-		    		  }
-		    	  } catch (Exception e) 
-		    	  {
-		    		  e.printStackTrace();
-		    		  return false;
-		    	  }
-		      }
+			query.execute();
+		} catch (SQLException e) 
+		{
+			AdvancedEconomyPlus.log.log(Level.WARNING, "Could not build data source. Or connection is null", e);
 		}
 		return true;
 	}
@@ -382,17 +380,17 @@ public class MysqlSetup
 		try {
 			if (conn == null) 
 			{
-				AdvancedEconomyPlus.log.warning("Connection failed. Reconnecting...");
+				//MIM.log.warning("Connection failed. Reconnecting...");
 				reConnect();
 			}
-			if (!conn.isValid(3))
+			if (!conn.isValid(3)) 
 			{
-				AdvancedEconomyPlus.log.warning("Connection is idle or terminated. Reconnecting...");
+				//MIM.log.warning("Connection is idle or terminated. Reconnecting...");
 				reConnect();
 			}
 			if (conn.isClosed() == true) 
 			{
-				AdvancedEconomyPlus.log.warning("Connection is closed. Reconnecting...");
+				//MIM.log.warning("Connection is closed. Reconnecting...");
 				reConnect();
 			}
 		} catch (Exception e) 
@@ -419,48 +417,21 @@ public class MysqlSetup
 	    	{
 	    		// Load old Drivers for spigot
 	    		Class.forName("com.mysql.jdbc.Driver");
-	    	}           
-            long start = 0;
-			long end = 0;
-			
-		    start = System.currentTimeMillis();
-		    AdvancedEconomyPlus.log.info("Attempting to establish a connection to the MySQL server!");
+	    	}
             Properties properties = new Properties();
-            properties.setProperty("user", plugin.getYamlHandler().getConfig().getString("Mysql.User"));
-            properties.setProperty("password", plugin.getYamlHandler().getConfig().getString("Mysql.Password"));
-            properties.setProperty("autoReconnect", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.AutoReconnect", true) + "");
-            properties.setProperty("verifyServerCertificate", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.VerifyServerCertificate", false) + "");
-            properties.setProperty("useSSL", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
-            properties.setProperty("requireSSL", 
-            		plugin.getYamlHandler().getConfig().getBoolean("Mysql.SSLEnabled", false) + "");
+            properties.setProperty("user", user);
+            properties.setProperty("password", password);
+            properties.setProperty("autoReconnect", String.valueOf(isAutoConnect));
+            properties.setProperty("verifyServerCertificate", String.valueOf(isVerifyServerCertificate));
+            properties.setProperty("useSSL", String.valueOf(isSSLEnabled));
+            properties.setProperty("requireSSL", String.valueOf(isSSLEnabled));
             //Connect to database
-            conn = DriverManager.getConnection("jdbc:mysql://" + plugin.getYamlHandler().getConfig().getString("Mysql.Host") 
-            		+ ":" + plugin.getYamlHandler().getConfig().getInt("Mysql.Port", 3306) + "/" 
-            		+ plugin.getYamlHandler().getConfig().getString("Mysql.DatabaseName"), properties);
-		    end = System.currentTimeMillis();
-		    AdvancedEconomyPlus.log.info("Connection to MySQL server established!");
-		    AdvancedEconomyPlus.log.info("Connection took " + ((end - start)) + "ms!");
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
             return true;
 		} catch (Exception e) 
 		{
 			AdvancedEconomyPlus.log.severe("Error re-connecting to the database! Error: " + e.getMessage());
 			return false;
-		}
-	}
-	
-	public void closeConnection() 
-	{
-		try
-		{
-			AdvancedEconomyPlus.log.info("Closing database connection...");
-			conn.close();
-			conn = null;
-		} catch (SQLException e) 
-		{
-			e.printStackTrace();
 		}
 	}
 }
