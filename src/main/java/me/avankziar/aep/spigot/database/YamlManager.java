@@ -9,7 +9,6 @@ import java.util.List;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import main.java.me.avankziar.aep.general.objects.TaxationCase;
-import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.sub.ExtraPerm;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
@@ -94,7 +93,6 @@ public class YamlManager
 		{
 			return;
 		}
-		AdvancedEconomyPlus.log.info("key: "+key);
 		if(keyMap.get(key).languageValues.get(languageType).length == 1)
 		{
 			if(keyMap.get(key).languageValues.get(languageType)[0] instanceof String)

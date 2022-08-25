@@ -11,24 +11,24 @@ import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 
 public class MysqlSetup 
 {
-	private String host;
-	private int port;
-	private String database;
-	private String user;
-	private String password;
-	private boolean isAutoConnect;
-	private boolean isVerifyServerCertificate;
-	private boolean isSSLEnabled;
+	private Connection conn = null;
+	final private String host;
+	final private int port;
+	final private String database;
+	final private String user;
+	final private String password;
+	final private boolean isAutoConnect;
+	final private boolean isVerifyServerCertificate;
+	final private boolean isSSLEnabled;
 	
 	public MysqlSetup(AdvancedEconomyPlus plugin) 
 	{
 		boolean adm = plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration", false);
-		if(plugin.getAdministration() == null)
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		if(plugin.getAdministration() == null || plugin.getAdministration().getHost(path) == null)
 		{
 			adm = false;
-		}
-		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
-		
+		}		
 		host = adm ? plugin.getAdministration().getHost(path)
 				: plugin.getYamlHandler().getConfig().getString("Mysql.Host");
 		port = adm ? plugin.getAdministration().getPort(path)
@@ -62,9 +62,34 @@ public class MysqlSetup
 		return true;
 	}
 	
-	public Connection getConnection()
+	public Connection getConnection() 
 	{
-		return reConnect();
+		checkConnection();
+		return conn;
+	}
+	
+	public void checkConnection() 
+	{
+		try {
+			if (conn == null) 
+			{
+				//MIM.log.warning("Connection failed. Reconnecting...");
+				reConnect();
+			}
+			if (!conn.isValid(3)) 
+			{
+				//MIM.log.warning("Connection is idle or terminated. Reconnecting...");
+				reConnect();
+			}
+			if (conn.isClosed() == true) 
+			{
+				//MIM.log.warning("Connection is closed. Reconnecting...");
+				reConnect();
+			}
+		} catch (Exception e) 
+		{
+			AdvancedEconomyPlus.log.severe("Could not reconnect to Database! Error: " + e.getMessage());
+		}
 	}
 	
 	private Connection reConnect() 
@@ -94,7 +119,7 @@ public class MysqlSetup
             properties.setProperty("useSSL", String.valueOf(isSSLEnabled));
             properties.setProperty("requireSSL", String.valueOf(isSSLEnabled));
             //Connect to database
-            Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
             return conn;
 		} catch (Exception e) 
 		{

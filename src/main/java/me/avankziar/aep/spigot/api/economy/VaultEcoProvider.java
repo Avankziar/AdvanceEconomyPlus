@@ -393,8 +393,8 @@ public class VaultEcoProvider implements Economy
 		{
 			return 0;
 		}
-		return plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN) != null ?
-				plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN).getBalance() : 0.0;
+		Account acc = plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN);
+		return acc != null ? acc.getBalance() : 0.0;
 	}
 	
 	@SuppressWarnings("deprecation")
