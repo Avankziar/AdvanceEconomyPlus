@@ -24,11 +24,11 @@ public class MysqlSetup
 	public MysqlSetup(AdvancedEconomyPlus plugin)
 	{
 		boolean adm = plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration", false);
-		if(plugin.getAdministration() == null)
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		if(plugin.getAdministration() == null || plugin.getAdministration().getHost(path) == null)
 		{
 			adm = false;
 		}
-		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
 		
 		host = adm ? plugin.getAdministration().getHost(path)
 				: plugin.getYamlHandler().getConfig().getString("Mysql.Host");
