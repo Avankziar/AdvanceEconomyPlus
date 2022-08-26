@@ -28,7 +28,11 @@ public class MysqlSetup
 		if(plugin.getAdministration() == null || plugin.getAdministration().getHost(path) == null)
 		{
 			adm = false;
-		}		
+		}
+		if(adm)
+		{
+			AdvancedEconomyPlus.log.log(Level.INFO, "Using IFH Administration");
+		}
 		host = adm ? plugin.getAdministration().getHost(path)
 				: plugin.getYamlHandler().getConfig().getString("Mysql.Host");
 		port = adm ? plugin.getAdministration().getPort(path)

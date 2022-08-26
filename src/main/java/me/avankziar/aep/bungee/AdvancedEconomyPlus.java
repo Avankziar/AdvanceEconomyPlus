@@ -1,6 +1,5 @@
 package main.java.me.avankziar.aep.bungee;
 
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +16,6 @@ import main.java.me.avankziar.ifh.bungee.plugin.ServicePriority;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 public class AdvancedEconomyPlus extends Plugin
 {
@@ -32,18 +30,26 @@ public class AdvancedEconomyPlus extends Plugin
 	private IFHEcoProvider ifhProvider;
 	private Administration administrationConsumer;
 	
-	private ScheduledTask administrationRun;
-	
 	public void onEnable() 
 	{
 		plugin = this;
 		log = getLogger();
 		
+		//https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=AEP
+		log.info("  █████╗ ███████╗██████╗  | Version: "+plugin.getDescription().getVersion());
+		log.info(" ██╔══██╗██╔════╝██╔══██╗ | Author: "+plugin.getDescription().getAuthor());
+		log.info(" ███████║█████╗  ██████╔╝ | Plugin Website: https://www.spigotmc.org/resources/advanced-economy-plus.79828/");
+		log.info(" ██╔══██║██╔══╝  ██╔═══╝  | Depend Plugins: "+plugin.getDescription().getDepends().toString());
+		log.info(" ██║  ██║███████╗██║      | SoftDepend Plugins: "+plugin.getDescription().getSoftDepends().toString());
+		log.info(" ╚═╝  ╚═╝╚══════╝╚═╝      | Have Fun^^");
+		
 		setupIFHAdministration();
 		
 		yamlHandler = new YamlHandler(plugin);
 		
-		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		boolean check = plugin.getAdministration() != null && plugin.getAdministration().getHost(path) != null;
+		if(check || yamlHandler.getConfig().getBoolean("Mysql.Status", false))
 		{
 			mysqlHandler = new MysqlHandler(plugin);
 			mysqlSetup = new MysqlSetup(plugin);
@@ -147,32 +153,22 @@ public class AdvancedEconomyPlus extends Plugin
             return;
         }
         InterfaceHub ifh = (InterfaceHub) plugin;
-        administrationRun = plugin.getProxy().getScheduler().schedule(plugin, new Runnable()
+        try
 		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					RegisteredServiceProvider<Administration> rsp = ifh
-			        		.getServicesManager()
-			        		.getRegistration(Administration.class);
-			        if (rsp == null) 
-			        {
-			            return;
-			        }
-			        administrationConsumer = rsp.getProvider();
-			        if(administrationConsumer != null)
-			        {
-			    		log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
-			    		administrationRun.cancel();
-			        }
-				} catch(NoClassDefFoundError e)
-				{
-					administrationRun.cancel();
-				}
-			}
-		}, 15L*1000, 25L, TimeUnit.MILLISECONDS);
+			RegisteredServiceProvider<Administration> rsp = ifh
+	        		.getServicesManager()
+	        		.getRegistration(Administration.class);
+	        if (rsp == null) 
+	        {
+	            return;
+	        }
+	        administrationConsumer = rsp.getProvider();
+	        if(administrationConsumer != null)
+	        {
+	    		log.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
+	        }
+		} catch(NoClassDefFoundError e)
+		{}
         return;
 	}
 	

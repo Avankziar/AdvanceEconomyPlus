@@ -189,7 +189,7 @@ public class YamlHandler
 		{
 			directory.mkdir();
 		}
-		for(String currency : plugin.getYamlHandler().getConfig().getStringList("LoadCurrency"))
+		for(String currency : getConfig().getStringList("LoadCurrency"))
 		{
 			File cur = new File(directory.getPath(), currency+".yml");
 			boolean exist = cur.exists();

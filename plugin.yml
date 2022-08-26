@@ -6,5 +6,5 @@ api-version: 1.18
 description: a Economy-Plugin
 author: Avankziar
 depend: [InterfaceHub]
-softdepend: [Vault,ChestShop,Jobs,HeadDatabase,QuickShop]
+softdepend: [Vault,RootAdministration,ChestShop,Jobs,HeadDatabase,QuickShop]
 website: https://www.spigotmc.org/resources/advanced-economy-plus.79828/

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.bukkit.entity.Player;
-
 import main.java.me.avankziar.aep.bungee.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.bungee.database.MysqlHandler;
 import main.java.me.avankziar.aep.bungee.database.MysqlHandler.Type;
@@ -15,8 +13,6 @@ import main.java.me.avankziar.aep.general.objects.AccountManagement;
 import main.java.me.avankziar.aep.general.objects.DefaultAccount;
 import main.java.me.avankziar.aep.general.objects.EntityData;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
-import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.ifh.bungee.economy.account.Account;
 import main.java.me.avankziar.ifh.bungee.economy.currency.EconomyCurrency;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
@@ -25,6 +21,7 @@ import main.java.me.avankziar.ifh.general.economy.account.AccountType;
 import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
 import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
 
 public class AccountHandler
@@ -38,7 +35,7 @@ public class AccountHandler
 		this.plugin = plugin;
 	}
 	
-	public static void createAllCurrencyAccounts(Player player, boolean convert)
+	public static void createAllCurrencyAccounts(ProxiedPlayer player, boolean convert)
 	{
 		AdvancedEconomyPlus plugin = AdvancedEconomyPlus.getPlugin();
 		for(EconomyCurrency ec : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
@@ -72,7 +69,7 @@ public class AccountHandler
 							continue;
 						}
 					}
-					if(convert && acy == AccountCategory.MAIN)
+					/*if(convert && acy == AccountCategory.MAIN)
 					{
 						OLD_AEPUser old = _AEPUserHandler_OLD.getEcoPlayer(player);
 						if(old != null)
@@ -80,7 +77,7 @@ public class AccountHandler
 							startamount += old.getBalance();
 							plugin.getMysqlHandler().deleteData(Type.OLDPLAYER, "`id` = ?", old.getId());
 						}
-					}
+					}*/
 					Account ac = new Account(acname, at, acy, ec, ee, startamount, defaultac);
 					if(plugin.getIFHApi().existAccount(ee.getUUID(), ec, ac.getType(), acy, eeet))
 					{

@@ -29,7 +29,10 @@ public class MysqlSetup
 		{
 			adm = false;
 		}
-		
+		if(adm)
+		{
+			AdvancedEconomyPlus.log.log(Level.INFO, "Using IFH Administration");
+		}
 		host = adm ? plugin.getAdministration().getHost(path)
 				: plugin.getYamlHandler().getConfig().getString("Mysql.Host");
 		port = adm ? plugin.getAdministration().getPort(path)
@@ -120,7 +123,7 @@ public class MysqlSetup
             properties.setProperty("useSSL", String.valueOf(isSSLEnabled));
             properties.setProperty("requireSSL", String.valueOf(isSSLEnabled));
             //Connect to database
-            Connection conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
+            conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, properties);
             return conn;
 		} catch (Exception e) 
 		{
@@ -369,7 +372,7 @@ public class MysqlSetup
         		+ " player_uuid char(36) NOT NULL,"
         		+ " account_id int,"
         		+ " account_currency text,"
-        		+ " account_category text,"
+        		+ " account_category text"
         		+ " );";
 		baseSetup(data);
 		return true;
