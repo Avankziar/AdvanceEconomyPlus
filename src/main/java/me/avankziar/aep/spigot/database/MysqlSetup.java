@@ -68,25 +68,23 @@ public class MysqlSetup
 	
 	public void checkConnection() 
 	{
-		try {
+		try 
+		{
 			if (conn == null) 
 			{
-				//MIM.log.warning("Connection failed. Reconnecting...");
 				reConnect();
 			}
 			if (!conn.isValid(3)) 
 			{
-				//MIM.log.warning("Connection is idle or terminated. Reconnecting...");
 				reConnect();
 			}
 			if (conn.isClosed() == true) 
 			{
-				//MIM.log.warning("Connection is closed. Reconnecting...");
 				reConnect();
 			}
 		} catch (Exception e) 
 		{
-			AdvancedEconomyPlus.log.severe("Could not reconnect to Database! Error: " + e.getMessage());
+			AdvancedEconomyPlus.log.severe("Could not (re)connect to Database! Error: " + e.getMessage());
 		}
 	}
 	
@@ -123,6 +121,23 @@ public class MysqlSetup
 		{
 			AdvancedEconomyPlus.log.severe("Error (re-)connecting to the database! Error: " + e.getMessage());
 			return null;
+		}
+	}
+	
+	public void closeConnection() 
+	{
+		if(conn == null)
+		{
+			return;
+		}
+		try
+		{
+			AdvancedEconomyPlus.log.info("Closing database connection...");
+			conn.close();
+			conn = null;
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
 		}
 	}
 	

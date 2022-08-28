@@ -134,6 +134,7 @@ public class AdvancedEconomyPlus extends JavaPlugin
 	{
 		Bukkit.getScheduler().cancelTasks(this);
 		HandlerList.unregisterAll(this);
+		mysqlSetup.closeConnection();
 		log.info(pluginName + " is disabled!");
 	}
 	
