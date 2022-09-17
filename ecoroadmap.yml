@@ -28,6 +28,7 @@ Future =========================================================================
 
 Build 4-2-1
 - IFH Administration aktualisiert
+- TransActionHandler NullPointer BugFix
 
 Build 4-2-0
 - MC 1.19.2 support

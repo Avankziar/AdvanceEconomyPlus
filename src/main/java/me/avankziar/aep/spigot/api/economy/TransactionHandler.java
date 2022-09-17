@@ -193,15 +193,21 @@ public class TransactionHandler
 			}
 			if(!withdraw.getCurrency().getUniqueName().equals(taxDepot.getCurrency().getUniqueName()))
 			{
-				return new EconomyAction(amount, 0.0, 0.0, false, CURRENCYS_ARE_NOT_THE_SAME, ErrorMessageType.CURRENCYS_ARE_NOT_THE_SAME, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amount, 0.0, 0.0, false, CURRENCYS_ARE_NOT_THE_SAME, ErrorMessageType.CURRENCYS_ARE_NOT_THE_SAME,
+						withdraw != null ? withdraw.getBalance() : 0.0,
+						deposit != null ? deposit.getBalance() : 0.0);
 			}
 			if(taxInPercent < 0.0)
 			{
-				return new EconomyAction(amount, 0.0, 0.0, false, TAX_IS_NEGATIVE, ErrorMessageType.TAX_IS_NEGATIVE, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amount, 0.0, 0.0, false, TAX_IS_NEGATIVE, ErrorMessageType.TAX_IS_NEGATIVE,
+						withdraw != null ? withdraw.getBalance() : 0.0,
+						deposit != null ? deposit.getBalance() : 0.0);
 			}
 			if(taxInPercent >= 1.0 && !taxAreExclusive)
 			{
-				return new EconomyAction(amount, 0.0, 0.0, false, TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT, ErrorMessageType.TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amount, 0.0, 0.0, false, TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT, ErrorMessageType.TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT,
+						withdraw != null ? withdraw.getBalance() : 0.0,
+						deposit != null ? deposit.getBalance() : 0.0);
 			}
 			double amountToWithdraw = 0.0;
 			double amountToDeposit = 0.0;
@@ -221,13 +227,17 @@ public class TransactionHandler
 			double amountToTax = amountToWithdraw - amountToDeposit;
 			if(withdraw != null && withdraw.getBalance() < amountToWithdraw)
 			{
-				return new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, false, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, false, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH,
+						withdraw != null ? withdraw.getBalance() : 0.0,
+						deposit != null ? deposit.getBalance() : 0.0);
 			}
 		} else
 		{
 			if(withdraw != null && withdraw.getBalance() < amount)
 			{
-				return new EconomyAction(amount, 0.0, 0.0, false, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH, withdraw.getBalance(), deposit.getBalance());
+				return new EconomyAction(amount, 0.0, 0.0, false, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH,
+						withdraw != null ? withdraw.getBalance() : 0.0,
+						deposit != null ? deposit.getBalance() : 0.0);
 			}
 		}
 		return null;
