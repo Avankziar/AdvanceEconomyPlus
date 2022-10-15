@@ -326,7 +326,7 @@ public class TransactionHandler
 		OrdererType ot = OrdererType.PLUGIN;
 		String ordererUUIDOrPlugin = "AEP";
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
-				withdraw.getID(), deposit.getID(), taxDepot.getID(),
+				withdraw.getID(), deposit.getID(), taxDepot != null ? taxDepot.getID() : 0,
 				ot,
 				ot == OrdererType.PLAYER ? UUID.fromString(ordererUUIDOrPlugin) : null,
 				ot == OrdererType.PLUGIN ? ordererUUIDOrPlugin : null,
@@ -376,7 +376,7 @@ public class TransactionHandler
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
-				withdraw.getID(), deposit.getID(), amountToTax > 0.0 ? taxDepot.getID() : 0,
+				withdraw.getID(), deposit.getID(), taxDepot != null ? taxDepot.getID() : 0,
 				type,
 				type == OrdererType.PLAYER ? UUID.fromString(ordererUUIDOrPlugin) : null,
 				type == OrdererType.PLUGIN ? ordererUUIDOrPlugin : null,
@@ -478,7 +478,7 @@ public class TransactionHandler
 		OrdererType ot = OrdererType.PLUGIN;
 		String ordererUUIDOrPlugin = "AEP";
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
-				0, holder.getID(), amountToTax > 0.0 ? taxDepot.getID() : 0,
+				0, holder.getID(), taxDepot != null ? taxDepot.getID() : 0,
 				ot,
 				ot == OrdererType.PLAYER ? UUID.fromString(ordererUUIDOrPlugin) : null,
 				ot == OrdererType.PLUGIN ? ordererUUIDOrPlugin : null,
@@ -521,7 +521,7 @@ public class TransactionHandler
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
-				0, holder.getID(), amountToTax > 0.0 ? taxDepot.getID() : 0,
+				0, holder.getID(), taxDepot != null ? taxDepot.getID() : 0,
 				type,
 				type == OrdererType.PLAYER ? UUID.fromString(ordererUUIDOrPlugin) : null,
 				type == OrdererType.PLUGIN ? ordererUUIDOrPlugin : null,
@@ -616,7 +616,7 @@ public class TransactionHandler
 		OrdererType ot = OrdererType.PLUGIN;
 		String ordererUUIDOrPlugin = "AEP";
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
-				holder.getID(), 0, amountToTax > 0.0 ? taxDepot.getID() : 0,
+				holder.getID(), 0, taxDepot != null ? taxDepot.getID() : 0,
 				ot,
 				ot == OrdererType.PLAYER ? UUID.fromString(ordererUUIDOrPlugin) : null,
 				ot == OrdererType.PLUGIN ? ordererUUIDOrPlugin : null,
@@ -659,7 +659,7 @@ public class TransactionHandler
 		}
 		double amountToTax = amountToWithdraw - amountToDeposit;
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
-				holder.getID(), 0, amountToTax > 0.0 ? taxDepot.getID() : 0,
+				holder.getID(), 0, taxDepot != null ? taxDepot.getID() : 0,
 				type,
 				type == OrdererType.PLAYER ? UUID.fromString(ordererUUIDOrPlugin) : null,
 				type == OrdererType.PLUGIN ? ordererUUIDOrPlugin : null,
@@ -825,7 +825,9 @@ public class TransactionHandler
 		LoggerApi.addActionLogger(new ActionLogger(0, System.currentTimeMillis(),
 				withdraw.getID(), deposit.getID(),
 				amountToTax > 0.0 ? 
-						(ex.taxTo == TaxToCurrency.TO_WITHDRAW_CURRENCY ? withdrawAccounttaxDepot.getID() : depositAccounttaxDepot.getID()) 
+						(ex.taxTo == TaxToCurrency.TO_WITHDRAW_CURRENCY 
+						? (withdrawAccounttaxDepot != null ? withdrawAccounttaxDepot.getID() : 0) 
+						: (depositAccounttaxDepot != null ? depositAccounttaxDepot.getID() : 0)) 
 						: 0,
 				type,
 				type == OrdererType.PLAYER ? UUID.fromString(ordererUUIDOrPlugin) : null,

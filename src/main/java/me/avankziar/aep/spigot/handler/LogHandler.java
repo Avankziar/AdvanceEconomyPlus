@@ -1017,6 +1017,7 @@ public class LogHandler
 		for(TrendLogger tl : list)
 		{
 			ArrayList<BaseComponent> m2 = new ArrayList<>();
+			double rel = tl.getLastValue()-tl.getFirstValue();
 			if(MatchApi.isPositivNumber(tl.getRelativeAmountChange()))
 			{
 				m2.add(ChatApi.hoverEvent(
@@ -1026,7 +1027,7 @@ public class LogHandler
 						.replace("%last%", plugin.getIFHApi().format(tl.getLastValue(), ac.getCurrency())),
 						HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.TrendLog.Positiv")
-						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))));
+						.replace("%relativ%", plugin.getIFHApi().format(rel, ac.getCurrency()))));
 			} else if(tl.getRelativeAmountChange() == 0) 
 			{
 				m2.add(ChatApi.hoverEvent(
@@ -1036,7 +1037,7 @@ public class LogHandler
 						.replace("%last%", plugin.getIFHApi().format(tl.getLastValue(), ac.getCurrency())),
 						HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.TrendLog.Positiv")
-						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))));
+						.replace("%relativ%", plugin.getIFHApi().format(rel, ac.getCurrency()))));
 			} else
 			{
 				m2.add(ChatApi.hoverEvent(
@@ -1046,7 +1047,7 @@ public class LogHandler
 						.replace("%last%", plugin.getIFHApi().format(tl.getLastValue(), ac.getCurrency())),
 						HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.TrendLog.Negativ")
-						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))));
+						.replace("%relativ%", plugin.getIFHApi().format(rel, ac.getCurrency()))));
 			}
 			msg.add(m2);
 		}
@@ -1149,19 +1150,20 @@ public class LogHandler
 			final int secondlength = (message.length()-firstlength)/2;
 			message = message.substring(0, firstlength+secondlength)+"&f|"+message.substring(firstlength+secondlength);
 			ArrayList<BaseComponent> m3 = new ArrayList<>();
+			double rel = tl.getLastValue()-tl.getFirstValue();
 			if(MatchApi.isPositivNumber(tl.getRelativeAmountChange()))
 			{
 				String per = "&a"+String.valueOf(percent);
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.Diagram.Positiv")
-						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))
+						.replace("%relativ%", plugin.getIFHApi().format(rel, ac.getCurrency()))
 						.replace("%percent%", per)));
 			} else
 			{
 				String per = "&c"+String.valueOf(percent);
 				m3.add(ChatApi.hoverEvent(message,HoverEvent.Action.SHOW_TEXT,
 						plugin.getYamlHandler().getLang().getString("Log.Diagram.Negativ")
-						.replace("%relativ%", plugin.getIFHApi().format(tl.getRelativeAmountChange(), ac.getCurrency()))
+						.replace("%relativ%", plugin.getIFHApi().format(rel, ac.getCurrency()))
 						.replace("%percent%", per)));
 			}
 			msg.add(m3);

@@ -26,6 +26,9 @@ Future =========================================================================
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
 - LoadBefore Essential
 
+Build 4-2-2
+- LogHandler Trendlog RelativeAmountFix
+
 Build 4-2-1
 - IFH Administration aktualisiert
 - TransActionHandler NullPointer BugFix
