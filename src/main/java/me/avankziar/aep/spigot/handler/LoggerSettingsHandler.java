@@ -1151,7 +1151,14 @@ public class LoggerSettingsHandler
 				if(ac == null)
 				{
 					player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Log.AccountDontExit")));
-					player.closeInventory();
+					new BukkitRunnable()
+					{
+						@Override
+						public void run()
+						{
+							player.closeInventory();
+						}
+					};
 					return;
 				}
 				new BukkitRunnable() {@Override public void run(){player.closeInventory();}}.runTask(plugin);

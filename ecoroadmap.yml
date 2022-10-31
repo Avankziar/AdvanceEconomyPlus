@@ -33,6 +33,7 @@ Build 4-2-3
 - balance isAdmin Farbe hinzugefügt
 - trendlog fix
 - account open, count accounts fix
+- Loggersettingshandler fix
 
 Build 4-2-2
 - LogHandler Trendlog RelativeAmountFix
