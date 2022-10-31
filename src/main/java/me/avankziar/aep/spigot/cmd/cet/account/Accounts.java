@@ -3,6 +3,7 @@ package main.java.me.avankziar.aep.spigot.cmd.cet.account;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.command.CommandSender;
@@ -21,11 +22,11 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.handler.LogHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class Accounts extends ArgumentModule
 {
@@ -207,7 +208,12 @@ public class Accounts extends ArgumentModule
 			ml.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Player.AccountSeperator")));
 		}
 		msg.add(ml);
-		LogHandler.pastNextPage(plugin, player, msg, 0, false, ac.getCommandString(), null, null);
+		for(List<BaseComponent> m : msg)
+		{
+			TextComponent n = ChatApi.tctl("");
+			n.setExtra(m);
+			player.spigot().sendMessage(n);
+		}
 		return;
 	}
 }

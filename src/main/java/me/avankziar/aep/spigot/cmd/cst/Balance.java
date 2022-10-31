@@ -25,13 +25,13 @@ import main.java.me.avankziar.aep.spigot.cmd.tree.CommandExecuteType;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
+import main.java.me.avankziar.aep.spigot.handler.LogHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.general.economy.account.EconomyEntity;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class Balance implements CommandExecutor
 {
@@ -344,11 +344,6 @@ public class Balance implements CommandExecutor
 			}
 			msg.add(list);
 		}
-		for(ArrayList<BaseComponent> l : msg)
-		{
-			TextComponent tc = new TextComponent("");
-			tc.setExtra(l);
-			player.spigot().sendMessage(tc);
-		}
+		LogHandler.pastNextPage(plugin, player, msg, page, false, cc.getCommandString(), null, null);
 	}
 }

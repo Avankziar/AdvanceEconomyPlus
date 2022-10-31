@@ -156,6 +156,27 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 					return;
 				}
 			}	
+			accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), uuid);
+			if(accountID < 0)
+			{
+				player.sendMessage(ChatApi.tl(
+						plugin.getYamlHandler().getLang().getString("Cmd.QuickPayDontExist")));
+				return;
+			}
+		} else if(args.length >= two)
+		{
+			playerName = args[zero];
+			UUID uuid = Utility.convertNameToUUID(playerName, EconomyEntity.EconomyType.PLAYER);
+			if(uuid == null)
+			{
+				uuid = Utility.convertNameToUUID(playerName, EconomyEntity.EconomyType.ENTITY);
+				if(uuid == null)
+				{
+					player.sendMessage(ChatApi.tl(
+							plugin.getYamlHandler().getLang().getString("EntityNotExist")));
+					return;
+				}
+			}	
 			Account ac = plugin.getIFHApi().getAccount(new EconomyEntity(EconomyEntity.EconomyType.PLAYER, uuid, playerName), args[one]);
 			if(ac == null)
 			{

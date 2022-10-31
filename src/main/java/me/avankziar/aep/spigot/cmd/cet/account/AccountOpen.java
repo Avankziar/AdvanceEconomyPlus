@@ -284,7 +284,8 @@ public class AccountOpen extends ArgumentModule
 	{
 		boolean useact = plugin.getYamlHandler().getConfig().getBoolean("Do.OpenAccount.CountWithAccountType", false);
 		boolean useacc = plugin.getYamlHandler().getConfig().getBoolean("Do.OpenAccount.CountWithAccountCategory", false);
-		int c = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNT, "`account_predefined` = ?", false);
+		int c = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNT, 
+				"`account_predefined` = ? AND `owner_uuid` = ?", false, player.getUniqueId().toString());
 		CountType ct = new ConfigHandler().getCountPermType();
 		switch(ct)
 		{
