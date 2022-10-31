@@ -1745,10 +1745,14 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				" &6%account%&7: &f%balance%",
 				" &6%account%&7: &f%balance%"}));
+		languageKeys.put(base+"Balance.AccountDisplay.IsAdmin"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				" &d%account%&7: &f%balance%",
+				" &d%account%&7: &f%balance%"}));
 		languageKeys.put(base+"Balance.AccountDisplay.CanSeeLog"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				" &e%account%&7: &f%balance%",
-				" &e%account%&7: &f%balance%"}));
+				" &b%account%&7: &f%balance%",
+				" &b%account%&7: &f%balance%"}));
 		languageKeys.put(base+"Balance.AccountDisplay.CanSeeBalance"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				" &7%account%&7: &f%balance%",
@@ -1909,6 +1913,14 @@ public class YamlManager
 				"&eAccountCategory: &f%acc%",
 				"&cTyp: &f%owt%",
 				"&dAccountType: &f%act%"}));
+		languageKeys.put(base+"PayThroughGui.Sender"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Absender: ",
+				"Sender: "}));
+		languageKeys.put(base+"PayThroughGui.Receiver"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"Empfänger: ",
+				"Receiver: "}));
 		languageKeys.put(base+"PayCategorySuggestion"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"Überweisung",
@@ -2961,7 +2973,8 @@ public class YamlManager
 				CommandExecuteType.TAKE.toString()+";take",
 				CommandExecuteType.TAKE_CONSOLE.toString()+";takeconsole",
 				CommandExecuteType.SET.toString()+";set",
-				CommandExecuteType.SET_CONSOLE.toString()+";setconsole"}));
+				CommandExecuteType.SET_CONSOLE.toString()+";setconsole",
+				CommandExecuteType.TRANSFER.toString()+";transfer"}));
 		currencyKeyI.put("Commands.NESTED"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				CommandExecuteType.BALANCE.toString()+";money",
@@ -2973,7 +2986,7 @@ public class YamlManager
 				CommandExecuteType.TAKE.toString()+";money_take",
 				CommandExecuteType.TAKE_CONSOLE.toString()+";money_takeconsole",
 				CommandExecuteType.SET.toString()+";money_set",
-				CommandExecuteType.SET_CONSOLE.toString()+";money_setconsole"}));
+				CommandExecuteType.TRANSFER.toString()+";money_transfer"}));
 		currencyKeyI.put("Taxation"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				TaxationCase.TRANSACTION_BETWEEN_PLAYERS.toString()+";false;"+1.0,

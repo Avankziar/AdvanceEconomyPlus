@@ -25,6 +25,12 @@ Future =========================================================================
 - Neue Mysql mit Tagensdaten, wieviel Geld ins und aus dem System gegangen ist. Mit Grafik oder ähnlich arbeiten.
   Dazu einen Befehl, wieviel Geld momentan im System sich befindet.
 - LoadBefore Essential
+- /money, die Namen der Account farbig nach den Kategorien 
+- Die ganzen Eröffnen und handhaben von Konten per GUI?
+
+Build 4-2-3
+- paythroughGui Absender & Empfänger hinzugefügt
+- balance isAdmin Farbe hinzugefügt
 
 Build 4-2-2
 - LogHandler Trendlog RelativeAmountFix

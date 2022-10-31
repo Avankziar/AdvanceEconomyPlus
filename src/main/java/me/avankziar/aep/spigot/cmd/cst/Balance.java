@@ -247,9 +247,26 @@ public class Balance implements CommandExecutor
 					plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.Info")
 					.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACCOUNT).replace(" ", "+").trim())));
 			if(a.getOwner() != null &&
-					(a.getOwner().getUUID().toString().equals(player.getUniqueId().toString())
-					|| player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACCOUNTMANAGEMENT))
-					))
+					a.getOwner().getUUID().toString().equals(player.getUniqueId().toString()))
+			{
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLog")
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACTIONLOG).replace(" ", "+").trim())
+						.replace("%account%", a.getAccountName())
+						.replace("%player%", owner)));
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLog")
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).replace(" ", "+").trim())
+						.replace("%account%", a.getAccountName())
+						.replace("%player%", owner)));
+				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwner")
+						.replace("%account%", a.getAccountName())
+						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
+						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
+						.replace("%fromaccountowner%", owner)));
+				
+			} else if(a.getOwner() != null &&
+					(a.getOwner().getUUID().toString().equals(player.getUniqueId().toString())))
 			{
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLog")
@@ -296,6 +313,24 @@ public class Balance implements CommandExecutor
 						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
 						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
 						.replace("%fromaccountowner%", owner)));
+			} else if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACCOUNTMANAGEMENT)))
+			{
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLog")
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.ACTIONLOG).replace(" ", "+").trim())
+						.replace("%account%", a.getAccountName())
+						.replace("%player%", owner)));
+				list.add(ChatApi.generateTextComponent(
+						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.TrendLog")
+						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).replace(" ", "+").trim())
+						.replace("%account%", a.getAccountName())
+						.replace("%player%", owner)));
+				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsAdmin")
+						.replace("%account%", a.getAccountName())
+						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
+						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
+						.replace("%fromaccountowner%", owner)));
+				
 			} else
 			{
 				list.add(ChatApi.generateTextComponent(

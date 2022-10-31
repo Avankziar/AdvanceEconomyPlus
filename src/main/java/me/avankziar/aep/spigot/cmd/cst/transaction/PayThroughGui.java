@@ -185,14 +185,14 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new RemovePlayerInGui(player.getUniqueId()), 20*60*2);
 		try
 		{
-			openPayThroughGui(player);
+			openPayThroughGui(player, true);
 		} catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
 	
-	public static void openPayThroughGui(Player player) throws IOException
+	public static void openPayThroughGui(Player player, boolean step) throws IOException
 	{
 		if(!GuiPayListener.guiPayMap.containsKey(player.getUniqueId().toString()))
 		{
@@ -220,7 +220,11 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		ArrayList<AccountManagement> aml = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
 				MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`player_uuid` = ? AND `account_management_type` = ?", 
 				aepu.getUUID().toString(), AccountManagementType.CAN_WITHDRAW.toString()));
-		Inventory inv = Bukkit.createInventory(null, 6*9, aepu.getName()+" Accounts");
+		Inventory inv = Bukkit.createInventory(null, 6*9, 
+				(step
+				? plugin.getYamlHandler().getLang().getString("Cmd.PayThroughGui.Sender")
+				: plugin.getYamlHandler().getLang().getString("Cmd.PayThroughGui.Receiver"))+
+				aepu.getName()+" Accounts");
 		for(AccountManagement am : aml)
 		{
 			Account ac = plugin.getIFHApi().getAccount(am.getAccountID());

@@ -89,7 +89,7 @@ public class GuiPayListener implements Listener
 			player.closeInventory();
 			try
 			{
-				PayThroughGui.openPayThroughGui(player);
+				PayThroughGui.openPayThroughGui(player, false);
 			} catch (IOException e)
 			{
 				e.printStackTrace();
