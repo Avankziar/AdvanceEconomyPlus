@@ -237,6 +237,7 @@ public class Set extends ArgumentModule implements CommandExecutor
 			{
 				String a = s.replace("%fromaccount%", from.getAccountName())
 				.replace("%formatdeposit%", format)
+				.replace("%formatwithdraw%", format)
 				.replace("%category%", category != null ? category : "/")
 				.replace("%comment%", comment != null ? comment : "/");
 				list.add(a);
