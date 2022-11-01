@@ -284,8 +284,28 @@ public class AccountOpen extends ArgumentModule
 	{
 		boolean useact = plugin.getYamlHandler().getConfig().getBoolean("Do.OpenAccount.CountWithAccountType", false);
 		boolean useacc = plugin.getYamlHandler().getConfig().getBoolean("Do.OpenAccount.CountWithAccountCategory", false);
-		int c = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNT, 
-				"`account_predefined` = ? AND `owner_uuid` = ?", false, player.getUniqueId().toString());
+		int c = 0;
+		if(!useact && !useacc)
+		{
+			c = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNT, 
+					"`account_predefined` = ? AND `owner_uuid` = ?",
+					false, player.getUniqueId().toString());
+		} else if(useact && !useacc)
+		{
+			c = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNT, 
+					"`account_predefined` = ? AND `owner_uuid` = ? AND `account_type` = ?",
+					false, player.getUniqueId().toString(), act.toString());
+		} else if(!useact && useacc)
+		{
+			c = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNT, 
+					"`account_predefined` = ? AND `owner_uuid` = ? AND `account_category` = ?",
+					false, player.getUniqueId().toString(), acc.toString());
+		} else if(useact && useacc)
+		{
+			c = plugin.getMysqlHandler().getCount(MysqlHandler.Type.ACCOUNT, 
+					"`account_predefined` = ? AND `owner_uuid` = ? AND `account_type` = ? AND `account_category` = ?",
+					false, player.getUniqueId().toString(), act.toString(), acc.toString());
+		}
 		CountType ct = new ConfigHandler().getCountPermType();
 		switch(ct)
 		{
