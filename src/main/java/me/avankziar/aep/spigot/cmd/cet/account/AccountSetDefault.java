@@ -63,28 +63,24 @@ public class AccountSetDefault extends ArgumentModule
 		String acname = args[3];
 		if(ee == null)
 		{
-			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("EntityNotExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("EntityNotExist")));
 			return;
 		}
 		Account ac = plugin.getIFHApi().getAccount(ee, acname);
 		if(ac == null)
 		{
-			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Pay.AccountDontExist")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Pay.AccountDontExist")));
 			return;
 		}
 		if(ac.getCurrency() == null)
 		{
-			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", ac.getAccountName()));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", ac.getAccountName())));
 			return;
 		}
-		if(!plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT))
+		if(!plugin.getIFHApi().canManageAccount(ac, player.getUniqueId(), AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT)
+				&& !player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACCOUNTMANAGEMENT)))
 		{
-			if(!player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_ACCOUNTMANAGEMENT)))
-			{
-				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.CannotSetAsDefaultPerPerm")));
-				return;
-			}
-			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.CannotSetAsDefault")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.CannotSetAsDefault")));
 			return;
 		}
 		DefaultAccount dacc = (DefaultAccount) plugin.getMysqlHandler().getData(MysqlHandler.Type.DEFAULTACCOUNT,
@@ -109,9 +105,10 @@ public class AccountSetDefault extends ArgumentModule
 			dacc = new DefaultAccount(ee.getUUID(), ac.getID(), ac.getCurrency().getUniqueName(), ac.getCategory());
 			plugin.getMysqlHandler().create(MysqlHandler.Type.DEFAULTACCOUNT, dacc);
 		}
-		player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.SetDefaultAccount")
+		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.SetDefaultAccount")
 				.replace("%acname%", ac.getAccountName())
 				.replace("%acid%", String.valueOf(ac.getID()))
-				.replace("%cat%", ac.getCategory().toString())));
+				.replace("%acowner%", ac.getOwner().getName())
+				.replace("%cat%", plugin.getIFHApi().getAccountCategory(ac.getCategory()))));
 	}
 }

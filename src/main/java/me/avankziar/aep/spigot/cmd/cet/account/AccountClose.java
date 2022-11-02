@@ -40,7 +40,7 @@ public class AccountClose extends ArgumentModule
 		Player player = (Player) sender;
 		if(!player.hasPermission(ac.getPermission()))
 		{
-			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 			return;
 		}
 		new BukkitRunnable()
@@ -74,15 +74,16 @@ public class AccountClose extends ArgumentModule
 		}
 		if(ac.getCurrency() == null)
 		{
-			player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", ac.getAccountName()));
+			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.CurrencyNoLoaded").replace("%acn%", ac.getAccountName())));
 			return;
 		}
 		if(ac.getBalance() > 1.0)
 		{
 			if(!args[args.length-1].equalsIgnoreCase("confirm") && !args[args.length-1].equalsIgnoreCase("bestätigen"))
 			{
-				player.sendMessage(plugin.getYamlHandler().getLang().getString("Cmd.Account.Close.BalanceMoreThanZero")
-						.replace("%acn%", ac.getAccountName()));
+				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Account.Close.BalanceMoreThanZero")
+						.replace("%acowner%", ac.getOwner().getName())
+						.replace("%acname%", ac.getAccountName())));
 				return;
 			}
 		}
