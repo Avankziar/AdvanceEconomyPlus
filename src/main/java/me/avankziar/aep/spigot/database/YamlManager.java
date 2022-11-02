@@ -1561,8 +1561,8 @@ public class YamlManager
 				"&cYou could set this account as DefaultAccount, but you dont have the permission for this AccountCategory!"}));
 		languageKeys.put(base+"Account.SetDefault.AccountNotDefault"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&eDer Account &f%acname%(%acowner%) &cist nun kein DefaultAccount in der Kategorie &f%cat% &emehr!",
-				"&eThe account &f%acname%(%acowner%) &cis now no defaultaccount in the category &f%cat% &eanymore!"}));
+				"&eDer Account &f%acname%(%acowner%) &eist nun kein DefaultAccount in der Kategorie &f%cat% &emehr!",
+				"&eThe account &f%acname%(%acowner%) &eis now no defaultaccount in the category &f%cat% &eanymore!"}));
 		languageKeys.put(base+"Account.SetDefault.SetDefaultAccount"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eDer Account &f%acname%(%acowner%) &ewurde als DefaultAccount in der Kategorie &f%cat% &eeingesetzt.",
