@@ -90,7 +90,10 @@ public class AccountSetDefault extends ArgumentModule
 		{
 			if(dacc.getAccountID() == ac.getID())
 			{
-				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.IsAlreadyADefaultAccount")
+				plugin.getMysqlHandler().deleteData(MysqlHandler.Type.DEFAULTACCOUNT, 
+						"`player_uuid` = ? AND `account_category` = ? AND `account_currency` = ?",
+					ee.getUUID().toString(), ac.getCategory().toString(), ac.getCurrency().getUniqueName());
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.AccountNotDefault")
 						.replace("%acname%", ac.getAccountName())
 						.replace("%acowner%", ac.getOwner().getName())
 						.replace("%cat%", plugin.getIFHApi().getAccountCategory(ac.getCategory()))));

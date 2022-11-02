@@ -283,7 +283,6 @@ public class Balance implements CommandExecutor
 						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
 						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
 						.replace("%fromaccountowner%", owner)));
-				
 			} else if(plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_LOG)
 					&& plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_BALANCE))
 			{

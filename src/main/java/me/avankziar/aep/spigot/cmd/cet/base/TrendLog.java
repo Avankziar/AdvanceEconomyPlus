@@ -142,7 +142,7 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 				return;
 			}
 			playerName = player.getName();
-		} else if(args.length >= one)
+		} else if(args.length == one)
 		{
 			playerName = args[zero];
 			UUID uuid = Utility.convertNameToUUID(playerName, EconomyEntity.EconomyType.PLAYER);
@@ -208,7 +208,8 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 		{
 			LoggerSettingsHandler.getLoggerSettings().put(player.getUniqueId(), fst);
 		}
-		new LoggerSettingsHandler(plugin).forwardingToOutput(player, fst, LoggerSettingsHandler.Access.COMMAND, Methode.LOG, page, CommandSuggest.get(null, CommandExecuteType.TRENDLOG));
+		new LoggerSettingsHandler(plugin).forwardingToOutput(player, fst, LoggerSettingsHandler.Access.COMMAND,
+				Methode.LOG, page, CommandSuggest.get(null, CommandExecuteType.TRENDLOG));
 		return;
 	}
 }

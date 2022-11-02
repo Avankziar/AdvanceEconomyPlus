@@ -302,7 +302,7 @@ public class PayThroughGui extends ArgumentModule implements CommandExecutor
 		switch(acc)
 		{
 		case CITY:
-			return Material.BEACON;
+			return Material.WOODEN_AXE;
 		case DONATION:
 			return Material.DIAMOND;
 		case GROUP:
