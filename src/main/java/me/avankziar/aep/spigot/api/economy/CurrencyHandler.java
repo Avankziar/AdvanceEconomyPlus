@@ -2,9 +2,7 @@ package main.java.me.avankziar.aep.spigot.api.economy;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -194,12 +192,17 @@ public class CurrencyHandler
 		}
 	}
 	
-	public void registerServerAndEntityAccountIfNotExist()
+	public static void registerServerAndEntityAccountIfNotExist()
 	{
+		AdvancedEconomyPlus plugin = AdvancedEconomyPlus.getPlugin();
 		EconomyType et = EconomyType.SERVER;
 		for(String sp : plugin.getYamlHandler().getConfig().getStringList("CreateEconomyEntityIfNotExist.Server"))
 		{
-			String[] split = sp.split(";");
+			String[] split = sp.split(";"); //Name,EC,ACN,ACT,ACC,AccountDefault,ServerDefault,Global
+			if(split.length < 5)
+			{
+				return;
+			}
 			String s = split[0];
 			EconomyEntity ee = plugin.getIFHApi().getEntity(s, et);
 			if(ee == null)
@@ -207,60 +210,100 @@ public class CurrencyHandler
 				ee = new EconomyEntity(et, null, s).generateUUID();
 				plugin.getMysqlHandler().create(Type.ENTITYDATA, new EntityData(ee.getUUID(), s, ee.getType()));
 			}
-			List<AccountCategory> cat = new ArrayList<AccountCategory>(EnumSet.allOf(AccountCategory.class));
-			for(EconomyCurrency ec : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
+			EconomyCurrency ec = plugin.getIFHApi().getCurrency(split[1]);
+			if(ec == null)
 			{
-				for(AccountCategory c : cat)
+				continue;
+			}
+			String acn = split[2];
+			AccountType act = MatchApi.isAccountType(split[3]) ? AccountType.valueOf(split[3]) : null;
+			if(act == null) {continue;}
+			AccountCategory acc = MatchApi.isAccountCategory(split[4]) ? AccountCategory.valueOf(split[4]) : null;
+			if(acc == null) {continue;}
+			Account ac = plugin.getIFHApi().getAccount(ee, acn, act, acc, ec);
+			if(ac == null)
+			{
+				ac = new Account(acn, act, acc, ec, ee, 0, true);
+				plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
+				if(split.length >= 6)
 				{
-					Account ac = plugin.getIFHApi().getDefaultAccount(ee.getUUID(), c, ec);
-					if(ac == null)
+					boolean b = MatchApi.isBoolean(split[5]) ? Boolean.parseBoolean(split[5]) : false;
+					if(b)
 					{
-						ac = new Account(s+c.toString(), AccountType.BANK, c, ec, ee, 0, true);
-						plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
-						plugin.getIFHApi().setDefaultAccount(ee.getUUID(), ac, c);
+						plugin.getIFHApi().setDefaultAccount(ee.getUUID(), ac, acc);
 					}
 				}
 			}
-			if(split.length == 2)
+			if(split.length >= 7)
 			{
-				boolean b = Boolean.parseBoolean(split[1]);
+				boolean b = MatchApi.isBoolean(split[6]) ? Boolean.parseBoolean(split[6]) : false;
 				if(b)
 				{
 					plugin.getIFHApi().accountHandler.defaultServer = ee;
+				}
+			}
+			if(split.length >= 8)
+			{
+				boolean b = MatchApi.isBoolean(split[8]) ? Boolean.parseBoolean(split[8]) : false;
+				if(b)
+				{
+					//TODO Global Account
 				}
 			}
 		}
 		et = EconomyType.ENTITY;
 		for(String sp : plugin.getYamlHandler().getConfig().getStringList("CreateEconomyEntityIfNotExist.Entity"))
 		{
-			String[] split = sp.split(";");
+			String[] split = sp.split(";"); //Name,EC,ACN,ACT,ACC,AccountDefault,ServerDefault,Global
+			if(split.length < 5)
+			{
+				return;
+			}
 			String s = split[0];
-			EconomyEntity ee = plugin.getIFHApi().getEntity(s, EconomyType.SERVER);
+			EconomyEntity ee = plugin.getIFHApi().getEntity(s, et);
 			if(ee == null)
 			{
-				ee = new EconomyEntity(EconomyType.SERVER, null, s).generateUUID();
+				ee = new EconomyEntity(et, null, s).generateUUID();
 				plugin.getMysqlHandler().create(Type.ENTITYDATA, new EntityData(ee.getUUID(), s, ee.getType()));
 			}
-			List<AccountCategory> cat = new ArrayList<AccountCategory>(EnumSet.allOf(AccountCategory.class));
-			for(EconomyCurrency ec : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
+			EconomyCurrency ec = plugin.getIFHApi().getCurrency(split[1]);
+			if(ec == null)
 			{
-				for(AccountCategory c : cat)
+				continue;
+			}
+			String acn = split[2];
+			AccountType act = MatchApi.isAccountType(split[3]) ? AccountType.valueOf(split[3]) : null;
+			if(act == null) {continue;}
+			AccountCategory acc = MatchApi.isAccountCategory(split[4]) ? AccountCategory.valueOf(split[4]) : null;
+			if(acc == null) {continue;}
+			Account ac = plugin.getIFHApi().getAccount(ee, acn, act, acc, ec);
+			if(ac == null)
+			{
+				ac = new Account(acn, act, acc, ec, ee, 0, true);
+				plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
+				if(split.length >= 6)
 				{
-					Account ac = plugin.getIFHApi().getDefaultAccount(ee.getUUID(), c, ec);
-					if(ac == null)
+					boolean b = MatchApi.isBoolean(split[5]) ? Boolean.parseBoolean(split[5]) : false;
+					if(b)
 					{
-						ac = new Account(s+c.toString(), AccountType.BANK, c, ec, ee, 0, true);
-						plugin.getMysqlHandler().create(Type.ACCOUNT, ac);
-						plugin.getIFHApi().setDefaultAccount(ee.getUUID(), ac, c);
+						plugin.getIFHApi().setDefaultAccount(ee.getUUID(), ac, acc);
 					}
 				}
 			}
-			if(split.length == 2)
+			if(split.length >= 7)
 			{
-				boolean b = Boolean.parseBoolean(split[1]);
+				boolean b = MatchApi.isBoolean(split[6]) ? Boolean.parseBoolean(split[6]) : false;
 				if(b)
 				{
-					plugin.getIFHApi().accountHandler.defaultEntity = ee;
+					plugin.getIFHApi().accountHandler.defaultServer = ee;
+				}
+			}
+			if(split.length >= 8)
+			{
+				boolean b = MatchApi.isBoolean(split[8]) ? Boolean.parseBoolean(split[8]) : false;
+				if(b)
+				{
+					//TODO Global Account
 				}
 			}
 		}

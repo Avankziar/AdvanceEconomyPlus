@@ -215,13 +215,13 @@ public class YamlManager
 		//Servername,true(DefaultServerEntity)
 		configKeys.put("CreateEconomyEntityIfNotExist.Server"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"Dollarus;true",
-				"Talerius;false"}));
+				"Dollarus;dollar;Larus;BANK;MAIN;true;true;true",
+				"Talerius;taler;Rius;BANK;MAIN;false;true;false"}));
 		//Entity(NPc, whatever)name,true(DefaultEntityEntity)
 		configKeys.put("CreateEconomyEntityIfNotExist.Entity"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				"Mike;true",
-				"King_Cobra;false"}));
+				"Mike;dollar;Larus;BANK;MAIN;true;true;false",
+				"King_Cobra;dollar;Larus;BANK;MAIN;true;true;false"}));
 		configKeys.put("Do.Default.ReplaceIDIfNull"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"Void"}));
@@ -1757,6 +1757,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				" &7%account%&7: &f%balance%",
 				" &7%account%&7: &f%balance%"}));
+		languageKeys.put(base+"Balance.AccountDisplay.IsOwnerCannotSeeBalance"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				" &6%account%&7",
+				" &6%account%&7"}));
 		languageKeys.put(base+"Balance.AccountDisplay.CannotSeeBalance"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				" &c%account%&7",

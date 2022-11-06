@@ -535,7 +535,7 @@ public class CurrencyCommandSetup
 			{
 				return;
 			}
-			CommandConstructor cmd = new CommandConstructor(cet, cmdpath, false);
+			CommandConstructor cmd = new CommandConstructor(cet, cmdpath, true);
 			if(cmd.getName() == null)
 			{
 				AdvancedEconomyPlus.log.warning("Commandpath "+cmdpath+" dont exist in commands.yml! Command are not registered!");

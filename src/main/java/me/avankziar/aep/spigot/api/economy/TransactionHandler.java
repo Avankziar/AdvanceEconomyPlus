@@ -203,7 +203,7 @@ public class TransactionHandler
 						withdraw != null ? withdraw.getBalance() : 0.0,
 						deposit != null ? deposit.getBalance() : 0.0);
 			}
-			if(taxInPercent >= 1.0 && !taxAreExclusive)
+			if(taxInPercent >= 100.0 && !taxAreExclusive)
 			{
 				return new EconomyAction(amount, 0.0, 0.0, false, TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT, ErrorMessageType.TAX_IS_HIGHER_OR_EQUAL_AS_100_PERCENT,
 						withdraw != null ? withdraw.getBalance() : 0.0,

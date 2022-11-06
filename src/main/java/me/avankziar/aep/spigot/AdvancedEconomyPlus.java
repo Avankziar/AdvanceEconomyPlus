@@ -25,6 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.aep.spigot.api.LoggerApi;
 import main.java.me.avankziar.aep.spigot.api.economy.CurrencyCommandSetup;
+import main.java.me.avankziar.aep.spigot.api.economy.CurrencyHandler;
 import main.java.me.avankziar.aep.spigot.api.economy.IFHEcoProvider;
 import main.java.me.avankziar.aep.spigot.api.economy.VaultEcoProvider;
 import main.java.me.avankziar.aep.spigot.assistance.BackgroundTask;
@@ -127,7 +128,8 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		setupExtraPermission();
 		new CurrencyCommandSetup(plugin).setupCommand();
 		setupPlaceholderAPI();
-		setupMessageToBungee();		
+		setupMessageToBungee();
+		CurrencyHandler.registerServerAndEntityAccountIfNotExist();
 	}
 	
 	public void onDisable()

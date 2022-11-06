@@ -49,19 +49,19 @@ public class Balance implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) 
 	{
-		if(!(sender instanceof Player))
-		{
-			sender.sendMessage("Cmd only for Players!");
-			return false;
-		}
-		Player player = (Player) sender;
-		if(!player.hasPermission(cc.getPermission()))
-		{
-			player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
-			return false;
-		}
 		if(args.length == 0 || (args.length > 0 && MatchApi.isInteger(args[0])))
 		{
+			if(!(sender instanceof Player))
+			{
+				sender.sendMessage("Cmd only for Players!");
+				return false;
+			}
+			Player player = (Player) sender;
+			if(!player.hasPermission(cc.getPermission()))
+			{
+				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+				return false;
+			}
 			new BukkitRunnable()
 			{
 				@Override
@@ -87,7 +87,7 @@ public class Balance implements CommandExecutor
 					if(length >= ac.minArgsConstructor && length <= ac.maxArgsConstructor)
 					{
 						ArgumentModule am = plugin.getArgumentMap().get(ac.getPath());
-						if(ac.canConsoleAccess() && player == null)
+						if(ac.canConsoleAccess() && !(sender instanceof Player))
 						{
 							if(am != null)
 							{
@@ -105,8 +105,9 @@ public class Balance implements CommandExecutor
 								return false;
 							}
 							return false;
-						} else if(player != null)
+						} else if(sender instanceof Player)
 						{
+							Player player = (Player) sender;
 							if(player.hasPermission(ac.getPermission()))
 							{
 								if(am != null)
@@ -130,7 +131,6 @@ public class Balance implements CommandExecutor
 								return false;
 							} else
 							{
-								///Du hast dafür keine Rechte!
 								player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 								return false;
 							}
@@ -148,11 +148,10 @@ public class Balance implements CommandExecutor
 				}
 			}
 		}
-		if(player != null)
+		if(sender != null)
 		{
-			player.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
+			sender.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 					ClickEvent.Action.RUN_COMMAND, CommandSuggest.get(null, CommandExecuteType.AEP)));
-			//AdvancedEconomyPlus.log.info(sender.getName() + " send command: " + cmd.getName() + arg);
 		}
 		return true;
 	}
@@ -259,14 +258,14 @@ public class Balance implements CommandExecutor
 						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).replace(" ", "+").trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
-				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwner")
-						.replace("%account%", a.getAccountName())
-						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
+				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwnerCannotSeeBalance")
+						.replace("%account%", a.getAccountName()),
 						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
-						.replace("%fromaccountowner%", owner)));
+						.replace("%fromaccountowner%", owner)));	
 				
 			} else if(a.getOwner() != null &&
-					(a.getOwner().getUUID().toString().equals(player.getUniqueId().toString())))
+					a.getOwner().getUUID().toString().equals(player.getUniqueId().toString())
+					&& !plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_BALANCE))
 			{
 				list.add(ChatApi.generateTextComponent(
 						plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.ActionLog")
