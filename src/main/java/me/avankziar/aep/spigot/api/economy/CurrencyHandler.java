@@ -244,7 +244,7 @@ public class CurrencyHandler
 			}
 			if(split.length >= 8)
 			{
-				boolean b = MatchApi.isBoolean(split[8]) ? Boolean.parseBoolean(split[8]) : false;
+				boolean b = MatchApi.isBoolean(split[7]) ? Boolean.parseBoolean(split[7]) : false;
 				if(b)
 				{
 					//TODO Global Account
@@ -300,7 +300,7 @@ public class CurrencyHandler
 			}
 			if(split.length >= 8)
 			{
-				boolean b = MatchApi.isBoolean(split[8]) ? Boolean.parseBoolean(split[8]) : false;
+				boolean b = MatchApi.isBoolean(split[7]) ? Boolean.parseBoolean(split[7]) : false;
 				if(b)
 				{
 					//TODO Global Account
