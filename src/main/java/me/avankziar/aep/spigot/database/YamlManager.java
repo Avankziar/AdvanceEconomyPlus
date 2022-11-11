@@ -1136,6 +1136,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDie Plugineinstellungen erlauben keine Bankaccounts!",
 				"&cThe plugin settings do not allow bank accounts!"}));
+		languageKeys.put(base+"ACCOUNTS_ARE_THE_SAME"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDer Absenderaccount ist der selbe wie der Empfängeraccount.",
+				"&cThe sender account is the same as the recipient account."}));
 		languageKeys.put(base+"AMOUNT_IS_NEGATIVE"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDer abzuziehende Betrag ist negativ!",

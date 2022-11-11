@@ -26,6 +26,7 @@ public class TransactionHandler
 	private String IS_NOT_ENABLED;
 	private String HAS_NO_WALLET_SUPPORT;
 	private String HAS_NO_BANK_SUPPORT;
+	private String ACCOUNTS_ARE_THE_SAME;
 	private String AMOUNT_IS_NEGATIVE;
 	private String DEPOSIT_ACCOUNT_NOT_EXIST;
 	private String WITHDRAW_ACCOUNT_NOT_EXIST;
@@ -56,6 +57,7 @@ public class TransactionHandler
 		IS_NOT_ENABLED = plugin.getYamlHandler().getLang().getString(base+"IS_NOT_ENABLED");
 		HAS_NO_WALLET_SUPPORT = plugin.getYamlHandler().getLang().getString(base+"HAS_NO_WALLET_SUPPORT");
 		HAS_NO_BANK_SUPPORT = plugin.getYamlHandler().getLang().getString(base+"HAS_NO_BANK_SUPPORT");
+		ACCOUNTS_ARE_THE_SAME = plugin.getYamlHandler().getLang().getString(base+"ACCOUNTS_ARE_THE_SAME");
 		AMOUNT_IS_NEGATIVE = plugin.getYamlHandler().getLang().getString(base+"AMOUNT_IS_NEGATIVE");
 		DEPOSIT_ACCOUNT_NOT_EXIST = plugin.getYamlHandler().getLang().getString(base+"DEPOSIT_ACCOUNT_NOT_EXIST");
 		WITHDRAW_ACCOUNT_NOT_EXIST = plugin.getYamlHandler().getLang().getString(base+"WITHDRAW_ACCOUNT_NOT_EXIST");
@@ -156,6 +158,10 @@ public class TransactionHandler
 					|| deposit.getType() == AccountType.BANK))
 			{
 				return new EconomyAction(amount, 0.0, 0.0, false, HAS_NO_BANK_SUPPORT, ErrorMessageType.HAS_NO_BANK_SUPPORT, 0.0, 0.0);
+			}
+			if(withdraw.getID() == deposit.getID())
+			{
+				return new EconomyAction(amount, 0.0, 0.0, false, ACCOUNTS_ARE_THE_SAME, ErrorMessageType.ACCOUNTS_ARE_THE_SAME, 0.0, 0.0);
 			}
 			if(normalCurrencyCheck)
 			{
