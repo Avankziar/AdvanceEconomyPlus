@@ -30,6 +30,7 @@ Future =========================================================================
 
 Build 4-2-9
 - registerServerAndEntityAccountIfNotExist fix
+- Cmd money Logikfehler fix
 
 Build 4-2-5
 - Cmd account setdefault/close Color & PlaceHolder fix

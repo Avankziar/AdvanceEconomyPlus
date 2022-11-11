@@ -258,11 +258,11 @@ public class Balance implements CommandExecutor
 						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).replace(" ", "+").trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
-				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwnerCannotSeeBalance")
-						.replace("%account%", a.getAccountName()),
+				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwner")
+						.replace("%account%", a.getAccountName())
+						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
 						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
 						.replace("%fromaccountowner%", owner)));	
-				
 			} else if(a.getOwner() != null &&
 					a.getOwner().getUUID().toString().equals(player.getUniqueId().toString())
 					&& !plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_BALANCE))
@@ -277,9 +277,8 @@ public class Balance implements CommandExecutor
 						.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.TRENDLOG).replace(" ", "+").trim())
 						.replace("%account%", a.getAccountName())
 						.replace("%player%", owner)));
-				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwner")
-						.replace("%account%", a.getAccountName())
-						.replace("%balance%", plugin.getIFHApi().format(a.getBalance(), a.getCurrency())),
+				list.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.Balance.AccountDisplay.IsOwnerCannotSeeBalance")
+						.replace("%account%", a.getAccountName()),
 						Action.SHOW_TEXT, plugin.getYamlHandler().getLang().getString("Log.ActionLog.FromAccountHover")
 						.replace("%fromaccountowner%", owner)));
 			} else if(plugin.getIFHApi().canManageAccount(a, UUID.fromString(uuid), AccountManagementType.CAN_SEE_LOG)
