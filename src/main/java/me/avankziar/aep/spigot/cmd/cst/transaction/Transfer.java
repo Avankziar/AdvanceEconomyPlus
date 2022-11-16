@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,7 +23,6 @@ import main.java.me.avankziar.aep.spigot.api.economy.CurrencyHandler;
 import main.java.me.avankziar.aep.spigot.assistance.Utility;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
-import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.CommandStructurType;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
@@ -37,7 +37,6 @@ import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 
 public class Transfer extends ArgumentModule implements CommandExecutor
 {
-	private AdvancedEconomyPlus plugin;
 	private CommandConstructor cc;
 	private ArgumentConstructor ac;
 	private CommandStructurType cst;
@@ -45,7 +44,6 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 	public Transfer(CommandConstructor cc, ArgumentConstructor ac, CommandStructurType cst)
 	{
 		super(ac);
-		this.plugin = BaseConstructor.getPlugin();
 		this.cc = cc;
 		this.ac = ac;
 		this.cst = cst;
@@ -388,176 +386,204 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 	
 	public static void sendToOther(AdvancedEconomyPlus plugin, Account from, Account to, ArrayList<String> list, UUID...exceptions)
 	{
+		ArrayList<AccountManagement> manaI = new ArrayList<>();
+		ArrayList<AccountManagement> manaII = new ArrayList<>();
+		try
+		{
+			manaI = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
+					MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
+					from.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()));
+			manaII = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
+					MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
+					to.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()));
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}			
+		ArrayList<UUID> ul = new ArrayList<>();
+		for(AccountManagement acm : manaI)
+		{
+			AEPUser u = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", acm.getUUID().toString());
+			if(u == null)
+			{
+				continue;
+			}
+			if(exceptions != null)
+			{
+				boolean ex = false;
+				for(UUID uuid : exceptions)
+				{
+					if(uuid.toString().equals(u.getUUID().toString()))
+					{
+						ex = true;
+						break;
+					}
+				}
+				if(ex)
+				{
+					continue;
+				}
+			}
+			if(ul.contains(u.getUUID()))
+			{
+				continue;
+			}
+			if(from.getType() == AccountType.BANK)
+			{
+				if(u.isBankMoneyFlowNotification())
+				{
+					ul.add(u.getUUID());
+				}
+			} else
+			{
+				if(u.isWalletMoneyFlowNotification())
+				{
+					ul.add(u.getUUID());
+				}
+			}
+		}
+		for(AccountManagement acm : manaII)
+		{
+			AEPUser u = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", acm.getUUID().toString());
+			if(u == null)
+			{
+				continue;
+			}
+			if(exceptions != null)
+			{
+				boolean ex = false;
+				for(UUID uuid : exceptions)
+				{
+					if(uuid.toString().equals(u.getUUID().toString()))
+					{
+						ex = true;
+						break;
+					}
+				}
+				if(ex)
+				{
+					continue;
+				}
+			}
+			if(ul.contains(u.getUUID()))
+			{
+				continue;
+			}
+			if(to.getType() == AccountType.BANK)
+			{
+				if(u.isBankMoneyFlowNotification())
+				{
+					ul.add(u.getUUID());
+				}
+			} else
+			{
+				if(u.isWalletMoneyFlowNotification())
+				{
+					ul.add(u.getUUID());
+				}
+			}
+		}
+		if(list.isEmpty())
+		{
+			return;
+		}
 		if(plugin.getMtB() != null)
 		{
-			ArrayList<AccountManagement> manaI = new ArrayList<>();
-			ArrayList<AccountManagement> manaII = new ArrayList<>();
-			try
-			{
-				manaI = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
-						MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
-						from.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()));
-				manaII = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
-						MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
-						to.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()));
-			} catch (IOException e)
-			{
-				e.printStackTrace();
-			}			
-			ArrayList<UUID> ul = new ArrayList<>();
-			for(AccountManagement acm : manaI)
-			{
-				AEPUser u = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", acm.getUUID().toString());
-				if(u == null)
-				{
-					continue;
-				}
-				if(exceptions != null)
-				{
-					boolean ex = false;
-					for(UUID uuid : exceptions)
-					{
-						if(uuid.toString().equals(u.getUUID().toString()))
-						{
-							ex = true;
-							break;
-						}
-					}
-					if(ex)
-					{
-						continue;
-					}
-				}
-				if(ul.contains(u.getUUID()))
-				{
-					continue;
-				}
-				if(to.getType() == AccountType.BANK)
-				{
-					if(u.isBankMoneyFlowNotification())
-					{
-						ul.add(u.getUUID());
-					}
-				} else
-				{
-					if(u.isWalletMoneyFlowNotification())
-					{
-						ul.add(u.getUUID());
-					}
-				}
-			}
-			for(AccountManagement acm : manaII)
-			{
-				AEPUser u = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", acm.getUUID().toString());
-				if(u == null)
-				{
-					continue;
-				}
-				if(exceptions != null)
-				{
-					boolean ex = false;
-					for(UUID uuid : exceptions)
-					{
-						if(uuid.toString().equals(u.getUUID().toString()))
-						{
-							ex = true;
-							break;
-						}
-					}
-					if(ex)
-					{
-						continue;
-					}
-				}
-				if(ul.contains(u.getUUID()))
-				{
-					continue;
-				}
-				if(to.getType() == AccountType.BANK)
-				{
-					if(u.isBankMoneyFlowNotification())
-					{
-						ul.add(u.getUUID());
-					}
-				} else
-				{
-					if(u.isWalletMoneyFlowNotification())
-					{
-						ul.add(u.getUUID());
-					}
-				}
-			}
-			if(list.isEmpty())
-			{
-				return;
-			}
-			String[] la = list.toArray(new String[0]);
+			String[] la = list.toArray(new String[list.size()]);
 			plugin.getMtB().sendMessage(ul, la);
+		} else
+		{
+			for(UUID uuid : ul)
+			{
+				Player player = Bukkit.getPlayer(uuid);
+				if(player == null)
+				{
+					continue;
+				}
+				for(String s : list)
+				{
+					player.sendMessage(ChatApi.tl(s));
+				}
+			}
 		}
 	}
 	
 	public static void sendToOther(AdvancedEconomyPlus plugin, Account to, ArrayList<String> list, UUID...exceptions)
 	{
-		if(plugin.getMtB() != null)
+		ArrayList<AccountManagement> mana = new ArrayList<>();
+		try
 		{
-			ArrayList<AccountManagement> mana = new ArrayList<>();
-			try
+			mana = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
+					MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
+					to.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()));
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		if(mana.isEmpty())
+		{
+			return;
+		}
+		ArrayList<UUID> ul = new ArrayList<>();
+		for(AccountManagement acm : mana)
+		{
+			AEPUser u = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", acm.getUUID().toString());
+			if(u == null)
 			{
-				mana = ConvertHandler.convertListIX(plugin.getMysqlHandler().getAllListAt(
-						MysqlHandler.Type.ACCOUNTMANAGEMENT, "`id` ASC", "`account_id` = ? AND `account_management_type` = ?",
-						to.getID(), AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()));
-			} catch (IOException e)
-			{
-				e.printStackTrace();
+				continue;
 			}
-			if(mana.isEmpty())
+			if(exceptions != null)
 			{
-				return;
-			}
-			ArrayList<UUID> ul = new ArrayList<>();
-			for(AccountManagement acm : mana)
-			{
-				AEPUser u = (AEPUser) plugin.getMysqlHandler().getData(MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", acm.getUUID().toString());
-				if(u == null)
+				boolean ex = false;
+				for(UUID uuid : exceptions)
+				{
+					if(uuid.toString().equals(u.getUUID().toString()))
+					{
+						ex = true;
+						break;
+					}
+				}
+				if(ex)
 				{
 					continue;
 				}
-				if(exceptions != null)
-				{
-					boolean ex = false;
-					for(UUID uuid : exceptions)
-					{
-						if(uuid.toString().equals(u.getUUID().toString()))
-						{
-							ex = true;
-							break;
-						}
-					}
-					if(ex)
-					{
-						continue;
-					}
-				}
-				if(to.getType() == AccountType.BANK)
-				{
-					if(u.isBankMoneyFlowNotification())
-					{
-						ul.add(u.getUUID());
-					}
-				} else
-				{
-					if(u.isWalletMoneyFlowNotification())
-					{
-						ul.add(u.getUUID());
-					}
-				}
 			}
-			if(list.isEmpty())
+			if(to.getType() == AccountType.BANK)
 			{
-				return;
+				if(u.isBankMoneyFlowNotification())
+				{
+					ul.add(u.getUUID());
+				}
+			} else
+			{
+				if(u.isWalletMoneyFlowNotification())
+				{
+					ul.add(u.getUUID());
+				}
 			}
-			String[] la = list.toArray(new String[0]);
+		}
+		if(list.isEmpty())
+		{
+			return;
+		}
+		if(plugin.getMtB() != null)
+		{
+			String[] la = list.toArray(new String[list.size()]);
 			plugin.getMtB().sendMessage(ul, la);
+		} else
+		{
+			for(UUID uuid : ul)
+			{
+				Player player = Bukkit.getPlayer(uuid);
+				if(player == null)
+				{
+					continue;
+				}
+				for(String s : list)
+				{
+					player.sendMessage(ChatApi.tl(s));
+				}
+			}
 		}
 	}
 }

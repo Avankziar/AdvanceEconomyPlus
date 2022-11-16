@@ -27,6 +27,7 @@ Future =========================================================================
 - LoadBefore Essential
 - Die ganzen Eröffnen und handhaben von Konten per GUI?
 - katching und wush sound für Geldüberweisungen und abzüge. Togglebar.
+- ArgumentModule hat die Var plugin übernommen. In allen CMD die Var plugin dann rausnehmen.
 
 Build 4-2-9
 - registerServerAndEntityAccountIfNotExist fix

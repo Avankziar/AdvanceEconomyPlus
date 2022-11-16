@@ -4,9 +4,12 @@ import java.io.IOException;
 
 import org.bukkit.command.CommandSender;
 
+import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
+
 public abstract class ArgumentModule
 {
 	public ArgumentConstructor argumentConstructor;
+	public static AdvancedEconomyPlus plugin = BaseConstructor.getPlugin();
 
     public ArgumentModule(ArgumentConstructor argumentConstructor)
     {
