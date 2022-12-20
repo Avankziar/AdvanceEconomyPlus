@@ -31,6 +31,12 @@ Future =========================================================================
 
 Build 4-2-10
 - Accounts haben in der Currency.yaml datei nun ganz am anfang ein definierbaren CustomName bei ihrer erstellung.
+  Bei existierenden currency.yml MUSS nun bei den zu erstellenden Accounts für die Spieler, ganz am anfang für die Accounts,
+  ein Customname gesetzt werden.
+  Bsp.: 
+  - MAIN;true;3000000;CAN_ADMINISTRATE_A.....
+  muss werden
+  - Haupt %player%;MAIN;true;3000000;CAN_ADMINISTRATE_A...
 - Setzten des Accounteigentümers hat nun eine Bypassperm.
 - Papi Logic fix. Nun müssen alle PlaceHolder mit "%aep_" starten.
   Bsp. Aus %playerbalance_<format>,<currencyuniquename>% wird %aep_playerbalance_<format>,<currencyuniquename>%
