@@ -46,7 +46,7 @@ public class PAPIHook extends PlaceholderExpansion
 	@Override
 	public String getIdentifier()
 	{
-		return plugin.pluginName.toLowerCase();
+		return "aep";
 	}
 	
 	@Override
@@ -55,30 +55,31 @@ public class PAPIHook extends PlaceholderExpansion
 		return plugin.getDescription().getVersion();
 	}
 	
+	//TODO alle Wiki papi dinge mit "aep_" am Anfang nach dem ersten % hinzufügen.
 	/*
 	 * [var] : balance(if nothing is specified), accountid, accountname, accountcategory, accounttype, 
 	 * <format> : withoutformat(if nothing is specified), withformat
 	 * 
 	 * >Gesamtes Guthaben des Spieler pro Währung. Ohne Void und Steueraccounts
-	 * playerbalance_<format>,<currencyuniquename>
+	 * aep_playerbalance_<format>,<currencyuniquename>
 	 * 
 	 * >Gesamtes Guthaben des Spieler pro AccountCategory pro Währung.
-	 * playerbalancecategory_<format>,<accountcategory>,<currencyuniquename>
+	 * aep_playerbalancecategory_<format>,<accountcategory>,<currencyuniquename>
 	 * 
 	 * >Gesamtes Guthaben des Spieler pro Währung. Mit Void und Steueraccounts
-	 * playerbalancewithtaxvoid_<format>,<currencyuniquename>
+	 * aep_playerbalancewithtaxvoid_<format>,<currencyuniquename>
 	 * 
 	 * >Guthaben des Defaultaccounts mit der AccountCategory und der Währung. Optional andere Variabeln erhältlich
-	 * defaultaccount_<format>,<accountcategory>,<currencyuniquename>,[var]
+	 * aep_defaultaccount_<format>,<accountcategory>,<currencyuniquename>,[var]
 	 * 
 	 * >Guthaben des QuickpayAccounts. Mit der Währung. Optional andere Variabeln erhältlich
-	 * quickpayaccount_<format>,<currencyuniquename>,[var]
+	 * aep_quickpayaccount_<format>,<currencyuniquename>,[var]
 	 * 
 	 * >Gesamtes Guthaben im system per Währung
-	 * totalbalance_<format>,<currencyuniquename>
+	 * aep_totalbalance_<format>,<currencyuniquename>
 	 * 
 	 * >Gesamtes Guthaben im System, per Accountcategoriy und Währung.
-	 * totalbalance_<format>,<accountcategory>,<currencyuniquename>
+	 * aep_totalbalance_<format>,<accountcategory>,<currencyuniquename>
 	 */
 	
 	@Override

@@ -29,6 +29,12 @@ Future =========================================================================
 - katching und wush sound für Geldüberweisungen und abzüge. Togglebar.
 - ArgumentModule hat die Var plugin übernommen. In allen CMD die Var plugin dann rausnehmen.
 
+Build 4-2-10
+- Accounts haben in der Currency.yaml datei nun ganz am anfang ein definierbaren CustomName bei ihrer erstellung.
+- Setzten des Accounteigentümers hat nun eine Bypassperm.
+- Papi Logic fix. Nun müssen alle PlaceHolder mit "%aep_" starten.
+  Bsp. Aus %playerbalance_<format>,<currencyuniquename>% wird %aep_playerbalance_<format>,<currencyuniquename>%
+
 Build 4-2-9
 - registerServerAndEntityAccountIfNotExist fix
 - Cmd money Logikfehler fix

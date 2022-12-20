@@ -66,23 +66,23 @@ public class AccountHandler
 						ConfigHandler.debug(d1, "> s.length < 3 : continue");
 						continue;
 					}
-					AccountCategory acy = AccountCategory.valueOf(s[0]);
+					String acname = s[0].replace("%player%", player.getName());
+					AccountCategory acy = AccountCategory.valueOf(s[1]);
 					if(acy == null)
 					{
 						acy = AccountCategory.MAIN;
 					}
-					String acname = acy == AccountCategory.MAIN ? player.getName() : plugin.getIFHApi().getAccountCategory(acy);
 					int j = 0;
 					while(plugin.getMysqlHandler().exist(MysqlHandler.Type.ACCOUNT, 
 							"`owner_uuid` = ? AND `account_name` = ?", ee.getUUID().toString(), acname))
 					{
-						acname = acy == AccountCategory.MAIN ? player.getName()+j : plugin.getIFHApi().getAccountCategory(acy)+j;
+						acname = s[0].replace("%player%", player.getName())+j;
 						j++;
 					}
-					boolean defaultac = MatchApi.isBoolean(s[1]) ? Boolean.valueOf(s[1]) : false;
-					double startamount = MatchApi.isDouble(s[2]) ? Double.parseDouble(s[2]) : 0.0;
+					boolean defaultac = MatchApi.isBoolean(s[2]) ? Boolean.valueOf(s[2]) : false;
+					double startamount = MatchApi.isDouble(s[3]) ? Double.parseDouble(s[3]) : 0.0;
 					ArrayList<AccountManagementType> amtl = new ArrayList<>();
-					for(int i = 3; i < s.length; i++)
+					for(int i = 4; i < s.length; i++)
 					{
 						try
 						{
@@ -148,23 +148,23 @@ public class AccountHandler
 					{
 						continue;
 					}
-					AccountCategory acy = AccountCategory.valueOf(s[0]);
+					String acname = s[0].replace("%player%", player.getName());
+					AccountCategory acy = AccountCategory.valueOf(s[1]);
 					if(acy == null)
 					{
 						acy = AccountCategory.MAIN;
 					}
-					String acname = acy == AccountCategory.MAIN ? player.getName() : plugin.getIFHApi().getAccountCategory(acy);
 					int j = 0;
 					while(plugin.getMysqlHandler().exist(MysqlHandler.Type.ACCOUNT, 
 							"`owner_uuid` = ? AND `account_name` = ?", ee.getUUID().toString(), acname))
 					{
-						acname = acy == AccountCategory.MAIN ? player.getName()+j : plugin.getIFHApi().getAccountCategory(acy)+j;
+						acname = s[0].replace("%player%", player.getName())+j;
 						j++;
 					}
-					boolean defaultac = MatchApi.isBoolean(s[1]) ? Boolean.valueOf(s[1]) : false;
-					double startamount = MatchApi.isDouble(s[2]) ? Double.parseDouble(s[2]) : 0.0;
+					boolean defaultac = MatchApi.isBoolean(s[2]) ? Boolean.valueOf(s[2]) : false;
+					double startamount = MatchApi.isDouble(s[3]) ? Double.parseDouble(s[3]) : 0.0;
 					ArrayList<AccountManagementType> amtl = new ArrayList<>();
-					for(int i = 3; i < s.length; i++)
+					for(int i = 4; i < s.length; i++)
 					{
 						try
 						{

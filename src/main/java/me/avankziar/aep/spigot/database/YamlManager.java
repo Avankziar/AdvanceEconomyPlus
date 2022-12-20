@@ -2941,14 +2941,14 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				//The First Account are created as shortpay account
 				//AccountType;DefaultAccount;StartMoney;ManagementType...
-				AccountCategory.MAIN.toString()+";true;"+1000
+				"%player% Mains;"+AccountCategory.MAIN.toString()+";true;"+1000
 				+";"+AccountManagementType.CAN_ADMINISTRATE_ACCOUNT.toString()
 				+";"+AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()
 				+";"+AccountManagementType.CAN_SEE_BALANCE.toString()
 				+";"+AccountManagementType.CAN_SEE_LOG.toString()
 				+";"+AccountManagementType.CAN_SET_AS_DEFAULT_ACCOUNT.toString()
 				+";"+AccountManagementType.CAN_WITHDRAW.toString(),
-				AccountCategory.SAVING.toString()+";true;"+0
+				"%player% Savings;"+AccountCategory.SAVING.toString()+";true;"+0
 				+";"+AccountManagementType.CAN_ADMINISTRATE_ACCOUNT.toString()
 				+";"+AccountManagementType.CAN_SEE_BALANCE.toString()
 				+";"+AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()
@@ -2960,10 +2960,10 @@ public class YamlManager
 				true}));
 		currencyKeyI.put("WhenPlayerFirstJoin.BanksToCreate"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				AccountCategory.TAX.toString()+";true;"+0
+				"%player% Tax;"+AccountCategory.TAX.toString()+";true;"+0
 				+";"+AccountManagementType.CAN_SEE_BALANCE.toString()
 				+";"+AccountManagementType.CAN_SEE_LOG.toString(),
-				AccountCategory.VOID.toString()+";true;"+0
+				"%player% Void;"+AccountCategory.VOID.toString()+";true;"+0
 				+";"+AccountManagementType.CAN_SEE_BALANCE.toString()
 				+";"+AccountManagementType.CAN_SEE_LOG.toString()}));
 		currencyKeyI.put("Commands.StructurType"
