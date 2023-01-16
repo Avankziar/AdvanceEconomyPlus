@@ -66,7 +66,9 @@ public class AccountHandler
 						ConfigHandler.debug(d1, "> s.length < 3 : continue");
 						continue;
 					}
-					String acname = s[0].replace("%player%", player.getName());
+					String acname = s[0]
+							.replace("%player%", player.getName())
+							.replace(" ", "");
 					AccountCategory acy = AccountCategory.valueOf(s[1]);
 					if(acy == null)
 					{
@@ -148,7 +150,9 @@ public class AccountHandler
 					{
 						continue;
 					}
-					String acname = s[0].replace("%player%", player.getName());
+					String acname = s[0]
+							.replace("%player%", player.getName())
+							.replace(" ", "");
 					AccountCategory acy = AccountCategory.valueOf(s[1]);
 					if(acy == null)
 					{

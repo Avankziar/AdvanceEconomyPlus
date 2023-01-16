@@ -28,8 +28,9 @@ Future =========================================================================
 - Die ganzen Eröffnen und handhaben von Konten per GUI?
 - katching und wush sound für Geldüberweisungen und abzüge. Togglebar.
 - ArgumentModule hat die Var plugin übernommen. In allen CMD die Var plugin dann rausnehmen.
+- Die Replacer in der currency datei dürfen keine Leerzeichen.
 
-Build 4-2-10
+Build 4-3-0
 - Accounts haben in der Currency.yaml datei nun ganz am anfang ein definierbaren CustomName bei ihrer erstellung.
   Bei existierenden currency.yml MUSS nun bei den zu erstellenden Accounts für die Spieler, ganz am anfang für die Accounts,
   ein Customname gesetzt werden.
