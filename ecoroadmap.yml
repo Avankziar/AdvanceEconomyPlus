@@ -30,6 +30,9 @@ Future =========================================================================
 - ArgumentModule hat die Var plugin übernommen. In allen CMD die Var plugin dann rausnehmen.
 - Die Replacer in der currency datei dürfen keine Leerzeichen.
 
+Build 4-3-1
+- Entity & Server Account erstellung Fix
+
 Build 4-3-0
 - Mc 1.19.3 support
 - Accounts haben in der Currency.yaml datei nun ganz am anfang ein definierbaren CustomName bei ihrer erstellung.
