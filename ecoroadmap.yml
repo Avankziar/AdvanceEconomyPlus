@@ -30,6 +30,9 @@ Future =========================================================================
 - ArgumentModule hat die Var plugin übernommen. In allen CMD die Var plugin dann rausnehmen.
 - Die Replacer in der currency datei dürfen keine Leerzeichen.
 
+Build 4-3-2
+- PAPI Mysql Fix
+
 Build 4-3-1
 - Entity & Server Account erstellung Fix
 

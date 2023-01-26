@@ -742,6 +742,10 @@ public class CurrencyCommandSetup
 			{
 				continue;
 			}
+			if(acc.getAccountName() == null)
+			{
+				continue;
+			}
 			if(!ac.contains(acc.getAccountName()))
 			{
 				ac.add(acc.getAccountName());

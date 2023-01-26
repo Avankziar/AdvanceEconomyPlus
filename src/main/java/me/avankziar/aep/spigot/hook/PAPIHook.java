@@ -55,7 +55,6 @@ public class PAPIHook extends PlaceholderExpansion
 		return plugin.getDescription().getVersion();
 	}
 	
-	//TODO alle Wiki papi dinge mit "aep_" am Anfang nach dem ersten % hinzufügen.
 	/*
 	 * [var] : balance(if nothing is specified), accountid, accountname, accountcategory, accounttype, 
 	 * <format> : withoutformat(if nothing is specified), withformat
@@ -96,12 +95,13 @@ public class PAPIHook extends PlaceholderExpansion
 			String[] s = idf.split(",");
 			String[] t = s[0].split("_");
 			boolean withformat = t.length >= 2 ? t[1].equals("withformat") : false;
-			EconomyCurrency ecy = plugin.getIFHApi().getCurrency(s[2]);
+			EconomyCurrency ecy = plugin.getIFHApi().getCurrency(s[1]);
 			if(ecy == null)
 			{
 				return null;
 			}
-			double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, 
+			double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT,
+					"`balance`",
 					"`owner_uuid` = ? AND `account_currency` = ?",
 					player.getUniqueId().toString(), ecy.getUniqueName(), AccountCategory.TAX.toString(), AccountCategory.VOID.toString());
 			return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
@@ -113,15 +113,16 @@ public class PAPIHook extends PlaceholderExpansion
 			AccountCategory acc = AccountCategory.MAIN;
 			try
 			{
-				acc = AccountCategory.valueOf(s[2]);
+				acc = AccountCategory.valueOf(s[1]);
 			} catch(Exception e) {}
-			EconomyCurrency ecy = plugin.getIFHApi().getCurrency(s[3]);
+			EconomyCurrency ecy = plugin.getIFHApi().getCurrency(s[2]);
 			if(ecy == null)
 			{
 				return null;
 			}
-			double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, 
-					"`owner_uuid` = ? AND `account_currency` = ?  AND `account_category` = ?",
+			double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT,
+					"`balance`",
+					"`owner_uuid` = ? AND `account_currency` = ? AND `account_category` = ?",
 					player.getUniqueId().toString(), ecy.getUniqueName(), acc.toString());
 			return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
 		} else if(idf.startsWith("playerbalance"))
@@ -129,12 +130,13 @@ public class PAPIHook extends PlaceholderExpansion
 			String[] s = idf.split(",");
 			String[] t = s[0].split("_");
 			boolean withformat = t.length >= 2 ? t[1].equals("withformat") : false;
-			EconomyCurrency ecy = plugin.getIFHApi().getCurrency(s[2]);
+			EconomyCurrency ecy = plugin.getIFHApi().getCurrency(s[1]);
 			if(ecy == null)
 			{
 				return null;
 			}
-			double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, 
+			double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT, 
+					"`balance`",
 					"`owner_uuid` = ? AND `account_currency` = ? AND `account_category` != ? AND `account_category` != ?",
 					player.getUniqueId().toString(), ecy.getUniqueName(), AccountCategory.TAX.toString(), AccountCategory.VOID.toString());
 			return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
@@ -222,7 +224,7 @@ public class PAPIHook extends PlaceholderExpansion
 				{
 					return null;
 				}
-				double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, "`account_currency` = ?", ecy.getUniqueName());
+				double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT, "`balance`", "`account_currency` = ?", ecy.getUniqueName());
 				return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
 			} else if(s.length == 3)
 			{
@@ -237,7 +239,7 @@ public class PAPIHook extends PlaceholderExpansion
 				{
 					if(s[1].equalsIgnoreCase(acy.toString()))
 					{
-						double amount = plugin.getMysqlHandler().getSum(Type.ACCOUNT, "`account_category` = ?`account_currency` = ?",
+						double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT, "`balance`", "`account_category` = ?`account_currency` = ?",
 								acy.toString(), ecy.getUniqueName());
 						return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
 					}

@@ -437,6 +437,53 @@ public class MysqlHandler implements OLDTableI, Table00, Table01, Table02, Table
 		        {
 		        	preparedStatement.setObject(i, o);
 		        	i++;
+		        }		        
+		        result = preparedStatement.executeQuery();
+		        MysqlHandler.addRows(QueryType.READ, result.getMetaData().getColumnCount());
+		        while (result.next()) 
+		        {
+		        	return result.getDouble(1);
+		        }
+		    } catch (SQLException e) 
+			{
+				  e.printStackTrace();
+		    } finally 
+			{
+		    	  try 
+		    	  {
+		    		  if (result != null) 
+		    		  {
+		    			  result.close();
+		    		  }
+		    		  if (preparedStatement != null) 
+		    		  {
+		    			  preparedStatement.close();
+		    		  }
+		    	  } catch (Exception e) {
+		    		  e.printStackTrace();
+		    	  }
+		      }
+		}
+		return 0;
+	}
+	
+	public double getSumII(Type type, String whichColumn, String whereColumn, Object... whereObject)
+	{
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		Connection conn = plugin.getMysqlSetup().getConnection();
+		if (conn != null) 
+		{
+			try 
+			{
+				String sql = " SELECT sum("+whichColumn+") FROM `"+type.getValue()
+						+"` WHERE "+whereColumn;
+		        preparedStatement = conn.prepareStatement(sql);
+		        int i = 1;
+		        for(Object o : whereObject)
+		        {
+		        	preparedStatement.setObject(i, o);
+		        	i++;
 		        }
 		        
 		        result = preparedStatement.executeQuery();
