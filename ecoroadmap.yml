@@ -30,6 +30,10 @@ Future =========================================================================
 - ArgumentModule hat die Var plugin übernommen. In allen CMD die Var plugin dann rausnehmen.
 - Die Replacer in der currency datei dürfen keine Leerzeichen.
 
+Build 4-4-0
+- ShopGUIPlus Hook hinzugefügt
+- loadbefore: PlotSquared (weil die ne unnötige load:STARTUP, drin haben)
+
 Build 4-3-2
 - PAPI Mysql Fix
 

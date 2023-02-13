@@ -44,6 +44,7 @@ import main.java.me.avankziar.aep.spigot.hook.ChestShopHook;
 import main.java.me.avankziar.aep.spigot.hook.HeadDatabaseHook;
 import main.java.me.avankziar.aep.spigot.hook.JobsHook;
 import main.java.me.avankziar.aep.spigot.hook.QuickShopHook;
+import main.java.me.avankziar.aep.spigot.hook.ShopGuiPlusHook;
 import main.java.me.avankziar.aep.spigot.listener.GuiPayListener;
 import main.java.me.avankziar.aep.spigot.listener.PlayerListener;
 import main.java.me.avankziar.aep.spigot.listenerhandler.LoggerSettingsListenerHandler;
@@ -215,6 +216,11 @@ public class AdvancedEconomyPlus extends JavaPlugin
 		{
 			log.info(pluginName+" hook with QuickShop");
 			pm.registerEvents(new QuickShopHook(plugin), plugin);
+		}
+		if(existHook("ShopGUIPlus") && plugin.getYamlHandler().getConfig().getBoolean("ShopGUIPlus.EnableHook", false))
+		{
+			log.info(pluginName+" hook with ShopGUIPlus");
+			pm.registerEvents(new ShopGuiPlusHook(plugin), plugin);
 		}
 	}
 	

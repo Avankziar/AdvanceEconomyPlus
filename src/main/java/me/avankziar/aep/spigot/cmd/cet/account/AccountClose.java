@@ -116,13 +116,14 @@ public class AccountClose extends ArgumentModule
 				}
 			}			
 		}
+		final int id = ac.getID();
 		final String oname = ac.getOwner().getName();
 		final String acname = ac.getAccountName();
 		final String amount = plugin.getIFHApi().format(ac.getBalance(), ac.getCurrency());
-		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.ACCOUNT, "`id` = ?", ac.getID());
-		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.ACCOUNTMANAGEMENT, "`account_id` = ?", ac.getID());
-		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.QUICKPAYACCOUNT, "`account_id` = ?", ac.getID());
-		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.DEFAULTACCOUNT, "`account_id` = ?", ac.getID());
+		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.ACCOUNT, "`id` = ?", id);
+		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.ACCOUNTMANAGEMENT, "`account_id` = ?", id);
+		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.QUICKPAYACCOUNT, "`account_id` = ?", id);
+		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.DEFAULTACCOUNT, "`account_id` = ?", id);
 		player.sendMessage(ChatApi.tl(
 				plugin.getYamlHandler().getLang().getString("Cmd.Account.Close.AccountIsClosed")
 				.replace("%acname%", acname)
