@@ -1047,6 +1047,18 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eShop: &f%amount% &6x &b%item% &evon &f%player% &cgekauft&e!",
 				"&eShop: &f%amount% &6x &b%item% &efrom &f%player% &cpurchased&e!"}));
+		languageKeys.put("ShopGuiPlusHook.Category"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"ShopGui+",
+				"ShopGui+"}));
+		languageKeys.put("ShopGuiPlusHook.Sell"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eShop: &f%amount% &6x &b%item% &averkauft&e!",
+				"&eShop: &f%amount% &6x &b%item% &asold&e!"}));
+		languageKeys.put("ShopGuiPlusHook.Buy"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&eShop: &f%amount% &6x &b%item% &cgekauft&e!",
+				"&eShop: &f%amount% &6x &b%item% &cpurchased&e!"}));
 		languageKeys.put("JoinListener.OverdueAccounts"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cAchtung! &eEs sind &f%amount% &eSpieler schon länger als &f%days% &eTagen nicht aktiv. Wenn diese Acounts vererbt werden soll, setzte bitte einen neuen Eigentümer. &cSonst werden sie nach weitern &f%deletedays% &cTagen gelöscht!",
