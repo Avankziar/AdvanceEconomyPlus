@@ -359,6 +359,10 @@ public class YamlManager
 		configKeys.put("QuickShop.EnableHook"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
+		configKeys.put("ShopGUIPlus.EnableHook"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
+		
 	}
 	
 	private void commandsInput(String path, String name, String basePermission, 
