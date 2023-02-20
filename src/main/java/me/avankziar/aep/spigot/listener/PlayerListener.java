@@ -82,14 +82,11 @@ public class PlayerListener implements Listener
 					plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
 		} else
 		{
-			final String oldname = aepu.getName();
+			final UUID uuid = event.getPlayer().getUniqueId();
 			final String newname = event.getPlayer().getName();
 			aepu.setLastTimeLogin(System.currentTimeMillis());
-			if(!newname.equals(oldname))
-			{
-				aepu.setName(newname);
-				updateAccounts(plugin, oldname, newname);
-			}
+			aepu.setName(newname);
+			updateAccounts(plugin, uuid, newname);
 			plugin.getMysqlHandler().updateData(Type.PLAYERDATA, aepu, "`player_uuid` = ?", aepu.getUUID().toString());
 			if(plugin.getYamlHandler().getConfig().getBoolean("Enable.CreateAccountsDespiteTheFactThatThePlayerIsRegistered", false))
 			{
@@ -121,7 +118,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	private boolean updateAccounts(AdvancedEconomyPlus plugin, String oldplayername, String newplayername) 
+	private boolean updateAccounts(AdvancedEconomyPlus plugin, UUID uuid, String newplayername) 
 	{
 		PreparedStatement preparedStatement = null;
 		Connection conn = plugin.getMysqlSetup().getConnection();
@@ -130,11 +127,11 @@ public class PlayerListener implements Listener
 			try 
 			{
 				String data = "UPDATE `" + MysqlHandler.Type.ACCOUNT.getValue()
-						+ "` SET `owner_name` = ?,"
-						+ " WHERE `owner_name` = ?";
+						+ "` SET `owner_name` = ?"
+						+ " WHERE `owner_uuid` = ?";
 				preparedStatement = conn.prepareStatement(data);
 				preparedStatement.setString(1, newplayername);
-				preparedStatement.setString(1, oldplayername);
+				preparedStatement.setString(2, uuid.toString());
 				
 				preparedStatement.executeUpdate();
 				return true;

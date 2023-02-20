@@ -47,7 +47,7 @@ public class HeadDatabaseHook implements Listener
 
 		String comment = plugin.getYamlHandler().getLang().getString("HeadDatabase.Comment")
 				.replace("%head%", itemname);
-		Account from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.SHOP, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
+		Account from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
 		if(from == null)
 		{
 			from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));

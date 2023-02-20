@@ -29,6 +29,12 @@ Future =========================================================================
 - katching und wush sound für Geldüberweisungen und abzüge. Togglebar.
 - ArgumentModule hat die Var plugin übernommen. In allen CMD die Var plugin dann rausnehmen.
 - Die Replacer in der currency datei dürfen keine Leerzeichen.
+- ActionLogs werden nicht angelegt/angezeigt, warum? ka
+
+Build 4-4-1
+- Headdatabase, falscher Log für Abzug fix
+- /aep actionlog zeigt nun die correkten anzahl an
+- Umbenannte spieler werden auch nun korrekt so übernommen.
 
 Build 4-4-0
 - ShopGUIPlus Hook hinzugefügt

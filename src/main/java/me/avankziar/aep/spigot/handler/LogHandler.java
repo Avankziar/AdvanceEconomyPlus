@@ -148,7 +148,7 @@ public class LogHandler
 			LoggerSettingsHandler.Access access, String cmdstring)
 	{
 		boolean lastpage = false;
-		if(end > last)
+		if(end >= last)
 		{
 			lastpage = true;
 		}

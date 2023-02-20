@@ -1285,7 +1285,7 @@ public class LoggerSettingsHandler
 					if(fst.isAction())
 					{
 						start = page*10;
-						end = 9;
+						end = 10;
 						ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
 								plugin.getMysqlHandler().getList(Type.ACTION, order, start, end,
 										query, whereObject));
@@ -1296,7 +1296,7 @@ public class LoggerSettingsHandler
 					} else
 					{
 						start = page*10;
-						end = 9;
+						end = 10;
 						ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
 								plugin.getMysqlHandler().getList(Type.TREND, order, start, end,
 										query, whereObject));
@@ -1335,11 +1335,11 @@ public class LoggerSettingsHandler
 					if(fst.isAction())
 					{
 						start = page*10;
-						end = 9;
+						end = 10;
 						ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
 								plugin.getMysqlHandler().getList(Type.ACTION, order, start, end,
 										query, whereObject));
-						int last = plugin.getMysqlHandler().countWhereID(Type.ACTION, query, whereObject);
+						int last = plugin.getMysqlHandler().getCount(Type.ACTION, query, whereObject); //TODO GetCount machen
 						LogHandler.sendActionLogs(plugin, player, fst, list, page, end, last, 
 								access,
 								cmdString != null ? cmdString : loggerSettingsCommandString);
@@ -1347,7 +1347,7 @@ public class LoggerSettingsHandler
 					} else
 					{
 						start = page*10;
-						end = 9;
+						end = 10;
 						ArrayList<TrendLogger> list = ConvertHandler.convertListIV(
 								plugin.getMysqlHandler().getList(Type.TREND, order, start, end,
 										query, whereObject));
