@@ -31,6 +31,9 @@ Future =========================================================================
 - Die Replacer in der currency datei dürfen keine Leerzeichen.
 - ActionLogs werden nicht angelegt/angezeigt, warum? ka
 
+Build 4-5-0
+- Spigot 1.20.1 support
+
 Build 4-4-1
 - Headdatabase, falscher Log für Abzug fix
 - /aep actionlog zeigt nun die correkten anzahl an
