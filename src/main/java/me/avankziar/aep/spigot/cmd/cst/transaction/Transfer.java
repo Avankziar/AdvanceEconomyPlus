@@ -258,16 +258,10 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 		double taxation = ts != null ? ts.getTaxInPercent() : 0.0;
 		boolean taxAreExclusive = ts != null ? ts.isTaxAreExclusive() : true;
 		EconomyAction ea = null;
-		if(tax == null && category == null)
-		{
-			ea = plugin.getIFHApi().transaction(from, to, amount);
-		} else if(tax == null && category != null)
-		{
-			ea = plugin.getIFHApi().transaction(from, to, amount, OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
-		} else if(tax != null && category == null)
+		if(category == null)
 		{
 			ea = plugin.getIFHApi().transaction(from, to, amount, taxation, taxAreExclusive, tax);
-		} else if(tax != null && category != null)
+		} else if(category != null)
 		{
 			ea = plugin.getIFHApi().transaction(from, to, amount, taxation, taxAreExclusive, tax, 
 					OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);

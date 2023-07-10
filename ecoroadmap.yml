@@ -31,6 +31,9 @@ Future =========================================================================
 - Die Replacer in der currency datei dürfen keine Leerzeichen.
 - ActionLogs werden nicht angelegt/angezeigt, warum? ka
 
+Build 4-5-1
+- Logik Fehler fix, nun kann man auch Steuern abziehen lassen, bei Spieler zu Spieler Transaktion, auch wenn kein Steueraccount vorhanden ist.
+
 Build 4-5-0
 - Spigot 1.20.1 support
 
