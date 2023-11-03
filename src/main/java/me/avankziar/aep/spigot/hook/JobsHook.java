@@ -73,7 +73,6 @@ public class JobsHook implements Listener
 		List<String> times = plugin.getYamlHandler().getConfig().getStringList("JobsReborn.HookTaskTimer");
 		new BukkitRunnable()
 		{
-			
 			@Override
 			public void run()
 			{
@@ -90,11 +89,12 @@ public class JobsHook implements Listener
 	{
 		for(String job : joblist.keySet())
 		{
-			HashMap<String,Double> playerlist = joblist.get(job);
+			HashMap<String, Double> playerlist = joblist.get(job);
 			for(String playeruuid : playerlist.keySet())
 			{
 				UUID puuid = UUID.fromString(playeruuid);
-				double amount = playerlist.get(playeruuid);
+				final double amount = playerlist.get(playeruuid);
+				joblist.get(job).remove(playeruuid);
 				if(amount > 0.0)
 				{
 					String category = plugin.getYamlHandler().getLang().getString("JobsRebornHook.Category");
@@ -126,7 +126,8 @@ public class JobsHook implements Listener
 				if(playeruuid.equals(playerUUID))
 				{
 					UUID puuid = UUID.fromString(playeruuid);
-					double amount = playerlist.get(playeruuid);
+					final double amount = playerlist.get(playeruuid);
+					joblist.get(job).remove(playeruuid);
 					if(amount > 0.0)
 					{
 						String category = plugin.getYamlHandler().getLang().getString("JobsRebornHook.Category");
@@ -149,5 +150,4 @@ public class JobsHook implements Listener
 			}
 		}
 	}
-
 }

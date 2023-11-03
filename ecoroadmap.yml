@@ -31,6 +31,11 @@ Future =========================================================================
 - Die Replacer in der currency datei dürfen keine Leerzeichen.
 - ActionLogs werden nicht angelegt/angezeigt, warum? ka
 
+!!!TechnologyTree PostRewardEvent Hook einbinden!!!
+
+Build 4-5-2
+- Logikfehler beim Actionlogger bei JobsRebornHook
+
 Build 4-5-1
 - Logik Fehler fix, nun kann man auch Steuern abziehen lassen, bei Spieler zu Spieler Transaktion, auch wenn kein Steueraccount vorhanden ist.
 
