@@ -92,7 +92,7 @@ public class AccountSetDefault extends ArgumentModule
 			{
 				plugin.getMysqlHandler().deleteData(MysqlHandler.Type.DEFAULTACCOUNT, 
 						"`player_uuid` = ? AND `account_category` = ? AND `account_currency` = ?",
-					ee.getUUID().toString(), ac.getCategory().toString(), ac.getCurrency().getUniqueName());
+						player.getUniqueId().toString(), ac.getCategory().toString(), ac.getCurrency().getUniqueName());
 				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.AccountNotDefault")
 						.replace("%acname%", ac.getAccountName())
 						.replace("%acowner%", ac.getOwner().getName())
@@ -102,10 +102,10 @@ public class AccountSetDefault extends ArgumentModule
 			dacc.setAccountID(ac.getID());
 			plugin.getMysqlHandler().updateData(MysqlHandler.Type.DEFAULTACCOUNT, dacc, 
 					"`player_uuid` = ? AND `account_category` = ? AND `account_currency` = ?",
-					ee.getUUID().toString(), ac.getCategory().toString(), ac.getCurrency().getUniqueName());
+					player.getUniqueId().toString(), ac.getCategory().toString(), ac.getCurrency().getUniqueName());
 		} else
 		{
-			dacc = new DefaultAccount(ee.getUUID(), ac.getID(), ac.getCurrency().getUniqueName(), ac.getCategory());
+			dacc = new DefaultAccount(player.getUniqueId(), ac.getID(), ac.getCurrency().getUniqueName(), ac.getCategory());
 			plugin.getMysqlHandler().create(MysqlHandler.Type.DEFAULTACCOUNT, dacc);
 		}
 		player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("Cmd.Account.SetDefault.SetDefaultAccount")
