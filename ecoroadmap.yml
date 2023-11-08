@@ -35,6 +35,8 @@ Future =========================================================================
 
 Build 4-5-2
 - Logikfehler beim Actionlogger bei JobsRebornHook
+- /aep account setdefault logik fehler fix.
+- Aep pay/set/take etc. Language fix
 
 Build 4-5-1
 - Logik Fehler fix, nun kann man auch Steuern abziehen lassen, bei Spieler zu Spieler Transaktion, auch wenn kein Steueraccount vorhanden ist.

@@ -1819,7 +1819,7 @@ public class YamlManager
 				"&cYour specified QuickPay account does not exist!"}));
 		languageKeys.put(base+"Pay.AccountDontExist"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-				"&cDer angegbene Aaccount existiert nicht!",
+				"&cDer angegbene Account existiert nicht!",
 				"&cThe specified account does not exist!"}));
 		languageKeys.put(base+"Pay.TargetAccountDontExist"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

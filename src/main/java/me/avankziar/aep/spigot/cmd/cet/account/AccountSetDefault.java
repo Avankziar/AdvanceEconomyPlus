@@ -85,7 +85,7 @@ public class AccountSetDefault extends ArgumentModule
 		}
 		DefaultAccount dacc = (DefaultAccount) plugin.getMysqlHandler().getData(MysqlHandler.Type.DEFAULTACCOUNT,
 				"`player_uuid` = ? AND `account_category` = ? AND `account_currency` = ?",
-				ee.getUUID().toString(), ac.getCategory().toString(), ac.getCurrency().getUniqueName());
+				player.getUniqueId().toString(), ac.getCategory().toString(), ac.getCurrency().getUniqueName());
 		if(dacc != null)
 		{
 			if(dacc.getAccountID() == ac.getID())
