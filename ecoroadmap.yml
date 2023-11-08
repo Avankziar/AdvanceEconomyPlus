@@ -35,6 +35,8 @@ Future =========================================================================
 
 Build 4-5-2
 - Logikfehler beim Actionlogger bei JobsRebornHook
+- Spam Fehler mit getJob NPE, fix. Es könnte sein (jedoch unwahrscheinlich),
+	das durch diese Änderung bestimmte Jobs im Actionlog nicht registriert werden.
 - /aep account setdefault logik fehler fix.
 - Aep pay/set/take etc. Language fix
 

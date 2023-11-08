@@ -36,7 +36,8 @@ public class JobsHook implements Listener
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onJobs(JobsPrePaymentEvent event)
 	{
-		if(event.isCancelled())
+		if(event.isCancelled()
+				|| event.getJob() == null)
 		{
 			return;
 		}
