@@ -2,8 +2,11 @@ package main.java.me.avankziar.aep.spigot.hook;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.event.EventHandler;
@@ -88,6 +91,7 @@ public class JobsHook implements Listener
 	
 	public static void loggerRunTask()
 	{
+		LinkedHashMap<UUID, ArrayList<String>> uuidjob = new LinkedHashMap<>();
 		for(String job : joblist.keySet())
 		{
 			HashMap<String, Double> playerlist = joblist.get(job);
@@ -95,7 +99,6 @@ public class JobsHook implements Listener
 			{
 				UUID puuid = UUID.fromString(playeruuid);
 				final double amount = playerlist.get(playeruuid);
-				joblist.get(job).remove(playeruuid);
 				if(amount > 0.0)
 				{
 					String category = plugin.getYamlHandler().getLang().getString("JobsRebornHook.Category");
@@ -113,6 +116,23 @@ public class JobsHook implements Listener
 							-1, OrdererType.PLAYER, puuid, null, amount, amount, 0.0, category, comment));
 					LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());
 				}
+				ArrayList<String> jobs = new ArrayList<>();
+				if(uuidjob.containsKey(puuid))
+				{
+					jobs = uuidjob.get(puuid);
+				}
+				if(!jobs.contains(job))
+				{
+					jobs.add(job);
+				}
+				uuidjob.put(puuid, jobs);
+			}
+		}
+		for(Entry<UUID, ArrayList<String>> list : uuidjob.entrySet())
+		{
+			for(String j : list.getValue())
+			{
+				joblist.get(j).remove(list.getKey().toString());
 			}
 		}
 	}

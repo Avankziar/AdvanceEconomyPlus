@@ -33,6 +33,9 @@ Future =========================================================================
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
+Build 4-5-3
+- JobsReborn Hook Logic error fix
+
 Build 4-5-2
 - Logikfehler beim Actionlogger bei JobsRebornHook
 - Spam Fehler mit getJob NPE, fix. Es könnte sein (jedoch unwahrscheinlich),
