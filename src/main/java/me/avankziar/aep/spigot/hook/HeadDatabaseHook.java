@@ -44,14 +44,9 @@ public class HeadDatabaseHook implements Listener
 			}
 		}
 		String category = plugin.getYamlHandler().getLang().getString("HeadDatabase.Category");
-
 		String comment = plugin.getYamlHandler().getLang().getString("HeadDatabase.Comment")
 				.replace("%head%", itemname);
 		Account from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
-		if(from == null)
-		{
-			from = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.MAIN, plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL));
-		}
 		Account to = plugin.getIFHApi().getDefaultAccount(cuuid, AccountCategory.VOID);
 		if(to == null && plugin.getIFHApi().getDefaultServer() != null)
 		{
