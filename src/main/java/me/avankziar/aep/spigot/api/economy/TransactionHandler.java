@@ -499,8 +499,8 @@ public class TransactionHandler
 					taxDepot.getID(), amountToTax, taxDepot.getBalance(), taxDepot.getBalance()+amountToTax));
 			taxDepot.setBalance(taxDepot.getBalance()+amountToTax);
 		}
-		saveAccount(holder, taxDepot);
 		holder.setBalance(holder.getBalance()+amountToDeposit);
+		saveAccount(holder, taxDepot);
 		final EconomyAction ea = new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, true, D_SUCCESS, ErrorMessageType.SUCCESS,
 				0.0, holder.getBalance());
 		return ea;
