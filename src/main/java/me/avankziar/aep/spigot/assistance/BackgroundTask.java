@@ -68,12 +68,12 @@ public class BackgroundTask
 	
 	public void runLogCleanTask()
 	{
-		int deletedays = plugin.getYamlHandler().getConfig().getInt("Do.DeleteLogsAfterDays", 365);
+		long deletedays = plugin.getYamlHandler().getConfig().getLong("Do.DeleteLogsAfterDays", 365);
 		if(deletedays < 0)
 		{
 			return;
 		}
-		long time = System.currentTimeMillis()-deletedays*1000*60*60*24;
+		long time = System.currentTimeMillis()-(deletedays*1000L*60*60*24);
 		new BukkitRunnable()
 		{
 			@Override
@@ -176,7 +176,7 @@ public class BackgroundTask
 							}
 							start += 10;
 						}
-					}.runTaskTimerAsynchronously(plugin, 20, 20*2);
+					}.runTaskTimerAsynchronously(plugin, 20L, 20L*2);
 				}
 				String categoryII = plugin.getYamlHandler().getLang().getString("Bankaccount.AccountManagementFees.CategoryII");
 				String commentII = plugin.getYamlHandler().getLang().getString("Bankaccount.AccountManagementFees.CommentII");
@@ -247,10 +247,10 @@ public class BackgroundTask
 							}
 							start += 10;
 						}
-					}.runTaskTimerAsynchronously(plugin, 20, 20*2);
+					}.runTaskTimerAsynchronously(plugin, 20L, 20L*2);
 				}
 			}
-		}.runTaskTimerAsynchronously(plugin, 0, 20*60);
+		}.runTaskTimerAsynchronously(plugin, 0L, 20L*60);
 	}
 	
 	public void runAccountInterest()
@@ -328,16 +328,16 @@ public class BackgroundTask
 							}
 							start += 10;
 						}
-					}.runTaskTimerAsynchronously(plugin, 20, 20*2);
+					}.runTaskTimerAsynchronously(plugin, 20L, 20L*2);
 				}
 			}
-		}.runTaskTimerAsynchronously(plugin, 0, 20*60);
+		}.runTaskTimerAsynchronously(plugin, 0L, 20L*60);
 	}
 	
 	public void runPlayerDataDelete(int deletedays)
 	{
 		int days = plugin.getYamlHandler().getConfig().getInt("Do.OverdueTimeInDays", 180);
-		long deletedate = System.currentTimeMillis()-((long) days+(long) deletedays)*1000*60*60*24;
+		long deletedate = System.currentTimeMillis()-((long) days+(long) deletedays)*1000L*60*60*24;
 		new BukkitRunnable()
 		{
 			@Override
@@ -395,7 +395,6 @@ public class BackgroundTask
 				AdvancedEconomyPlus.log.info("===========================================");
 			}
 		}.runTaskAsynchronously(plugin);
-		
 	}
 	
 	public void runDebtRepayment()
@@ -412,7 +411,7 @@ public class BackgroundTask
 				{
 					list = ConvertHandler.convertListVI(plugin.getMysqlHandler().getAllListAt(MysqlHandler.Type.LOAN, "`id` ASC",
 										"`forgiven` = ? AND `paused` = ? AND `finished` = ? AND `end_time` > ?",
-										false, false, false, System.currentTimeMillis()+1000*60*60*30));
+										false, false, false, System.currentTimeMillis()+1000L*60*60*30));
 				} catch (IOException e)
 				{
 					return;
@@ -652,7 +651,7 @@ public class BackgroundTask
 	public void runStandingOrderCleanUp()
 	{
 		long deleteafter = System.currentTimeMillis()
-				-plugin.getYamlHandler().getConfig().getInt("StandingOrder.DeleteAfterIsCancelledOrPausedInDays", 120)*1000*60*60*24;
+				-plugin.getYamlHandler().getConfig().getLong("StandingOrder.DeleteAfterIsCancelledOrPausedInDays", 120)*1000L*60*60*24;
 		if(deleteafter < 0)
 		{
 			return;

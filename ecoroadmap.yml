@@ -35,6 +35,7 @@ Future =========================================================================
 
 Build 4-5-4
 - Transaction Logix Error fix
+- Delete Action & TrendLog Backgroundtask Error Fix
 
 Build 4-5-3
 - JobsReborn Hook Logic error fix
