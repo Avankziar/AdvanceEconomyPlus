@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -70,52 +71,60 @@ public class PlayerListener implements Listener
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event)
 	{
-		AEPUser aepu = (AEPUser) plugin.getMysqlHandler().getData(
-				MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", event.getPlayer().getUniqueId().toString());
-		if(aepu == null)
+		final Player player = event.getPlayer();
+		new BukkitRunnable()
 		{
-			aepu = new AEPUser(event.getPlayer().getUniqueId(), event.getPlayer().getName(),
-					ConfigHandler.getDefaultMoneyFlowNotification(true),
-					ConfigHandler.getDefaultMoneyFlowNotification(false), System.currentTimeMillis());
-			plugin.getMysqlHandler().create(MysqlHandler.Type.PLAYERDATA, aepu);
-			AccountHandler.createAllCurrencyAccounts(event.getPlayer(), 
-					plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
-		} else
-		{
-			final UUID uuid = event.getPlayer().getUniqueId();
-			final String newname = event.getPlayer().getName();
-			aepu.setLastTimeLogin(System.currentTimeMillis());
-			aepu.setName(newname);
-			updateAccounts(plugin, uuid, newname);
-			plugin.getMysqlHandler().updateData(Type.PLAYERDATA, aepu, "`player_uuid` = ?", aepu.getUUID().toString());
-			if(plugin.getYamlHandler().getConfig().getBoolean("Enable.CreateAccountsDespiteTheFactThatThePlayerIsRegistered", false))
+			@Override
+			public void run()
 			{
-				AccountHandler.createAllCurrencyAccounts(event.getPlayer(), plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
+				AEPUser aepu = (AEPUser) plugin.getMysqlHandler().getData(
+						MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", player.getUniqueId().toString());
+				if(aepu == null)
+				{
+					aepu = new AEPUser(player.getUniqueId(), player.getName(),
+							ConfigHandler.getDefaultMoneyFlowNotification(true),
+							ConfigHandler.getDefaultMoneyFlowNotification(false), System.currentTimeMillis());
+					plugin.getMysqlHandler().create(MysqlHandler.Type.PLAYERDATA, aepu);
+					AccountHandler.createAllCurrencyAccounts(player, 
+							plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
+				} else
+				{
+					final UUID uuid = player.getUniqueId();
+					final String newname = player.getName();
+					aepu.setLastTimeLogin(System.currentTimeMillis());
+					aepu.setName(newname);
+					updateAccounts(plugin, uuid, newname);
+					plugin.getMysqlHandler().updateData(Type.PLAYERDATA, aepu, "`player_uuid` = ?", aepu.getUUID().toString());
+					if(plugin.getYamlHandler().getConfig().getBoolean("Enable.CreateAccountsDespiteTheFactThatThePlayerIsRegistered", false))
+					{
+						AccountHandler.createAllCurrencyAccounts(player, plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
+					}
+				}
+				if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_JOINLISTENER)))
+				{
+					if(!plugin.getYamlHandler().getConfig().getBoolean("Do.ShowOverdueAccounts", true))
+					{
+						return;
+					}
+					int days = plugin.getYamlHandler().getConfig().getInt("Do.OverdueTimeInDays", 90);
+					long overdate = System.currentTimeMillis()-(long) days*1000*60*60*24;
+					int overdueac = plugin.getMysqlHandler().getCount(Type.PLAYERDATA, "`unixtime` < ?", overdate);
+					int deletedays = plugin.getYamlHandler().getConfig().getInt("Do.DeleteAccountsDaysAfterOverdue", 30);
+					if(overdueac > 0 && deletedays > 0)
+					{	
+						player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("JoinListener.OverdueAccounts")
+								.replace("%amount%", String.valueOf(overdueac))
+								.replace("%days%", String.valueOf(days))
+								.replace("%deletedays%", String.valueOf(deletedays))));
+					} else if(overdueac > 0 && deletedays < 0)
+					{
+						player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("JoinListener.OverdueAccountsWithoutDelete")
+								.replace("%amount%", String.valueOf(overdueac))
+								.replace("%days%", String.valueOf(days))));
+					}
+				}
 			}
-		}
-		if(event.getPlayer().hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_JOINLISTENER)))
-		{
-			if(!plugin.getYamlHandler().getConfig().getBoolean("Do.ShowOverdueAccounts", true))
-			{
-				return;
-			}
-			int days = plugin.getYamlHandler().getConfig().getInt("Do.OverdueTimeInDays", 90);
-			long overdate = System.currentTimeMillis()-(long) days*1000*60*60*24;
-			int overdueac = plugin.getMysqlHandler().getCount(Type.PLAYERDATA, "`unixtime` < ?", overdate);
-			int deletedays = plugin.getYamlHandler().getConfig().getInt("Do.DeleteAccountsDaysAfterOverdue", 30);
-			if(overdueac > 0 && deletedays > 0)
-			{	
-				event.getPlayer().sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("JoinListener.OverdueAccounts")
-						.replace("%amount%", String.valueOf(overdueac))
-						.replace("%days%", String.valueOf(days))
-						.replace("%deletedays%", String.valueOf(deletedays))));
-			} else if(overdueac > 0 && deletedays < 0)
-			{
-				event.getPlayer().sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("JoinListener.OverdueAccountsWithoutDelete")
-						.replace("%amount%", String.valueOf(overdueac))
-						.replace("%days%", String.valueOf(days))));
-			}
-		}
+		}.runTaskAsynchronously(plugin);
 	}
 	
 	private boolean updateAccounts(AdvancedEconomyPlus plugin, UUID uuid, String newplayername) 
@@ -233,6 +242,5 @@ public class PlayerListener implements Listener
 						Action.SHOW_TEXT, comment));
 			}
 		}.runTaskAsynchronously(plugin);
-		
 	}
 }
