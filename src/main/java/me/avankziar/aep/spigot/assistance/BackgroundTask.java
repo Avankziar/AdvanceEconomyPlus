@@ -368,7 +368,7 @@ public class BackgroundTask
 					try
 					{
 						acs = ConvertHandler.convertListII(
-								plugin.getMysqlHandler().getAllListAt(Type.ACCOUNT, "`id` = ?", "`owner_uuid` = ?", u.getUUID().toString()));
+								plugin.getMysqlHandler().getAllListAt(Type.ACCOUNT, "`id`", "`owner_uuid` = ?", u.getUUID().toString()));
 					} catch (IOException e)
 					{
 						e.printStackTrace();
