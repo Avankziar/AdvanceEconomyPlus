@@ -33,6 +33,10 @@ Future =========================================================================
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
+Build 4-6-2
+- JobsRebornHook ConcurrentModificationException null fix
+- Java 21 Dependency
+
 Build 4-6-1
 - BackgroundTask runPlayerDataDelete error fix
 

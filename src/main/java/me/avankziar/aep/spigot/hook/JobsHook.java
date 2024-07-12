@@ -142,6 +142,10 @@ public class JobsHook implements Listener
 		for(String job : joblist.keySet())
 		{
 			HashMap<String,Double> playerlist = joblist.get(job);
+			if(playerlist == null)
+			{
+				continue;
+			}
 			for(String playeruuid : playerlist.keySet())
 			{
 				if(playeruuid.equals(playerUUID))

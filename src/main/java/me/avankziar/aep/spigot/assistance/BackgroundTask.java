@@ -359,6 +359,7 @@ public class BackgroundTask
 				int uCount = 0;
 				int acCount = 0;
 				int acmCount = 0;
+				int money = 0;
 				int acdCount = 0;
 				int acqCount = 0;
 				for(AEPUser u : user)
@@ -375,6 +376,7 @@ public class BackgroundTask
 					}
 					for(Account ac : acs)
 					{
+						money += ac.getBalance();
 						acmCount += plugin.getMysqlHandler().getCount(Type.ACCOUNTMANAGEMENT, "`account_id` = ?", ac.getID());
 						plugin.getMysqlHandler().deleteData(Type.ACCOUNTMANAGEMENT, "`account_id` = ?", ac.getID());
 						acdCount += plugin.getMysqlHandler().getCount(Type.DEFAULTACCOUNT, "`account_id` = ?", ac.getID());
@@ -389,6 +391,7 @@ public class BackgroundTask
 				AdvancedEconomyPlus.log.info("==========AEP Database DeleteTask==========");
 				AdvancedEconomyPlus.log.info("Deleted User: "+uCount);
 				AdvancedEconomyPlus.log.info("Deleted Account: "+acCount);
+				AdvancedEconomyPlus.log.info("Deleted Money: "+money);
 				AdvancedEconomyPlus.log.info("Deleted AccountManagement: "+acmCount);
 				AdvancedEconomyPlus.log.info("Deleted DefaultAccount: "+acdCount);
 				AdvancedEconomyPlus.log.info("Deleted QuickPayAccount: "+acqCount);
