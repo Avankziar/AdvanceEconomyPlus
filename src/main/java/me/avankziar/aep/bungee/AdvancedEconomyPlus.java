@@ -9,11 +9,10 @@ import main.java.me.avankziar.aep.bungee.database.MysqlHandler;
 import main.java.me.avankziar.aep.bungee.database.MysqlSetup;
 import main.java.me.avankziar.aep.bungee.database.YamlHandler;
 import main.java.me.avankziar.aep.bungee.database.YamlManager;
-import main.java.me.avankziar.ifh.bungee.InterfaceHub;
+import main.java.me.avankziar.ifh.bungee.IFH;
 import main.java.me.avankziar.ifh.bungee.administration.Administration;
 import main.java.me.avankziar.ifh.bungee.plugin.RegisteredServiceProvider;
 import main.java.me.avankziar.ifh.bungee.plugin.ServicePriority;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -125,7 +124,7 @@ public class AdvancedEconomyPlus extends Plugin
 	@SuppressWarnings("deprecation")
 	private boolean setupIFH()
 	{
-		InterfaceHub ifh = InterfaceHub.plugin;
+		IFH ifh = IFH.getPlugin();
 		if(ifh == null) 
 	    {
 			log.severe("IFH is not set in the Plugin " + pluginName + "! Disable plugin!");
@@ -149,12 +148,12 @@ public class AdvancedEconomyPlus extends Plugin
 	
 	private void setupIFHAdministration()
 	{ 
-		Plugin plugin = BungeeCord.getInstance().getPluginManager().getPlugin("InterfaceHub");
+		Plugin plugin = getProxy().getPluginManager().getPlugin("InterfaceHub");
         if (plugin == null) 
         {
             return;
         }
-        InterfaceHub ifh = (InterfaceHub) plugin;
+        IFH ifh = (IFH) plugin;
         try
 		{
 			RegisteredServiceProvider<Administration> rsp = ifh

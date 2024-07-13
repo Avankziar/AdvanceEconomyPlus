@@ -10,8 +10,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.maxgamer.quickshop.event.ShopSuccessPurchaseEvent;
-import org.maxgamer.quickshop.shop.Shop;
+import org.maxgamer.quickshop.api.event.ShopSuccessPurchaseEvent;
+import org.maxgamer.quickshop.api.shop.Shop;
 
 import main.java.me.avankziar.aep.general.objects.ActionLogger;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;

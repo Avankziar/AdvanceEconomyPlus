@@ -18,8 +18,6 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.general.economy.account.AccountManagementType;
 import main.java.me.avankziar.ifh.general.economy.account.AccountType;
@@ -42,9 +40,9 @@ public class AccountHandler
 		this.plugin = plugin;
 	}
 	
-	public static void createAllCurrencyAccounts(Player player, boolean convert)
+	public static void createAllCurrencyAccounts(Player player)
 	{
-		ConfigHandler.debug(d1, "> createAllCurrencyAccounts start : "+player.getName()+" | convert : "+convert);
+		ConfigHandler.debug(d1, "> createAllCurrencyAccounts start : "+player.getName());
 		AdvancedEconomyPlus plugin = AdvancedEconomyPlus.getPlugin();
 		for(EconomyCurrency ec : plugin.getIFHApi().getCurrencies(CurrencyType.DIGITAL))
 		{
@@ -94,20 +92,6 @@ public class AccountHandler
 						{
 							ConfigHandler.debug(d1, "> AccountManagementType Exception : "+s[i]+" | Exit");
 							continue;
-						}
-					}
-					if(convert && acy == AccountCategory.MAIN)
-					{
-						OLD_AEPUser old = _AEPUserHandler_OLD.getEcoPlayer(player);
-						if(old != null)
-						{
-							double mult = 1.0;
-							for(int i = ec.getCurrencyGradation().getHighestGradationNumber(); i > 0; i--)
-							{
-								mult = mult*ec.getCurrencyGradation().getGradation(i).getValueToBaseGradation();
-							}
-							startamount += old.getBalance()*mult;
-							plugin.getMysqlHandler().deleteData(Type.OLDPLAYER, "`id` = ?", old.getId());
 						}
 					}
 					Account ac = new Account(acname, at, acy, ec, ee, startamount, true);

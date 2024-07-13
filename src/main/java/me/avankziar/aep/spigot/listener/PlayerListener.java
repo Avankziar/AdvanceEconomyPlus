@@ -14,6 +14,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import main.java.me.avankziar.aep.general.ChatApi;
 import main.java.me.avankziar.aep.general.objects.AEPUser;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.api.MatchApi;
@@ -23,7 +24,6 @@ import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
 import main.java.me.avankziar.aep.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.aep.spigot.handler.ConvertHandler;
-import main.java.me.avankziar.ifh.general.assistance.ChatApi;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.general.economy.account.AccountType;
 import main.java.me.avankziar.ifh.general.economy.action.EconomyAction;
@@ -85,8 +85,7 @@ public class PlayerListener implements Listener
 							ConfigHandler.getDefaultMoneyFlowNotification(true),
 							ConfigHandler.getDefaultMoneyFlowNotification(false), System.currentTimeMillis());
 					plugin.getMysqlHandler().create(MysqlHandler.Type.PLAYERDATA, aepu);
-					AccountHandler.createAllCurrencyAccounts(player, 
-							plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
+					AccountHandler.createAllCurrencyAccounts(player);
 				} else
 				{
 					final UUID uuid = player.getUniqueId();
@@ -97,7 +96,7 @@ public class PlayerListener implements Listener
 					plugin.getMysqlHandler().updateData(Type.PLAYERDATA, aepu, "`player_uuid` = ?", aepu.getUUID().toString());
 					if(plugin.getYamlHandler().getConfig().getBoolean("Enable.CreateAccountsDespiteTheFactThatThePlayerIsRegistered", false))
 					{
-						AccountHandler.createAllCurrencyAccounts(player, plugin.getYamlHandler().getConfig().getBoolean("Enable.ConvertFromBuildThree", false));
+						AccountHandler.createAllCurrencyAccounts(player);
 					}
 				}
 				if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_JOINLISTENER)))

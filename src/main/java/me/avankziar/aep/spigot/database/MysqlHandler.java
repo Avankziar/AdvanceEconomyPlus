@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.database.tables.OLDTableI;
 import main.java.me.avankziar.aep.spigot.database.tables.Table00;
 import main.java.me.avankziar.aep.spigot.database.tables.Table01;
 import main.java.me.avankziar.aep.spigot.database.tables.Table02;
@@ -21,11 +20,10 @@ import main.java.me.avankziar.aep.spigot.database.tables.Table08;
 import main.java.me.avankziar.aep.spigot.database.tables.Table09;
 import main.java.me.avankziar.aep.spigot.database.tables.Table10;
 
-public class MysqlHandler implements OLDTableI, Table00, Table01, Table02, Table03, Table04, Table05, Table06, Table07, Table08, Table09, Table10
+public class MysqlHandler implements Table00, Table01, Table02, Table03, Table04, Table05, Table06, Table07, Table08, Table09, Table10
 {
 	public enum Type
 	{
-		OLDPLAYER("economyPlayerData"),
 		ACTION("aepActionLogger"),
 		TREND("aepTrendLogger"),
 		STANDINGORDER("aepStandingOrder"),
@@ -151,8 +149,6 @@ public class MysqlHandler implements OLDTableI, Table00, Table01, Table02, Table
 	{
 		switch(type)
 		{
-		case OLDPLAYER:
-			return OLDTableI.super.createIOLD(plugin, object);
 		case ENTITYDATA:
 			return Table00.super.create0(plugin, object);
 		case PLAYERDATA:
@@ -183,8 +179,6 @@ public class MysqlHandler implements OLDTableI, Table00, Table01, Table02, Table
 	{
 		switch(type)
 		{
-		case OLDPLAYER:
-			return OLDTableI.super.updateDataIOLD(plugin, object, whereColumn, whereObject);
 		case ENTITYDATA:
 			return Table00.super.updateData0(plugin, object, whereColumn, whereObject);
 		case PLAYERDATA:
@@ -215,8 +209,6 @@ public class MysqlHandler implements OLDTableI, Table00, Table01, Table02, Table
 	{
 		switch(type)
 		{
-		case OLDPLAYER:
-			return OLDTableI.super.getDataIOLD(plugin, whereColumn, whereObject);
 		case ENTITYDATA:
 			return Table00.super.getData0(plugin, whereColumn, whereObject);
 		case PLAYERDATA:
@@ -519,8 +511,6 @@ public class MysqlHandler implements OLDTableI, Table00, Table01, Table02, Table
 	{
 		switch(type)
 		{
-		case OLDPLAYER:
-			return OLDTableI.super.getListIOLD(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
 		case ENTITYDATA:
 			return Table00.super.getList0(plugin, orderByColumn, start, quantity, whereColumn, whereObject);
 		case PLAYERDATA:
@@ -551,8 +541,6 @@ public class MysqlHandler implements OLDTableI, Table00, Table01, Table02, Table
 	{
 		switch(type)
 		{
-		case OLDPLAYER:
-			return OLDTableI.super.getTopIOLD(plugin, orderByColumn, start, end);
 		case ENTITYDATA:
 			return Table00.super.getTop0(plugin, orderByColumn, start, end);
 		case PLAYERDATA:
@@ -584,8 +572,6 @@ public class MysqlHandler implements OLDTableI, Table00, Table01, Table02, Table
 	{
 		switch(type)
 		{
-		case OLDPLAYER:
-			return OLDTableI.super.getAllListAtIOLD(plugin, orderByColumn, whereColumn, whereObject);
 		case ENTITYDATA:
 			return Table00.super.getAllListAt0(plugin, orderByColumn, whereColumn, whereObject);
 		case PLAYERDATA:

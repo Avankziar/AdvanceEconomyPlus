@@ -187,9 +187,6 @@ public class YamlManager
 		configKeys.put("EnableCommands.Loan"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
-		configKeys.put("Enable.ConvertFromBuildThree"
-				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-				false}));
 		configKeys.put("Enable.CreateAccountsDespiteTheFactThatThePlayerIsRegistered"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				false}));

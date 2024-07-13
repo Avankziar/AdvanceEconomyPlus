@@ -33,9 +33,13 @@ Future =========================================================================
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
-Build 4-6-2
+Build 4-7-0
 - JobsRebornHook ConcurrentModificationException null fix
 - Java 21 Dependency
+- MC 1.21 Support
+- Velocity support
+- Konvertierung von 3-0-0 ist nun nicht mehr möglich
+
 
 Build 4-6-1
 - BackgroundTask runPlayerDataDelete error fix

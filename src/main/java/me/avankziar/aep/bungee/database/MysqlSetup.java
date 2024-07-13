@@ -144,10 +144,6 @@ public class MysqlSetup
 		{
 			return false;
 		}
-		if(!setupOLD_DatabaseI())
-		{
-			return false;
-		}
 		if(!setupDatabaseI())
 		{
 			return false;
@@ -184,25 +180,6 @@ public class MysqlSetup
 		{
 			return false;
 		}
-		return true;
-	}
-	
-	@Deprecated
-	public boolean setupOLD_DatabaseI() 
-	{
-		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.OLDPLAYER.getValue()
-        		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-        		+ " player_uuid char(36) NOT NULL UNIQUE,"
-        		+ " player_name varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,"
-        		+ " balance double DEFAULT '0.00',"
-        		+ " bankaccountlist mediumtext,"
-        		+ " moneyplayerflow boolean DEFAULT '1',"
-        		+ " moneybankflow boolean DEFAULT '1',"
-        		+ " generalmessage boolean DEFAULT '1',"
-        		+ " pendinginvite text DEFAULT NULL,"
-        		+ " frozen boolean DEFAULT '1'"
-        		+ ");";
-		baseSetup(data);
 		return true;
 	}
 	

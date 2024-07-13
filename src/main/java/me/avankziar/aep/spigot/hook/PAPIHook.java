@@ -8,13 +8,12 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
-import main.java.me.avankziar.aep.spigot.database.MysqlHandler.Type;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.ifh.general.economy.account.AccountCategory;
 import main.java.me.avankziar.ifh.spigot.economy.account.Account;
 import main.java.me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
-public class PAPIHook extends PlaceholderExpansion
+public class PAPIHook extends me.clip.placeholderapi.expansion.PlaceholderExpansion
 {
 	private AdvancedEconomyPlus plugin;
 	private List<AccountCategory> acy = new ArrayList<>();
@@ -100,10 +99,11 @@ public class PAPIHook extends PlaceholderExpansion
 			{
 				return null;
 			}
-			double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT,
+			double amount = plugin.getMysqlHandler().getSumII(MysqlHandler.Type.ACCOUNT,
 					"`balance`",
 					"`owner_uuid` = ? AND `account_currency` = ?",
-					player.getUniqueId().toString(), ecy.getUniqueName(), AccountCategory.TAX.toString(), AccountCategory.VOID.toString());
+					player.getUniqueId().toString(), ecy.getUniqueName(),
+					AccountCategory.TAX.toString(), AccountCategory.VOID.toString());
 			return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
 		} else if(idf.startsWith("playerbalancecategory"))
 		{
@@ -120,7 +120,7 @@ public class PAPIHook extends PlaceholderExpansion
 			{
 				return null;
 			}
-			double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT,
+			double amount = plugin.getMysqlHandler().getSumII(MysqlHandler.Type.ACCOUNT,
 					"`balance`",
 					"`owner_uuid` = ? AND `account_currency` = ? AND `account_category` = ?",
 					player.getUniqueId().toString(), ecy.getUniqueName(), acc.toString());
@@ -135,10 +135,11 @@ public class PAPIHook extends PlaceholderExpansion
 			{
 				return null;
 			}
-			double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT, 
+			double amount = plugin.getMysqlHandler().getSumII(MysqlHandler.Type.ACCOUNT, 
 					"`balance`",
 					"`owner_uuid` = ? AND `account_currency` = ? AND `account_category` != ? AND `account_category` != ?",
-					player.getUniqueId().toString(), ecy.getUniqueName(), AccountCategory.TAX.toString(), AccountCategory.VOID.toString());
+					player.getUniqueId().toString(), ecy.getUniqueName(),
+					AccountCategory.TAX.toString(), AccountCategory.VOID.toString());
 			return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
 		} else if(idf.startsWith("defaultaccount"))
 		{
@@ -224,7 +225,7 @@ public class PAPIHook extends PlaceholderExpansion
 				{
 					return null;
 				}
-				double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT, "`balance`", "`account_currency` = ?", ecy.getUniqueName());
+				double amount = plugin.getMysqlHandler().getSumII(MysqlHandler.Type.ACCOUNT, "`balance`", "`account_currency` = ?", ecy.getUniqueName());
 				return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
 			} else if(s.length == 3)
 			{
@@ -239,7 +240,7 @@ public class PAPIHook extends PlaceholderExpansion
 				{
 					if(s[1].equalsIgnoreCase(acy.toString()))
 					{
-						double amount = plugin.getMysqlHandler().getSumII(Type.ACCOUNT, "`balance`", "`account_category` = ?`account_currency` = ?",
+						double amount = plugin.getMysqlHandler().getSumII(MysqlHandler.Type.ACCOUNT, "`balance`", "`account_category` = ?`account_currency` = ?",
 								acy.toString(), ecy.getUniqueName());
 						return withformat ? plugin.getIFHApi().format(amount, ecy) : String.valueOf(amount);
 					}

@@ -1,19 +1,18 @@
 package main.java.me.avankziar.aep.spigot.cmd.cet.loggersettings;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.aep.general.ChatApi;
+import main.java.me.avankziar.aep.general.objects.AEPUser;
 import main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentConstructor;
 import main.java.me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import main.java.me.avankziar.aep.spigot.cmd.tree.BaseConstructor;
+import main.java.me.avankziar.aep.spigot.database.MysqlHandler;
 import main.java.me.avankziar.aep.spigot.handler.LoggerSettingsHandler;
-import main.java.me.avankziar.aep.spigot.handler._AEPUserHandler_OLD;
-import main.java.me.avankziar.aep.spigot.object.OLD_AEPUser;
 import main.java.me.avankziar.ifh.general.economy.currency.CurrencyType;
 
 public class LoggerSettingsOther extends ArgumentModule
@@ -52,27 +51,28 @@ public class LoggerSettingsOther extends ArgumentModule
 	{
 		int page = 0;
 		String otherplayername = args[2];
-		OLD_AEPUser eco = _AEPUserHandler_OLD.getEcoPlayer(otherplayername);
-		if(eco == null)
+		AEPUser aep = (AEPUser) plugin.getMysqlHandler().getData(
+				MysqlHandler.Type.PLAYERDATA, "`player_uuid` = ?", player.getUniqueId().toString());
+		if(aep == null)
 		{
 			//Der Spieler existiert nicht!
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
 			return;
 		}
-		if(!LoggerSettingsHandler.getLoggerSettings().containsKey(UUID.fromString(eco.getUUID())))
+		if(!LoggerSettingsHandler.getLoggerSettings().containsKey(aep.getUUID()))
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoOtherLoggerSettingsFound")));
 			return;
 		}
-		int accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), UUID.fromString(eco.getUUID()));
+		int accountID = plugin.getIFHApi().getQuickPayAccount(plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL), aep.getUUID());
 		if(accountID < 0)
 		{
 			player.sendMessage(ChatApi.tl(
 					plugin.getYamlHandler().getLang().getString("Cmd.QuickPayDontExist")));
 			return;
 		}
-		new LoggerSettingsHandler(plugin).generateGUI(player, UUID.fromString(eco.getUUID()), accountID, null, page);
+		new LoggerSettingsHandler(plugin).generateGUI(player, aep.getUUID(), accountID, null, page);
 		return;
 	}
 }
