@@ -39,6 +39,8 @@ Build 4-7-0
 - MC 1.21 Support
 - Velocity support
 - Konvertierung von 3-0-0 ist nun nicht mehr möglich
+- ActionLog & TrendLog Json Ausgabe wurde entfernt
+- Interne Aufräumaktion & Package Namen Kürzung
 
 
 Build 4-6-1

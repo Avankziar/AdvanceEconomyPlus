@@ -1,4 +1,4 @@
-main: main.java.me.avankziar.aep.spigot.AdvancedEconomyPlus
+main: me.avankziar.aep.spigot.AEP
 name: AdvancedEconomyPlus
 version: 4
 load: STARTUP
