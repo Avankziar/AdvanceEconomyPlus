@@ -20,7 +20,7 @@
 	<build>
 		<defaultGoal>clean package</defaultGoal>
 		<finalName>${project.artifactId}-${project.version}</finalName>
-		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+		<sourceDirectory>${basedir}/src/</sourceDirectory>
 		<resources>
 			<resource>
 				<targetPath>.</targetPath>

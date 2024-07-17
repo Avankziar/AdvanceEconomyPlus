@@ -1,0 +1,8 @@
+{"id":"advancedeconomyplus",
+"name":"AdvancedEconomyPlus",
+"version":"${version}",
+"description":"a Economy-Plugin",
+"authors":["Avankziar"],
+"url":"https://www.spigotmc.org/resources/advanced-economy-plus.79828/",
+"dependencies":[{id='interfacehub', version='null', optional=false}],
+"main":"me.avankziar.aep.velocity.AEP"}
