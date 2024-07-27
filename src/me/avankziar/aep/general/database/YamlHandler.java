@@ -58,7 +58,7 @@ public class YamlHandler implements YamlHandling
 		return loggersettings;
 	}
 	
-	private LinkedHashMap<String, YamlDocument> cy;
+	private LinkedHashMap<String, YamlDocument> cy = new LinkedHashMap<>();
 	public LinkedHashMap<String, YamlDocument> getCurrency()
 	{
 		return cy;
@@ -245,7 +245,7 @@ public class YamlHandler implements YamlHandling
 			{
 				YamlDocument yd = YamlDocument.create(new File(directory,"%f%.yml".replace("%f%", c)),
 						getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
-				if(!setupStaticFile(c, lang, yamlManager.getCurrencyKey(c)))
+				if(!setupStaticFile(c, yd, yamlManager.getCurrencyKey(c)))
 				{
 					return false;
 				}
@@ -275,7 +275,7 @@ public class YamlHandler implements YamlHandling
 	    {
 			loggersettings = YamlDocument.create(new File(directory,"%f%_ls.yml".replace("%f%", f)),
 					getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
-			if(!setupStaticFile(f, lang, yamlManager.getLanguageKey()))
+			if(!setupStaticFile(f, loggersettings, yamlManager.getLanguageKey()))
 			{
 				return false;
 			}

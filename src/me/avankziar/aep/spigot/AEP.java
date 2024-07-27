@@ -88,7 +88,7 @@ public class AEP extends JavaPlugin
 		setupIFH();
 		setupIFHAdministration();
 		
-		yamlHandler = new YamlHandler(YamlManager.Type.BUNGEE, pluginName, logger, plugin.getDataFolder().toPath(),
+		yamlHandler = new YamlHandler(YamlManager.Type.SPIGOT, pluginName, logger, plugin.getDataFolder().toPath(),
         		(plugin.getAdministration() == null ? null : plugin.getAdministration().getLanguage()));
         setYamlManager(yamlHandler.getYamlManager());
 		
@@ -235,7 +235,7 @@ public class AEP extends JavaPlugin
 	{
 		for(BaseConstructor bc : objects)
 		{
-			BaseConstructor.getHelpList().add(bc);
+			getCommandHelpList().add(bc);
 		}
 	}
 	

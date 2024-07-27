@@ -58,6 +58,8 @@ public class BaseConstructor
 		setHelpInfo(helpInfo);
 		setCanConsoleAccess(canConsoleAccess);
 		CommandSuggest.set(null, cet, commandString);
+		getHelpList().add(this);
+		
 	}
 
 	public String getName()

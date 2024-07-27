@@ -151,8 +151,10 @@ public class CurrencyHandler
 		registerCurrency(cu);
 		if(c.getBoolean("DefaultCurrency"))
 		{
+			ConfigHandler.debug(d1, "c.getBoolean(DefaultCurrency)");
 			if(defaultDigitalCurrency == null)
 			{
+				ConfigHandler.debug(d1, "defaultDigitalCurrency == null");
 				defaultDigitalCurrency = cu.toCurrency();
 			}			
 		}
