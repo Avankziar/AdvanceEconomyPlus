@@ -712,7 +712,7 @@ public class IFHEcoProvider implements Economy
 	@Override
 	public String getAuthors()
 	{
-		PluginDescription pd = AEP.getPlugin().getServer().getPluginManager().getPlugin(plugin.pluginName.toLowerCase()).get().getDescription();
+		PluginDescription pd = AEP.getPlugin().getServer().getPluginManager().getPlugin(plugin.pluginname.toLowerCase()).get().getDescription();
 		return String.join(", ", pd.getAuthors());
 	}
 
@@ -755,7 +755,7 @@ public class IFHEcoProvider implements Economy
 	@Override
 	public String getName()
 	{
-		return plugin.pluginName;
+		return plugin.pluginname;
 	}
 
 	@Override

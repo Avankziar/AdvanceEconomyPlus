@@ -43,7 +43,7 @@ public class AEP
     private final ProxyServer server;
     private Logger logger = null;
     private Path dataDirectory;
-    public String pluginName = "AdvancedEconomyPlus";
+    public String pluginname = "AdvancedEconomyPlus";
     private YamlHandler yamlHandler;
     private YamlManager yamlManager;
     private MysqlSetup mysqlSetup;
@@ -65,9 +65,9 @@ public class AEP
     public void onProxyInitialization(ProxyInitializeEvent event) 
     {
     	logger = Logger.getLogger("AEP");
-    	PluginDescription pd = server.getPluginManager().getPlugin(pluginName.toLowerCase()).get().getDescription();
+    	PluginDescription pd = server.getPluginManager().getPlugin(pluginname.toLowerCase()).get().getDescription();
         List<String> dependencies = new ArrayList<>();
-        pd.getDependencies().stream().allMatch(x -> dependencies.add(x.toString()));
+        pd.getDependencies().stream().allMatch(x -> dependencies.add(x.getId()));
         //https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=SCC
 		logger.info("  █████╗ ███████╗██████╗  | Id: "+pd.getId());
 		logger.info(" ██╔══██╗██╔════╝██╔══██╗ | Version: "+pd.getVersion().get());
@@ -78,7 +78,7 @@ public class AEP
         
 		setupIFHAdministration();
 		
-        yamlHandler = new YamlHandler(YamlManager.Type.VELO, pluginName, logger, dataDirectory,
+        yamlHandler = new YamlHandler(YamlManager.Type.VELO, pluginname, logger, dataDirectory,
         		(plugin.getAdministration() == null ? null : plugin.getAdministration().getLanguage()));
         setYamlManager(yamlHandler.getYamlManager());
         
@@ -142,10 +142,10 @@ public class AEP
 	private void setupIFHProvider()
 	{
 		Optional<PluginContainer> ifhp = getServer().getPluginManager().getPlugin("interfacehub");
-		Optional<PluginContainer> plugin = getServer().getPluginManager().getPlugin(pluginName.toLowerCase());
+		Optional<PluginContainer> plugin = getServer().getPluginManager().getPlugin(pluginname.toLowerCase());
         if (ifhp.isEmpty()) 
         {
-        	logger.info(pluginName + " dont find InterfaceHub!");
+        	logger.info(pluginname + " dont find InterfaceHub!");
             return;
         }
         me.avankziar.ifh.velocity.IFH ifh = IFH.getPlugin();
@@ -155,7 +155,7 @@ public class AEP
             ifh.getServicesManager().register(
              		me.avankziar.ifh.velocity.economy.Economy.class,
              		cp, plugin.get(), ServicePriority.Normal);
-            logger.info(pluginName + " detected InterfaceHub >>> Economy.class is provided!");
+            logger.info(pluginname + " detected InterfaceHub >>> Economy.class is provided!");
     		
         } catch(NoClassDefFoundError e) {}
 	}
@@ -170,7 +170,7 @@ public class AEP
 		Optional<PluginContainer> ifhp = plugin.getServer().getPluginManager().getPlugin("interfacehub");
         if (ifhp.isEmpty()) 
         {
-        	logger.info(pluginName + " dont find InterfaceHub!");
+        	logger.info(pluginname + " dont find InterfaceHub!");
             return;
         }
         me.avankziar.ifh.velocity.IFH ifh = IFH.getPlugin();
@@ -184,7 +184,7 @@ public class AEP
         administrationConsumer = rsp.getProvider();
         if(administrationConsumer != null)
         {
-    		logger.info(pluginName + " detected InterfaceHub >>> Administration.class is consumed!");
+    		logger.info(pluginname + " detected InterfaceHub >>> Administration.class is consumed!");
         }
         return;
 	}
