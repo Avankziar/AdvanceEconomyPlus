@@ -33,6 +33,9 @@ Future =========================================================================
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
+Build 4-7-1
+- YamlHandler CurrencyFromFile fix
+
 Build 4-7-0
 - JobsRebornHook ConcurrentModificationException null fix
 - Java 21 Dependency
@@ -41,7 +44,6 @@ Build 4-7-0
 - Konvertierung von 3-0-0 ist nun nicht mehr möglich
 - ActionLog & TrendLog Json Ausgabe wurde entfernt
 - Interne Aufräumaktion & Package Namen Kürzung
-
 
 Build 4-6-1
 - BackgroundTask runPlayerDataDelete error fix
