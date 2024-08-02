@@ -33,6 +33,10 @@ Future =========================================================================
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
+Build 4-7-2
+- YamlManager missing path added
+- PapiHook fix
+
 Build 4-7-1
 - YamlHandler CurrencyFromFile fix
 

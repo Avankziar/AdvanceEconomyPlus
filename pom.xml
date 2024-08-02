@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>main.java.me.avankziar</groupId>
 	<artifactId>advancedeconomyplus</artifactId>
-	<version>4-7-1</version>
+	<version>4-7-2</version>
 	<name>AdvancedEconomyPlus</name>
 	<url>https://github.com/${repository-owner}/${repository-name}.git</url>
     <scm>

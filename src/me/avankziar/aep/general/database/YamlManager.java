@@ -3452,6 +3452,9 @@ public class YamlManager
 				TaxationCase.LOANLENDING+";false;"+0.01,
 				TaxationCase.LOANREPAYING+";false;"+0.01,
 				TaxationCase.STANDINGORDER+";false;"+0.01}));
+		currencyKey.put("Format.OutputFormat"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"&r%number% %siprefix% %gradation% "}));
 		currencyKey.put("Format.GradationQuantity"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				1}));
@@ -3590,6 +3593,9 @@ public class YamlManager
 				TaxationCase.LOANLENDING+";false;"+0.01,
 				TaxationCase.LOANREPAYING+";false;"+0.01,
 				TaxationCase.STANDINGORDER+";false;"+0.01}));
+		currencyKeyII.put("Format.OutputFormat"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"&r%number% %siprefix% %gradation% "}));
 		currencyKeyII.put("Format.GradationQuantity"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				1}));

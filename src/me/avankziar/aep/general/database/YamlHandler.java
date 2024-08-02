@@ -59,7 +59,7 @@ public class YamlHandler implements YamlHandling
 		return loggersettings;
 	}
 	
-	private LinkedHashMap<String, YamlDocument> cy = new LinkedHashMap<>();
+	private LinkedHashMap<String, YamlDocument> cy;
 	public LinkedHashMap<String, YamlDocument> getCurrency()
 	{
 		return cy;
@@ -76,6 +76,7 @@ public class YamlHandler implements YamlHandling
 		this.logger = logger;
 		this.dataDirectory = directory;
 		this.administrationLanguage = administrationLanguage;
+		cy = new LinkedHashMap<>();
 		loadYamlHandler(type);
 	}
 	
@@ -241,10 +242,6 @@ public class YamlHandler implements YamlHandling
 		}
 		for(String c : currency)
 		{
-			if(cy.containsKey(c))
-			{
-				cy.remove(c);
-			}
 			try
 			{
 				YamlDocument yd = YamlDocument.create(new File(directory,"%f%.yml".replace("%f%", c)),
@@ -254,6 +251,7 @@ public class YamlHandler implements YamlHandling
 					return false;
 				}
 				cy.put(c, yd);
+				logger.info("Load Currency %f%...".replace("%f%", c));
 			} catch (IOException e)
 			{
 				e.printStackTrace();

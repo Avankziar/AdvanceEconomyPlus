@@ -1024,7 +1024,8 @@ public class IFHEcoProvider implements Economy
 				symbols.setDecimalSeparator(decimalSeperator.charAt(0));
 				
 				formatter.setDecimalFormatSymbols(symbols);
-				String format = plugin.getYamlHandler().getCurrency(ec.getUniqueName()).getString("Format.OutputFormat")
+				YamlDocument yd = plugin.getYamlHandler().getCurrency(ec.getUniqueName());
+				String format = yd.getString("Format.OutputFormat")
 						.replace("%number%", formatter.format(resultWhile))
 						.replace("%siprefix%", si != null ? si : " ")
 						.replace("%gradation%", useSymbol ? gr.getSymbol() : 
