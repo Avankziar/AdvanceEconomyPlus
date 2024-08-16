@@ -96,13 +96,19 @@ public class Accounts extends ArgumentModule
 					plugin.getYamlHandler().getLang().getString("Cmd.Pay.PlayerIsNotRegistered")));
 			return;
 		}
+		ArrayList<AccountManagement> aml = ConvertHandler.convertListIX(plugin.getMysqlHandler().getFullList(
+				MysqlType.ACCOUNTMANAGEMENT, "`id` ASC", "`player_uuid` = ?", aepu.getUUID().toString()));
+		if(aml.isEmpty())
+		{
+			player.sendMessage(ChatApiOld.tl(
+					plugin.getYamlHandler().getLang().getString("Cmd.Account.HaveNoAccounts")));
+			return;
+		}
 		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
 		ArrayList<BaseComponent> m1 = new ArrayList<>();
 		m1.add(ChatApiOld.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Player.Headline").replace("%player%", playername)));
 		msg.add(m1);
 		LinkedHashMap<Integer, ArrayList<AccountManagementType>> accountIDs = new LinkedHashMap<>();
-		ArrayList<AccountManagement> aml = ConvertHandler.convertListIX(plugin.getMysqlHandler().getFullList(
-				MysqlType.ACCOUNTMANAGEMENT, "`id` ASC", "`player_uuid` = ?", aepu.getUUID().toString()));
 		for(AccountManagement am : aml)
 		{
 			if(accountIDs.containsKey(am.getAccountID()))

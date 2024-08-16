@@ -33,6 +33,10 @@ Future =========================================================================
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
+Build 4-8-0
+- /aep accounts - Eine "kein Account vorhanden" Fehlermeldung hinzugefügt.
+- Economy FormatOutput hat nun auch ein RundungsMode. Siehe https://docs.oracle.com/javase/8/docs/api/java/math/RoundingMode.html
+
 Build 4-7-2
 - YamlManager missing path added
 - PapiHook fix

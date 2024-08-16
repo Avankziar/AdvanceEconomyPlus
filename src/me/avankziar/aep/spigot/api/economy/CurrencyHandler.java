@@ -1,5 +1,6 @@
 package me.avankziar.aep.spigot.api.economy;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -158,12 +159,15 @@ public class CurrencyHandler
 				defaultDigitalCurrency = cu.toCurrency();
 			}			
 		}
-		plugin.getIFHApi().defaultGradationQuantity.put(uniquename, c.getInt("Format.GradationQuantity"));
-		plugin.getIFHApi().defaultUseSIPrefix.put(uniquename, c.getBoolean("Format.UseSIPrefix"));
-		plugin.getIFHApi().defaultDecimalPlaces.put(uniquename, c.getInt("Format.DecimalPlaces"));
-		plugin.getIFHApi().defaultUseSymbol.put(uniquename, c.getBoolean("Format.UseSymbol"));
-		plugin.getIFHApi().defaultThousandSeperator.put(uniquename, c.getString("Format.ThousandSeperator"));
-		plugin.getIFHApi().defaultDecimalSeperator.put(uniquename, c.getString("Format.DecimalSeperator"));
+		plugin.getIFHApi().defaultGradationQuantity.put(uniquename, c.getInt("Format.GradationQuantity", 0));
+		plugin.getIFHApi().defaultUseSIPrefix.put(uniquename, c.getBoolean("Format.UseSIPrefix", false));
+		plugin.getIFHApi().defaultDecimalPlaces.put(uniquename, c.getInt("Format.DecimalPlaces", 2));
+		plugin.getIFHApi().defaultUseSymbol.put(uniquename, c.getBoolean("Format.UseSymbol", true));
+		plugin.getIFHApi().defaultThousandSeperator.put(uniquename, c.getString("Format.ThousandSeperator", ","));
+		plugin.getIFHApi().defaultDecimalSeperator.put(uniquename, c.getString("Format.DecimalSeperator", "."));
+		RoundingMode rm = RoundingMode.HALF_EVEN;
+		try{rm = RoundingMode.valueOf(c.getString("Format.RoundingMode", "HALF_EVEN"));}catch(Exception e) {}
+		plugin.getIFHApi().defaultRoundingMode.put(uniquename, rm);
 		if(c.get("Format.SIPrefix") != null)
 		{
 			LinkedHashMap<Double, String> map = new LinkedHashMap<>();

@@ -1904,6 +1904,10 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDer Account gehört dir nicht!",
 				"&cThe account is not yours!"}));
+		languageKeys.put(base+"Account.HaveNoAccounts"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&cDu besitzt keine Accounts!",
+				"&cYou have no accounts!"}));
 		languageKeys.put(base+"Account.IsPredefine"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&cDer Account vordefiniert! Das Schließen eines solchen Account bedarf zusätzlicherer Rechte!",
@@ -3393,8 +3397,8 @@ public class YamlManager
 		currencyKey.put("WhenPlayerFirstJoin.WalletsToCreate"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				//The First Account are created as shortpay account
-				//AccountType;DefaultAccount;StartMoney;ManagementType...
-				AccountCategory.MAIN.toString()+";true;"+1000
+				//AccountName;AccountType;DefaultAccount;StartMoney;ManagementType...
+				"%player%;"+AccountCategory.MAIN.toString()+";true;"+1000
 				+";"+AccountManagementType.CAN_ADMINISTRATE_ACCOUNT.toString()
 				+";"+AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()
 				+";"+AccountManagementType.CAN_SEE_BALANCE.toString()
@@ -3534,8 +3538,8 @@ public class YamlManager
 		currencyKeyII.put("WhenPlayerFirstJoin.WalletsToCreate"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				//The First Account are created as shortpay account
-				//AccountType;DefaultAccount;StartMoney;ManagementType...
-				AccountCategory.MAIN.toString()+";true;"+1000
+				//AccountName;AccountType;DefaultAccount;StartMoney;ManagementType...
+				"%player%;"+AccountCategory.MAIN.toString()+";true;"+1000
 				+";"+AccountManagementType.CAN_ADMINISTRATE_ACCOUNT.toString()
 				+";"+AccountManagementType.CAN_RECEIVES_NOTIFICATIONS.toString()
 				+";"+AccountManagementType.CAN_SEE_BALANCE.toString()

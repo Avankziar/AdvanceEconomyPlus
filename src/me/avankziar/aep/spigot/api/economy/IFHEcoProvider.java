@@ -1,6 +1,7 @@
 package me.avankziar.aep.spigot.api.economy;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -50,6 +51,7 @@ public class IFHEcoProvider implements Economy
 	protected LinkedHashMap<String, Boolean> defaultUseSymbol = new LinkedHashMap<>();
 	protected LinkedHashMap<String, String> defaultThousandSeperator = new LinkedHashMap<>();
 	protected LinkedHashMap<String, String> defaultDecimalSeperator = new LinkedHashMap<>();
+	protected LinkedHashMap<String, RoundingMode> defaultRoundingMode = new LinkedHashMap<>();
 	protected LinkedHashMap<String, LinkedHashMap<Double, String>> defaultSIPrefix = new LinkedHashMap<>();
 	
 	private static String difhapi1 = "ifhapiFormat";
@@ -783,7 +785,8 @@ public class IFHEcoProvider implements Economy
 				getDefaultUseSIPrefix(economyCurrency),
 				getDefaultUseSymbol(economyCurrency),
 				getDefaultThousandSeperator(economyCurrency),
-				getDefaultDecimalSeperator(economyCurrency));
+				getDefaultDecimalSeperator(economyCurrency),
+				getDefaultRoundingMode(economyCurrency));
 	}
 
 	@Override
@@ -800,13 +803,29 @@ public class IFHEcoProvider implements Economy
 				useSIPrefix,
 				useSymbol,
 				getDefaultThousandSeperator(economyCurrency),
-				getDefaultDecimalSeperator(economyCurrency));
+				getDefaultDecimalSeperator(economyCurrency),
+				getDefaultRoundingMode(economyCurrency));
 	}
 
-	//FIXME Negativ Zahlen miteinbedenken
-	@Override
 	public String format(double amount, @Nonnull EconomyCurrency ec, int gradationQuantity, int decimalPlaces, 
 			boolean useSIPrefix, boolean useSymbol, String thousandSeperator, String decimalSeperator)
+	{
+		if(ec == null)
+		{
+			return null;
+		}
+		return format(amount, ec,
+				gradationQuantity,
+				decimalPlaces,
+				useSIPrefix,
+				useSymbol,
+				thousandSeperator,
+				decimalSeperator,
+				getDefaultRoundingMode(ec));
+	}
+	
+	public String format(double amount, @Nonnull EconomyCurrency ec, int gradationQuantity, int decimalPlaces, 
+			boolean useSIPrefix, boolean useSymbol, String thousandSeperator, String decimalSeperator, RoundingMode roundingMode)
 	{
 		ConfigHandler.debug(difhapi1, "> Format Begin");
 		if(ec == null)
@@ -843,7 +862,7 @@ public class IFHEcoProvider implements Economy
 			BigDecimal result = new BigDecimal(amount);
 			if(result.doubleValue() != 0.0 && divisor.doubleValue() != 0.0)
 			{
-				result = new BigDecimal(amount).divide(divisor, 10, RoundingMode.HALF_UP);
+				result = new BigDecimal(amount).divide(divisor, 10, RoundingMode.HALF_EVEN);
 			}
 			ConfigHandler.debug(difhapi1, "> Format: %a%/%d% = %res%"
 					.replace("%a%", String.valueOf(amount))
@@ -855,16 +874,27 @@ public class IFHEcoProvider implements Economy
 				ConfigHandler.debug(difhapi1, "> Format: useSIPrefix");
 				for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 				{
-					BigDecimal step1 = result.divide(new BigDecimal(e.getKey()), 10, RoundingMode.HALF_UP);
+					BigDecimal step1 = result.divide(new BigDecimal(e.getKey()), 10, RoundingMode.HALF_EVEN);
 					ConfigHandler.debug(difhapi1, "> Format: step : %s% = %r%/%k%"
 							.replace("%s%", String.valueOf(step1.doubleValue()))
 							.replace("%r%", String.valueOf(result.doubleValue()))
 							.replace("%k%", String.valueOf(new BigDecimal(e.getKey()).doubleValue())));
-					if(step1.doubleValue() >= 1.0)
+					if(amount >= 0)
 					{
-						si = e.getValue();
-						result = step1;
-						break;
+						if(step1.doubleValue() >= 1.0)
+						{
+							si = e.getValue();
+							result = step1;
+							break;
+						}
+					} else
+					{
+						if(step1.doubleValue() <= -1.0)
+						{
+							si = e.getValue();
+							result = step1;
+							break;
+						}
 					}
 				}
 			}
@@ -916,7 +946,7 @@ public class IFHEcoProvider implements Economy
 			BigDecimal resultWhile = result;
 			if(result.doubleValue() != 0.0 && divisor.doubleValue() != 0.0)
 			{
-				resultWhile = result.divide(divisor, 10, RoundingMode.HALF_UP);
+				resultWhile = result.divide(divisor);
 			}
 			ConfigHandler.debug(difhapi1, "> Format: %a%/%d% = %res%"
 					.replace("%a%", String.valueOf(result.doubleValue()))
@@ -926,24 +956,37 @@ public class IFHEcoProvider implements Economy
 			{
 				ConfigHandler.debug(difhapi1, "> Format: highest == lowest");
 				String si = null;
-				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName()))
+				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName())
+						//&& gradationQuantity == highest
+						)
 				{
 					for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 					{
 						BigDecimal step1 = resultWhile;
 						if(resultWhile.doubleValue() != 0.0 && new BigDecimal(e.getKey()).doubleValue() != 0.0)
 						{
-							step1 = resultWhile.divide(new BigDecimal(e.getKey()), 10, RoundingMode.HALF_UP);
+							step1 = resultWhile.divide(new BigDecimal(e.getKey()), 10, RoundingMode.HALF_EVEN);
 						}
 						ConfigHandler.debug(difhapi1, "> Format: step : %s% = %r%/%k%"
 								.replace("%s%", String.valueOf(step1.doubleValue()))
 								.replace("%r%", String.valueOf(resultWhile.doubleValue()))
 								.replace("%k%", String.valueOf(new BigDecimal(e.getKey()).doubleValue())));
-						if(step1.doubleValue() >= 1.0)
+						if(amount >= 0)
 						{
-							si = e.getValue();
-							resultWhile = step1;
-							break;
+							if(step1.doubleValue() >= 1.0)
+							{
+								si = e.getValue();
+								resultWhile = step1;
+								break;
+							}
+						} else
+						{
+							if(step1.doubleValue() <= -1.0)
+							{
+								si = e.getValue();
+								resultWhile = step1;
+								break;
+							}
 						}
 					}
 				}
@@ -968,7 +1011,9 @@ public class IFHEcoProvider implements Economy
 			{
 				BigDecimal resultForSI = new BigDecimal(0.0);
 				String si = null;
-				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName()))
+				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName())
+						//&& gradationQuantity == highest
+						)
 				{
 					for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 					{
@@ -976,25 +1021,49 @@ public class IFHEcoProvider implements Economy
 						BigDecimal step1 = resultWhile;
 						if(resultWhile.doubleValue() != 0.0 && val.doubleValue() != 0.0)
 						{
-							step1 = resultWhile.divide(val, 10, RoundingMode.HALF_UP);
+							step1 = resultWhile.divide(val, 10, RoundingMode.HALF_EVEN);
 						}
 						ConfigHandler.debug(difhapi1, "> Format: step : %s% = %r%/%k%"
 								.replace("%s%", String.valueOf(step1.doubleValue()))
 								.replace("%r%", String.valueOf(resultWhile.doubleValue()))
 								.replace("%k%", String.valueOf(val.doubleValue())));
-						if(step1.doubleValue() >= 1.0)
+						if(amount >= 0 && step1.doubleValue() >= 1.0)
 						{
 							si = e.getValue();
-							resultWhile = step1;
-							resultWhile = new BigDecimal(resultWhile.toBigInteger());
-							if(val.doubleValue() != 0.0)
-							{
-								resultForSI = step1.multiply(val)
-													.multiply(new BigDecimal(gr.getValueToBaseGradation()))
-													.subtract(resultWhile
-															.multiply(val.multiply(new BigDecimal(gr.getValueToBaseGradation()))));
-							}
-							ConfigHandler.debug(difhapi1, "> Format: resultForSI : %si% = (%s%*%v%*%gr%)-(%rw%*%v%*%gr%)"
+							//cancel decimal number
+							resultWhile = new BigDecimal(step1.toBigInteger());
+							
+							/*
+							 * step1 = 5,9xxx
+							 * resultwhile = 5,0
+							 */
+							resultForSI = step1.subtract(resultWhile);
+							
+							//Multiply to orignal value dimension
+							resultForSI = resultForSI.multiply(val).multiply(new BigDecimal(gr.getValueToBaseGradation()));
+							
+							ConfigHandler.debug(difhapi1, "> Format: resultForSI : %si% = (%s%*%v%)-(%rw%*%v%)"
+									.replace("%si%", String.valueOf(resultForSI.doubleValue()))
+									.replace("%s%", String.valueOf(step1.doubleValue()))
+									.replace("%v%", String.valueOf(val.doubleValue()))
+									.replace("%gr%", String.valueOf(gr.getValueToBaseGradation()))
+									.replace("%rw%", String.valueOf(resultWhile.doubleValue())));
+							break;
+						} else if(amount < 0 && step1.doubleValue() <= -1.0)
+						{
+							si = e.getValue();
+							//cancel decimal number
+							resultWhile = new BigDecimal(step1.toBigInteger());
+							
+							/*
+							 * step1 = 5,9xxx
+							 * resultwhile = 5,0
+							 */
+							resultForSI = step1.subtract(resultWhile);
+							
+							//Multiply to orignal value dimension
+							resultForSI = resultForSI.multiply(val).multiply(new BigDecimal(gr.getValueToBaseGradation()));
+							ConfigHandler.debug(difhapi1, "> Format: resultForSI : %si% = (%s%*%v%)-(%rw%*%v%)"
 									.replace("%si%", String.valueOf(resultForSI.doubleValue()))
 									.replace("%s%", String.valueOf(step1.doubleValue()))
 									.replace("%v%", String.valueOf(val.doubleValue()))
@@ -1027,7 +1096,7 @@ public class IFHEcoProvider implements Economy
 				YamlDocument yd = plugin.getYamlHandler().getCurrency(ec.getUniqueName());
 				String format = yd.getString("Format.OutputFormat")
 						.replace("%number%", formatter.format(resultWhile))
-						.replace("%siprefix%", si != null ? si : " ")
+						.replace("%siprefix%", si != null ? si : "")
 						.replace("%gradation%", useSymbol ? gr.getSymbol() : 
 							((resultWhile.doubleValue() >= 1 && resultWhile.doubleValue() < 2) ? gr.getSingular() : gr.getPlural()));
 				sb.append(format);
@@ -1077,6 +1146,12 @@ public class IFHEcoProvider implements Economy
 	public boolean getDefaultUseSymbol(EconomyCurrency currency)
 	{
 		return defaultUseSymbol.containsKey(currency.getUniqueName()) ? defaultUseSymbol.get(currency.getUniqueName()) : false;
+	}
+	
+	@Override
+	public RoundingMode getDefaultRoundingMode(EconomyCurrency currency)
+	{
+		return defaultRoundingMode.containsKey(currency.getUniqueName()) ? defaultRoundingMode.get(currency.getUniqueName()) : RoundingMode.HALF_EVEN;
 	}
 
 	@Override
