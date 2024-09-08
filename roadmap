@@ -34,8 +34,12 @@ Future =========================================================================
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
 Build 4-8-0
+- Spigot 1.21.1 Support
 - /aep accounts - Eine "kein Account vorhanden" Fehlermeldung hinzugefügt.
 - Economy FormatOutput hat nun auch ein RundungsMode. Siehe https://docs.oracle.com/javase/8/docs/api/java/math/RoundingMode.html
+- RoundMode kann in einer Währungsdatei unter Format.RoundingMode gefunden werden.
+- Währungsdatein werden nicht mehr "neu" geladen. (Bedeutet, keine neuen Dinge werden vom Defaultzustand wieder hinzugefügt)
+  Bedeuetet, dass der neue RoundMode muss selbstständig hinzugefügt werden. Default ist HALF_EVEN
 
 Build 4-7-2
 - YamlManager missing path added

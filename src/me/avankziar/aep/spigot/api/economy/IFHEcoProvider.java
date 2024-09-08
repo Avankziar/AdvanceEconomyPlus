@@ -1,7 +1,6 @@
 package me.avankziar.aep.spigot.api.economy;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -874,7 +873,7 @@ public class IFHEcoProvider implements Economy
 				ConfigHandler.debug(difhapi1, "> Format: useSIPrefix");
 				for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 				{
-					BigDecimal step1 = result.divide(new BigDecimal(e.getKey()), 10, RoundingMode.HALF_EVEN);
+					BigDecimal step1 = result.divide(new BigDecimal(e.getKey()), 10, roundingMode);
 					ConfigHandler.debug(difhapi1, "> Format: step : %s% = %r%/%k%"
 							.replace("%s%", String.valueOf(step1.doubleValue()))
 							.replace("%r%", String.valueOf(result.doubleValue()))
@@ -965,7 +964,7 @@ public class IFHEcoProvider implements Economy
 						BigDecimal step1 = resultWhile;
 						if(resultWhile.doubleValue() != 0.0 && new BigDecimal(e.getKey()).doubleValue() != 0.0)
 						{
-							step1 = resultWhile.divide(new BigDecimal(e.getKey()), 10, RoundingMode.HALF_EVEN);
+							step1 = resultWhile.divide(new BigDecimal(e.getKey()), 10, roundingMode);
 						}
 						ConfigHandler.debug(difhapi1, "> Format: step : %s% = %r%/%k%"
 								.replace("%s%", String.valueOf(step1.doubleValue()))
@@ -1021,7 +1020,7 @@ public class IFHEcoProvider implements Economy
 						BigDecimal step1 = resultWhile;
 						if(resultWhile.doubleValue() != 0.0 && val.doubleValue() != 0.0)
 						{
-							step1 = resultWhile.divide(val, 10, RoundingMode.HALF_EVEN);
+							step1 = resultWhile.divide(val, 10, roundingMode);
 						}
 						ConfigHandler.debug(difhapi1, "> Format: step : %s% = %r%/%k%"
 								.replace("%s%", String.valueOf(step1.doubleValue()))

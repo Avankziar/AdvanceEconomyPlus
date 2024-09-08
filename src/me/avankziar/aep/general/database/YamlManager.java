@@ -3477,6 +3477,9 @@ public class YamlManager
 		currencyKey.put("Format.DecimalSeperator"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"."}));
+		currencyKey.put("Format.RoundingMode"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"HALF_EVEN"}));
 		//SIPrefix Enum;Shortcut that you which
 		currencyKey.put("Format.SIPrefix"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
@@ -3618,6 +3621,9 @@ public class YamlManager
 		currencyKeyII.put("Format.DecimalSeperator"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"."}));
+		currencyKeyII.put("Format.RoundingMode"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				"HALF_EVEN"}));
 		//SIPrefix Enum;Shortcut that you which
 		currencyKeyII.put("Format.SIPrefix"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {

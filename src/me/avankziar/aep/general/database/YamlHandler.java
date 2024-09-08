@@ -244,11 +244,16 @@ public class YamlHandler implements YamlHandling
 		{
 			try
 			{
-				YamlDocument yd = YamlDocument.create(new File(directory,"%f%.yml".replace("%f%", c)),
+				File f = new File(directory,"%f%.yml".replace("%f%", c));
+				boolean boo = f.exists();
+				YamlDocument yd = YamlDocument.create(f,
 						getClass().getResourceAsStream("/default.yml"),gsd,lsd,dsd,usd);
-				if(!setupStaticFile(c, yd, yamlManager.getCurrencyKey(c)))
+				if(!boo)
 				{
-					return false;
+					if(!setupStaticFile(c, yd, yamlManager.getCurrencyKey(c)))
+					{
+						return false;
+					}
 				}
 				cy.put(c, yd);
 				logger.info("Load Currency %f%...".replace("%f%", c));

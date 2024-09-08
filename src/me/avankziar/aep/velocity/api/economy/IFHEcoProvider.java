@@ -1,6 +1,7 @@
 package me.avankziar.aep.velocity.api.economy;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -46,6 +47,7 @@ public class IFHEcoProvider implements Economy
 	protected LinkedHashMap<String, Boolean> defaultUseSymbol = new LinkedHashMap<>();
 	protected LinkedHashMap<String, String> defaultThousandSeperator = new LinkedHashMap<>();
 	protected LinkedHashMap<String, String> defaultDecimalSeperator = new LinkedHashMap<>();
+	protected LinkedHashMap<String, RoundingMode> defaultRoundingMode = new LinkedHashMap<>();
 	protected LinkedHashMap<String, LinkedHashMap<Double, String>> defaultSIPrefix = new LinkedHashMap<>();
 	
 	public IFHEcoProvider(AEP plugin)
@@ -541,7 +543,8 @@ public class IFHEcoProvider implements Economy
 				getDefaultUseSIPrefix(economyCurrency),
 				getDefaultUseSymbol(economyCurrency),
 				getDefaultThousandSeperator(economyCurrency),
-				getDefaultDecimalSeperator(economyCurrency));
+				getDefaultDecimalSeperator(economyCurrency),
+				getDefaultRoundingMode(economyCurrency));
 	}
 
 	@Override
@@ -558,12 +561,29 @@ public class IFHEcoProvider implements Economy
 				useSIPrefix,
 				useSymbol,
 				getDefaultThousandSeperator(economyCurrency),
-				getDefaultDecimalSeperator(economyCurrency));
+				getDefaultDecimalSeperator(economyCurrency),
+				getDefaultRoundingMode(economyCurrency));
 	}
 
-	@Override
 	public String format(double amount, @Nonnull EconomyCurrency ec, int gradationQuantity, int decimalPlaces, 
 			boolean useSIPrefix, boolean useSymbol, String thousandSeperator, String decimalSeperator)
+	{
+		if(ec == null)
+		{
+			return null;
+		}
+		return format(amount, ec,
+				gradationQuantity,
+				decimalPlaces,
+				useSIPrefix,
+				useSymbol,
+				thousandSeperator,
+				decimalSeperator,
+				getDefaultRoundingMode(ec));
+	}
+	
+	public String format(double amount, @Nonnull EconomyCurrency ec, int gradationQuantity, int decimalPlaces, 
+			boolean useSIPrefix, boolean useSymbol, String thousandSeperator, String decimalSeperator, RoundingMode roundingMode)
 	{
 		if(ec == null)
 		{
@@ -584,37 +604,50 @@ public class IFHEcoProvider implements Economy
 		{
 			Gradation gr = ec.getCurrencyGradation().getHighestGradation();
 			BigDecimal divisor = new BigDecimal(gr.getValueToBaseGradation());
-			BigDecimal result = new BigDecimal(amount).divide(divisor);
+			BigDecimal result = new BigDecimal(amount);
+			if(result.doubleValue() != 0.0 && divisor.doubleValue() != 0.0)
+			{
+				result = new BigDecimal(amount).divide(divisor, 10, roundingMode);
+			}
 			String si = null;
 			if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName()))
 			{
 				for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 				{
-					BigDecimal step1 = result.divide(new BigDecimal(e.getKey()));
-					if(step1.doubleValue() > 1.0)
+					BigDecimal step1 = result.divide(new BigDecimal(e.getKey()), 10, roundingMode);
+					if(amount >= 0)
 					{
-						si = e.getValue();
-						result = step1;
-						break;
+						if(step1.doubleValue() >= 1.0)
+						{
+							si = e.getValue();
+							result = step1;
+							break;
+						}
+					} else
+					{
+						if(step1.doubleValue() <= -1.0)
+						{
+							si = e.getValue();
+							result = step1;
+							break;
+						}
 					}
 				}
-				result = result.setScale(decimalPlaces);
 			}
 			DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
 			DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
 			symbols.setGroupingSeparator(thousandSeperator.charAt(0));
 			symbols.setDecimalSeparator(decimalSeperator.charAt(0));
+			formatter.setMaximumFractionDigits(decimalPlaces);
+			formatter.setMinimumFractionDigits(decimalPlaces);
 			formatter.setDecimalFormatSymbols(symbols);
-			sb.append(formatter.format(result.doubleValue()));
-			if(si != null)
-			{
-				sb.append(si+" ");
-			} else
-			{
-				sb.append(" ");
-			}
-			sb.append(useSymbol ? gr.getSymbol() : gr.getPlural());
+			String format = plugin.getYamlHandler().getCurrency(ec.getUniqueName()).getString("Format.OutputFormat")
+					.replace("%number%", formatter.format(result))
+					.replace("%siprefix%", si != null ? si : "")
+					.replace("%gradation%", useSymbol ? gr.getSymbol() : 
+						((result.doubleValue() >= 1 && result.doubleValue() < 2) ? gr.getSingular() : gr.getPlural()));
+			sb.append(format.trim());
 			return sb.toString();
 		}
 		int highest = 0;
@@ -635,74 +668,129 @@ public class IFHEcoProvider implements Economy
 		{
 			Gradation gr = ec.getCurrencyGradation().getGradation(highest);
 			BigDecimal divisor = new BigDecimal(gr.getValueToBaseGradation());
-			BigDecimal resultWhile = result.divide(divisor);
+			BigDecimal resultWhile = result;
+			if(result.doubleValue() != 0.0 && divisor.doubleValue() != 0.0)
+			{
+				resultWhile = result.divide(divisor);
+			}
 			if(highest == lowest)
 			{
 				String si = null;
-				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName()))
+				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName())
+						//&& gradationQuantity == highest
+						)
 				{
 					for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 					{
-						BigDecimal step1 = resultWhile.divide(new BigDecimal(e.getKey()));
-						if(step1.doubleValue() > 1.0)
+						BigDecimal step1 = resultWhile;
+						if(resultWhile.doubleValue() != 0.0 && new BigDecimal(e.getKey()).doubleValue() != 0.0)
 						{
-							si = e.getValue();
-							resultWhile = step1;
-							break;
+							step1 = resultWhile.divide(new BigDecimal(e.getKey()), 10, roundingMode);
+						}
+						if(amount >= 0)
+						{
+							if(step1.doubleValue() >= 1.0)
+							{
+								si = e.getValue();
+								resultWhile = step1;
+								break;
+							}
+						} else
+						{
+							if(step1.doubleValue() <= -1.0)
+							{
+								si = e.getValue();
+								resultWhile = step1;
+								break;
+							}
 						}
 					}
-					resultWhile = resultWhile.setScale(decimalPlaces);
 				}
 				DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
 				DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
 				symbols.setGroupingSeparator(thousandSeperator.charAt(0));
 				symbols.setDecimalSeparator(decimalSeperator.charAt(0));
+				formatter.setMaximumFractionDigits(decimalPlaces);
+				formatter.setMinimumFractionDigits(decimalPlaces);
 				formatter.setDecimalFormatSymbols(symbols);
-				sb.append(formatter.format(resultWhile.doubleValue()));
-				if(si != null)
-				{
-					sb.append(si+" ");
-				} else
-				{
-					sb.append(" ");
-				}
-				sb.append(useSymbol ? gr.getSymbol() : gr.getPlural());
+				String format = plugin.getYamlHandler().getCurrency(ec.getUniqueName()).getString("Format.OutputFormat")
+						.replace("%number%", formatter.format(resultWhile))
+						.replace("%siprefix%", si != null ? si : "")
+						.replace("%gradation%", useSymbol ? gr.getSymbol() : 
+							((resultWhile.doubleValue() >= 1 && resultWhile.doubleValue() < 2) ? gr.getSingular() : gr.getPlural()));
+				sb.append(format.trim());
+				return sb.toString();
 			} else
 			{
-				BigDecimal resultForSI = resultWhile;
+				BigDecimal resultForSI = new BigDecimal(0.0);
 				String si = null;
-				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName()))
+				if(useSIPrefix && defaultSIPrefix.containsKey(ec.getUniqueName())
+						//&& gradationQuantity == highest
+						)
 				{
 					for(Entry<Double, String> e : defaultSIPrefix.get(ec.getUniqueName()).entrySet())
 					{
-						BigDecimal step1 = resultWhile.divide(new BigDecimal(e.getKey()));
-						if(step1.doubleValue() > 1.0)
+						BigDecimal val = new BigDecimal(e.getKey());
+						BigDecimal step1 = resultWhile;
+						if(resultWhile.doubleValue() != 0.0 && val.doubleValue() != 0.0)
+						{
+							step1 = resultWhile.divide(val, 10, roundingMode);
+						}
+						if(amount >= 0 && step1.doubleValue() >= 1.0)
 						{
 							si = e.getValue();
-							resultWhile = step1;
+							//cancel decimal number
+							resultWhile = new BigDecimal(step1.toBigInteger());
+							
+							/*
+							 * step1 = 5,9xxx
+							 * resultwhile = 5,0
+							 */
+							resultForSI = step1.subtract(resultWhile);
+							
+							//Multiply to orignal value dimension
+							resultForSI = resultForSI.multiply(val).multiply(new BigDecimal(gr.getValueToBaseGradation()));
+							break;
+						} else if(amount < 0 && step1.doubleValue() <= -1.0)
+						{
+							si = e.getValue();
+							//cancel decimal number
+							resultWhile = new BigDecimal(step1.toBigInteger());
+							
+							/*
+							 * step1 = 5,9xxx
+							 * resultwhile = 5,0
+							 */
+							resultForSI = step1.subtract(resultWhile);
+							
+							//Multiply to orignal value dimension
+							resultForSI = resultForSI.multiply(val).multiply(new BigDecimal(gr.getValueToBaseGradation()));
 							break;
 						}
 					}
-					resultWhile = resultWhile.setScale(0);
+					result = resultForSI;
+				} else
+				{
+					BigDecimal val = new BigDecimal(gr.getValueToBaseGradation());
+					result = resultWhile.multiply(val)
+							.subtract(new BigDecimal(resultWhile.toBigInteger()).multiply(val));
 				}
 				DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
 				DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
-
+				formatter.setMaximumFractionDigits(0);
+				formatter.setMinimumFractionDigits(0);
 				symbols.setGroupingSeparator(thousandSeperator.charAt(0));
 				symbols.setDecimalSeparator(decimalSeperator.charAt(0));
+				
 				formatter.setDecimalFormatSymbols(symbols);
-				sb.append(formatter.format(resultWhile.doubleValue()));
-				if(si != null)
-				{
-					sb.append(si+" ");
-				} else
-				{
-					sb.append(" ");
-				}
-				sb.append(useSymbol ? gr.getSymbol() : gr.getPlural());
-				sb.append(" ");
-				result = result.subtract(resultForSI.setScale(0).multiply(divisor));
+				YamlDocument yd = plugin.getYamlHandler().getCurrency(ec.getUniqueName());
+				String format = yd.getString("Format.OutputFormat")
+						.replace("%number%", formatter.format(resultWhile))
+						.replace("%siprefix%", si != null ? si : "")
+						.replace("%gradation%", useSymbol ? gr.getSymbol() : 
+							((resultWhile.doubleValue() >= 1 && resultWhile.doubleValue() < 2) ? gr.getSingular() : gr.getPlural()));
+				sb.append(format);
 			}
 			highest--;
 		}
@@ -750,6 +838,12 @@ public class IFHEcoProvider implements Economy
 	public boolean getDefaultUseSymbol(EconomyCurrency currency)
 	{
 		return defaultUseSymbol.containsKey(currency.getUniqueName()) ? defaultUseSymbol.get(currency.getUniqueName()) : false;
+	}
+	
+	@Override
+	public RoundingMode getDefaultRoundingMode(EconomyCurrency currency)
+	{
+		return defaultRoundingMode.containsKey(currency.getUniqueName()) ? defaultRoundingMode.get(currency.getUniqueName()) : RoundingMode.HALF_EVEN;
 	}
 
 	@Override
