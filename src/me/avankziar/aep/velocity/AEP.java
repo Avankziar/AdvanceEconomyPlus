@@ -32,7 +32,8 @@ import me.avankziar.ifh.velocity.plugin.ServicePriority;
 		version = "4-7-0",
 		url = "https://www.spigotmc.org/resources/advanced-economy-plus.79828/",
 		dependencies = {
-				@Dependency(id = "interfacehub", optional = false)
+				@Dependency(id = "interfacehub", optional = false),
+				@Dependency(id = "rootadministration", optional = true)
 		},
 		description = "A Economy Plugin",
 		authors = {"Avankziar"}
