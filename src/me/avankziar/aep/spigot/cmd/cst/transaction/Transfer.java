@@ -3,6 +3,7 @@ package me.avankziar.aep.spigot.cmd.cst.transaction;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -290,7 +291,7 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 		{
 			player.sendMessage(ChatApiOld.tl(s));
 		}
-		sendToOther(plugin, from, to, list, player.getUniqueId());
+		sendToOther(plugin, from, to, list, player.getUniqueId(), to.getOwner().getUUID());
 	}
 	
 	private void endpartVariousCurrency(Player player, Account from, Account to,
@@ -341,7 +342,7 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 		{
 			player.sendMessage(ChatApiOld.tl(s));
 		}
-		sendToOther(plugin, from, to, list, player.getUniqueId());
+		sendToOther(plugin, from, to, list, player.getUniqueId(), to.getOwner().getUUID());
 	}
 	
 	public static String convertDecimalSeperator(String s)
@@ -377,6 +378,15 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 		s = args[catStart];
 		return s;
 	}
+	
+	public static ArrayList<UUID> removeDuplicates(ArrayList<UUID> list) 
+	{
+        LinkedHashSet<UUID> set = new LinkedHashSet<>();
+        set.addAll(list);
+        list.clear();
+        list.addAll(set);
+        return list;
+    }
 	
 	public static void sendToOther(AEP plugin, Account from, Account to, ArrayList<String> list, UUID...exceptions)
 	{
@@ -473,10 +483,11 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 		{
 			return;
 		}
+		ul = removeDuplicates(ul);
 		if(plugin.getMtB() != null)
 		{
 			String[] la = list.toArray(new String[list.size()]);
-			plugin.getMtB().sendMessage(ul, la);
+			plugin.getMtB().sendMessage((ArrayList<UUID>) ul, la);
 		} else
 		{
 			for(UUID uuid : ul)
@@ -545,6 +556,7 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 		{
 			return;
 		}
+		ul = removeDuplicates(ul);
 		if(plugin.getMtB() != null)
 		{
 			String[] la = list.toArray(new String[list.size()]);
