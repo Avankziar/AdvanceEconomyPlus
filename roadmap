@@ -36,6 +36,11 @@ Future =========================================================================
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
+4-9-0
+- Spigot 1.21.4 support
+- Api muss nun 1.21.3 oder höher sein!
+- Velocity 3.4.0 support
+
 Build 4-8-1
 - Velocity RootAdministration softdepend
 
