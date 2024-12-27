@@ -33,6 +33,8 @@ Future =========================================================================
 - wäre es möglich, die Verkäufe an einen Adminshop, wie bei dem verdienst durch einen Job, zeitlich zusammenzufassen?
   Atkuell ist es so, dass jeder Verkauf auch einen Logeintrag abwirft, was recht schnell sehr unübersichtlich wird.
 - /aep log [Spieler1] [Spieler2] die gesamten Transaktionen zwischen den genannten Spielern aufzulisten.
+- Die Möglichkeit implementieren, das Konto ins Minus zu buchen. Die Einkäufe des Spielers in dem Falle müsste dann lauten, gleiche dein Konto aus, Du bist im Minus.
+Ausschließlich via /money take etc möglich !
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
