@@ -334,7 +334,7 @@ public class BackgroundTask
 	
 	public void runPlayerDataDelete(int deletedays)
 	{
-		int days = plugin.getYamlHandler().getConfig().getInt("Do.OverdueTimeInDays", 180);
+		int days = plugin.getYamlHandler().getConfig().getInt("Do.DeleteAccountsDaysAfterOverdue", 180);
 		long deletedate = System.currentTimeMillis()-((long) days+(long) deletedays)*1000L*60*60*24;
 		new BukkitRunnable()
 		{

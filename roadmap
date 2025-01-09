@@ -38,6 +38,9 @@ Ausschließlich via /money take etc möglich !
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
+4-9-1
+- Do.DeleteAccountsDaysAfterOverdue fix
+
 4-9-0
 - Spigot 1.21.4 support
 - Api muss nun 1.21.3 oder höher sein!
