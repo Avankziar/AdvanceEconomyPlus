@@ -135,12 +135,18 @@ public class AccountPermissionInfo extends ArgumentModule
 				sbu.append("&c"+ac.getID()+" &f| &4"+ac.getOwner().getName()+"~!~");
 				for(UUID uuid : accountsAM.keySet())
 				{
-					sbu.append("&#0047AB"+plugin.getIFHApi().getEntity(uuid).getName()+" ");
-					for(AccountManagementType amt : accountsAM.get(uuid))
+					if(plugin.getIFHApi().getEntity(uuid) != null)
 					{
-						sbu.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.Only."+amt.toString())+" ");
+						sbu.append("&#0047AB"+plugin.getIFHApi().getEntity(uuid).getName()+" ");
+						for(AccountManagementType amt : accountsAM.get(uuid))
+						{
+							sbu.append(plugin.getYamlHandler().getLang().getString("Cmd.Player.Only."+amt.toString())+" ");
+						}
+						sbu.append("~!~");
+					} else
+					{
+						plugin.getMysqlHandler().deleteData(MysqlType.ACCOUNTMANAGEMENT, "`player_uuid` = ?", uuid.toString());
 					}
-					sbu.append("~!~");
 				}
 			}
 			m3.add(ChatApiOld.hover("&#FF6E4A"+ac.getAccountName()+"&r, ", Action.SHOW_TEXT, sbu.toString()));

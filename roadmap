@@ -40,6 +40,7 @@ Ausschließlich via /money take etc möglich !
 
 4-9-1
 - Do.DeleteAccountsDaysAfterOverdue fix
+- /aep account permissioinfo NPE fix
 
 4-9-0
 - Spigot 1.21.4 support
