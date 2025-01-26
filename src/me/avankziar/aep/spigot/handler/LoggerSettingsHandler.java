@@ -46,7 +46,7 @@ public class LoggerSettingsHandler
 	
 	public enum Methode
 	{
-		BARCHART, DIAGRAM, GRAFIC, LOG, JSON;
+		BARCHART, DIAGRAM, GRAFIC, LOG, PLAYERTRANSACTIONLOG, JSON;
 	}
 	
 	public AEP plugin;
@@ -74,7 +74,7 @@ public class LoggerSettingsHandler
 		LoggerSettings fst = getLoggerSettings().get(uuid);
 		if(fst == null)
 		{
-			fst = new LoggerSettings(accountID, player.getUniqueId(), page);
+			fst = new LoggerSettings(accountID, -1, player.getUniqueId(), page);
 			fst.setInventoryHandlerType(InventoryHandlerType.NORMAL);
 			getLoggerSettings().put(uuid, fst);
 		}
@@ -1146,6 +1146,15 @@ public class LoggerSettingsHandler
 					player.sendMessage(ChatApiOld.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return;
 				}
+				if(fst.getSecondAccountID() > 0 && !plugin.getIFHApi().canManageAccount(fst.getSecondAccountID(),
+								player.getUniqueId(), AccountManagementType.CAN_SEE_LOG))
+				{
+					fst.setInventoryHandlerType(InventoryHandlerType.NONE);
+					getLoggerSettings().replace(player.getUniqueId(), fst);
+					new BukkitRunnable() {@Override public void run(){player.closeInventory();}}.runTask(plugin);
+					player.sendMessage(ChatApiOld.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
+					return;
+				}
 				Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
 				if(ac == null)
 				{
@@ -1172,12 +1181,25 @@ public class LoggerSettingsHandler
 					}
 					if(fst.getAccountID() > 0)
 					{
-						query += "(`from_account_id` = ? OR ";
-						whereObjects.add(fst.getAccountID());
-						query += "`tax_account_id` = ? OR ";
-						whereObjects.add(fst.getAccountID());
-						query += "`to_account_id` = ?) AND ";
-						whereObjects.add(fst.getAccountID());
+						if(fst.getSecondAccountID() > 0)
+						{
+							query += "(`from_account_id` = ? AND ";
+							whereObjects.add(fst.getAccountID());
+							query += "`to_account_id` = ?) OR ";
+							whereObjects.add(fst.getSecondAccountID());
+							query += "(`from_account_id` = ? AND ";
+							whereObjects.add(fst.getSecondAccountID());
+							query += "`to_account_id` = ?) AND ";
+							whereObjects.add(fst.getAccountID());
+						} else
+						{
+							query += "(`from_account_id` = ? OR ";
+							whereObjects.add(fst.getAccountID());
+							query += "`tax_account_id` = ? OR ";
+							whereObjects.add(fst.getAccountID());
+							query += "`to_account_id` = ?) AND ";
+							whereObjects.add(fst.getAccountID());
+						}
 					}
 					if(fst.getActionFilter().getOrderer() != null)
 					{
@@ -1353,6 +1375,21 @@ public class LoggerSettingsHandler
 						int last = plugin.getMysqlHandler().getCount(MysqlType.TREND, query, whereObject);
 						LogHandler.sendTrendLogs(plugin, player, fst, list, page, end, last, 
 								access, cmdString != null ? cmdString : loggerSettingsCommandString);
+						return;
+					}
+				} else if(Methode.PLAYERTRANSACTIONLOG == methode)
+				{
+					if(fst.isAction())
+					{
+						start = page*10;
+						end = 10;
+						ArrayList<ActionLogger> list = ConvertHandler.convertListIII(
+								plugin.getMysqlHandler().getList(MysqlType.ACTION, order, start, end,
+										query, whereObject));
+						int last = plugin.getMysqlHandler().getCount(MysqlType.ACTION, query, whereObject); //TODO GetCount machen
+						LogHandler.sendPlayerTransactionLogs(plugin, player, fst, list, page, end, last, 
+								access,
+								cmdString != null ? cmdString : loggerSettingsCommandString);
 						return;
 					}
 				}/* else if(Methode.JSON == methode)

@@ -198,7 +198,7 @@ public class TrendLog extends ArgumentModule implements CommandExecutor
 			}
 		}
 		ConfigHandler.debug(d1, "> LoggerSettings Methode access");
-		LoggerSettings fst = new LoggerSettings(accountID, player.getUniqueId(), page);
+		LoggerSettings fst = new LoggerSettings(accountID, -1, player.getUniqueId(), page);
 		fst.setAction(false);
 		if(LoggerSettingsHandler.getLoggerSettings().containsKey(player.getUniqueId()))
 		{

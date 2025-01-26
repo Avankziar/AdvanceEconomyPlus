@@ -188,17 +188,17 @@ public class TakeConsole extends ArgumentModule implements CommandExecutor
 		EconomyAction ea = null;
 		if(voids == null && category == null)
 		{
-			ea = plugin.getIFHApi().withdraw(from, amount);
+			ea = plugin.getIFHApi().withdraw(from, amount, true);
 		} else if(voids == null && category != null)
 		{
-			ea = plugin.getIFHApi().withdraw(from, amount, OrdererType.PLUGIN, "Console", category, comment);
+			ea = plugin.getIFHApi().withdraw(from, amount, OrdererType.PLUGIN, "Console", category, comment, true);
 		} else if(voids != null && category == null)
 		{
-			ea = plugin.getIFHApi().transaction(from, voids, amount);
+			ea = plugin.getIFHApi().transaction(from, voids, amount, true);
 		} else if(voids != null && category != null)
 		{
 			ea = plugin.getIFHApi().transaction(from, voids, amount, 
-					OrdererType.PLUGIN, "Console", category, comment);
+					OrdererType.PLUGIN, "Console", category, comment, true);
 		}
 		if(!ea.isSuccess())
 		{

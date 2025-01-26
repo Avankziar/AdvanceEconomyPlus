@@ -418,27 +418,57 @@ public class IFHEcoProvider implements Economy
 	@Override
 	public EconomyAction transaction(Account withdraw, Account deposit, double amount)
 	{
-		return transactionHandler.transaction(withdraw, deposit, amount);
+		return transactionHandler.transaction(withdraw, deposit, amount, false);
+	}
+	
+	@Override
+	public EconomyAction transaction(Account withdraw, Account deposit, double amount, boolean withdrawCanGoNegativ)
+	{
+		return transactionHandler.transaction(withdraw, deposit, amount, withdrawCanGoNegativ);
 	}
 	
 	@Override
 	public EconomyAction transaction(Account withdraw, Account deposit, double amount,
 			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
 	{
-		return transactionHandler.transaction(withdraw, deposit, amount, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment);
+		return transactionHandler.transaction(withdraw, deposit, amount, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment, false);
+	}
+	
+	@Override
+	public EconomyAction transaction(Account withdraw, Account deposit, double amount,
+			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment, boolean withdrawCanGoNegativ)
+	{
+		return transactionHandler.transaction(withdraw, deposit, amount,
+				type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment, withdrawCanGoNegativ);
 	}
 	
 	@Override
 	public EconomyAction transaction(Account withdraw, Account deposit, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot)
 	{
-		return transactionHandler.transaction(withdraw, deposit, amount, taxInPercent, taxAreExclusive, taxDepot);
+		return transactionHandler.transaction(withdraw, deposit, amount, taxInPercent, taxAreExclusive, taxDepot, false);
+	}
+	
+	@Override
+	public EconomyAction transaction(Account withdraw, Account deposit, double amount,
+			double taxInPercent, boolean taxAreExclusive, Account taxDepot, boolean withdrawCanGoNegativ)
+	{
+		return transactionHandler.transaction(withdraw, deposit, amount, taxInPercent, taxAreExclusive, taxDepot, withdrawCanGoNegativ);
 	}
 	
 	@Override
 	public EconomyAction transaction(Account withdraw, Account deposit, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot,
 			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
 	{
-		return transactionHandler.transaction(withdraw, deposit, amount, taxInPercent, taxAreExclusive, taxDepot, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment);
+		return transactionHandler.transaction(withdraw, deposit, amount,
+				taxInPercent, taxAreExclusive, taxDepot, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment, false);
+	}
+	
+	@Override
+	public EconomyAction transaction(Account withdraw, Account deposit, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot,
+			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment, boolean withdrawCanGoNegativ)
+	{
+		return transactionHandler.transaction(withdraw, deposit, amount,
+				taxInPercent, taxAreExclusive, taxDepot, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment, withdrawCanGoNegativ);
 	}
 
 	@Override
@@ -470,28 +500,57 @@ public class IFHEcoProvider implements Economy
 	@Override
 	public EconomyAction withdraw(Account holder, double amount)
 	{
-		return transactionHandler.withdraw(holder, amount);
+		return transactionHandler.withdraw(holder, amount, false);
+	}
+	
+	@Override
+	public EconomyAction withdraw(Account holder, double amount, boolean withdrawCanGoNegativ)
+	{
+		return transactionHandler.withdraw(holder, amount, withdrawCanGoNegativ);
 	}
 	
 	@Override
 	public EconomyAction withdraw(Account holder, double amount, 
 			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
 	{
-		return transactionHandler.withdraw(holder, amount, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment);
+		return transactionHandler.withdraw(holder, amount, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment, false);
+	}
+	
+	@Override
+	public EconomyAction withdraw(Account holder, double amount, 
+			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment, boolean withdrawCanGoNegativ)
+	{
+		return transactionHandler.withdraw(holder, amount, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment, withdrawCanGoNegativ);
 	}
 	
 	@Override
 	public EconomyAction withdraw(Account holder, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot)
 	{
-		return transactionHandler.withdraw(holder, amount, taxInPercent, taxAreExclusive, taxDepot);
+		return transactionHandler.withdraw(holder, amount, taxInPercent, taxAreExclusive, taxDepot, false);
+	}
+	
+	@Override
+	public EconomyAction withdraw(Account holder, double amount,
+			double taxInPercent, boolean taxAreExclusive, Account taxDepot, boolean withdrawCanGoNegativ)
+	{
+		return transactionHandler.withdraw(holder, amount, taxInPercent, taxAreExclusive, taxDepot, withdrawCanGoNegativ);
 	}
 	
 	@Override
 	public EconomyAction withdraw(Account holder, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot,
 			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
 	{
-		return transactionHandler.withdraw(holder, amount, taxInPercent, taxAreExclusive, taxDepot, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment);
-	}	
+		return transactionHandler.withdraw(holder, amount,
+				taxInPercent, taxAreExclusive, taxDepot, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment, false);
+	}
+	
+	@Override
+	public EconomyAction withdraw(Account holder, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot,
+			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment, boolean withdrawCanGoNegativ)
+	{
+		return transactionHandler.withdraw(holder, amount,
+				taxInPercent, taxAreExclusive, taxDepot, type, ordererUUIDOrPlugin, actionLogCategory, actionLogComment, withdrawCanGoNegativ);
+	}
 	
 	@Override
 	public EconomyAction exchangeCurrencies(Account withdrawAccount, Account depositAccount, double amountFromWithdrawAccount)

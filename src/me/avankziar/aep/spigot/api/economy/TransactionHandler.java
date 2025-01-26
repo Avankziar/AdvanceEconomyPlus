@@ -184,7 +184,8 @@ public class TransactionHandler
 		return null;
 	}
 	
-	private EconomyAction preCheckTransaction(int i, boolean normalCurrencyCheck, Account withdraw, Account deposit, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot)
+	private EconomyAction preCheckTransaction(int i, boolean normalCurrencyCheck, Account withdraw, Account deposit,
+			double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot, boolean withdrawCanGoNegativ)
 	{
 		final EconomyAction preCheck = preCheck(i, normalCurrencyCheck, withdraw, deposit, amount);
 		if(preCheck != null)
@@ -231,7 +232,7 @@ public class TransactionHandler
 				amountToDeposit = amount - amount*taxInPercent/100;
 			}
 			double amountToTax = amountToWithdraw - amountToDeposit;
-			if(withdraw != null && withdraw.getBalance() < amountToWithdraw)
+			if(!withdrawCanGoNegativ && withdraw != null && withdraw.getBalance() < amountToWithdraw)
 			{
 				return new EconomyAction(amountToWithdraw, amountToDeposit, amountToTax, false, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH,
 						withdraw != null ? withdraw.getBalance() : 0.0,
@@ -239,7 +240,7 @@ public class TransactionHandler
 			}
 		} else
 		{
-			if(withdraw != null && withdraw.getBalance() < amount)
+			if(!withdrawCanGoNegativ && withdraw != null && withdraw.getBalance() < amount)
 			{
 				return new EconomyAction(amount, 0.0, 0.0, false, WITHDRAW_HAS_NOT_ENOUGH, ErrorMessageType.WITHDRAW_HAS_NOT_ENOUGH,
 						withdraw != null ? withdraw.getBalance() : 0.0,
@@ -249,9 +250,9 @@ public class TransactionHandler
 		return null;
 	}
 
-	public EconomyAction transaction(Account withdraw, Account deposit, double amount)
+	public EconomyAction transaction(Account withdraw, Account deposit, double amount, boolean withdrawCanGoNegativ)
 	{
-		final EconomyAction preCheck = preCheckTransaction(0, true, withdraw, deposit, amount, -1.0, true, null);
+		final EconomyAction preCheck = preCheckTransaction(0, true, withdraw, deposit, amount, -1.0, true, null, withdrawCanGoNegativ);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -279,9 +280,9 @@ public class TransactionHandler
 	}
 	
 	public EconomyAction transaction(Account withdraw, Account deposit, double amount,
-			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
+			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment, boolean withdrawCanGoNegativ)
 	{
-		final EconomyAction preCheck = preCheckTransaction(0, true, withdraw, deposit, amount, -1.0, true, null);
+		final EconomyAction preCheck = preCheckTransaction(0, true, withdraw, deposit, amount, -1.0, true, null, withdrawCanGoNegativ);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -306,9 +307,11 @@ public class TransactionHandler
 		return ea;
 	}
 	
-	public EconomyAction transaction(Account withdraw, Account deposit, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot)
+	public EconomyAction transaction(Account withdraw, Account deposit, double amount,
+			double taxInPercent, boolean taxAreExclusive, Account taxDepot, boolean withdrawCanGoNegativ)
 	{
-		final EconomyAction preCheck = preCheckTransaction(0, true, withdraw, deposit, amount, taxInPercent, taxAreExclusive, taxDepot);
+		final EconomyAction preCheck = preCheckTransaction(0, true, withdraw, deposit, amount,
+				taxInPercent, taxAreExclusive, taxDepot, withdrawCanGoNegativ);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -358,9 +361,10 @@ public class TransactionHandler
 	}
 	
 	public EconomyAction transaction(Account withdraw, Account deposit, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot,
-			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
+			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment, boolean withdrawCanGoNegativ)
 	{
-		final EconomyAction preCheck = preCheckTransaction(0, true, withdraw, deposit, amount, taxInPercent, taxAreExclusive, taxDepot);
+		final EconomyAction preCheck = preCheckTransaction(0, true, withdraw, deposit, amount,
+				taxInPercent, taxAreExclusive, taxDepot, withdrawCanGoNegativ);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -409,7 +413,7 @@ public class TransactionHandler
 
 	public EconomyAction deposit(Account holder, double amount)
 	{
-		final EconomyAction preCheck = preCheckTransaction(2, true, null, holder, amount, -1.0, true, null);
+		final EconomyAction preCheck = preCheckTransaction(2, true, null, holder, amount, -1.0, true, null, false);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -436,7 +440,7 @@ public class TransactionHandler
 	public EconomyAction deposit(Account holder, double amount, OrdererType type, String ordererUUIDOrPlugin,
 			String actionLogCategory, String actionLogComment)
 	{
-		final EconomyAction preCheck = preCheckTransaction(2, true, null, holder, amount, -1.0, true, null);
+		final EconomyAction preCheck = preCheckTransaction(2, true, null, holder, amount, -1.0, true, null, false);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -460,7 +464,8 @@ public class TransactionHandler
 	
 	public EconomyAction deposit(Account holder, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot)
 	{
-		final EconomyAction preCheck = preCheckTransaction(2, true, null, holder, amount, taxInPercent, taxAreExclusive, taxDepot);
+		final EconomyAction preCheck = preCheckTransaction(2, true, null, holder, amount,
+				taxInPercent, taxAreExclusive, taxDepot, false);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -509,7 +514,8 @@ public class TransactionHandler
 	public EconomyAction deposit(Account holder, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot,
 			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
 	{
-		final EconomyAction preCheck = preCheckTransaction(2, true, null, holder, amount, taxInPercent, taxAreExclusive, taxDepot);
+		final EconomyAction preCheck = preCheckTransaction(2, true, null, holder, amount,
+				taxInPercent, taxAreExclusive, taxDepot, false);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -549,9 +555,9 @@ public class TransactionHandler
 		return ea;
 	}
 	
-	public EconomyAction withdraw(Account holder, double amount)
+	public EconomyAction withdraw(Account holder, double amount, boolean withdrawCanGoNegativ)
 	{
-		final EconomyAction preCheck = preCheckTransaction(1, true, holder, null, amount, -1.0, true, null);
+		final EconomyAction preCheck = preCheckTransaction(1, true, holder, null, amount, -1.0, true, null, withdrawCanGoNegativ);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -576,9 +582,9 @@ public class TransactionHandler
 	}
 	
 	public EconomyAction withdraw(Account holder, double amount, 
-			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
+			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment, boolean withdrawCanGoNegativ)
 	{
-		final EconomyAction preCheck = preCheckTransaction(1, true, holder, null, amount, -1.0, true, null);
+		final EconomyAction preCheck = preCheckTransaction(1, true, holder, null, amount, -1.0, true, null, withdrawCanGoNegativ);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -600,9 +606,11 @@ public class TransactionHandler
 		return ea;
 	}
 	
-	public EconomyAction withdraw(Account holder, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot)
+	public EconomyAction withdraw(Account holder, double amount,
+			double taxInPercent, boolean taxAreExclusive, Account taxDepot, boolean withdrawCanGoNegativ)
 	{
-		final EconomyAction preCheck = preCheckTransaction(1, true, holder, null, amount, taxInPercent, taxAreExclusive, taxDepot);
+		final EconomyAction preCheck = preCheckTransaction(1, true, holder, null, amount,
+				taxInPercent, taxAreExclusive, taxDepot, withdrawCanGoNegativ);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -645,9 +653,10 @@ public class TransactionHandler
 	}
 	
 	public EconomyAction withdraw(Account holder, double amount, double taxInPercent, boolean taxAreExclusive, Account taxDepot,
-			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment)
+			OrdererType type, String ordererUUIDOrPlugin, String actionLogCategory, String actionLogComment, boolean withdrawCanGoNegativ)
 	{
-		final EconomyAction preCheck = preCheckTransaction(1, true, holder, null, amount, taxInPercent, taxAreExclusive, taxDepot);
+		final EconomyAction preCheck = preCheckTransaction(1, true, holder, null, amount,
+				taxInPercent, taxAreExclusive, taxDepot, withdrawCanGoNegativ);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -704,7 +713,7 @@ public class TransactionHandler
 	
 	public EconomyAction exchangeCurrencies(Account withdraw, Account deposit, double amount)
 	{
-		final EconomyAction preCheck = preCheckTransaction(0, false, withdraw, deposit, amount, -1.0, true, null);
+		final EconomyAction preCheck = preCheckTransaction(0, false, withdraw, deposit, amount, -1.0, true, null, false);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -735,7 +744,7 @@ public class TransactionHandler
 			OrdererType type, String ordererUUIDOrPlugin,
 			String actionLogCategory, String actionLogComment)
 	{
-		final EconomyAction preCheck = preCheckTransaction(0, false, withdraw, deposit, amount, -1.0, true, null);
+		final EconomyAction preCheck = preCheckTransaction(0, false, withdraw, deposit, amount, -1.0, true, null, false);
 		if(preCheck != null)
 		{
 			return preCheck;
@@ -777,12 +786,14 @@ public class TransactionHandler
 	public EconomyAction exchangeCurrencies(Account withdraw, Account deposit, double amount,
 			double taxInPercent, boolean taxAreExclusive, Account withdrawAccounttaxDepot, Account depositAccounttaxDepot)
 	{
-		final EconomyAction preCheck = preCheckTransaction(0, false, withdraw, deposit, amount, taxInPercent, taxAreExclusive, withdrawAccounttaxDepot);
+		final EconomyAction preCheck = preCheckTransaction(0, false, withdraw, deposit, amount,
+				taxInPercent, taxAreExclusive, withdrawAccounttaxDepot, false);
 		if(preCheck != null)
 		{
 			return preCheck;
 		}
-		final EconomyAction preCheckII = preCheckTransaction(0, false, withdraw, deposit, amount, taxInPercent, taxAreExclusive, depositAccounttaxDepot);
+		final EconomyAction preCheckII = preCheckTransaction(0, false, withdraw, deposit, amount,
+				taxInPercent, taxAreExclusive, depositAccounttaxDepot, false);
 		if(preCheckII != null)
 		{
 			return preCheckII;
@@ -813,12 +824,14 @@ public class TransactionHandler
 			OrdererType type, String ordererUUIDOrPlugin, 
 			String actionLogCategory, String actionLogComment)
 	{
-		final EconomyAction preCheck = preCheckTransaction(0, false, withdraw, deposit, amount, taxInPercent, taxAreExclusive, withdrawAccounttaxDepot);
+		final EconomyAction preCheck = preCheckTransaction(0, false, withdraw, deposit, amount,
+				taxInPercent, taxAreExclusive, withdrawAccounttaxDepot, false);
 		if(preCheck != null)
 		{
 			return preCheck;
 		}
-		final EconomyAction preCheckII = preCheckTransaction(0, false, withdraw, deposit, amount, taxInPercent, taxAreExclusive, depositAccounttaxDepot);
+		final EconomyAction preCheckII = preCheckTransaction(0, false, withdraw, deposit, amount,
+				taxInPercent, taxAreExclusive, depositAccounttaxDepot, false);
 		if(preCheckII != null)
 		{
 			return preCheckII;

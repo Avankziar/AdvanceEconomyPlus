@@ -30,6 +30,7 @@ import me.avankziar.aep.spigot.cmd.cet.base.BankNotification;
 import me.avankziar.aep.spigot.cmd.cet.base.DeleteAllPlayerAccounts;
 import me.avankziar.aep.spigot.cmd.cet.base.DeleteLog;
 import me.avankziar.aep.spigot.cmd.cet.base.GetTotal;
+import me.avankziar.aep.spigot.cmd.cet.base.PlayerTransactionLog;
 import me.avankziar.aep.spigot.cmd.cet.base.Players;
 import me.avankziar.aep.spigot.cmd.cet.base.Recomment;
 import me.avankziar.aep.spigot.cmd.cet.base.TopList;
@@ -198,6 +199,9 @@ public class CurrencyCommandSetup
 				case ACTIONLOG:
 					plugin.getCommand(cmd.getName()).setExecutor(new ActionLog(cmd, null, cst));
 					break;
+				case PLAYERTRANSACTIONLOG:
+					plugin.getCommand(cmd.getName()).setExecutor(new PlayerTransactionLog(cmd, null, cst));
+					break;
 				case TRENDLOG:
 					plugin.getCommand(cmd.getName()).setExecutor(new TrendLog(cmd, null, cst));
 					break;
@@ -259,6 +263,10 @@ public class CurrencyCommandSetup
 				case ACTIONLOG:
 					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 5, false, map_p_acn_cat);
 					new ActionLog(null, arg, cst);
+					break;
+				case PLAYERTRANSACTIONLOG:
+					arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 5, false, map_p_acn_cat);
+					new PlayerTransactionLog(null, arg, cst);
 					break;
 				case TRENDLOG:
 					arg = new ArgumentConstructor(cet, cmdpath, 0, 0, 4, false, map_p_acn);

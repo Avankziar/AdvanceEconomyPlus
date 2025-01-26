@@ -26,6 +26,7 @@ public enum CommandExecuteType
 	BANKNOTIFICATION, // /money toggle
 	
 	ACTIONLOG,
+	PLAYERTRANSACTIONLOG,
 	TRENDLOG,
 	
 	LOGGERSETTINGS,

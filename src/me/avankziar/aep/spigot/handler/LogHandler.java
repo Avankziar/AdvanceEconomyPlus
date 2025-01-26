@@ -302,6 +302,169 @@ public class LogHandler
 		}
 	}
 	
+	public static void sendPlayerTransactionLogs(AEP plugin, Player player,
+			LoggerSettings fst, ArrayList<ActionLogger> list,
+			int page, int end, int last,
+			LoggerSettingsHandler.Access access, String cmdstring)
+	{
+		boolean lastpage = false;
+		if(end >= last)
+		{
+			lastpage = true;
+		}
+		Account ac = plugin.getIFHApi().getAccount(fst.getAccountID());
+		Account otherAc = plugin.getIFHApi().getAccount(fst.getSecondAccountID());
+		ArrayList<ArrayList<BaseComponent>> msg = new ArrayList<>();
+		ArrayList<BaseComponent> m1 = new ArrayList<>();
+		m1.add(ChatApiOld.tctl(plugin.getYamlHandler().getLang().getString("Log.PlayerTransactionLog.Headline")
+				.replace("%accountname%", ac.getAccountName())
+				.replace("%accountid%", String.valueOf(ac.getID()))
+				.replace("%accountowner%", ac.getOwner().getName())
+				.replace("%secaccountname%", otherAc.getAccountName())
+				.replace("%secaccountid%", String.valueOf(otherAc.getID()))
+				.replace("%secaccountowner%", otherAc.getOwner().getName())
+				.replace("%amount%", String.valueOf(last))));
+		msg.add(m1);
+		for(ActionLogger al : list)
+		{
+			String orderer = "";
+			if(al.getOrderType() == OrdererType.PLAYER)
+			{
+				if(al.getOrdererUUID() != null)
+				{
+					String other = Utility.convertUUIDToName(al.getOrdererUUID().toString(), EconomyEntity.EconomyType.PLAYER);
+					orderer = other != null ? other : "N.A.";
+				} else
+				{
+					orderer = "N.A.";
+				}
+			} else
+			{
+				orderer = al.getOrdererPlugin();
+			}
+			
+			String category = al.getCategory() != null ? al.getCategory() : "N.A.";
+			String comment = al.getComment() != null ? al.getComment() : "N.A.";
+			HashMap<String,String> map = new HashMap<String,String>();
+			map.put("%orderer%", orderer);
+			map.put("%category%", category);
+			map.put("%comment%", comment);
+			
+			Account send = null;
+			Account rec = null;
+			if(al.getFromAccountID() == ac.getID())
+			{
+				send = ac;
+				rec = plugin.getIFHApi().getAccount(al.getToAccountID());
+			} else if(al.getToAccountID() == ac.getID())
+			{
+				send = plugin.getIFHApi().getAccount(al.getFromAccountID());
+				rec = ac;
+			}
+			String system = plugin.getConfig().getString("Do.Default.ReplaceIfNull", "System");
+			boolean repA = plugin.getConfig().getBoolean("Do.Default.ReplaceLogSystemWithCategory", false);
+			String idrep = plugin.getConfig().getString("Do.Default.ReplaceIDIfNull", "System");
+			String withdraw = send != null ? plugin.getIFHApi().format(al.getAmountToWithdraw(), send.getCurrency()) : "0.0";
+			String deposit = rec != null ? plugin.getIFHApi().format(al.getAmountToDeposit(), rec.getCurrency()) : "0.0";
+			String saccid = String.valueOf(send != null ? send.getID() : idrep);
+			String saccn = send != null ? send.getAccountName() :  
+				(repA ? (al.getCategory() != null ? category : system) : system);
+			String sacco = send != null ? send.getOwner().getName() :  
+				(repA ? (al.getCategory() != null ? category : system) : system);
+			String raccid = String.valueOf(rec != null ? rec.getID() :  idrep);
+			String raccn = rec != null ? rec.getAccountName() :  
+				(repA ? (al.getCategory() != null ? category : system) : system);
+			String racco = rec != null ? rec.getOwner().getName() :  
+				(repA ? (al.getCategory() != null ? category : system) : system);
+			String tax = send != null ? plugin.getIFHApi().format(al.getAmountToTax(), send.getCurrency())
+					: plugin.getIFHApi().format(al.getAmountToTax(), rec.getCurrency());
+			map.put("%fromaccountid%", saccid);
+			map.put("%fromaccountname%", saccn);
+			map.put("%fromaccountowner%", sacco);
+			map.put("%toaccountid%", raccid);
+			map.put("%toaccountname%", raccn);
+			map.put("%toaccountowner%", racco);
+			map.put("%withdraw%", withdraw);
+			map.put("%tax%", tax);
+			map.put("%deposit%", deposit);
+			
+			ArrayList<BaseComponent> m2 = new ArrayList<>();
+			if(al.getFromAccountID() == ac.getID())
+			{
+				m2.addAll(ChatApiSmall.generateTextComponentII(
+						plugin.getYamlHandler().getLang().getString("Log.ActionLog.MainMessage")
+						.replace("%date%", TimeHandler.getTimeSlim(al.getUnixTime()))
+						.replace("%fromcolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Negative"))
+						.replace("%fromaccountid%", saccid)
+						.replace("%fromaccountname%", saccn)
+						.replace("%fromaccountowner%", sacco)
+						.replace("%tocolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Neutral"))
+						.replace("%toaccountid%", raccid)
+						.replace("%toaccountname%", raccn)
+						.replace("%toaccountowner%", racco)
+						.replace("%format%", withdraw.replace(" ", "+")),
+						map));
+			} else
+			{
+				m2.addAll(ChatApiSmall.generateTextComponentII(
+						plugin.getYamlHandler().getLang().getString("Log.ActionLog.MainMessage")
+						.replace("%date%", TimeHandler.getTimeSlim(al.getUnixTime()))
+						.replace("%fromcolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Neutral"))
+						.replace("%fromaccountid%", saccid)
+						.replace("%fromaccountname%", saccn)
+						.replace("%fromaccountowner%", sacco)
+						.replace("%tocolor%", plugin.getYamlHandler().getLang().getString("Log.ActionLog.Positive"))
+						.replace("%toaccountid%", raccid)
+						.replace("%toaccountname%", raccn)
+						.replace("%toaccountowner%", racco)
+						.replace("%format%", deposit.replace(" ", "+")),
+						map));
+			}
+			if(
+					(
+					al.getOrderType() == OrdererType.PLAYER 
+					&& al.getOrdererUUID() != null 
+					&& player.getUniqueId().toString().equals(al.getOrdererUUID().toString())
+					) 
+					|| player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_RECOMMENT))
+					|| player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_DELETELOG)))
+			{
+				m2.add(ChatApiOld.tctl(" | "));
+				if(
+						(
+						al.getOrderType() == OrdererType.PLAYER 
+						&& al.getOrdererUUID() != null 
+						&& player.getUniqueId().toString().equals(al.getOrdererUUID().toString())
+						)
+						||player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_RECOMMENT)))
+				{
+					m2.addAll(ChatApiSmall.generateTextComponentII(
+							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Edit")
+							.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.RECOMMENT).trim().replace(" ", "+"))
+							.replace("%id%", String.valueOf(al.getId())),
+							map));
+				}
+				if(player.hasPermission(ExtraPerm.get(ExtraPerm.Type.BYPASS_DELETELOG)))
+				{
+					m2.addAll(ChatApiSmall.generateTextComponentII(
+							plugin.getYamlHandler().getLang().getString("Log.ActionLog.Delete")
+							.replace("%cmd%", CommandSuggest.get(null, CommandExecuteType.DELETELOG).replace(" ", "+"))
+							.replace("%id%", String.valueOf(al.getId())),
+							map));
+				}
+			}
+			msg.add(m2);
+		}
+		if(access == LoggerSettingsHandler.Access.COMMAND)
+		{
+			String cat = fst.getActionFilter().getCategory();
+			pastNextPage(plugin, player, msg, page, lastpage, cmdstring, ac.getOwner().getName(), otherAc.getOwner().getName(), cat);
+		} else
+		{
+			pastNextPageLoggerSettings(plugin, player, msg, page, lastpage, cmdstring, LoggerSettingsHandler.Methode.PLAYERTRANSACTIONLOG.toString());
+		}
+	}
+	
 	public static void sendActionDiagram(AEP plugin, Player player,
 			LoggerSettings fst, ArrayList<ActionLogger> list,
 			int page, int end, int last, String cmdstring)

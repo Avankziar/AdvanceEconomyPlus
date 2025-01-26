@@ -743,6 +743,7 @@ public class YamlManager
 		commandsKeys.put("Commands.SINGLE"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				CommandExecuteType.ACTIONLOG.toString()+";actionlog",
+				CommandExecuteType.PLAYERTRANSACTIONLOG.toString()+";playertransactionlog",
 				CommandExecuteType.TRENDLOG.toString()+";trendlog",
 				CommandExecuteType.WALLETNOTIFICATION.toString()+";walletnotification",
 				CommandExecuteType.BANKNOTIFICATION.toString()+";banknotification",
@@ -752,6 +753,7 @@ public class YamlManager
 		commandsKeys.put("Commands.NESTED"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				CommandExecuteType.ACTIONLOG.toString()+";aep_actionlog",
+				CommandExecuteType.PLAYERTRANSACTIONLOG.toString()+";aep_playertransactionlog",
 				CommandExecuteType.TRENDLOG.toString()+";aep_trendlog",
 				CommandExecuteType.WALLETNOTIFICATION.toString()+";aep_walletnotification",
 				CommandExecuteType.BANKNOTIFICATION.toString()+";aep_banknotification",
@@ -992,6 +994,14 @@ public class YamlManager
 				"/actionlog [playername] [accountname] [page] [category]", "/actionlog ",
 				"&c/actionlog [Spielername] [Accountname] [Seitenzahl] [Kategorie] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
 				"&c/actionlog [playername] [accountname] [page] [category] &f| Shows direct the actionlog by the actual Settings.");
+		argumentInput("aep_playertransactionlog", "playertransactionlog", basePermission,
+				"/aep playertransactionlog [playername] [otherplayer] [page] [category]", "/aep playertransactionlog ",
+				"&c/aep playertransactionlog [Spielername] [Anderer Spieler] [Seitenzahl] [Kategorie] &f| Zeigt die Transactionhistorie zwischen den beiden Spielern.",
+				"&c/aep playertransactionlog [playername] [otherplayer] [page] [category] &f| Shows the transaction history between the two players.");
+		commandsInput("playertransactionlog", "playertransactionlog", basePermission,
+				"/playertransactionlog [playername] [otherplayer] [page] [category]", "/playertransactionlog ",
+				"&c/playertransactionlog [Spielername] [Anderer Spieler] [Seitenzahl] [Kategorie] &f| Zeigt die Transactionhistorie zwischen den beiden Spielern.",
+				"&c/playertransactionlog [playername] [otherplayer] [page] [category] &f| Shows the transaction history between the two players.");
 		argumentInput("aep_trendlog", "trendlog", basePermission,
 				"/aep trendlog [playername] [accountname] [page]", "/aep trendlog ",
 				"&c/aep trendlog [Spielername] [Accountname] [Seitenzahl] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
@@ -1768,6 +1778,11 @@ public class YamlManager
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 				"&eKlicke hier um die Notiz des Log-Eintrages zu ändern.",
 				"&eClick here to change the note of the log entry."}));
+		
+		languageKeys.put(base+"PlayerTransactionLog.Headline"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				"&e=====&7[&b: &f%accountowner%-%accountname%&7 < > %secaccountowner%-%secaccountname% | Log-Anzahl: %amount%&7]&e=====",
+				"&e=====&7[&b: &f%accountowner%-%accountname%&7 < > %secaccountowner%-%secaccountname% | Log-Quantity: %amount%&7]&e====="}));
 		
 		languageKeys.put(base+"TrendLog.Headline"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {

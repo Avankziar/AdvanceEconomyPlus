@@ -181,7 +181,7 @@ public class ActionLog extends ArgumentModule implements CommandExecutor
 				}
 			}
 		}
-		LoggerSettings fst = new LoggerSettings(accountID, player.getUniqueId(), page);
+		LoggerSettings fst = new LoggerSettings(accountID, -1, player.getUniqueId(), page);
 		fst.setAction(true);
 		if(args.length >= three+1)
 		{

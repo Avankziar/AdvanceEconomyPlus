@@ -28,6 +28,7 @@ public class LoggerSettings implements MysqlHandable
 	
 	private UUID owner;
 	private int accountID;
+	private int secondAccountID;
 	private int slotid;
 	private int page;
 	private boolean descending;
@@ -41,9 +42,10 @@ public class LoggerSettings implements MysqlHandable
 	
 	public LoggerSettings() {}
 	
-	public LoggerSettings(int accountID, UUID owner, int page)
+	public LoggerSettings(int accountID, int secoundAccountID, UUID owner, int page)
 	{
 		setAccountID(accountID);
+		setSecondAccountID(secoundAccountID);
 		setSlotid(1);
 		setPage(page);
 		setActionFilter(new ActionFilterSettings());
@@ -56,13 +58,14 @@ public class LoggerSettings implements MysqlHandable
 		setAction(true);
 	}
 	
-	public LoggerSettings(int slotid, UUID owner, int accountID, boolean isAction, InventoryHandlerType inventoryHandlerType,
+	public LoggerSettings(int slotid, UUID owner, int accountID, int secoundAccountID, boolean isAction, InventoryHandlerType inventoryHandlerType,
 			boolean descending, OrderType orderType, Double min, Double max, String category, String orderer, String comment,
 			double firststand, double laststand)
 	{
 		setSlotid(slotid);
 		setOwner(owner);
 		setAccountID(accountID);
+		setSecondAccountID(secoundAccountID);
 		setAction(isAction);
 		setInventoryHandlerType(inventoryHandlerType);
 		setDescending(descending);
@@ -164,6 +167,16 @@ public class LoggerSettings implements MysqlHandable
 	public void setAccountID(int accountID)
 	{
 		this.accountID = accountID;
+	}
+
+	public int getSecondAccountID()
+	{
+		return secondAccountID;
+	}
+
+	public void setSecondAccountID(int secondAccountID)
+	{
+		this.secondAccountID = secondAccountID;
 	}
 
 	public int getPage()
@@ -333,6 +346,7 @@ public class LoggerSettings implements MysqlHandable
 	        			rs.getInt("slotid"),
 	        			UUID.fromString(rs.getString("player_uuid")),
 	        			rs.getInt("account_id"),
+	        			-1,
 	        			rs.getBoolean("isaction"),
 	        			InventoryHandlerType.valueOf(rs.getString("inventoryhandlertype")),
 	        			rs.getBoolean("isdescending"),

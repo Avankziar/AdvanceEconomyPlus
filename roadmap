@@ -33,10 +33,17 @@ Future =========================================================================
 - wäre es möglich, die Verkäufe an einen Adminshop, wie bei dem verdienst durch einen Job, zeitlich zusammenzufassen?
   Atkuell ist es so, dass jeder Verkauf auch einen Logeintrag abwirft, was recht schnell sehr unübersichtlich wird.
 - /aep log [Spieler1] [Spieler2] die gesamten Transaktionen zwischen den genannten Spielern aufzulisten.
-- Die Möglichkeit implementieren, das Konto ins Minus zu buchen. Die Einkäufe des Spielers in dem Falle müsste dann lauten, gleiche dein Konto aus, Du bist im Minus.
 Ausschließlich via /money take etc möglich !
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
+
+5-0-0
+- TransactionHandler angepasst, dass nun withdraw && transaction Methoden den Account ins Negative lassen.
+- /money take && /money takeconsole, ziehen nun die Accounts ins Negative, wenn die Abzuziehende Zahl größer als der Kontostand ist.
+- /playertransactionlog bzw. /aep playertransactionlog hinzugefügt.
+  Gibt alle Transaktionen zwischen zwei Spielern und deren Default Main Account wieder.
+  Um den Befehl bei bestender Installation zu aktivieren, AEP Ordner > commands.yml
+  bei entweder Commands.SINGLE "PLAYERTRANSACTIONLOG;playertransactionlog" oder bei Commands.NESTED "PLAYERTRANSACTIONLOG;aep_playertransactionlog" hinzufügen!
 
 4-9-1
 - Do.DeleteAccountsDaysAfterOverdue fix
