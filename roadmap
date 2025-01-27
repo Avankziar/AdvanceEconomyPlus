@@ -43,7 +43,7 @@ Ausschließlich via /money take etc möglich !
   Gibt alle Transaktionen zwischen zwei Spielern und deren Default Main Account wieder.
   Um den Befehl bei bestender Installation zu aktivieren, AEP Ordner > commands.yml
   bei entweder Commands.SINGLE "PLAYERTRANSACTIONLOG;playertransactionlog" oder bei Commands.NESTED "PLAYERTRANSACTIONLOG;aep_playertransactionlog" hinzufügen!
-- 
+- /money set, angepasst an mögliche negative Kontostände
 
 4-9-1
 - Do.DeleteAccountsDaysAfterOverdue fix
