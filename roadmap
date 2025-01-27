@@ -32,7 +32,6 @@ Future =========================================================================
 - ActionLogs werden nicht angelegt/angezeigt, warum? ka
 - wäre es möglich, die Verkäufe an einen Adminshop, wie bei dem verdienst durch einen Job, zeitlich zusammenzufassen?
   Atkuell ist es so, dass jeder Verkauf auch einen Logeintrag abwirft, was recht schnell sehr unübersichtlich wird.
-- /aep log [Spieler1] [Spieler2] die gesamten Transaktionen zwischen den genannten Spielern aufzulisten.
 Ausschließlich via /money take etc möglich !
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
@@ -44,6 +43,7 @@ Ausschließlich via /money take etc möglich !
   Gibt alle Transaktionen zwischen zwei Spielern und deren Default Main Account wieder.
   Um den Befehl bei bestender Installation zu aktivieren, AEP Ordner > commands.yml
   bei entweder Commands.SINGLE "PLAYERTRANSACTIONLOG;playertransactionlog" oder bei Commands.NESTED "PLAYERTRANSACTIONLOG;aep_playertransactionlog" hinzufügen!
+- 
 
 4-9-1
 - Do.DeleteAccountsDaysAfterOverdue fix

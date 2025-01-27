@@ -990,7 +990,7 @@ public class YamlManager
 				"/aep actionlog [playername] [accountname] [page] [category]", "/aep actionlog ",
 				"&c/aep actionlog [Spielername] [Accountname] [Seitenzahl] [Kategorie] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
 				"&c/aep actionlog [playername] [accountname] [page] [category] &f| Shows direct the actionlog by the actual Settings.");
-		commandsInput("actionlog", "actionlog", basePermission,
+		commandsInput("actionlog", "actionlog", basePermission+".actionlog",
 				"/actionlog [playername] [accountname] [page] [category]", "/actionlog ",
 				"&c/actionlog [Spielername] [Accountname] [Seitenzahl] [Kategorie] &f| Zeigt direkt den Aktionlog bei den aktuellen Einstellungen.",
 				"&c/actionlog [playername] [accountname] [page] [category] &f| Shows direct the actionlog by the actual Settings.");
@@ -998,7 +998,7 @@ public class YamlManager
 				"/aep playertransactionlog [playername] [otherplayer] [page] [category]", "/aep playertransactionlog ",
 				"&c/aep playertransactionlog [Spielername] [Anderer Spieler] [Seitenzahl] [Kategorie] &f| Zeigt die Transactionhistorie zwischen den beiden Spielern.",
 				"&c/aep playertransactionlog [playername] [otherplayer] [page] [category] &f| Shows the transaction history between the two players.");
-		commandsInput("playertransactionlog", "playertransactionlog", basePermission,
+		commandsInput("playertransactionlog", "playertransactionlog", basePermission+".playertransactionlog",
 				"/playertransactionlog [playername] [otherplayer] [page] [category]", "/playertransactionlog ",
 				"&c/playertransactionlog [Spielername] [Anderer Spieler] [Seitenzahl] [Kategorie] &f| Zeigt die Transactionhistorie zwischen den beiden Spielern.",
 				"&c/playertransactionlog [playername] [otherplayer] [page] [category] &f| Shows the transaction history between the two players.");
@@ -1006,7 +1006,7 @@ public class YamlManager
 				"/aep trendlog [playername] [accountname] [page]", "/aep trendlog ",
 				"&c/aep trendlog [Spielername] [Accountname] [Seitenzahl] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
 				"&c/aep trendlog [playername] [accountname] [page] &f| Shows direct the trendlog by the actual Settings.");
-		commandsInput("trendlog", "trendlog", basePermission,
+		commandsInput("trendlog", "trendlog", basePermission+".trendlog",
 				"/trendlog [playername] [accountname] [page]", "/trendlog ",
 				"&c/trendlog [Spielername] [Accountname] [Seitenzahl] &f| Zeigt direkt den Trendlog bei den aktuellen Einstellungen.",
 				"&c/trendlog [playername] [accountname] [page] &f| Shows direct the trendlog by the actual Settings.");

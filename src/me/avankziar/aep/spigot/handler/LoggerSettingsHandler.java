@@ -1146,8 +1146,7 @@ public class LoggerSettingsHandler
 					player.sendMessage(ChatApiOld.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 					return;
 				}
-				if(fst.getSecondAccountID() > 0 && !plugin.getIFHApi().canManageAccount(fst.getSecondAccountID(),
-								player.getUniqueId(), AccountManagementType.CAN_SEE_LOG))
+				if(fst.getSecondAccountID() < 0 && methode == Methode.PLAYERTRANSACTIONLOG)
 				{
 					fst.setInventoryHandlerType(InventoryHandlerType.NONE);
 					getLoggerSettings().replace(player.getUniqueId(), fst);

@@ -232,6 +232,12 @@ public class CurrencyCommandSetup
 			LinkedHashMap<Integer, ArrayList<String>> map_p_acn = new LinkedHashMap<>();
 			map_p_acn.put(1, playerarray);
 			map_p_acn.put(2, accountmap);
+			
+			LinkedHashMap<Integer, ArrayList<String>> map_p_p = new LinkedHashMap<>();
+			map_p_p.put(1, playerarray);
+			map_p_p.put(2, playerarray);
+			map_p_p.put(4, cats);
+			
 			LinkedHashMap<Integer, ArrayList<String>> map_p_acn_cat = map_p_acn;
 			
 			map_p_acn_cat.put(4, cats);
@@ -265,7 +271,7 @@ public class CurrencyCommandSetup
 					new ActionLog(null, arg, cst);
 					break;
 				case PLAYERTRANSACTIONLOG:
-					arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 5, false, map_p_acn_cat);
+					arg = new ArgumentConstructor(cet, cmdpath, 0, 2, 5, false, map_p_p);
 					new PlayerTransactionLog(null, arg, cst);
 					break;
 				case TRENDLOG:

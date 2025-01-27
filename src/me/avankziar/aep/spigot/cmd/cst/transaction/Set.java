@@ -195,19 +195,31 @@ public class Set extends ArgumentModule implements CommandExecutor
 	private void endpart(Player player, Account from, Account voids, String category, String comment, double amount)
 	{
 		EconomyAction eaw = null;
-		if(voids == null && category == null)
+		if(from.hasNegativeBalance())
 		{
-			eaw = plugin.getIFHApi().withdraw(from, from.getBalance());
-		} else if(voids == null && category != null)
+			if(voids == null && category == null)
+			{
+				eaw = plugin.getIFHApi().deposit(from, from.getBalance() * -1);
+			} else if(voids == null && category != null)
+			{
+				eaw = plugin.getIFHApi().deposit(from, from.getBalance() * -1, OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+			}
+		} else
 		{
-			eaw = plugin.getIFHApi().withdraw(from, from.getBalance(), OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
-		} else if(voids != null && category == null)
-		{
-			eaw = plugin.getIFHApi().transaction(from, voids, from.getBalance());
-		} else if(voids != null && category != null)
-		{
-			eaw = plugin.getIFHApi().transaction(from, voids, from.getBalance(),
-					OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+			if(voids == null && category == null)
+			{
+				eaw = plugin.getIFHApi().withdraw(from, from.getBalance());
+			} else if(voids == null && category != null)
+			{
+				eaw = plugin.getIFHApi().withdraw(from, from.getBalance(), OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+			} else if(voids != null && category == null)
+			{
+				eaw = plugin.getIFHApi().transaction(from, voids, from.getBalance());
+			} else if(voids != null && category != null)
+			{
+				eaw = plugin.getIFHApi().transaction(from, voids, from.getBalance(),
+						OrdererType.PLAYER, player.getUniqueId().toString(), category, comment);
+			}
 		}
 		if(!eaw.isSuccess())
 		{
