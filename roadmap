@@ -36,6 +36,9 @@ Ausschließlich via /money take etc möglich !
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 
+5-0-1
+- JobsHook LoggerMethode in Asynchronen Thread gesetzt.
+
 5-0-0
 - TransactionHandler angepasst, dass nun withdraw && transaction Methoden den Account ins Negative lassen.
 - /money take && /money takeconsole, ziehen nun die Accounts ins Negative, wenn die Abzuziehende Zahl größer als der Kontostand ist.

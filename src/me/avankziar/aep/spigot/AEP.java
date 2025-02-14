@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -119,7 +120,7 @@ public class AEP extends JavaPlugin
 		new CurrencyCommandSetup(plugin).setupCommand();
 		setupPlaceholderAPI();
 		setupMessageToBungee();
-		CurrencyHandler.registerServerAndEntityAccountIfNotExist();
+		CurrencyHandler.registerServerAndEntityAccountIfNotExist();		
 	}
 	
 	public void onDisable()

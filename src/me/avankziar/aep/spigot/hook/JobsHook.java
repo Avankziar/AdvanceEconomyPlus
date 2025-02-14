@@ -69,7 +69,7 @@ public class JobsHook implements Listener
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
-		loggerJobs(event.getPlayer().getUniqueId().toString());
+		loggerJobs(event.getPlayer().getUniqueId().toString(), System.currentTimeMillis());
 	}
 	
 	public void runTask()
@@ -83,13 +83,22 @@ public class JobsHook implements Listener
 				LocalTime lt = LocalTime.now();
 				if(times.contains(String.valueOf(lt.getMinute())))
 				{
-					loggerRunTask();
+					final long now = System.currentTimeMillis();
+					new BukkitRunnable()
+					{
+						
+						@Override
+						public void run()
+						{
+							loggerRunTask(now);
+						}
+					}.runTaskAsynchronously(plugin);
 				}
 			}
 		}.runTaskTimer(plugin, 0L, 20L*60);
 	}
 	
-	public static void loggerRunTask()
+	public static void loggerRunTask(long now)
 	{
 		LinkedHashMap<UUID, ArrayList<String>> uuidjob = new LinkedHashMap<>();
 		for(String job : joblist.keySet())
@@ -111,7 +120,7 @@ public class JobsHook implements Listener
 					}
 					LoggerApi.addActionLogger(new ActionLogger(
 							0,
-							System.currentTimeMillis(),
+							now,
 							-1, to.getID(),
 							-1, OrdererType.PLAYER, puuid, null, amount, amount, 0.0, category, comment));
 					LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());
@@ -137,7 +146,7 @@ public class JobsHook implements Listener
 		}
 	}
 	
-	private void loggerJobs(final String playerUUID)
+	private void loggerJobs(final String playerUUID, long now)
 	{
 		for(String job : joblist.keySet())
 		{
@@ -165,7 +174,7 @@ public class JobsHook implements Listener
 						}
 						LoggerApi.addActionLogger(new ActionLogger(
 								0,
-								System.currentTimeMillis(),
+								now,
 								-1, to.getID(),
 								-1, OrdererType.PLAYER, puuid, null, amount, amount, 0.0, category, comment));
 						LoggerApi.addTrendLogger(LocalDate.now(), to.getID(), amount, to.getBalance());

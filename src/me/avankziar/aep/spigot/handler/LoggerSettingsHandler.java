@@ -1165,7 +1165,7 @@ public class LoggerSettingsHandler
 						{
 							player.closeInventory();
 						}
-					};
+					}.runTask(plugin);
 					return;
 				}
 				new BukkitRunnable() {@Override public void run(){player.closeInventory();}}.runTask(plugin);
