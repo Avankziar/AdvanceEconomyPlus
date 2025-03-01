@@ -409,14 +409,19 @@ public class YamlManager
 					"hub"},
 					new Object[] {
 					"",
-					"Der Server steht für den Namen des Spigotservers, wie er in BungeeCord/Waterfall config.yml unter dem Pfad 'servers' angegeben ist.",
-					"Sollte kein BungeeCord/Waterfall oder andere Proxys vorhanden sein oder du nutzt IFH Administration, so kannst du diesen Bereich ignorieren.",
+					"Der Server steht für den Namen des Spigotservers, wie er in BungeeCord/Waterfall/Velocity config.yml unter dem Pfad 'servers' angegeben ist.",
+					"Sollte kein BungeeCord/Waterfall/Velocity oder andere Proxys vorhanden sein oder du nutzt IFH Administration, so kannst du diesen Bereich ignorieren.",
 					"",
-					"The server stands for the name of the spigot server as specified in BungeeCord/Waterfall config.yml under the path 'servers'.",
-					"If no BungeeCord/Waterfall or other proxies are available or you are using IFH Administration, you can ignore this area."});
-			configKeys.put("IsBungeeActive"
-					, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
-					true}));
+					"The server stands for the name of the spigot server as specified in BungeeCord/Waterfall/Velocity config.yml under the path 'servers'.",
+					"If no BungeeCord/Waterfall/Velocity or other proxies are available or you are using IFH Administration, you can ignore this area."});
+			addConfig("ProxyType",
+					new Object[] {
+					"VELOCITY"},
+					new Object[] {
+					"",
+					"Der ProxyType (VELOCITY oder BUNGEECORD) definiert, über welchen möglichen Proxy Nachrichten zu anderen Spieler gesendet werden kann.",
+					"",
+					"The ProxyType (VELOCITY or BUNGEECORD) defines via which possible proxy messages can be sent to other players."});
 		}
 		addConfig("Mysql.Status",
 				new Object[] {

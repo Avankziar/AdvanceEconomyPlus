@@ -421,9 +421,8 @@ public class VaultEcoProvider implements Economy
 	@Override
 	public boolean has(OfflinePlayer player, double amount)
 	{
-		return plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN) != null ?
-				(plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN).getBalance() >= amount
-				? true : false) : false;
+		Account ac = plugin.getIFHApi().getDefaultAccount(player.getUniqueId(), AccountCategory.MAIN);
+		return ac != null ?	ac.getBalance() >= amount : false;
 	}
 	
 	@SuppressWarnings("deprecation")

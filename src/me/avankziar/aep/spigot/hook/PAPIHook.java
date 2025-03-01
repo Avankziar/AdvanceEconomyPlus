@@ -7,9 +7,13 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
+import me.avankziar.aep.general.assistance.MatchApi;
 import me.avankziar.aep.general.database.MysqlType;
 import me.avankziar.aep.spigot.AEP;
+import me.avankziar.aep.spigot.assistance.Utility;
 import me.avankziar.ifh.general.economy.account.AccountCategory;
+import me.avankziar.ifh.general.economy.account.EconomyEntity.EconomyType;
+import me.avankziar.ifh.general.economy.currency.CurrencyType;
 import me.avankziar.ifh.spigot.economy.account.Account;
 import me.avankziar.ifh.spigot.economy.currency.EconomyCurrency;
 
@@ -78,6 +82,10 @@ public class PAPIHook extends me.clip.placeholderapi.expansion.PlaceholderExpans
 	 * 
 	 * >Gesamtes Guthaben im System, per Accountcategoriy und Währung.
 	 * aep_totalbalance_<format>,<accountcategory>,<currencyuniquename>
+	 * 
+	 * >Top 10 Spielerguthaben ohne TAX und VOID für die default Digitale Währung. Mit und ohne Format.
+	 * Ausgabe NamedesSpielers:Guthaben.
+	 * aep_top_<1 bis 10>_<format>
 	 */
 	
 	@Override
@@ -88,7 +96,6 @@ public class PAPIHook extends me.clip.placeholderapi.expansion.PlaceholderExpans
 			return "";
 		}
 		final UUID uuid = player.getUniqueId();
-		
 		if(idf.startsWith("playerbalancewithtaxvoid"))
 		{
 			String[] s = idf.split(",");
@@ -246,7 +253,27 @@ public class PAPIHook extends me.clip.placeholderapi.expansion.PlaceholderExpans
 					}
 				}
 			}			
-		}		
+		} else if(idf.startsWith("top"))
+		{
+			String[] s = idf.split("_");
+			int place = s.length >= 2 ? (MatchApi.isInteger(s[1]) ? Integer.valueOf(s[1]) : 1) : 1;
+			if(place > 10 || place < 1)
+			{
+				place = 1;
+			}
+			boolean withformat = s.length >= 3 ? s[2].equals("withformat") : false;
+			EconomyCurrency currency = plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL);
+			ArrayList<Object[]> l = plugin.getMysqlHandler().getTop10Balance(currency.getUniqueName());
+			if(l.size() <= place)
+			{
+				return "/";
+			}
+			Object[] o = l.get(place-1);
+			String uuidplace = (String) o[0];
+			String name = Utility.convertUUIDToName(uuidplace, EconomyType.PLAYER);
+			double tb = (double) o[1];
+			return withformat ? name+":"+plugin.getIFHApi().format(tb, currency) : name+":"+tb;
+		}
 		return null;
 	}
 }

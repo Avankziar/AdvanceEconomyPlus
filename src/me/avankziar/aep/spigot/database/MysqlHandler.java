@@ -136,4 +136,55 @@ public class MysqlHandler extends MysqlBaseHandler
 	      }
 		return null;
 	}
+	
+	public ArrayList<Object[]> getTop10Balance(String currency)
+	{
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		try (Connection conn = AEP.getPlugin().getMysqlSetup().getConnection();)
+		{
+			String sql = "SELECT `owner_uuid`, SUM(`balance`) AS total_balance"
+					+ "FROM `aepaccount`"
+					+ "WHERE `account_currency` = ? AND `owner_type` = ? AND (`account_category` != ? OR `account_category` != ?)"
+					+ "GROUP BY `owner_uuid`"
+					+ "ORDER BY total_balance DESC"
+					+ "LIMIT 10;";
+	        preparedStatement = conn.prepareStatement(sql);
+	        preparedStatement.setObject(1, currency);
+	        preparedStatement.setObject(2, "PLAYER");
+	        preparedStatement.setObject(3, "TAX");
+	        preparedStatement.setObject(4, "VOID");
+	        
+	        result = preparedStatement.executeQuery();
+	        MysqlHandler.addRows(QueryType.READ, result.getMetaData().getColumnCount());
+	        ArrayList<Object[]> l = new ArrayList<>();
+	        while (result.next()) 
+	        {
+	        	String uuid = result.getString("owner_uuid");
+	        	double tb = result.getDouble("total_balance");
+	        	Object[] o = new Object[] {uuid, tb};
+	        	l.add(o);
+	        }
+	        return l;
+	    } catch (SQLException e) 
+		{
+			  e.printStackTrace();
+	    } finally 
+		{
+	    	  try 
+	    	  {
+	    		  if (result != null) 
+	    		  {
+	    			  result.close();
+	    		  }
+	    		  if (preparedStatement != null) 
+	    		  {
+	    			  preparedStatement.close();
+	    		  }
+	    	  } catch (Exception e) {
+	    		  e.printStackTrace();
+	    	  }
+	      }
+		return new ArrayList<>();
+	}
 }

@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -51,6 +50,7 @@ import me.avankziar.aep.spigot.listener.PlayerListener;
 import me.avankziar.aep.spigot.listenerhandler.LoggerSettingsListenerHandler;
 import me.avankziar.ifh.spigot.administration.Administration;
 import me.avankziar.ifh.spigot.tobungee.chatlike.MessageToBungee;
+import me.avankziar.ifh.spigot.tovelocity.chatlike.MessageToVelocity;
 
 public class AEP extends JavaPlugin
 {
@@ -66,7 +66,8 @@ public class AEP extends JavaPlugin
 	
 	private static VaultEcoProvider vaultProvider;
 	private static IFHEcoProvider ifhProvider;
-	private static MessageToBungee mtbConsumer = null;
+	private static MessageToBungee mtbConsumer;
+	private static MessageToVelocity mtvConsumer;
 	private static Administration administrationConsumer;
 	
 	public static boolean isPapiRegistered = false;
@@ -119,7 +120,13 @@ public class AEP extends JavaPlugin
 		setupExtraPermission();
 		new CurrencyCommandSetup(plugin).setupCommand();
 		setupPlaceholderAPI();
-		setupMessageToBungee();
+		if(yamlHandler.getConfig().getString("ProxyType", "VELOCITY").equals("BUNGEECORD"))
+		{
+			setupMessageToBungee();
+		} else
+		{
+			setupMessageToVelocity();
+		}
 		CurrencyHandler.registerServerAndEntityAccountIfNotExist();		
 	}
 	
@@ -422,6 +429,49 @@ public class AEP extends JavaPlugin
 	public MessageToBungee getMtB()
 	{
 		return mtbConsumer;
+	}
+	
+	private void setupMessageToVelocity() 
+	{
+        if(Bukkit.getPluginManager().getPlugin("InterfaceHub") == null) 
+        {
+            return;
+        }
+        new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+				try
+				{
+					if(i == 20)
+				    {
+						cancel();
+						return;
+				    }
+				    RegisteredServiceProvider<me.avankziar.ifh.spigot.tovelocity.chatlike.MessageToVelocity> rsp = 
+		                             getServer().getServicesManager().getRegistration(
+		                            		 me.avankziar.ifh.spigot.tovelocity.chatlike.MessageToVelocity.class);
+				    if(rsp == null) 
+				    {
+				    	//Check up to 20 seconds after the start, to connect with the provider
+				    	i++;
+				        return;
+				    }
+				    mtvConsumer = rsp.getProvider();
+				    cancel();
+				} catch(NoClassDefFoundError e)
+				{
+					cancel();
+				}			    
+			}
+        }.runTaskTimer(plugin, 20L, 20*2);
+	}
+	
+	public MessageToVelocity getMtV()
+	{
+		return mtvConsumer;
 	}
 	
 	public boolean existHook(String externPluginName)

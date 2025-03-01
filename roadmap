@@ -35,9 +35,13 @@ Future =========================================================================
 Ausschließlich via /money take etc möglich !
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
+- Papi Replacer für Top10 gesamtes guthaben ohne tax und void
+- für die Toplist per UUID zusammenzählen außer tax und void
 
-5-0-1
+5-1-0
 - JobsHook LoggerMethode in Asynchronen Thread gesetzt.
+- Config Pfad "ProxyType" hinzugefügt. Definiert, über welchen ProxyType Nachrichten zu anderen Spieler verschickt werden.
+- %aep_top_<1 bis 10>_<format>% Top10 Spielerguthaben PAPI Replacer ohne TAX und VOID. Mit und ohne Format.
 
 5-0-0
 - TransactionHandler angepasst, dass nun withdraw && transaction Methoden den Account ins Negative lassen.
