@@ -32,10 +32,9 @@ Future =========================================================================
 - ActionLogs werden nicht angelegt/angezeigt, warum? ka
 - wäre es möglich, die Verkäufe an einen Adminshop, wie bei dem verdienst durch einen Job, zeitlich zusammenzufassen?
   Atkuell ist es so, dass jeder Verkauf auch einen Logeintrag abwirft, was recht schnell sehr unübersichtlich wird.
-Ausschließlich via /money take etc möglich !
+  Ausschließlich via /money take etc möglich !
 
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
-- Papi Replacer für Top10 gesamtes guthaben ohne tax und void
 - für die Toplist per UUID zusammenzählen außer tax und void
 
 5-1-0
