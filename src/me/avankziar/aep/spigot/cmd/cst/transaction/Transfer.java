@@ -560,7 +560,7 @@ public class Transfer extends ArgumentModule implements CommandExecutor
 		if(plugin.getMtV() != null)
 		{
 			String[] la = list.toArray(new String[list.size()]);
-			plugin.getMtB().sendMessage(ul, la);
+			plugin.getMtV().sendMessage(ul, la);
 		} else if(plugin.getMtB() != null)
 		{
 			String[] la = list.toArray(new String[list.size()]);
