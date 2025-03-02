@@ -144,11 +144,11 @@ public class MysqlHandler extends MysqlBaseHandler
 		try (Connection conn = AEP.getPlugin().getMysqlSetup().getConnection();)
 		{
 			String sql = "SELECT `owner_uuid`, SUM(`balance`) AS total_balance"
-					+ "FROM `aepaccount`"
-					+ "WHERE `account_currency` = ? AND `owner_type` = ? AND (`account_category` != ? OR `account_category` != ?)"
-					+ "GROUP BY `owner_uuid`"
-					+ "ORDER BY total_balance DESC"
-					+ "LIMIT 10;";
+					+ " FROM `aepaccount`"
+					+ " WHERE `account_currency` = ? AND `owner_type` = ? AND (`account_category` != ? OR `account_category` != ?)"
+					+ " GROUP BY `owner_uuid`"
+					+ " ORDER BY total_balance DESC"
+					+ " LIMIT 10;";
 	        preparedStatement = conn.prepareStatement(sql);
 	        preparedStatement.setObject(1, currency);
 	        preparedStatement.setObject(2, "PLAYER");

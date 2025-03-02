@@ -264,7 +264,7 @@ public class PAPIHook extends me.clip.placeholderapi.expansion.PlaceholderExpans
 			boolean withformat = s.length >= 3 ? s[2].equals("withformat") : false;
 			EconomyCurrency currency = plugin.getIFHApi().getDefaultCurrency(CurrencyType.DIGITAL);
 			ArrayList<Object[]> l = plugin.getMysqlHandler().getTop10Balance(currency.getUniqueName());
-			if(l.size() <= place)
+			if(l.size() < place)
 			{
 				return "/";
 			}
