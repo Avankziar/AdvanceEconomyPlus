@@ -723,6 +723,9 @@ public class YamlManager
 		configKeys.put("ShopGUIPlus.EnableHook"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				true}));
+		configKeys.put("AuctionGUIPlus.EnableHook"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
 	}
 	
 	//INFO:Commands
@@ -1519,6 +1522,16 @@ public class YamlManager
 					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&eShop: &f%amount% &6x &b%item% &cgekauft&e!",
 					"&eShop: &f%amount% &6x &b%item% &cpurchased&e!"}));
+			
+			languageKeys.put("AuctionGuiPlusHook.Category"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"AuctionGuiPlus",
+					"AuctionGuiPlus"}));
+			languageKeys.put("AuctionGuiPlusHook.Sell"
+					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+					"&eShop: &b%item% &ean &f%player% &aversteigert&e!",
+					"&eShop: &b%item% &eto &f%player% &aauction off&e!"}));
+			
 			languageKeys.put("JoinListener.OverdueAccounts"
 					, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 					"&cAchtung! &eEs sind &f%amount% &eSpieler schon länger als &f%days% &eTagen nicht aktiv. Wenn diese Acounts vererbt werden soll, setzte bitte einen neuen Eigentümer. &cSonst werden sie nach weitern &f%deletedays% &cTagen gelöscht!",

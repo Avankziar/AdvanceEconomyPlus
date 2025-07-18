@@ -40,6 +40,7 @@ import me.avankziar.aep.spigot.cmd.tree.ArgumentModule;
 import me.avankziar.aep.spigot.database.MysqlHandler;
 import me.avankziar.aep.spigot.database.MysqlSetup;
 import me.avankziar.aep.spigot.handler.ConfigHandler;
+import me.avankziar.aep.spigot.hook.AuctionGuiPlusHook;
 import me.avankziar.aep.spigot.hook.ChestShopHook;
 import me.avankziar.aep.spigot.hook.HeadDatabaseHook;
 import me.avankziar.aep.spigot.hook.JobsHook;
@@ -222,6 +223,11 @@ public class AEP extends JavaPlugin
 		{
 			logger.info(pluginName+" hook with ShopGUIPlus");
 			pm.registerEvents(new ShopGuiPlusHook(plugin), plugin);
+		}
+		if(existHook("AuctionGUIPlus") && plugin.getYamlHandler().getConfig().getBoolean("AuctionGUIPlus.EnableHook", false))
+		{
+			logger.info(pluginName+" hook with AuctionGUIPlus");
+			pm.registerEvents(new AuctionGuiPlusHook(plugin), plugin);
 		}
 	}
 	

@@ -37,6 +37,11 @@ Future =========================================================================
 !!!TechnologyTree PostRewardEvent Hook einbinden!!!
 - für die Toplist per UUID zusammenzählen außer tax und void
 
+5-2-0
+- Spigot 1.21.8 support
+- BoostYaml 1.3.8 support
+- AuctionGuiPlus (https://www.spigotmc.org/resources/auctiongui-1-8-1-21.19015/) Hook hinzugefügt
+
 5-1-0
 - JobsHook LoggerMethode in Asynchronen Thread gesetzt.
 - Config Pfad "ProxyType" hinzugefügt. Definiert, über welchen ProxyType Nachrichten zu anderen Spieler verschickt werden.
