@@ -38,6 +38,7 @@ Future =========================================================================
 - für die Toplist per UUID zusammenzählen außer tax und void
 
 5-2-0
+- Bitte nutze IFH 2-7-3
 - Spigot 1.21.8 support
 - BoostYaml 1.3.8 support
 - AuctionGuiPlus (https://www.spigotmc.org/resources/auctiongui-1-8-1-21.19015/) Hook hinzugefügt
